@@ -1,0 +1,51 @@
+[
+   {
+      "subpage": "dashboard",
+      "modifications": {
+		 "remove": [ {"field":"division"}, {"section":"tax"}],
+         "add": [
+            {
+               "field": "extension",
+			   "after": "firstWorkDate",
+               "html": "\n<div style=\"color:blue\" class=\"col-md-12 col-lg-12 col-sm-12 col-xs-12 no-padding\" data-xe-field='extension'>\n<p><strong>Ext:</strong> {{employeeProfile.employeeSummary.extendedField}}</p>\n<\/div>\n"
+            },
+            {
+               "field":  "literalExample",
+			   "before": "firstWorkDate",
+			   "template": "literal",
+               "name": "pageDescription",
+               "value": "\nThis is a 'literal' template text.\nCan use scope variables in the value using AngularJS extrapolation:\n{{employeeProfile.employeeProfile.name}} {{employeeProfile.employeeProfile.bannerId}}.\n",
+               "label": "Description:"
+            }
+         ],
+		 "move": [{"field": "seniorityDate", "before": "firstWorkDate"},{"section": "employee-earnings", "before": "employee-pay-information"}],
+		 "replace": [{"field":"adjustedServiceDate", 
+		              "html": "<div class=\"col-md-12 col-lg-12 col-sm-12 col-xs-12 no-padding\" data-xe-field=\"adjustedServiceDate\"><p><strong>Adj. Service Date:</strong> {{employeeProfile.employeeSummary.adjustedServiceDate}}</p>\n</div>"}
+					]
+      }
+   },
+   {
+      "subpage": "leave-balance",
+      "modifications": {
+		 "add": [
+		    {
+               "field": "availableInput",
+			   "after": "leave-display",
+			   "component": {
+				 "tagName": "P",
+				 "attributes" : {"id": "div1", "class": "class1 class2"},
+			     "childNodes": [
+					{
+						"tagName": "INPUT",
+						"attributes": {"type": "ng-number", "max": "100", "ng-model": "leaveBalance.available"}
+					},
+					{						
+						"textContent" : "Enter" 
+					}
+				 ]				 
+			   }
+            }
+		 ]
+	  }
+   }
+]
