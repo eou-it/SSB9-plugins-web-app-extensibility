@@ -2,7 +2,6 @@
 // xe namespace is for providing eXtensible Environment functionality.
 // this will likely be provided as a service and injected
 var xe = (function (xe) {
-
     // create a selector for an element
     xe.selector = function( elementType, name ) {
         return '[data-xe-' + elementType + '=' + name + ']';
@@ -16,6 +15,9 @@ var xe = (function (xe) {
     // xe.extensions = {} // load extensions for each page from server-side config
 
     // templates define how to create each type of widget
+    //Note HvT:
+    //If we use templates, it is not possible to insert fields having the same structure as the existing application fields,
+    //unless the templates are configurable too
     xe.templates = {
 
         // should probably convert these to a string templating mechanism, ...${field.name}..., etc.
@@ -42,33 +44,132 @@ var xe = (function (xe) {
 
     // Apply configured extensions to an element
     xe.extend = function (element, attributes /*?, transclude?*/) {
-        function removeField(fieldName) {
-            var element = this;
-            var it = $(xe.selectorToRemove('field',fieldName), element);
-            console.log('remove', it);
-            it.remove();
+
+        function getType(param) {
+            if (param.section)
+                return 'section';
+            else if (param.field)
+                return 'field';
+            else
+                throw 'Error: section or field is required for the current operation';
         }
 
-        function addField(field) {
+        function add(param) {
             var element = this;
-            //if field.html is set, use it otherwise generate from template
-            var it = field.html?field.html:xe.generateField( field );
-
-            if ( field.after ) {
-                $(it).insertAfter( $(xe.selector('field', field.after), element));
+            var type = getType(param);
+            var it;
+            if (param.component) {
+                it = xe.renderComponent(param.component);
+                console.log('Component HTML: ',it);
+            } else { //if param.html is set, use it otherwise generate from template
+                it = param.html ? param.html : xe.generateField(param);
+            }
+            if ( param.after ) {
+                $(it).insertAfter( $(xe.selector(type, param.after), element));
+            } else if (param.before){
+                $(it).insertBefore( $(xe.selector(type, param.before), element));
             } else {
                 $(it).prependTo( element );
             }
             console.log('add', it);
         }
 
+        function remove(param) {
+            var element = this;
+            var type = getType(param);
+            var it = $(xe.selectorToRemove(type,param[type]), element);
+            console.log('remove', it);
+            it.remove();
+        }
+
+        function move(param) {
+            var element = this;
+            var type = getType(param);
+
+            var elementToMove = $(xe.selector(type, param[type], element));
+            if ( param.after ) {
+                $(elementToMove).insertAfter( $(xe.selector(type, param.after), element));
+            } else if ( param.before ) {
+                $(elementToMove).insertBefore( $(xe.selector(type, param.before), element));
+            } else { // move to first field in parent
+
+            }
+            console.log('move', elementToMove);
+        }
+
+        function replace(param) {
+            var element = this;
+            var type = getType(param);
+            var it = $(xe.selectorToRemove(type,param[type]), element);
+            var to = null;
+            if (param.component) {
+                to = xe.renderComponent(param.component);
+            } else { //if param.html is set, use it otherwise generate from template
+                to = param.html ? param.html : xe.generateField(param);
+            }
+            console.log('replace', it);
+            it.replaceWith(to);
+        }
+
+
+        var start = new Date().getTime();
         if (xe.extensions[attributes.xeSubpage]) {
             if (xe.extensions[attributes.xeSubpage].remove)
-                xe.extensions[attributes.xeSubpage].remove.map(removeField, element);
+                xe.extensions[attributes.xeSubpage].remove.map(remove, element);
             if (xe.extensions[attributes.xeSubpage].add)
-                xe.extensions[attributes.xeSubpage].add.map(addField, element);
+                xe.extensions[attributes.xeSubpage].add.map(add, element);
+            if (xe.extensions[attributes.xeSubpage].move)
+                xe.extensions[attributes.xeSubpage].move.map(move, element);
+            if (xe.extensions[attributes.xeSubpage].replace)
+                xe.extensions[attributes.xeSubpage].replace.map(replace, element);
         }
+        console.log("Time to process extensions/ms: "+(new Date().getTime()-start));
     };
+
+
+    //HTML rendering support
+    xe.isVoidElement = function(tag) {
+        //xe.voidElements is a map to specify the html element types that are 'void' (have no content)
+        if (!xe.voidElements) {
+            console.log('initialize void elements');
+            xe.voidElements = {};
+            //Initialize voidElements map
+            ["area", "base", "br", "col", "command", "embed", "hr", "img", "input",
+                "keygen", "link", "meta", "param", "source", "track", "wbr"].forEach(function (val, idx, array) {
+                    xe.voidElements[val] = true;
+                }
+            );
+        }
+        return xe.voidElements[tag.toLowerCase()];
+    }
+
+    //Render a generic component as HTML (a component is simplified representation of HTML DOM element)
+    xe.renderComponent = function ( component ) {
+        //Note: void elements don't need </tag> and have no content
+        var result="";
+        if (component.tagName) {
+            result="<"+component.tagName;
+            Object.getOwnPropertyNames(component.attributes).forEach(function(val,idx,array) {
+                    result+=' '+val+'="'+component.attributes[val]+'"';
+                }
+            );
+            result += ">";
+            //recursively add the child nodes
+            if (component.childNodes && !xe.isVoidElement(component.tagName) ) {
+                component.childNodes.forEach(function (val, idx, array) {
+                        result += ' ' + xe.renderComponent(val);
+                    }
+                );
+            }
+        }
+        if (component.textContent && (!component.tagName || !xe.isVoidElement(component.tagName))) {
+            result += component.textContent;
+        }
+        if (component.tagName && !xe.isVoidElement(component.tagName)){
+            result += "</" + component.tagName + ">";
+        }
+        return result;
+    }
 
     return xe;
 })(xe || {});
@@ -77,9 +178,8 @@ function isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+//Not so well working method for getting a JSON representation of a DOM element
 function elementToJSON(element) {
-    //return 0;
-
     var filter = function(key, value) {
         var keys = {"":true,"id":true, "class":true, "name":true, "type":true, "value":true, "tagName":true,
                     "attributes":true, "childNodes":true, /*"nodeName":true,*/ "nodeType":true, "title":true };
@@ -96,7 +196,6 @@ function elementToJSON(element) {
             if (keys[key] && value)
                 return value;
         }
-
         return undefined;
     }
 
@@ -109,7 +208,8 @@ function elementToJSON(element) {
 angular.module('extensibility', [])
     .run(function($resource){
         console.log('Running - fetching metadata...');
-        //load meta-data synchronously to make sure it is available before compile needs it
+        //load meta-data synchronously to make sure it is available before compile needs it.
+        //TODO: do not hard code application and /ssb/ here to avoid being application and Banner specific
         $.ajax({
             url: '/PayrollEmployeeProfileSsb/internal/extensions',
             dataType: 'json',
@@ -123,6 +223,7 @@ angular.module('extensibility', [])
                     //convert from array to map with key is subpage and value the modifications
                     xe.extensions[json[i].subpage] = json[i].modifications;
                 }
+
             }
         });
         console.log(xe.extensions);
@@ -159,25 +260,15 @@ angular.module('extensibility', [])
                 changeElement(ch[i],i);
             }
         }
-        function changeElement1(el, index) {
-            var el2=el.find('#1\\.3');
-            //var el2=$('#1\\.3', el)
-            console.log(el2);
-        }
         return {
             restrict: 'C',
-            //priority: 500,
-            //link: link,
             compile: function ( element, attributes, transclude ) {
-                // How can we get the metadata from an asynchronous promise
                 if (xe.extensions) {
-                    //console.log('Compile phase:\nOuter HTML\n-------------------\n'+element.context.outerHTML);
-                    console.log('Extending sub page '+attributes.xeSubpage)
+                    console.log('Extending sub page '+attributes.xeSubpage);
                     xe.extend( element, attributes, transclude );
                 } else {
-                    console.log('No page extensions found');
+                    console.log('No page extensions found for '+attributes.xeSubpage);
                 }
-                console.log('Element:',elementToJSON(element));
                 link.transclude = transclude;
                 return( link );
             }
