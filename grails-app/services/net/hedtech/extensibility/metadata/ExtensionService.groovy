@@ -6,7 +6,6 @@ class ExtensionService {
     def static extensionsPath = grails.util.Holders.getConfig().webAppExtensibility.locations.extensions
 
     def list(params) {
-
         if (params.page) {
             def md = loadFromFile(params.page)
             if (md)

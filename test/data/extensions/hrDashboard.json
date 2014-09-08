@@ -33,7 +33,7 @@
 			   "after": "leave-display",
 			   "component": {
 				 "tagName": "P",
-				 "attributes" : {"id": "div1", "class": "class1 class2"},
+				 "attributes" : {"id": "div1", "class": "class1 class2", "data-xe-field":"available-input"},
 			     "childNodes": [
 					{
 						"tagName": "INPUT",
