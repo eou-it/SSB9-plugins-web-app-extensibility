@@ -1,4 +1,5 @@
 class ExtensibilityUrlMappings {
+    //static includes = ["/templates/**"]
     static mappings = {
         //same mapping as for /api except it will have different spring security
         "/internal/$pluralizedResourceName/$id"(controller: 'restfulApi') {

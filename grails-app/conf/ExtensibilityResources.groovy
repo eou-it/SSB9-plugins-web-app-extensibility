@@ -5,6 +5,10 @@
 
 modules = {
     'extensibilityAngular' {
-        resource url: [plugin: 'web-app-extensibility', file: 'js/extensibility-angular/extensibility.js']
+        dependsOn "extensibilityCommon"
+        resource url: [plugin: 'web-app-extensibility', file: 'js/extensibility-angular/xe-angular.js']
+    }
+    'extensibilityCommon' {
+        resource url: [plugin: 'web-app-extensibility', file: 'js/extensibility-common/xe-common.js']
     }
 }
