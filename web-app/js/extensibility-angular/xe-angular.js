@@ -1,12 +1,10 @@
 
 
-
-function isNumeric(n) {
-    return !isNaN(parseFloat(n)) && isFinite(n);
-}
-
 //Not so well working method for getting a JSON representation of a DOM element
 function elementToJSON(element) {
+    var  isNumeric = function(n) {
+                        return !isNaN(parseFloat(n)) && isFinite(n);
+                    };
     var filter = function(key, value) {
         var keys = {"":true,"id":true, "class":true, "name":true, "type":true, "value":true, "tagName":true,
                     "attributes":true, "childNodes":true, /*"nodeName":true,*/ "nodeType":true, "title":true };
@@ -24,17 +22,16 @@ function elementToJSON(element) {
                 return value;
         }
         return undefined;
-    }
+    };
 
-    var j=JSON.stringify(element[0],filter,2);
-    return j;
+    return JSON.stringify(element[0],filter,2);
 }
 
 xe.stats.groupFnCount = 0;
 xe.groupFn = function() {
     return {
         restrict: 'E',
-        compile: function ( element, attributes, transclude ) {
+        compile: function ( element, attributes ) {
             if (xe.stats.groupFnCount == 0)
                 xe.stats.t0 = new Date();
             xe.extendGroups(element,attributes);
@@ -47,7 +44,7 @@ xe.groupFn = function() {
 };
 
 angular.module('extensibility', [])
-    .run(function($resource){
+    .run(function(){
         xe.startup();
     })
     .directive('xeSection', function() {
