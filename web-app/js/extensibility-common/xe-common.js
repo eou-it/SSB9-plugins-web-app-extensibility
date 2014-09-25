@@ -3,13 +3,15 @@
 var xe = (function (xe) {
     //prefix used in html decoration for extensibility
     xe.typePrefix = 'data-xe-';
+    xe.type = {field: 'field',section: 'section'};
+    xe.errors = [];
 
     //Check if we are in developer mode
     xe.devMode = function() {
         return window.location.search.indexOf("dev=y")>-1;
         //TODO - secure by role
     }
-    // create a selector for an element
+    // create a selector for an element - specify a name or a selector for all with a specific type
     xe.selector = function( elementType, name ) {
         if (name)
             return '['+ xe.typePrefix + elementType + '=' + name + ']';
@@ -34,21 +36,22 @@ var xe = (function (xe) {
     }
 
     xe.getFields = function(section) {
-        var xeType = 'field';
-        var fields = $(xe.selector(xeType),section);
+        var fields = $(xe.selector(xe.type.field),section);
         var res = [];
         $.each(fields, function(i,field ){
-            res.push({name:field.attributes[xe.typePrefix+xeType].value, html:field.outerHTML});
+            res.push({name:field.attributes[xe.typePrefix+xe.type.field].value, html:field.outerHTML});
         });
         return res;
     }
 
     xe.getPageName = function() {
-        return location.pathname.substring(location.pathname.indexOf('/ssb/')+5);
+        // return location.pathname.substring(location.pathname.indexOf('/ssb/')+5);
+        return location.pathname.substring(location.pathname.lastIndexOf('/')+1);
     }
     xe.getApplication = function() {
         return location.pathname.substring(1,location.pathname.indexOf('/',1));
     }
+
     // Metadata definition for page parsing - for now just for showing as a help for extension developers
     // Basic structure:
     // Page
@@ -79,14 +82,12 @@ var xe = (function (xe) {
     //metadata for baseline page
     xe.page = new xe.Page('Baseline Page');
     //metadata for  page after extension - just do Baseline for now
-    //xe.extendedPage = new xe.Page('Extended Page');
+    // xe.extendedPage = new xe.Page('Extended Page');
 
     // xe.extensions = {} // load extensions for each page from server-side config
 
     // templates define how to create each type of widget
-    //Note HvT:
-    //If we use templates, it is not possible to insert fields having the same structure as the existing application fields,
-    //unless the templates are configurable too
+
     xe.templates = {
 
         // should probably convert these to a string templating mechanism, ...${field.name}..., etc.
@@ -112,20 +113,46 @@ var xe = (function (xe) {
     };
 
     // Apply configured extensions to an element
-    xe.extend = function (element, attributes, selector) {
+    xe.extend = function (element, attributes, actions) {
 
         function getType(param) {
             if (param.section)
-                return 'section';
+                return xe.type.section;
             else if (param.field)
-                return 'field';
+                return xe.type.field;
             else
                 throw 'Error: section or field is required for the current operation';
         }
 
-        function add(param) {
-            var element = this;
+        function insertElementBeforeOrAfter(element,context,param) {
             var type = getType(param);
+            var to;
+            if (element.length==0) {
+                xe.errors.push('Unable to find element. ' + JSON.stringify(param));
+                return null;
+            }
+            if ( param.after ) {
+                to = $(xe.selector(type, param.after), context);
+            } else if (param.before){
+                to = $(xe.selector(type, param.before), context);
+            } else {
+                xe.errors.push('Parameter before or after is required for operation. '+JSON.stringify(param));
+                return null;
+            }
+            if (to.length==0) {
+                xe.errors.push('Unable to find target element. '+JSON.stringify(param));
+                return null;
+            }
+            if ( param.after ) {
+                element.insertAfter(to);
+            } else if (param.before){
+                element.insertBefore(to);
+            }
+            return element;
+        }
+
+        function add(param) {
+            var context = this;
             var it;
             if (param.component) {
                 it = xe.renderComponent(param.component);
@@ -134,13 +161,7 @@ var xe = (function (xe) {
                 it = param.html ? param.html : xe.generateField(param);
             }
             it=$(it).addClass("xe-added");
-            if ( param.after ) {
-                it.insertAfter( $(xe.selector(type, param.after), element));
-            } else if (param.before){
-                it.insertBefore( $(xe.selector(type, param.before), element));
-            } else {
-                it.prependTo( element );
-            }
+            insertElementBeforeOrAfter(it,context,param);
             console.log('add', it);
         }
 
@@ -153,15 +174,10 @@ var xe = (function (xe) {
         }
 
         function move(param) {
-            var element = this;
+            var context = this;
             var type = getType(param);
             var elementToMove = $(xe.selector(type, param[type], element)).addClass("xe-moved");
-            if ( param.after ) {
-                $(elementToMove).insertAfter( $(xe.selector(type, param.after), element));
-            } else if ( param.before ) {
-                $(elementToMove).insertBefore( $(xe.selector(type, param.before), element));
-            } else { // move to first field in parent
-            }
+            insertElementBeforeOrAfter(elementToMove,context,param);
             console.log('move', elementToMove);
         }
 
@@ -182,14 +198,12 @@ var xe = (function (xe) {
 
 
         var start = new Date().getTime();
-        if (selector) {
-            if (xe.extensions.groups[selector]) {
-                if (xe.extensions.groups[selector].move){
-                    xe.extensions.groups[selector].move.map(move, element);
-                }
-                if (xe.extensions.groups[selector].remove){
-                    xe.extensions.groups[selector].remove.map(remove, element);
-                }
+        if (actions) {
+            if (actions.move){
+                [actions.move].map(move, element);
+            }
+            if (actions.remove){
+                [actions.remove].map(remove, element);
             }
         }
         else if (attributes.xeSection) {
@@ -207,24 +221,28 @@ var xe = (function (xe) {
         console.log("Time to process extensions/ms: "+(new Date().getTime()-start));
     };  // end xe.extend
 
-    //This function searches element children for sections and matchs the element to a selector for groups in metadata.
-    //a group selector selects the parent element of sections to move or remove
-    xe.extendGroups = function(element,attributes){
-        //It seems rather inefficient having to do this for all divs and maybe other elements
+    //This function searches element children for sections
+    xe.parseGroups = function(element,attributes){
         var sections = element.children(xe.selector('section'));
-        if (sections.length > 0) {
-            if (xe.devMode()) {
-                xe.page.addGroup( element, sections);
-                console.log("Parsed group:",xe.page);
-            }
+        if ( sections.length > 0) {
+            xe.page.addGroup( element, sections);
+            console.log("Parsed group: ",xe.page);
+        }
+    };
+
+    //This function does group level changes on a part of a page (ng-include or ui-view)
+    xe.extendPagePart = function(element,attributes){
+        var xeType = 'section';
+        var sections = $(xe.selector(xeType),element);
+        if ( sections.length > 0) {
             if (window.location.search.indexOf("baseline=y")==-1) {
-                for (selector in xe.extensions.groups) {
-                    var search = $(selector, element.context.parent);
-                    if (search[0] == element[0]) {
-                        console.log('Found match for selector ' + selector, search);
-                        xe.extend(element, attributes, selector);
-                    }
-                }
+                $.each(sections, function(i,section ){
+                    var sectionName = section.attributes[xe.typePrefix+xeType].value;
+                    var actions = xe.extensions.groups.sections[sectionName];
+                    if (actions)
+                        xe.extend(element, attributes, actions);
+                    //console.log('Section ',sectionName);
+                });
             }
         }
     };
@@ -343,6 +361,8 @@ var xe = (function (xe) {
             for (key in xe.stats) {
                 res += '<li>'+key+'='+xe.stats[key];
             }
+            if (xe.errors && xe.errors.length)
+                res+='<br>Errors<br>'+xe.errors;
             return res;
         }
 
@@ -371,8 +391,8 @@ var xe = (function (xe) {
 
     //Post updated extensions to the database
     xe.saveExtensions=function(){
-        var md = JSON.parse(xe.page.metadata);
-        var data={application: xe.page.application, page:xe.page.name, metadata:md  } ;
+        //var md = JSON.parse(xe.page.metadata);
+        var data={application: xe.page.application, page:xe.page.name, metadata: xe.page.metadata } ;
         $.ajax({
             url: '/' + xe.page.application + '/internal/extensions',
             type:'POST',
@@ -380,27 +400,51 @@ var xe = (function (xe) {
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data),
             processData: true,
-            success: function() {alert('Saved');}
+            success: function(data){
+                        alert('Saved');
+                        console.log('Data Saved',data);
+                     }
         });
     }
 
     //Update the model with modifed extensions
     xe.setExtensions = function (value) {
-        xe.page.metadata = value;
+        xe.page.metadata = JSON.parse(value);
     }
 
-    //TODO Only add menu if role is adequate
+    //Add the tools menu item Extensibility if we are in developer mode
     xe.addExtensibilityMenu = function () {
-        ToolsMenu.addSection("extensibility", "Extensibility") ;
-        ToolsMenu.addItem("pagestructurebase", "Show Baseline Page Structure", "extensibility", function() {xe.popups[0]=xe.showPageStructure(xe.page,xe.popups[0])});
-        ToolsMenu.addItem("pagestats", "Show Page Statistics", "extensibility", function() {xe.popups[1]=xe.showStats(xe.page,xe.popups[1])});
-        ToolsMenu.addItem("extensionseditor", "Edit Extensions", "extensibility", function() {xe.popups[2]=xe.extensionsEditor(xe.page,xe.popups[2])});
+        if (xe.devMode()) {
+            ToolsMenu.addSection("extensibility", "Extensibility");
+            ToolsMenu.addItem("pagestructurebase", "Show Baseline Page Structure", "extensibility", function () {
+                xe.popups[0] = xe.showPageStructure(xe.page, xe.popups[0])
+            });
+            ToolsMenu.addItem("pagestats", "Show Page Statistics / Status", "extensibility", function () {
+                xe.popups[1] = xe.showStats(xe.page, xe.popups[1])
+            });
+            ToolsMenu.addItem("extensionseditor", "Edit Extensions", "extensibility", function () {
+                xe.popups[2] = xe.extensionsEditor(xe.page, xe.popups[2])
+            });
+        }
     }
 
     xe.startup = function(){
+        var normalizeGroups = function(){
+            //add actions per section to group so actions can be directly accessed for a section
+            xe.extensions.groups.sections = {};
+            xe.extensions.groups.remove.forEach( function(val) {
+                if (!xe.extensions.groups.sections[val.section])
+                    xe.extensions.groups.sections[val.section] = {};
+                xe.extensions.groups.sections[val.section].remove = val;
+            });
+            xe.extensions.groups.move.forEach( function(val){
+                if (!xe.extensions.groups.sections[val.section])
+                    xe.extensions.groups.sections[val.section] = {};
+                xe.extensions.groups.sections[val.section].move = val;
+            });
+        };
         console.log('Running - fetching metadata...');
         //load meta-data synchronously to make sure it is available before compile needs it.
-        //TODO: do not hard code application and /ssb/ here to avoid being application and Banner specific
         $.ajax({
             url: '/'+xe.page.application+'/internal/extensions',
             dataType: 'json',
@@ -408,22 +452,15 @@ var xe = (function (xe) {
             async: false,
             success: function(json){
                 console.log('data loaded');
+                xe.extensions=json[0]; //data used for extending page
                 if (xe.devMode()){
-                    xe.page.metadata=json;
+                    xe.page.metadata=[$.extend(true,{},xe.extensions)];  //clone of extensions used for editor
                 }
-                xe.extensions={sections:{}, groups:{}};
-                for (var i=0;i<json.length; i++) {
-                    //convert from array to map with key is section and value the modifications
-                    if (json[i].section)
-                        xe.extensions.sections[json[i].section] = json[i].modifications;
-                    else if (json[i].selector)
-                        xe.extensions.groups[json[i].selector] = json[i].modifications;
-                }
+                normalizeGroups();
             }
         });
         console.log(xe.extensions);
         xe.addExtensibilityMenu();
-
     }
 
     return xe;

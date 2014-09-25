@@ -1,45 +1,35 @@
+xe.stats.groupCompileCount = 0;
 
-
-//Not so well working method for getting a JSON representation of a DOM element
-function elementToJSON(element) {
-    var  isNumeric = function(n) {
-                        return !isNaN(parseFloat(n)) && isFinite(n);
-                    };
-    var filter = function(key, value) {
-        var keys = {"":true,"id":true, "class":true, "name":true, "type":true, "value":true, "tagName":true,
-                    "attributes":true, "childNodes":true, /*"nodeName":true,*/ "nodeType":true, "title":true };
-        if (value) {
-            if (key==="childNodes") {
-                console.log('Process childNode', value);
+xe.groupCompile = function(prio, context) {
+    return function() {
+        if (xe.devMode()) {
+            return {
+                restrict: 'E',
+                compile: function (element, attributes) {
+                    if (xe.stats.groupCompileCount == 0)
+                        xe.stats.t0 = new Date();
+                    xe.parseGroups(element, attributes);
+                    xe.stats.groupCompileCount++;
+                    if (xe.stats.groupCompileCount == 100)
+                        xe.stats.t100 = new Date() - xe.stats.t0;
+                }
             }
-            if (value.nodeType === 3 || value === {}) {
-                //console.log('Remove', value)
-                return undefined
-            }
-            if (isNumeric(key))
-                return value;
-            if (keys[key] && value)
-                return value;
+        } else {
+            return {compile: null};
         }
-        return undefined;
-    };
+    }
+};
 
-    return JSON.stringify(element[0],filter,2);
-}
-
-xe.stats.groupFnCount = 0;
-xe.groupFn = function() {
-    return {
-        restrict: 'E',
-        compile: function ( element, attributes ) {
-            if (xe.stats.groupFnCount == 0)
-                xe.stats.t0 = new Date();
-            xe.extendGroups(element,attributes);
-            xe.stats.groupFnCount++;
-            if (xe.stats.groupFnCount == 100)
-                xe.stats.t100= new Date()-xe.stats.t0;
-
-        }
+xe.groupLink = function(prio, context) {
+    return function() {
+        return {
+                restrict: 'ECA',
+                link: function ($scope, element, attributes) {
+                    console.log('Link ', context, '\n', element);
+                    xe.extendPagePart(element, attributes);
+                },
+                priority: prio  //AngularJS ngInclude directive has 400
+              }
     }
 };
 
@@ -48,12 +38,9 @@ angular.module('extensibility', [])
         xe.startup();
     })
     .directive('xeSection', function() {
-        function link(scope, element, attrs) {
-            //element.css('color', 'red');
-        }
         return {
             restrict: 'A',
-            compile: function ( element, attributes, transclude ) {
+            compile: function ( element, attributes /*, transclude */ ) {
                 if (xe.extensions.sections[attributes.xeSection]) {
                     if (window.location.search.indexOf("baseline=y")==-1) {
                         console.log('Extending section ' + attributes.xeSection);
@@ -62,14 +49,16 @@ angular.module('extensibility', [])
                 } else {
                     console.log('No section extensions found for '+attributes.xeSection);
                 }
-                link.transclude = transclude;
-                return( link );
             }
         }
     })
     //A number of tags that can be a group (common parent for a collection of sections)
-    .directive( 'div', xe.groupFn)
-    .directive('span', xe.groupFn)
-    .directive('form', xe.groupFn)
-
+    //In developer mode parse the page structure in  groupCompile
+    .directive( 'div', xe.groupCompile())
+    .directive('span', xe.groupCompile())
+    .directive('form', xe.groupCompile())
+    //Group level changes are implemented in groupLink
+    .directive('ngInclude', xe.groupLink(399,'ng-include'))
+    .directive('uiView'   , xe.groupLink(0,'ui-view'))
+    .directive('body'     , xe.groupLink(0,'page'))
 ;

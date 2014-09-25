@@ -1,16 +1,10 @@
-[
-    {
-        "group": "just-a-name",
-        "selector": "#myCareerPane",
-        "modifications": {
-            "move": [{"section": "employee-earnings", "before": "employee-pay-information"}],
-            "remove": [ {"section":"tax"}]
-        }
-
+[{
+    "groups": {
+         "remove": [{"section":"tax"}],
+         "move": [{"section": "employee-earnings", "before": "employee-pay-information"}]
     },
-    {
-        "section": "employee-summary",
-        "modifications": {
+    "sections": {
+        "employee-summary": {
             "remove": [ {"field":"division"}],
             "add": [
                 {
@@ -31,12 +25,8 @@
             "replace": [{"field":"adjustedServiceDate",
                 "html": "<div class=\"col-md-12 col-lg-12 col-sm-12 col-xs-12 no-padding\" data-xe-field=\"adjustedServiceDate\"><p><strong>Adj. Service Date:</strong> {{employeeProfile.employeeSummary.adjustedServiceDate}}</p>\n</div>"}
             ]
-        }
-
-    },
-    {
-        "section": "leave-balance",
-        "modifications": {
+        },
+        "leave-balance": {
             "add": [
                 {
                     "field": "availableInput",
@@ -58,4 +48,5 @@
             ]
         }
     }
+}
 ]
