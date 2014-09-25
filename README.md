@@ -1,1 +1,1 @@
-#Web appplication extensibility plugin
+#Web application extensibility plugin
