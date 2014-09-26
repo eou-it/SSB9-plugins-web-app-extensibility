@@ -25,7 +25,7 @@ xe.groupLink = function(prio, context) {
         return {
                 restrict: 'ECA',
                 link: function ($scope, element, attributes) {
-                    console.log('Link ', context, '\n', element);
+                    console.log('Link ', context,attributes.src||'', '\n', element);
                     xe.extendPagePart(element, attributes);
                 },
                 priority: prio  //AngularJS ngInclude directive has 400
@@ -41,13 +41,12 @@ angular.module('extensibility', [])
         return {
             restrict: 'A',
             compile: function ( element, attributes /*, transclude */ ) {
+                console.log('Compile Section ',attributes.xeSection);
                 if (xe.extensions.sections[attributes.xeSection]) {
                     if (window.location.search.indexOf("baseline=y")==-1) {
                         console.log('Extending section ' + attributes.xeSection);
                         xe.extend(element, attributes);
                     }
-                } else {
-                    console.log('No section extensions found for '+attributes.xeSection);
                 }
             }
         }
