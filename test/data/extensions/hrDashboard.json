@@ -10,7 +10,7 @@
                 {
                     "field": "extension",
                     "after": "firstWorkDate",
-                    "html": "\n<div style=\"color:blue\" class=\"col-md-12 col-lg-12 col-sm-12 col-xs-12 no-padding\" data-xe-field='extension'>\n<p><strong>Ext:</strong> {{sectionData.employeeSummary.extendedField}}</p>\n<\/div>\n"
+                    "html": "\n<div style=\"color:blue\" class=\"col-md-12 col-lg-12 col-sm-12 col-xs-12 no-padding\" data-xe-field='extension'>\n<p><strong>Ext:</strong> {{section.data.employeeSummary.extendedField}}</p>\n<\/div>\n"
                 },
                 {
                     "field":  "literalExample",
@@ -23,7 +23,7 @@
             ],
             "move": [{"field": "seniorityDate", "before": "firstWorkDate"}],
             "replace": [{"field":"adjustedServiceDate",
-                "html": "<div class=\"col-md-12 col-lg-12 col-sm-12 col-xs-12 no-padding\" data-xe-field=\"adjustedServiceDate\"><p><strong>Adj. Service Date:</strong> {{sectionData.employeeSummary.adjustedServiceDate | myDateFormat : 'moment.default.date.format'}}</p>\n</div>"}
+                "html": "<div class=\"col-md-12 col-lg-12 col-sm-12 col-xs-12 no-padding\" data-xe-field=\"adjustedServiceDate\"><p><strong>Adj. Service Date:</strong> {{section.data.employeeSummary.adjustedServiceDate | myDateFormat : 'moment.default.date.format'}}</p>\n</div>"}
             ]
         },
         "leave-balance": {

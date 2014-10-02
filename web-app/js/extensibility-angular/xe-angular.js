@@ -1,5 +1,8 @@
 xe.stats.groupCompileCount = 0;
 
+xe.logging = {  none: 0, debug: 1, verbose: 2};
+xe.logging.level = xe.logging.debug;
+
 xe.groupCompile = function(prio, context) {
     return function() {
         if (xe.devMode()) {
@@ -20,12 +23,13 @@ xe.groupCompile = function(prio, context) {
     }
 };
 
-xe.groupLink = function(prio, context) {
+xe.groupLink = function(prio, context, logging) {
     return function() {
         return {
                 restrict: 'ECA',
                 link: function ($scope, element, attributes) {
-                    console.log('Link ', context,attributes.src||'', '\n', element);
+                    if (logging > xe.logging.none)
+                        console.log('Link ', context,attributes.src||'', '\n', logging==xe.logging.verbose?element[0].innerHTML:element);
                     xe.extendPagePart(element, attributes);
                 },
                 priority: prio  //AngularJS ngInclude directive has 400
@@ -56,8 +60,9 @@ angular.module('extensibility', [])
     .directive( 'div', xe.groupCompile())
     .directive('span', xe.groupCompile())
     .directive('form', xe.groupCompile())
-    //Group level changes are implemented in groupLink
-    .directive('ngInclude', xe.groupLink(399,'ng-include'))
-    .directive('uiView'   , xe.groupLink(0,'ui-view'))
-    .directive('body'     , xe.groupLink(0,'page'))
+    ////Group level changes are implemented in groupLink
+    .directive('ngInclude', xe.groupLink(399,'ng-include', xe.logging.debug))
+    .directive('uiView'   , xe.groupLink(0,'ui-view'     , xe.logging.debug))
+    .directive('body'     , xe.groupLink(0,'body'        , xe.logging.debug))
+    //.directive('xeAccordion' , xe.groupLink(0,'xeAccordion',true))
 ;
