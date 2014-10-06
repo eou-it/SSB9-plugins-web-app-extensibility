@@ -344,7 +344,7 @@ var xe = (function (xe) {
     xe.showPageStructure = function (page, popup){
         if (!popup) {
             popup = $('<div id="pageStructure'+page.description+'" ></div>');
-            popup.dialog({appendTo: "#content", width: 600, hight:"auto"});
+            popup.dialog({appendTo: "#content", width: 600, height:"auto"});
             popup.append(xe.renderPageStructure(page));
             //var text = JSON.stringify(xe.page,null,2);
             //xe.popup.append( $('<pre>').text(text));
@@ -368,7 +368,7 @@ var xe = (function (xe) {
 
         if (!popup) {
             popup = $('<div id="pageStats' + page.name + '" ></div>');
-            popup.dialog({appendTo: "#content", width: 600, hight: "auto"});
+            popup.dialog({appendTo: "#content", width: 600, height: "auto"});
             popup.append(xe.renderStats(page));
         }
         popup.dialog("open");
@@ -378,7 +378,7 @@ var xe = (function (xe) {
     xe.extensionsEditor = function(page,popup) {
         if (!popup) {
             popup = $('<div id="extensionsEditor' + page.name + '" ></div>');
-            popup.dialog({appendTo: "#content", width: 600, hight: "auto"});
+            popup.dialog({appendTo: "#content", width: 600, height: "auto"});
             popup.load(extensibilityPluginPath+'/templates/extedit.html',
                        function(x){
                            $('#extensions-edit-input',popup).text(JSON.stringify(xe.page.metadata,null,2));
