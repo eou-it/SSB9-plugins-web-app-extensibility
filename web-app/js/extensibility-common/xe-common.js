@@ -11,6 +11,12 @@ var xe = (function (xe) {
         return window.location.search.indexOf("dev=y")>-1;
         //TODO - secure by role
     }
+
+    xe.enableExtensions = function() {
+        return window.location.search.indexOf("baseline=y")==-1;
+    }
+
+
     // create a selector for an element - specify a name or a selector for all with a specific type
     xe.selector = function( elementType, name ) {
         if (name)
@@ -195,9 +201,11 @@ var xe = (function (xe) {
             console.log('replace', it);
             it.replaceWith(to);
         }
-
+        if (!xe.enableExtensions())
+            return;
 
         var start = new Date().getTime();
+
         if (actions) {
             if (actions.move){
                 [actions.move].map(move, element);
@@ -206,16 +214,20 @@ var xe = (function (xe) {
                 [actions.remove].map(remove, element);
             }
         }
-        else if (attributes.xeSection) {
-            if (xe.extensions.sections[attributes.xeSection]) {
-                if (xe.extensions.sections[attributes.xeSection].remove)
-                    xe.extensions.sections[attributes.xeSection].remove.map(remove, element);
-                if (xe.extensions.sections[attributes.xeSection].add)
-                    xe.extensions.sections[attributes.xeSection].add.map(add, element);
-                if (xe.extensions.sections[attributes.xeSection].move)
-                    xe.extensions.sections[attributes.xeSection].move.map(move, element);
-                if (xe.extensions.sections[attributes.xeSection].replace)
-                    xe.extensions.sections[attributes.xeSection].replace.map(replace, element);
+        else {
+            var section = attributes.xeSection || attributes.xeSectionInh;
+            if (section) {
+                var extensions = xe.extensions.sections[section];
+                if (extensions) {
+                    if (extensions.remove)
+                        extensions.remove.map(remove, element);
+                    if (extensions.add)
+                        extensions.add.map(add, element);
+                    if (extensions.move)
+                        extensions.move.map(move, element);
+                    if (extensions.replace)
+                        extensions.replace.map(replace, element);
+                }
             }
         }
         console.log("Time to process extensions/ms: "+(new Date().getTime()-start));
