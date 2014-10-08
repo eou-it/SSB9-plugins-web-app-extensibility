@@ -7,7 +7,7 @@ xe.ng={};
 xe.ng.deferedSectionTags = {'XE-ACCORDION':true};
 xe.ng.priorities={ngIncludeBase:400}; // Priorities for directives
 
-xe.groupCompile = function(prio, context, logging) {
+xe.groupCompile = function(prio, context) {
     return function() {
         return {
             restrict: 'E',
@@ -18,8 +18,8 @@ xe.groupCompile = function(prio, context, logging) {
                     var section = element[0].parentNode.attributes['data-xe-section-inh'];
                     if (section) {
                         attributes.xeSection = section.value;
-                        if (logging > xe.logging.none) {
-                            console.log('Compile ', context, prio, attributes, logging == xe.logging.verbose ? element[0].innerHTML : element);
+                        if (xe.logging.level > xe.logging.none) {
+                            console.log('Compile ', context, prio, attributes, xe.logging.level == xe.logging.verbose ? element[0].innerHTML : element);
                             console.log('Extending inherited section ' + attributes.xeSection);
                         }
                         xe.extend(element, attributes);
@@ -39,29 +39,29 @@ xe.groupCompile = function(prio, context, logging) {
     }
 };
 
-xe.groupProcessing = function(prio, context, logging) {
+xe.groupProcessing = function(prio, context) {
     return function() {
         return {
             restrict: 'ECA',
             priority: prio,  //AngularJS ngInclude directive has 400
             link: function ($scope, element, attributes) {
-                if (logging > xe.logging.none)
-                    console.log('Link ', context, prio, $scope.src||attributes.src||'', '\n', logging==xe.logging.verbose?element[0].innerHTML:element);
+                if (xe.logging.level > xe.logging.none)
+                    console.log('Link ', context, prio, $scope.src||attributes.src||'', '\n', xe.logging.level==xe.logging.verbose?element[0].innerHTML:element);
                 xe.extendPagePart(element, attributes);
             }
         }
     }
 };
 
-xe.inheritSection = function(prio, context, logging) {
+xe.inheritSection = function(prio, context) {
     return function() {
         return {
             restrict: 'ECA',
             priority: prio,  //AngularJS ngInclude directive has 400
             compile:  function (element, attributes)  {
 
-                if (logging > xe.logging.none)
-                    console.log('Compile ', context,prio, attributes.src||'', '\n', logging==xe.logging.verbose?element[0].innerHTML:element);
+                if (xe.logging.level > xe.logging.none)
+                    console.log('Compile ', context,prio, attributes.src||'', '\n', xe.logging.level==xe.logging.verbose?element[0].innerHTML:element);
                 // find parent xe-section
                 var section=null;
                 for (var parent=element[0].parentNode ;parent && (section == null) && parent.attributes; parent=parent.parentNode) {
@@ -107,13 +107,13 @@ angular.module('extensibility', [])
     //Assume pages loaded via ng-include or ui-view start with one of the tags with groupCompile below
     //If the parentNode has xeSectionInh, treat the content as if it were a section with name xeSectionInh
     //In developer mode do some of the page parsing
-    .directive( 'div', xe.groupCompile(0,'div' ,xe.logging.level))
-    .directive('span', xe.groupCompile(0,'span',xe.logging.level))
-    .directive('form', xe.groupCompile(0,'form',xe.logging.level))
+    .directive( 'div', xe.groupCompile(0,'div' ))
+    .directive('span', xe.groupCompile(0,'span'))
+    .directive('form', xe.groupCompile(0,'form'))
     //
-    .directive('ngInclude', xe.inheritSection (xe.ng.priorities.ngIncludeBase+1, 'before ng-include', xe.logging.level)) // before baseline include, add xeSectionInh attribute (priority > baseline ng-include)
-    .directive('ngInclude', xe.groupProcessing(xe.ng.priorities.ngIncludeBase-1, 'after ng-include' , xe.logging.level))  // after  baseline include do the group processing like moving/removing sections
-    .directive('uiView'   , xe.groupProcessing(  0,'ui-view'   , xe.logging.level))
-    .directive('body'     , xe.groupProcessing(  0,'body'      , xe.logging.level))
+    .directive('ngInclude', xe.inheritSection (xe.ng.priorities.ngIncludeBase+1, 'before ng-include')) // before baseline include, add xeSectionInh attribute (priority > baseline ng-include)
+    .directive('ngInclude', xe.groupProcessing(xe.ng.priorities.ngIncludeBase-1, 'after ng-include' ))  // after  baseline include do the group processing like moving/removing sections
+    .directive('uiView'   , xe.groupProcessing(  0,'ui-view'))
+    .directive('body'     , xe.groupProcessing(  0,'body'   ))
     //.directive('xeAccordion' , xe.groupLink(0,'xeAccordion',true))
 ;
