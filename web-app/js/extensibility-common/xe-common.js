@@ -81,6 +81,44 @@ var xe = (function (xe) {
                     res.push({name:section.attributes[xe.typePrefix+xeType].value, fields:xe.getFields(section)});
                 });
                 this.groups.push({name: xe.getGroupSelector(group), sections: res});
+            },
+            // Refactoring page structure parsing for Angular
+            // Leaving Groups in case it is used for JQuery pages
+            elements:[], //sections and fields are added here
+            dom:{children:[]},
+            level: 0,
+            count: 0,
+            addNode: function (node,element){
+                function equ(left,right) {
+                    return (left.section && left.section == right.section) || left.field && left.field == right.field;
+                }
+                var found=false;
+                this.level++;
+                this.count++;
+                if (this.level>50 || this.count>100000)
+                    throw ('Recursion / endless loop error '+this.level + '/' + this.count );
+                if (equ(element.parent,node)) {
+                    if (!node.children)
+                        node.children=[];
+                    node.children.push(element);
+                    console.log('Added Element',element.section || element.field, 'To child of ',node.section || node.field);
+                    found = true;
+                }
+                //If not found, recurse children
+                for (var i = 0; !found && node.children && i < node.children.length; i++) {
+                    found = this.addNode(node.children[i], element);
+                }
+                this.level--;
+                return found;
+            },
+            addElement: function (element) {
+                this.elements.push(element);
+                if (element.parent==null)
+                    this.dom.children.push(element);
+                else {
+                    //console.log('Try adding ',element.field || element.section);
+                    this.addNode(this.dom, element);
+                }
             }
         }
     }
@@ -305,7 +343,35 @@ var xe = (function (xe) {
     }
 
 
-    // Page Editor - well, just show for now
+    // Page Editor - well, just show for now just show a simple node hierarchy
+    xe.renderPageStructureNew = function(page){
+        var count = 0;
+        function renderNode(node, html) {
+            count++;
+            if (count>10000)
+                throw ('Recursion error');
+            if (node.section) {
+                html += "<li>Section: " + node.section + "</li>\n";
+            }
+            else if (node.field) {
+                html += "<li>Field: " + node.field + "</li>\n";
+            }
+            if (node.children) {
+                html+="<ul>";
+                for (var i = 0; i < node.children.length; i++) {
+                    html  = renderNode(node.children[i], html);
+                }
+                html+="</ul>";
+            }
+            return html;
+        }
+
+        var result = "Page Structure "+page.description+" "+page.application+"/"+page.name;
+        result = renderNode(page.dom, result);
+        return result;
+    }
+
+    // If not used by anyone, remove this
     xe.renderPageStructure = function(page) {
         var result = "Page Structure "+page.description+" "+page.application+"/"+page.name;
 
@@ -357,7 +423,8 @@ var xe = (function (xe) {
         if (!popup) {
             popup = $('<div id="pageStructure'+page.description+'" ></div>');
             popup.dialog({appendTo: "#content", width: 600, height:"auto"});
-            popup.append(xe.renderPageStructure(page));
+            //popup.append(xe.renderPageStructure(page));
+            popup.append(xe.renderPageStructureNew(page));
             //var text = JSON.stringify(xe.page,null,2);
             //xe.popup.append( $('<pre>').text(text));
         }

@@ -7,6 +7,45 @@ xe.ng={};
 xe.ng.deferedSectionTags = {'XE-ACCORDION':true};
 xe.ng.priorities={ngIncludeBase:400}; // Priorities for directives
 
+xe.ng.attributes = function(element) {
+    var result = null;
+    if (element.attributes[xe.typePrefix+xe.type.field])
+        result =  {field:element.attributes[xe.typePrefix+xe.type.field].value};
+    else if (element.attributes[xe.typePrefix+xe.type.section])
+        result = {section:element.attributes[xe.typePrefix+xe.type.section].value};
+    return result;
+};
+
+xe.ng.parentElement = function(element){
+    var section=null;
+    for (var parent=element.parentNode ;parent && (section == null) && parent.attributes; parent=parent.parentNode) {
+        if (parent.attributes[xe.typePrefix+xe.type.section]) {
+            section = { section:parent.attributes[xe.typePrefix+xe.type.section].value, element:parent};
+        }
+//        else if (parent.attributes['data-xe-section-inh']) {
+//            //Unable to get to the real parent element in the compile phase for this element
+//            section = { name:parent.attributes['data-xe-section-inh'].value, section:null};
+//        }
+    }
+    return section;
+}
+
+xe.ng.parseElement = function(page,el) {
+    if (el.nodeType!=3) {
+        var ch = el.childNodes;
+        var attributes = xe.ng.attributes(el);
+        if (attributes) {
+            attributes.element=el;
+            attributes.parent= xe.ng.parentElement(el);
+            console.log('Attributes: ', attributes);
+            page.addElement(attributes);
+        }
+    }
+};
+
+
+
+
 xe.groupCompile = function(prio, context) {
     return function() {
         return {
@@ -24,15 +63,6 @@ xe.groupCompile = function(prio, context) {
                         }
                         xe.extend(element, attributes);
                     }
-                }
-                if (xe.devMode()) {
-                    // this needs enhancement
-                    if (xe.stats.groupCompileCount == 0)
-                        xe.stats.t0 = new Date();
-                    xe.parseGroups(element, attributes);
-                    xe.stats.groupCompileCount++;
-                    if (xe.stats.groupCompileCount == 100)
-                        xe.stats.t100 = new Date() - xe.stats.t0;
                 }
             }
         }
@@ -77,6 +107,10 @@ xe.inheritSection = function(prio, context) {
     }
 };
 
+xe.linkSectionOrField = function ($scope, element, attributes) {
+    xe.ng.parseElement(xe.page,element[0]);
+}
+
 angular.module('extensibility', [])
     .run(function(){
 
@@ -87,12 +121,18 @@ angular.module('extensibility', [])
         xe.startup();
 
     })
+    .directive('xeField', function() {
+        return {
+            restrict: 'A',
+            link: xe.linkSectionOrField
+        }
+    })
     .directive('xeSection', function() {
         return {
             restrict: 'A',
             compile: function ( element, attributes /*, transclude */ ) {
                 if ( xe.ng.deferedSectionTags[element[0].tagName] ) {
-                    return; // Section processing to happen in a child of this tag
+                    return xe.linkSectionOrField; // Section processing to happen in a child of this tag
                 }
                 if (xe.logging.level > xe.logging.none)
                     console.log('Compile Section',attributes.xeSection);
@@ -101,6 +141,7 @@ angular.module('extensibility', [])
                         console.log('Extending section ' + attributes.xeSection);
                     xe.extend(element, attributes);
                 }
+                return xe.linkSectionOrField;
             }
         }
     })
