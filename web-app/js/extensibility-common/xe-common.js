@@ -1,10 +1,35 @@
 // xe namespace is for providing eXtensible Environment functionality.
 // this will likely be provided as a service and injected
 var xe = (function (xe) {
-    //prefix used in html decoration for extensibility
-    xe.typePrefix = 'data-xe-';
-    xe.type = {field: 'field',section: 'section'};
+    //Attributes
+    xe.typePrefix = 'data-xe-';                                                  //prefix for html attributes
+    xe.type = {field: 'field',section: 'section'};                               //logical type names
+    xe.attr = {field: xe.typePrefix+'field',section: xe.typePrefix+'section'};   //html attribute names
+    xe.attrInh = {section: xe.typePrefix+'section-inh'};                         //html attribute name for section inherited
+
     xe.errors = [];
+
+    //Logging
+    xe.logging = {none: 0, debug: 1, verbose: 2};
+    xe.logging.level = xe.logging.none;
+    if ( window.location.search.indexOf("xeLogging=debug")!=-1 )
+        xe.logging.level=xe.logging.debug;
+    if ( window.location.search.indexOf("xeLogging=verbose")!=-1 )
+        xe.logging.level=xe.logging.verbose;
+
+    xe.log = function () {
+        if (xe.logging.level>xe.logging.none) {
+            //probably can implement this more elegantly...
+            if (arguments.length == 1)
+                console.log(arguments[0]);
+            if (arguments.length == 2)
+                console.log(arguments[0], arguments[1]);
+            if (arguments.length == 3)
+                console.log(arguments[0], arguments[1], arguments[2]);
+            if (arguments.length == 4)
+                console.log(arguments[0], arguments[1], arguments[2], arguments[3]);
+        }
+    };
 
     //Check if we are in developer mode
     xe.devMode = function() {
@@ -75,7 +100,7 @@ var xe = (function (xe) {
             name: xe.getPageName(),
             groups:[],
             addGroup: function (group,sections) {
-                var xeType='section';
+                var xeType=xe.type.section;
                 var res=[];
                 $.each(sections, function(i,section ){
                     res.push({name:section.attributes[xe.typePrefix+xeType].value, fields:xe.getFields(section)});
@@ -84,7 +109,7 @@ var xe = (function (xe) {
             },
             // Refactoring page structure parsing for Angular
             // Leaving Groups in case it is used for JQuery pages
-            elements:[], //sections and fields are added here
+            //elements:[], //sections and fields are added here
             dom:{children:[]},
             level: 0,
             count: 0,
@@ -101,7 +126,8 @@ var xe = (function (xe) {
                     if (!node.children)
                         node.children=[];
                     node.children.push(element);
-                    console.log('Added Element',element.section || element.field, 'To child of ',node.section || node.field);
+
+                    xe.log('Added Element',element.section || element.field, 'To child of ',node.section || node.field);
                     found = true;
                 }
                 //If not found, recurse children
@@ -112,11 +138,10 @@ var xe = (function (xe) {
                 return found;
             },
             addElement: function (element) {
-                this.elements.push(element);
+                //this.elements.push(element);
                 if (element.parent==null)
                     this.dom.children.push(element);
                 else {
-                    //console.log('Try adding ',element.field || element.section);
                     this.addNode(this.dom, element);
                 }
             }
@@ -152,7 +177,7 @@ var xe = (function (xe) {
     // utility function to generate the HTML for a specific field
     xe.generateField = function(field) {
         var template = xe.templates[field.template] || xe.templates['static'];
-        console.log( 'using template ' + field.template + '=' + template)
+        xe.log( 'using template ' + field.template + '=' + template)
         return template( field );
     };
 
@@ -200,20 +225,20 @@ var xe = (function (xe) {
             var it;
             if (param.component) {
                 it = xe.renderComponent(param.component);
-                console.log('Component HTML: ',it);
+                xe.log('Component HTML: ',it);
             } else { //if param.html is set, use it otherwise generate from template
                 it = param.html ? param.html : xe.generateField(param);
             }
             it=$(it).addClass("xe-added");
             insertElementBeforeOrAfter(it,context,param);
-            console.log('add', it);
+            xe.log('add', it);
         }
 
         function remove(param) {
             var element = this;
             var type = getType(param);
             var it = $(xe.selectorToRemove(type,param[type]), element);
-            console.log('remove', it);
+            xe.log('remove', it);
             it.replaceWith('<span class="xe-removed"></span>');
         }
 
@@ -222,7 +247,7 @@ var xe = (function (xe) {
             var type = getType(param);
             var elementToMove = $(xe.selector(type, param[type], element)).addClass("xe-moved");
             insertElementBeforeOrAfter(elementToMove,context,param);
-            console.log('move', elementToMove);
+            xe.log('move', elementToMove);
         }
 
         function replace(param) {
@@ -236,7 +261,7 @@ var xe = (function (xe) {
                 to = param.html ? param.html : xe.generateField(param);
             }
             to=$(to).addClass("xe-replaced");
-            console.log('replace', it);
+            xe.log('replace', it);
             it.replaceWith(to);
         }
         if (!xe.enableExtensions())
@@ -268,30 +293,29 @@ var xe = (function (xe) {
                 }
             }
         }
-        console.log("Time to process extensions/ms: "+(new Date().getTime()-start));
+        xe.log("Time to process extensions/ms: "+(new Date().getTime()-start));
     };  // end xe.extend
 
     //This function searches element children for sections
     xe.parseGroups = function(element,attributes){
-        var sections = element.children(xe.selector('section'));
+        var sections = element.children(xe.selector(xe.type.section));
         if ( sections.length > 0) {
             xe.page.addGroup( element, sections);
-            console.log("Parsed group: ",xe.page);
+            xe.log("Parsed group: ",xe.page);
         }
     };
 
     //This function does group level changes on a part of a page (ng-include or ui-view)
     xe.extendPagePart = function(element,attributes){
-        var xeType = 'section';
+        var xeType = xe.type.section;
         var sections = $(xe.selector(xeType),element);
         if ( sections.length > 0) {
-            if (window.location.search.indexOf("baseline=y")==-1) {
+            if (xe.enableExtensions() ) {
                 $.each(sections, function(i,section ){
                     var sectionName = section.attributes[xe.typePrefix+xeType].value;
                     var actions = xe.extensions.groups.sections[sectionName];
                     if (actions)
                         xe.extend(element, attributes, actions);
-                    //console.log('Section ',sectionName);
                 });
             }
         }
@@ -302,7 +326,6 @@ var xe = (function (xe) {
     xe.isVoidElement = function(tag) {
         //xe.voidElements is a map to specify the html element types that are 'void' (have no content)
         if (!xe.voidElements) {
-            console.log('initialize void elements');
             xe.voidElements = {};
             //Initialize voidElements map
             ["area", "base", "br", "col", "command", "embed", "hr", "img", "input",
@@ -423,10 +446,7 @@ var xe = (function (xe) {
         if (!popup) {
             popup = $('<div id="pageStructure'+page.description+'" ></div>');
             popup.dialog({appendTo: "#content", width: 600, height:"auto"});
-            //popup.append(xe.renderPageStructure(page));
             popup.append(xe.renderPageStructureNew(page));
-            //var text = JSON.stringify(xe.page,null,2);
-            //xe.popup.append( $('<pre>').text(text));
         }
         popup.dialog("open");
         return popup;
@@ -481,7 +501,7 @@ var xe = (function (xe) {
             processData: true,
             success: function(data){
                         alert('Saved');
-                        console.log('Data Saved',data);
+                        xe.log('Data Saved',data);
                      }
         });
     }
@@ -522,7 +542,8 @@ var xe = (function (xe) {
                 xe.extensions.groups.sections[val.section].move = val;
             });
         };
-        console.log('Running - fetching metadata...');
+
+        xe.log('Startup - fetching metadata...');
         //load meta-data synchronously to make sure it is available before compile needs it.
         $.ajax({
             url: '/'+xe.page.application+'/internal/extensions',
@@ -530,7 +551,7 @@ var xe = (function (xe) {
             data: {application: xe.page.application,page: xe.page.name,hash:location.hash},
             async: false,
             success: function(json){
-                console.log('data loaded');
+                xe.log('data loaded');
                 xe.extensions=json[0]; //data used for extending page
                 if (xe.devMode()){
                     xe.page.metadata=[$.extend(true,{},xe.extensions)];  //clone of extensions used for editor
@@ -538,7 +559,7 @@ var xe = (function (xe) {
                 normalizeGroups();
             }
         });
-        console.log(xe.extensions);
+        xe.log(xe.extensions);
         xe.addExtensibilityMenu();
     }
 
