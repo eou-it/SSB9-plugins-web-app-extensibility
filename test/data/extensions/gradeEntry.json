@@ -1,5 +1,4 @@
 [{
-<<<<<<< HEAD
     "groups": {
         "remove": [{"section":"tax"}],
         "move": [{"section": "employee-earnings", "before": "employee-pay-information"}]
