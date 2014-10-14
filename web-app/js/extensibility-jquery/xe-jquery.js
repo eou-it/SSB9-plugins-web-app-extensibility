@@ -1,41 +1,39 @@
 // jquery/backbone-specific extensibility code
+xe.jq = (function(xe) {
+	var jq = xe.jq || {};
 
-xe.jq={};
+  
+	//Create a dom structure from handlebars template, do extensions and save the modified template
+	jq.extendTemplate = function(template) {
+		var element =  $('<div>'+template.text+'</div>');
+		//Do group level changes on templates
+		xe.extendPagePart(element);
 
-//Create a dom structure from handlebars template, do extensions and save the modified template
-xe.jq.extendTemplate = function(template) {
-    var element =  $('<div>'+template.text+'</div>');
-    //Do group level changes on templates
-    xe.extendPagePart(element);
+		//Do section level changes
+		var sections=$(xe.selector(xe.type.section),element);
+		sections.each(function (index, section) {
+			var attributes={xeSection:section.attributes[xe.attr.section].value };
+			xe.extend(section,attributes);
+		});
+		template.text=element[0].innerHTML;
+	}; 
+  
+  
+  
+  jq.extendSection = function(sectionElement) {
+        xe.extend(sectionElement, {xeSection:$(sectionElement).data(xe.attr.section) } );
+  };
 
-    //Do section level changes
-    var sections=$(xe.selector(xe.type.section),element);
-    sections.each(function (index, section) {
-        var attributes={xeSection:section.attributes[xe.attr.section].value };
-        xe.extend(section,attributes);
-    });
-    template.text=element[0].innerHTML;
-};
+  jq.extend = function(rootElement) {
+	/Do group level changes
+    xe.extendPagePart(rootElement);
+  
+    $(xe.selector(xe.type.section), rootElement).each( function(idx, ele) {jq.extendSection(ele);} );
+  }
 
+  $( function() {
+    xe.jq.extend();
+  });
 
-$(document).ready(function () {
-    xe.startup();
-    xe.log('Start extensions');
-
-    //Do group level changes on body
-    var element = $('body');
-    xe.extendPagePart(element);
-
-    //Do section level changes on body
-    var sections=$(xe.selector(xe.type.section),element);
-    sections.each(function (index, section) {
-        var attributes={xeSection:section.attributes[xe.attr.section].value };
-        xe.extend(section,attributes);
-    });
-
-    //Extend handlebars templates
-    var templates = $('script[type="text/x-handlebars-template"]');
-    templates.each(function (index, template){
-        xe.jq.extendTemplate(template);
-    });
-});
+  return jq;
+})(xe||{});

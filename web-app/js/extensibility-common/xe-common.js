@@ -6,7 +6,7 @@ var xe = (function (xe) {
     xe.type = {field: 'field',section: 'section'};                               //logical type names
     xe.attr = {field: xe.typePrefix+'field', section: xe.typePrefix+'section', labeledBy: 'aria-labelledby'};   //html attribute names
     xe.attrInh = {section: xe.typePrefix+'section-inh'};                         //html attribute name for section inherited
-
+    xe.forTypePrefix = 'data-xe-for-';
     xe.errors = [];
 
     //Logging
@@ -50,9 +50,13 @@ var xe = (function (xe) {
             return '['+ xe.typePrefix + elementType+']';
     }
 
-    // create a selector for removing an element and its associated labels, etc.
+    xe.selectorFor = function( elementType, name ) {
+      return '[' + xe.forTypePrefix + elementType + (name ? '=' + name: '') + ']';
+    }
+
+    // Create a selector for removing an element and its associated labels, etc.
     xe.selectorToRemove = function( elementType, name ) {
-        return xe.selector( elementType, name) + ', ['+xe.typePrefix+'="' + name + '"]';
+        return xe.selector( elementType, name) + ', ' + xe.selectorFor( elementType, name ); //['+xe.typePrefix+'="' + name + '"]';
     }
 
     // get a simple selector for the group (well, nothing specific for a group so far)
@@ -584,6 +588,8 @@ var xe = (function (xe) {
         xe.log(xe.extensions);
         xe.addExtensibilityMenu();
     }
+
+    $(xe.startup);
 
     return xe;
 })(xe || {});

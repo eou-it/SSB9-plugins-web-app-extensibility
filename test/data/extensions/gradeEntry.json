@@ -27,9 +27,11 @@
             ]
         },
         "courseDetails": {
+            "remove": [ {"field":"courseTitle"}],            
             "replace": [{"field": "courseReferenceNumber","label": "Course reference:"},
                         {"field": "eligible","label": "Eligible*"}]
+        "midtermCourseDetailGrid": {
+            "remove": [ {"field":"bannerId"} ]
         }
     }
-}
-]
+}]

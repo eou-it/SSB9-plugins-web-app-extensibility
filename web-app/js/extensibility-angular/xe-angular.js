@@ -100,12 +100,6 @@ xe.ng.inheritSection = function(prio, context) {
 
 
 angular.module('extensibility', [])
-    .run(function(){
-
-
-        xe.startup();
-
-    })
     .directive('xeField', function() {
         return {
             restrict: 'A',
