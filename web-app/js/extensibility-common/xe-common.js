@@ -6,7 +6,7 @@ var xe = (function (xe) {
     xe.type = {field: 'field',section: 'section'};                               //logical type names
     xe.attr = {field: xe.typePrefix+'field', section: xe.typePrefix+'section', labeledBy: 'aria-labelledby'};   //html attribute names
     xe.attrInh = {section: xe.typePrefix+'section-inh'};                         //html attribute name for section inherited
-    xe.forTypePrefix = 'data-xe-for-';
+    xe.forTypePrefix = 'xe-for-';
     xe.errors = [];
 
     //Logging
@@ -243,7 +243,7 @@ var xe = (function (xe) {
             var type = getType(param);
             var it = $(xe.selectorToRemove(type,param[type]), element);
             xe.log('remove', it);
-            it.replaceWith('<span class="xe-removed"></span>');
+            it.replaceWith('<span class="xe-removed" '+xe.attr[type]+'="'+param[type]+'"></span>');
         }
 
         function move(param) {
