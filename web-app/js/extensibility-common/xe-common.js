@@ -2,9 +2,9 @@
 // this will likely be provided as a service and injected
 var xe = (function (xe) {
     //Attributes
-    xe.typePrefix = 'data-xe-';                                                  //prefix for html attributes
+    xe.typePrefix = 'xe-';                                                       //prefix for xe specific html attributes
     xe.type = {field: 'field',section: 'section'};                               //logical type names
-    xe.attr = {field: xe.typePrefix+'field',section: xe.typePrefix+'section'};   //html attribute names
+    xe.attr = {field: xe.typePrefix+'field', section: xe.typePrefix+'section', labeledBy: 'aria-labelledby'};   //html attribute names
     xe.attrInh = {section: xe.typePrefix+'section-inh'};                         //html attribute name for section inherited
 
     xe.errors = [];
@@ -245,24 +245,46 @@ var xe = (function (xe) {
         function move(param) {
             var context = this;
             var type = getType(param);
-            var elementToMove = $(xe.selector(type, param[type], element)).addClass("xe-moved");
+            var elementToMove = $(xe.selector(type, param[type]), element).addClass("xe-moved");
             insertElementBeforeOrAfter(elementToMove,context,param);
             xe.log('move', elementToMove);
         }
 
+        function replaceLabel(element,param) {
+            var type = getType(param);
+            var item = $(xe.selector(type,param[type]), element );
+            var label;
+
+            if (item[0].attributes[xe.attr.labeledBy]){
+                label = $('#'+item[0].attributes[xe.attr.labeledBy].value,element);
+            } else {
+                //get label inside item
+                label = $('label', item);
+            }
+            if (label.length) {
+                label[0].innerHTML = param.label;
+            } else {
+                xe.errors.push('Unable to find and replace label for '+param[type]);
+            }
+        }
+
         function replace(param) {
             var element = this;
-            var type = getType(param);
-            var it = $(xe.selectorToRemove(type,param[type]), element);
-            var to = null;
-            if (param.component) {
-                to = xe.renderComponent(param.component);
-            } else { //if param.html is set, use it otherwise generate from template
-                to = param.html ? param.html : xe.generateField(param);
+            if (param.label) {
+                replaceLabel(element, param);
+            } else {
+                var type = getType(param);
+                var it = $(xe.selectorToRemove(type,param[type]), element);
+                var to = null;
+                if (param.component) {
+                    to = xe.renderComponent(param.component);
+                } else { //if param.html is set, use it otherwise generate from template
+                    to = param.html ? param.html : xe.generateField(param);
+                }
+                to = $(to).addClass("xe-replaced");
+                xe.log('replace', it);
+                it.replaceWith(to);
             }
-            to=$(to).addClass("xe-replaced");
-            xe.log('replace', it);
-            it.replaceWith(to);
         }
         if (!xe.enableExtensions())
             return;
@@ -305,7 +327,7 @@ var xe = (function (xe) {
         }
     };
 
-    //This function does group level changes on a part of a page (ng-include or ui-view)
+    //This function does group level changes on a part of a page (ng-include, ui-view or a handlebars template)
     xe.extendPagePart = function(element,attributes){
         var xeType = xe.type.section;
         var sections = $(xe.selector(xeType),element);

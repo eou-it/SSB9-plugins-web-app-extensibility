@@ -1,7 +1,7 @@
 [{
     "groups": {
         "remove": [{"section":"tax"}],
-        "move": [{"section": "employee-earnings", "before": "employee-pay-information"}]
+        "move": [{"section": "sectionDetails", "before":  "gradeSummary" }]
     },
     "sections": {
         "originalGrid": {
@@ -25,6 +25,10 @@
             "replace": [{"field":"adjustedServiceDate",
                 "html": "<div class=\"col-md-12 col-lg-12 col-sm-12 col-xs-12 no-padding\" data-xe-field=\"adjustedServiceDate\"><p><strong>Adj. Service Date:</strong> {{sectionData.employeeSummary.adjustedServiceDate | myDateFormat : 'moment.default.date.format'}}</p>\n</div>"}
             ]
+        },
+        "courseDetails": {
+            "replace": [{"field": "courseReferenceNumber","label": "Course reference:"},
+                        {"field": "eligible","label": "Eligible*"}]
         }
     }
 }
