@@ -31,12 +31,40 @@ var xe = (function (xe) {
         }
     };
 
+    //I18N
+    //load properties (asynch or synch?, could also inject in gsp as they do with aurora)
+    // for now mock some properties
+    xe.loadResources = function(){
+        //load meta-data synchronously to make sure it is available before compile needs it.
+        $.ajax({
+            url: '/'+xe.page.application+'/internal/resources',
+            dataType: 'json',
+            data: {application: xe.page.application,page: xe.page.name,hash:location.hash},
+            async: false,
+            success: function(json){
+                xe.log('resources loaded');
+                var resources=json[0]; //data used for extending page
+                for (key in resources) {
+                    $.i18n.map[key] = resources[key];
+                }
+            }
+        });
+    }
+
+    // item is a string or an object with a key attribute
+    // for now we don't support args
+    xe.i18n = function (item, args) {
+        return (typeof item == 'string')?item: $.i18n.prop(item.key, args);
+    }
+
     //Check if we are in developer mode
     xe.devMode = function() {
         return window.location.search.indexOf("dev=y")>-1;
         //TODO - secure by role
     }
 
+    //This gets called several times, is it worth to refactor and eveluate URL parameters only once?
+    //Don't bother for now, we may remove this from release as it is not a userstory to have enable/disable extensions
     xe.enableExtensions = function() {
         return window.location.search.indexOf("baseline=y")==-1;
     }
@@ -88,9 +116,9 @@ var xe = (function (xe) {
     }
 
     // Metadata definition for page parsing - for now just for showing as a help for extension developers
-    // Basic structure:
+    // Basic structure (example, Sections can be nested but don't have to):
     // Page
-    //      Group 1
+    //      Section1
     //          Section 1.1
     //              Field 1.1.1
     //              ...
@@ -249,7 +277,7 @@ var xe = (function (xe) {
         function move(param) {
             var context = this;
             var type = getType(param);
-            var elementToMove = $(xe.selector(type, param[type]), element).addClass("xe-moved");
+            var elementToMove = $(xe.selector(type, param[type]), context).addClass("xe-moved");
             insertElementBeforeOrAfter(elementToMove,context,param);
             xe.log('move', elementToMove);
         }
@@ -257,16 +285,16 @@ var xe = (function (xe) {
         function replaceLabel(element,param) {
             var type = getType(param);
             var item = $(xe.selector(type,param[type]), element );
-            var label;
+            var labelElement;
 
             if (item[0].attributes[xe.attr.labeledBy]){
-                label = $('#'+item[0].attributes[xe.attr.labeledBy].value,element);
+                labelElement = $('#'+item[0].attributes[xe.attr.labeledBy].value,element);
             } else {
                 //get label inside item
-                label = $('label', item);
+                labelElement = $('label', item);
             }
-            if (label.length) {
-                label[0].innerHTML = param.label;
+            if (labelElement.length) {
+                labelElement[0].innerHTML = xe.i18n(param.label);
             } else {
                 xe.errors.push('Unable to find and replace label for '+param[type]);
             }
@@ -290,12 +318,16 @@ var xe = (function (xe) {
                 it.replaceWith(to);
             }
         }
+
+        // Do nothing if extensions are not enabled
         if (!xe.enableExtensions())
             return;
 
         var start = new Date().getTime();
+        element = element||$('body'); //Make sure element has a value
 
         if (actions) {
+            //Group / pagePart extensions
             if (actions.move){
                 [actions.move].map(move, element);
             }
@@ -331,7 +363,7 @@ var xe = (function (xe) {
         }
     };
 
-    //This function does group level changes on a part of a page (ng-include, ui-view or a handlebars template)
+    //This function does group level changes on a page or part of a page (ng-include, ui-view or a handlebars template)
     xe.extendPagePart = function(element,attributes){
         var xeType = xe.type.section;
         var sections = $(xe.selector(xeType),element);
@@ -586,6 +618,7 @@ var xe = (function (xe) {
             }
         });
         xe.log(xe.extensions);
+        xe.loadResources();
         xe.addExtensibilityMenu();
     }
 
