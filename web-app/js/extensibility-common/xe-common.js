@@ -31,11 +31,10 @@ var xe = (function (xe) {
         }
     };
 
-    //I18N
-    //load properties (asynch or synch?, could also inject in gsp as they do with aurora)
-    // for now mock some properties
+    //I18N - we use extensibility specific resource loading. We should investigate if we can
+    //extend the baseline properties loading as done for ZK pages
     xe.loadResources = function(){
-        //load meta-data synchronously to make sure it is available before compile needs it.
+        //load resources synchronously to make sure they are available when needed.
         $.ajax({
             url: '/'+xe.page.application+'/internal/resources',
             dataType: 'json',
@@ -586,7 +585,8 @@ var xe = (function (xe) {
     }
 
     xe.startup = function(){
-        var normalizeGroups = function(){
+
+        var normalizeMetadata = function(){
             //add actions per section to group so actions can be directly accessed for a section
             xe.extensions.groups.sections = {};
             xe.extensions.groups.remove.forEach( function(val) {
@@ -599,7 +599,93 @@ var xe = (function (xe) {
                     xe.extensions.groups.sections[val.section] = {};
                 xe.extensions.groups.sections[val.section].move = val;
             });
+
+            // reorder positioning metadata taking account of any dependencies
+            reorderMetadata();
         };
+
+        /***************************************************************************************************
+        item positioning information relies on the correct order of repositioning due to dependencies
+        reorder section and group positioning meta data accordingly
+        ***************************************************************************************************/
+        var reorderMetadata = function() {
+
+            // process each group in turn
+            reorder( xe.extensions.groups, "section" );
+
+            // process each section in turn
+            _.each( xe.extensions.sections, function(section) {
+                reorder( section, "field" );
+            });
+        };
+
+        /***************************************************************************************************
+        reorder positioning metadata
+         ***************************************************************************************************/
+        var reorder = function( container, key ) {
+
+            var orderedMoves = [];
+            var allExtensionsApplied = false;
+            var extension;
+
+            // mark all item positioning extensions as currently unprocessed
+            _.each( container.move, function(n) {
+                n.processed = false;
+            });
+
+            while ( !allExtensionsApplied ) {
+
+                // find an unapplied extension
+                extension = _.find( container.move, function(n){ return n.processed == false });
+
+                if ( extension ) {
+
+                    extension = getDependency( extension, container.move, key );
+                    orderedMoves.push( extension );
+                    extension.processed = true;
+
+                } else {
+                    allExtensionsApplied = true;
+                }
+            }
+            container.move = orderedMoves;
+        }
+
+        /***************************************************************************************************
+
+         Some item moves need to take place before others eg.
+
+         {"field": "courseReferenceNumber", "before": "term"},
+         {"field": "term", "before": "subject"},
+         {"field": "subject", "before": "gradedStatus"}
+
+         subject needs to be moved first as term is dependent on position of subject.
+         term needs to be moved next as courseReferenceNumber is dependent on position of term
+         etc
+
+         This routine determines the next move operation that needs to take place
+
+         ***************************************************************************************************/
+        var getDependency = function( extension, extensions, key ){
+
+            var complete = false;
+            var dependency;
+
+            while ( !complete ) {
+
+                dependency = _.find( extensions, function(n){
+                    return (n[key] == extension.before) && n.processed == false;
+                });
+
+                if (!dependency) {
+                    complete = true;
+                }
+                else {
+                    extension = dependency;
+                }
+            }
+            return extension;
+        }
 
         xe.log('Startup - fetching metadata...');
         //load meta-data synchronously to make sure it is available before compile needs it.
@@ -614,7 +700,7 @@ var xe = (function (xe) {
                 if (xe.devMode()){
                     xe.page.metadata=[$.extend(true,{},xe.extensions)];  //clone of extensions used for editor
                 }
-                normalizeGroups();
+                normalizeMetadata();
             }
         });
         xe.log(xe.extensions);
