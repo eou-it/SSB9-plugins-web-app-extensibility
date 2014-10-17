@@ -83,7 +83,7 @@ class ResourceService {
             }
         }
         if (!result) {
-            println "error loading resources from ${file.path}"
+            throw new Exception ("Error loading resources from ${file.path}")
         }
         result
     }
