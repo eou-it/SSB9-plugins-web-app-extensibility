@@ -24,6 +24,10 @@
         },
         "midtermCourseDetailGrid": {
             "remove": [ {"field":"bannerId"} ]
+        },
+        "numbersTest": {
+            "remove": [{"field":"numberInput"},
+                        {"field":"inputNumericNormal"} ]
         }
     }
 }]
