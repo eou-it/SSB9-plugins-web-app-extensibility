@@ -4,8 +4,8 @@ var xe = (function (xe) {
     //Attributes
     xe.typePrefix = 'xe-';                                                       //prefix for xe specific html attributes
     xe.type = {field: 'field',section: 'section'};                               //logical type names
-    xe.attr = {field: xe.typePrefix+'field', section: xe.typePrefix+'section', labeledBy: 'aria-labelledby',
-               hint: 'placeholder', title: 'title'};   //html attribute names
+    xe.attr = {field: xe.typePrefix+'field', section: xe.typePrefix+'section', labeledBy: 'aria-labelledby'};   //html attribute names
+    xe.replaceAttr = ['placeholder', 'title'];
     xe.attrInh = {section: xe.typePrefix+'section-inh'};                         //html attribute name for section inherited
     xe.forTypePrefix = 'xe-for-';
     xe.errors = [];
@@ -282,27 +282,14 @@ var xe = (function (xe) {
             xe.log('move', elementToMove);
         }
 
-        function replaceHint(element,param) {
+        function replaceAttribute(attributeName,element,param) {
             var type = getType(param);
-            if (type != xe.type.field) {
-                // not a field so not sure what to do with hint
-                return
-            }
+            // search for the element to be modified
             var item = $(xe.selector(type,param[type]), element );
-            if (item.length > 0) {
-                $(item[0]).attr(xe.attr.hint,xe.i18n(param["hint"]))
+            if (item.length > 0 && param[attributeName]) {
+                $(item[0]).attr(attributeName,xe.i18n(param[attributeName]))
             } else {
-                xe.errors.push('Unable to find and replace hint for '+param[type]);
-            }
-        }
-
-        function replaceTitle(element,param) {
-            var type = getType(param);
-            var item = $(xe.selector(type,param[type]), element );
-            if (item.length > 0) {
-                $(item[0]).attr(xe.attr.title,xe.i18n(param["title"]))
-            } else {
-                xe.errors.push('Unable to find and replace title for '+param[type]);
+                xe.errors.push('Unable to find and replace ' + attributeName + ' for '+param[type]);
             }
         }
 
@@ -342,12 +329,10 @@ var xe = (function (xe) {
                 if (param.label) {
                     replaceLabel(element, param);
                 }
-                if (param.hint) {
-                    replaceHint(element, param);
-                }
-                if (param.title) {
-                    replaceTitle(element, param);
-                }
+                // Replace any attributes where new value provided
+                _.each(xe.replaceAttr,function(attrName) {
+                    if (param[attrName]) {replaceAttribute(attrName,element,param);}
+                });
             }
         }
 

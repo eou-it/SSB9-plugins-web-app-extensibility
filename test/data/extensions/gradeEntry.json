@@ -30,8 +30,8 @@
                         {"field":"inputNumericNormal"} ]
         },
         "finalGradeCourseRoster": {
-            "replace": [ {"field":"search-text-box", "hint": {"key":"finalGradeCourseRoster.search-text-box.hint"},
-                          "title": {"key":"finalGradeCourseRoster.search-text-box.title"}}]
+            "replace": [ {"field":"searchTextBox", "placeholder": {"key":"finalGradeCourseRoster.searchTextBox.placeholder"},
+                          "title": {"key":"finalGradeCourseRoster.searchTextBox.title"}}]
         }
     }
 }]

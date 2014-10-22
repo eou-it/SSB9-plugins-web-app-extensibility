@@ -32,7 +32,7 @@ xe.jq = (function(xe) {
         //Section level extensions
         var sections = $(xe.selector(xe.type.section), rootElement);
         //include the top level element if it is a section
-        if ($(rootElement).is(xe.selector(xe.type.section))) {sections.push( rootElement );}
+        if ($(rootElement).is(xe.selector(xe.type.section))) {sections = sections.add( rootElement );}
         sections.each( function(idx, ele) {jq.extendSection(ele);} );
         //Handlebars template extensions
         jq.extendTemplates(rootElement);
