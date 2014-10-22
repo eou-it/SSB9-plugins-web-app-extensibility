@@ -1,3 +1,5 @@
 {
-    "courseDetails.eligible.label": "Eligible-tr"
+    "courseDetails.eligible.label": "Eligible-tr",
+    "finalGradeCourseRoster.search-text-box.hint": "You can search by name or ID",
+    "finalGradeCourseRoster.search-text-box.title": "Enter either a name or an ID to show entries for a specific individual",
 }

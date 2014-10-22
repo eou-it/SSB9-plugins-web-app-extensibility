@@ -4,7 +4,8 @@ var xe = (function (xe) {
     //Attributes
     xe.typePrefix = 'xe-';                                                       //prefix for xe specific html attributes
     xe.type = {field: 'field',section: 'section'};                               //logical type names
-    xe.attr = {field: xe.typePrefix+'field', section: xe.typePrefix+'section', labeledBy: 'aria-labelledby'};   //html attribute names
+    xe.attr = {field: xe.typePrefix+'field', section: xe.typePrefix+'section', labeledBy: 'aria-labelledby',
+               hint: 'placeholder', title: 'title'};   //html attribute names
     xe.attrInh = {section: xe.typePrefix+'section-inh'};                         //html attribute name for section inherited
     xe.forTypePrefix = 'xe-for-';
     xe.errors = [];
@@ -281,6 +282,30 @@ var xe = (function (xe) {
             xe.log('move', elementToMove);
         }
 
+        function replaceHint(element,param) {
+            var type = getType(param);
+            if (type != xe.type.field) {
+                // not a field so not sure what to do with hint
+                return
+            }
+            var item = $(xe.selector(type,param[type]), element );
+            if (item.length > 0) {
+                $(item[0]).attr(xe.attr.hint,xe.i18n(param["hint"]))
+            } else {
+                xe.errors.push('Unable to find and replace hint for '+param[type]);
+            }
+        }
+
+        function replaceTitle(element,param) {
+            var type = getType(param);
+            var item = $(xe.selector(type,param[type]), element );
+            if (item.length > 0) {
+                $(item[0]).attr(xe.attr.title,xe.i18n(param["title"]))
+            } else {
+                xe.errors.push('Unable to find and replace title for '+param[type]);
+            }
+        }
+
         function replaceLabel(element,param) {
             var type = getType(param);
             var item = $(xe.selector(type,param[type]), element );
@@ -301,9 +326,7 @@ var xe = (function (xe) {
 
         function replace(param) {
             var element = this;
-            if (param.label) {
-                replaceLabel(element, param);
-            } else {
+            if (param.html) {
                 var type = getType(param);
                 var it = $(xe.selectorToRemove(type,param[type]), element);
                 var to = null;
@@ -315,6 +338,16 @@ var xe = (function (xe) {
                 to = $(to).addClass("xe-replaced");
                 xe.log('replace', it);
                 it.replaceWith(to);
+            } else {
+                if (param.label) {
+                    replaceLabel(element, param);
+                }
+                if (param.hint) {
+                    replaceHint(element, param);
+                }
+                if (param.title) {
+                    replaceTitle(element, param);
+                }
             }
         }
 

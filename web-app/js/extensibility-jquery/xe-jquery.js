@@ -1,7 +1,7 @@
 // jquery/backbone-specific extensibility code
 xe.jq = (function(xe) {
 	var jq = xe.jq || {};
-  
+
 	//Create a dom structure from handlebars templates, do extensions and save the modified templates
 	jq.extendTemplates = function(rootElement) {
         var templates = $('script[type="text/x-handlebars-template"]',rootElement);
@@ -17,7 +17,7 @@ xe.jq = (function(xe) {
             template.text=rootElement[0].innerHTML;
         });
 	};
-  
+
     jq.extendSection = function(sectionElement) {
         xe.extend(sectionElement, {xeSection:$(sectionElement).attr(xe.attr.section) } );
     };
@@ -30,7 +30,10 @@ xe.jq = (function(xe) {
 	    //Group level extensions
         xe.extendPagePart(rootElement);
         //Section level extensions
-        $(xe.selector(xe.type.section), rootElement).each( function(idx, ele) {jq.extendSection(ele);} );
+        var sections = $(xe.selector(xe.type.section), rootElement);
+        //include the top level element if it is a section
+        if ($(rootElement).is(xe.selector(xe.type.section))) {sections.push( rootElement );}
+        sections.each( function(idx, ele) {jq.extendSection(ele);} );
         //Handlebars template extensions
         jq.extendTemplates(rootElement);
     };
