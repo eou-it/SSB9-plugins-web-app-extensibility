@@ -1,6 +1,11 @@
 [{
     "groups": {
-        "remove": [{"section":"infotext"}],
+        "remove": [
+            {"section":"infotext"}
+           ,{"section":"numberTest"}
+           ,{"section":"comboTest"}
+           ,{"section":"select2Test"}
+        ],
         "move": [{"section": "sectionDetails", "before":  "gradeSummary" }]
     },
     "sections": {
@@ -26,16 +31,26 @@
             "remove": [ {"field":"bannerId"} ]
         },
         "numberTest": {
-            "remove": [{"field":"jEditableNumberInput"},
-                        {"field":"html5NumberInput"} ]
+            "remove": [
+                {"field":"jEditableNumberInput"}
+               ,{"field":"html5NumberInput"}
+            ]
         },
         "finalGradeCourseRoster": {
             "replace": [ {"field":"searchTextBox", "placeholder": {"key":"finalGradeCourseRoster.searchTextBox.placeholder"},
                           "title": {"key":"finalGradeCourseRoster.searchTextBox.title"}}]
         },
         "comboTest": {
-            "remove": [{"field":"jEditableCombobox"},
-                       {"field":"jQueryUiCombobox"} ]
+            "remove": [
+                {"field":"jEditableCombobox"}
+               ,{"field":"jQueryUiCombobox"}
+            ]
+        },
+        "select2Test": {
+            "remove": [
+                {"field":"select2Home"}
+               ,{"field":"select2Favourites"}
+            ]
         }
     }
 }]
