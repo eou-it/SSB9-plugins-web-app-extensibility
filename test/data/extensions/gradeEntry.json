@@ -36,6 +36,9 @@
                ,{"field":"html5NumberInput"}
             ]
         },
+        "pillbox": {
+            "remove": [ {"field": "pillbox"} ]
+        },
         "finalGradeCourseRoster": {
             "replace": [ {"field":"searchTextBox", "placeholder": {"key":"finalGradeCourseRoster.searchTextBox.placeholder"},
                           "title": {"key":"finalGradeCourseRoster.searchTextBox.title"}}]
