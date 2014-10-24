@@ -25,10 +25,13 @@
         "midtermCourseDetailGrid": {
             "remove": [ {"field":"bannerId"} ]
         },
-        "numbersTest": {
+        /*"numbersTest": {
             "remove": [{"field":"numberInput"},
                         {"field":"inputNumericNormal"} ]
-        },
+        },  */
+        /*"pillbox": {
+            "remove": [ {"field": "pillbox"} ]
+        }, */
         "finalGradeCourseRoster": {
             "replace": [ {"field":"searchTextBox", "placeholder": {"key":"finalGradeCourseRoster.searchTextBox.placeholder"},
                           "title": {"key":"finalGradeCourseRoster.searchTextBox.title"}}]
