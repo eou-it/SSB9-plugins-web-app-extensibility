@@ -25,13 +25,17 @@
         "midtermCourseDetailGrid": {
             "remove": [ {"field":"bannerId"} ]
         },
-        "numbersTest": {
-            "remove": [{"field":"numberInput"},
-                        {"field":"inputNumericNormal"} ]
+        "numberTest": {
+            "remove": [{"field":"jEditableNumberInput"},
+                        {"field":"html5NumberInput"} ]
         },
         "finalGradeCourseRoster": {
             "replace": [ {"field":"searchTextBox", "placeholder": {"key":"finalGradeCourseRoster.searchTextBox.placeholder"},
                           "title": {"key":"finalGradeCourseRoster.searchTextBox.title"}}]
+        },
+        "comboTest": {
+            "remove": [{"field":"jEditableCombobox"},
+                       {"field":"jQueryUiCombobox"} ]
         }
     }
 }]
