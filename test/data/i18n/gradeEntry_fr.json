@@ -1,0 +1,9 @@
+{
+    "courseDetails.eligible.label": "Eligible-tr",
+    "finalGradeCourseRoster.searchTextBox.placeholder": "Vous pouvez effectuer une recherche par nom ou ID",
+    "finalGradeCourseRoster.searchTextBox.title": "Entrez un nom ou un ID � afficher des entr�es pour une personne en particulier",
+    "testFieldAttributes.textFieldAdd.placeholder": "Ajoutez un texte",
+    "testFieldAttributes.textFieldAdd.title": "Ceci est un champ d'essai pour ajouter un titre � la saisie",
+    "testFieldAttributes.textFieldReplace.placeholder": "Remplacer un texte",
+    "testFieldAttributes.textFieldReplace.title": "Ceci est un champ d'essai pour remplacer le titre sur la saisie de texte"
+}

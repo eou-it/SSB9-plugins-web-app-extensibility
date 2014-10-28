@@ -54,6 +54,12 @@
                 {"field":"select2Home"}
                ,{"field":"select2Favourites"}
             ]
+        },
+        "testFieldAttributes": {
+            "replace": [ {"field":"textFieldAdd", "placeholder": {"key":"testFieldAttributes.textFieldAdd.placeholder"},
+                "title": {"key":"testFieldAttributes.textFieldAdd.title"}},
+                {"field":"textFieldReplace", "placeholder": {"key":"testFieldAttributes.textFieldReplace.placeholder"},
+                    "title": {"key":"testFieldAttributes.textFieldReplace.title"}}]
         }
     }
 }]

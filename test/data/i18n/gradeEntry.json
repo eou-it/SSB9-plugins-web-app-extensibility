@@ -1,5 +1,9 @@
 {
     "courseDetails.eligible.label": "Eligible-tr",
     "finalGradeCourseRoster.searchTextBox.placeholder": "You can search by name or ID",
-    "finalGradeCourseRoster.searchTextBox.title": "Enter either a name or an ID to show entries for a specific individual"
+    "finalGradeCourseRoster.searchTextBox.title": "Enter either a name or an ID to show entries for a specific individual",
+    "testFieldAttributes.textFieldAdd.placeholder": "Add some text",
+    "testFieldAttributes.textFieldAdd.title": "This is a test field to add title to text input",
+    "testFieldAttributes.textFieldReplace.placeholder": "Replace some text",
+    "testFieldAttributes.textFieldReplace.title": "This is a test field to replace title on text input"
 }
