@@ -39,9 +39,9 @@
         "pillbox": {
             "remove": [ {"field": "pillbox"} ]
         },
-        /*"datepickerTest": {
+        "datepickerTest": {
             "remove" :[{"field": "jEditableDatepickerInput"},{"field": "datepickerInput"}]
-        },*/
+        },
         "finalGradeCourseRoster": {
             "replace": [ {"field":"searchTextBox", "placeholder": {"key":"finalGradeCourseRoster.searchTextBox.placeholder"},
                           "title": {"key":"finalGradeCourseRoster.searchTextBox.title"}}]
