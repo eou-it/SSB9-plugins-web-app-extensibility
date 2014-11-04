@@ -60,9 +60,17 @@
         },
         "testFieldAttributes": {
             "replace": [ {"field":"textFieldAdd", "placeholder": {"key":"testFieldAttributes.textFieldAdd.placeholder"},
-                "title": {"key":"testFieldAttributes.textFieldAdd.title"}},
-                {"field":"textFieldReplace", "placeholder": {"key":"testFieldAttributes.textFieldReplace.placeholder"},
-                    "title": {"key":"testFieldAttributes.textFieldReplace.title"}}]
+                           "title": {"key":"testFieldAttributes.textFieldAdd.title"}},
+                         {"field":"textFieldReplace", "placeholder": {"key":"testFieldAttributes.textFieldReplace.placeholder"},
+                          "title": {"key":"testFieldAttributes.textFieldReplace.title"}}],
+            "remove": [ {"field": "testButton"},
+                        {"field": "testSubmitButton"}
+            ]
+        },
+        "mainButtonBar": {
+            "remove": [ {"field": "saveButton"},
+                        {"field": "resetButton"}
+            ]
         }
     }
 }]
