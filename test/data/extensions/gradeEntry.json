@@ -64,7 +64,13 @@
                          {"field":"textFieldReplace", "placeholder": {"key":"testFieldAttributes.textFieldReplace.placeholder"},
                           "title": {"key":"testFieldAttributes.textFieldReplace.title"}}],
             "remove": [ {"field": "testButton"},
-                        {"field": "testSubmitButton"}
+                        {"field": "testSubmitButton"},
+                        {"field": "nasaLink"},
+                        {"field": "noLink"},
+                        {"field": "googleLink"},
+                        {"field": "microsoftLink"},
+                        {"field": "amazonLink"},
+                        {"field": "facebookLink"}
             ]
         },
         "mainButtonBar": {
