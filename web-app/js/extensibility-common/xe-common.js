@@ -225,6 +225,7 @@ var xe = (function (xe) {
                 throw 'Error: section or field is required for the current operation';
         }
 
+
         function insertElementBeforeOrAfter(element,context,param) {
             var type = getType(param);
             var to;
@@ -232,23 +233,26 @@ var xe = (function (xe) {
                 xe.errors.push('Unable to find element. ' + JSON.stringify(param));
                 return null;
             }
-            if ( param.after ) {
-                to = $(xe.selector(type, param.after), context);
-            } else if (param.before){
-                to = $(xe.selector(type, param.before), context);
+
+            if ( param.nextSibling ) {
+                to = $(xe.selector(type, param.nextSibling), context);
+                if (to.length==0) {
+                    xe.errors.push('Unable to find target element. '+JSON.stringify(param));
+                    return null;
+                } else {
+                    element.insertBefore(to);
+                }
             } else {
-                xe.errors.push('Parameter before or after is required for operation. '+JSON.stringify(param));
-                return null;
+
+                // nextSibling specified as null so becomes last element.
+                var section = element.closest( xe.selector(xe.type.section) );
+                if ( !section ) {
+                    xe.errors.push('Unable to find element section. ' + param.name);
+                    return null;
+                } else
+                  section.append(element);
             }
-            if (to.length==0) {
-                xe.errors.push('Unable to find target element. '+JSON.stringify(param));
-                return null;
-            }
-            if ( param.after ) {
-                element.insertAfter(to);
-            } else if (param.before){
-                element.insertBefore(to);
-            }
+
             return element;
         }
 
@@ -372,10 +376,16 @@ var xe = (function (xe) {
             }
         }
         else {
+
             var section = attributes.xeSection || attributes.xeSectionInh;
             if (section) {
-                var extensions = xe.extensions.sections[section];
+
+                var extensions = _.find(xe.extensions.sections, function( pSection ) {
+                    return pSection.name == section;
+                })
+
                 if (extensions) {
+
                     if (extensions.remove)
                         extensions.remove.map(remove, element);
                     if (extensions.add)
@@ -623,24 +633,66 @@ var xe = (function (xe) {
 
     xe.startup = function(){
 
-        var normalizeMetadata = function(){
-            //add actions per section to group so actions can be directly accessed for a section
+        /*******************************************************************************************************
+        Restructure the metadata into a set of arrays for further removal, reordering and replacement processing
+        *******************************************************************************************************/
+        var normalizeMetadata = function() {
 
-            xe.extensions.groups.sections = {};
-            xe.extensions.groups.remove.forEach( function(val) {
-                if (!xe.extensions.groups.sections[val.section])
-                    xe.extensions.groups.sections[val.section] = {};
-                xe.extensions.groups.sections[val.section].remove = val;
-            });
-            xe.extensions.groups.move.forEach( function(val){
-                if (!xe.extensions.groups.sections[val.section])
-                    xe.extensions.groups.sections[val.section] = {};
-                xe.extensions.groups.sections[val.section].move = val;
+            xe.extensions.groups = {}
+            xe.extensions.groups.sections = {}
+
+            // process each section in turn
+            xe.extensions.sections.forEach( function( pSection ) {
+
+                // remove section if specified
+                if ( pSection.exclude ) {
+                    pSection.section = pSection.name;  // make a note that this metadata refers to a section
+                    if (!xe.extensions.groups.sections[pSection.name])
+                        xe.extensions.groups.sections[pSection.name] = {};
+                    xe.extensions.groups.sections[pSection.name].remove = pSection;
+                };
+
+                // move section if specified
+                if ( pSection.nextSibling ) {
+                    pSection.section = pSection.name;  // make a note that this metadata refers to a section
+                    if (!xe.extensions.groups.sections[pSection.name])
+                        xe.extensions.groups.sections[pSection.name] = {};
+                    xe.extensions.groups.sections[pSection.name].move = pSection;
+                }
+
+                // process the individual section fields
+                if ( pSection.fields ) {
+
+                    pSection.remove = []; pSection.move = []; pSection.replace = [];
+
+                    // process each field in turn
+                    pSection.fields.forEach( function( pField ) {
+
+                        pField.field = pField.name;  // make a note that this metadata refers to a field
+
+                        if ( pField.exclude)
+                            pSection.remove.push(pField);
+
+
+                        if ( _.has(pField, "nextSibling") ) {
+                            pSection.move.push(pField);
+                        }
+
+                        // process each attribute in turn
+                        if ( pField.attributes ) {
+
+                            _.each( _.keys(pField.attributes), function( pAttr ) {
+                                pField[pAttr] = pField.attributes[pAttr];
+                            });
+                            pSection.replace.push(pField);
+                        }
+                    });
+                }
             });
 
-            // reorder positioning metadata taking account of any dependencies
             reorderMetadata();
         };
+
 
         /***************************************************************************************************
         item positioning information relies on the correct order of repositioning due to dependencies
@@ -649,18 +701,18 @@ var xe = (function (xe) {
         var reorderMetadata = function() {
 
             // process each group in turn
-            reorder( xe.extensions.groups, "section" );
+            reorder( xe.extensions.groups );
 
             // process each section in turn
             _.each( xe.extensions.sections, function(section) {
-                reorder( section, "field" );
+                reorder( section );
             });
         };
 
         /***************************************************************************************************
         reorder positioning metadata
          ***************************************************************************************************/
-        var reorder = function( container, key ) {
+        var reorder = function( container ) {
 
             var orderedMoves = [];
             var allExtensionsApplied = false;
@@ -678,7 +730,7 @@ var xe = (function (xe) {
 
                 if ( extension ) {
 
-                    extension = getDependency( extension, container.move, key );
+                    extension = getDependency( extension, container.move );
                     orderedMoves.push( extension );
                     extension.processed = true;
 
@@ -704,7 +756,7 @@ var xe = (function (xe) {
          This routine determines the next move operation that needs to take place
 
          ***************************************************************************************************/
-        var getDependency = function( extension, extensions, key ){
+        var getDependency = function( extension, extensions ){
 
             var complete = false;
             var dependency;
@@ -712,7 +764,7 @@ var xe = (function (xe) {
             while ( !complete ) {
 
                 dependency = _.find( extensions, function(n){
-                    return (n[key] == extension.before) && n.processed == false;
+                    return (n["name"] == extension.nextSibling) && n.processed == false;
                 });
 
                 if (!dependency) {
