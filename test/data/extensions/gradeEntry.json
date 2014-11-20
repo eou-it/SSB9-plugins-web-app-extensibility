@@ -166,14 +166,14 @@
                     "title": {"key":"testFieldAttributes.textFieldReplace.title"}
                   }
               },
-			  { "name: "testButton", "exclude": true },
-			  { "name: "testSubmitButton", "exclude": true },
-			  { "name: "nasaLink", "exclude": true },
-			  { "name: "noLink", "exclude": true },
-			  { "name: "googleLink", "exclude": true },
-			  { "name: "microsoftLink", "exclude": true },
-			  { "name: "amazonLink", "exclude": true },
-			  { "name: "facebookLink", "exclude": true }
+			  { "name": "testButton", "exclude": true },
+			  { "name": "testSubmitButton", "exclude": true },
+			  { "name": "nasaLink", "exclude": true },
+			  { "name": "noLink", "exclude": true },
+			  { "name": "googleLink", "exclude": true },
+			  { "name": "microsoftLink", "exclude": true },
+			  { "name": "amazonLink", "exclude": true },
+			  { "name": "facebookLink", "exclude": true }
           ]
         },
         { "name": "courseDetails",
