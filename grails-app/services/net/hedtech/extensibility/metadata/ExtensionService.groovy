@@ -1,17 +1,20 @@
 package net.hedtech.extensibility.metadata
 import grails.converters.JSON
+import org.codehaus.groovy.grails.web.converters.exceptions.ConverterException
 import grails.util.Environment
+import org.apache.log4j.Logger
 
 class ExtensionService {
     def static extensionsPath = grails.util.Holders.getConfig().webAppExtensibility.locations.extensions
+    private static final Logger log = Logger.getLogger( this.getClass() )
 
     //Pages don't have a unique id, have to query by application and page name
     def list(params) {
+        def md = []
         if (params.application && params.page) {
-            def md = loadFromFile(params.application,params.page)
-            if (md)
-                return md
+            md = loadFromFile(params.application,params.page)
         }
+        return md
     }
 
     def count(params) {
@@ -41,22 +44,31 @@ class ExtensionService {
     }
 
     private def loadFromFile(application,page){
-        def result = null
+        def result = []
         def file = new File("${extensionsPath}/${application}/${page}.json")
         def jsonStr = null
-        if (file?.exists()) {
-            jsonStr =file.text
-        } else if  ( Environment.getCurrent() != Environment.PRODUCTION )  {
-            file = new File("plugins/web-app-extensibility.git/test/data/extensions/${page}.json")
-            if (file?.exists()) {
-                jsonStr =file.text
-            }
+        if (!file?.exists() && Environment.getCurrent() != Environment.PRODUCTION) {
+            // read the development test file
+            file = new File("plugins/web-app-extensibility.git/test/data/extensions/${ page }.json")
         }
-        if (jsonStr) {
-            JSON.use("deep")
-            result = JSON.parse(jsonStr)
-        } else {
-            println "error loading extensions from ${file.path}"
+        if (file?.exists()) {
+            try {
+                jsonStr = file.text
+            }
+            catch (IOException ioe) {
+                log.error "Error reading extensions json file ${file.path}: " + ioe.stackTrace
+            }
+            if (jsonStr) {
+                JSON.use("deep")
+                try {
+                    result = JSON.parse(jsonStr)
+                }
+                catch (ConverterException ce) {
+                    log.error "Error parsing extensions json from ${file.path}: " + ce.stackTrace
+                }
+            } else {
+                log.error "error loading extensions from ${file.path}"
+            }
         }
         result
     }

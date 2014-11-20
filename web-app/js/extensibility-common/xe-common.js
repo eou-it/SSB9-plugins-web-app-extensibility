@@ -4,7 +4,7 @@ var xe = (function (xe) {
     //Attributes
     xe.typePrefix = 'xe-';                                                       //prefix for xe specific html attributes
     xe.type = {field: 'field',section: 'section'};                               //logical type names
-    xe.attr = {field: xe.typePrefix+'field', section: xe.typePrefix+'section', labeledBy: 'aria-labelledby'};   //html attribute names
+    xe.attr = {field: xe.typePrefix+'field', section: xe.typePrefix+'section', labeledBy: 'aria-labelledby', describedBy: 'aria-describedby'};   //html attribute names
     xe.replaceAttr = ['placeholder', 'title'];
     xe.attrInh = {section: xe.typePrefix+'section-inh'};                         //html attribute name for section inherited
     xe.forTypePrefix = 'xe-for-';
@@ -266,12 +266,31 @@ var xe = (function (xe) {
             xe.log('add', it);
         }
 
+        function findAriaLinkedElements(ariaType, elementList) {
+            var linkedElements = $();
+            elementList.each(function() {
+                var ariaLabels = $(this).attr(ariaType);
+                if (ariaLabels) {
+                    $.merge(linkedElements,$('#' + ariaLabels.split(',').join(',#')));
+                }
+
+            })
+            return linkedElements;
+        }
+
         function remove(param) {
             var element = this;
             var type = getType(param);
             var it = $(xe.selectorToRemove(type,param[type]), element);
-            xe.log('remove', it);
-            it.replaceWith('<span class="xe-removed" '+xe.attr[type]+'="'+param[type]+'"></span>');
+            if (it) {
+                // include elements linked to this by aria-labelledby and aria-describedby ids
+                $.merge(it,findAriaLinkedElements(xe.attr.labeledBy,it));
+                $.merge(it,findAriaLinkedElements(xe.attr.describedBy,it));
+                xe.log('remove', it);
+                it.replaceWith('<span class="xe-removed" '+xe.attr[type]+'="'+param[type]+'"></span>');
+            } else {
+                xe.log('unable to find ' + type + ' ' + param[type]);
+            }
         }
 
         function move(param) {
@@ -606,6 +625,7 @@ var xe = (function (xe) {
 
         var normalizeMetadata = function(){
             //add actions per section to group so actions can be directly accessed for a section
+
             xe.extensions.groups.sections = {};
             xe.extensions.groups.remove.forEach( function(val) {
                 if (!xe.extensions.groups.sections[val.section])
