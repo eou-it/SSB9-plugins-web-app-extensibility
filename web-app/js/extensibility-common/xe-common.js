@@ -275,7 +275,7 @@ var xe = (function (xe) {
             elementList.each(function() {
                 var ariaLabels = $(this).attr(ariaType);
                 if (ariaLabels) {
-                    $.merge(linkedElements,$('#' + ariaLabels.split(',').join(',#')));
+                    $.merge(linkedElements,$('#' + ariaLabels.split(' ').join(',#')));
                 }
 
             })
