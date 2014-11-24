@@ -4,7 +4,7 @@ var xe = (function (xe) {
     //Attributes
     xe.typePrefix = 'xe-';                                                       //prefix for xe specific html attributes
     xe.type = {field: 'field',section: 'section'};                               //logical type names
-    xe.attr = {field: xe.typePrefix+'field', section: xe.typePrefix+'section', labeledBy: 'aria-labelledby', describedBy: 'aria-describedby'};   //html attribute names
+    xe.attr = {field: xe.typePrefix+'field', section: xe.typePrefix+'section', labelledBy: 'aria-labelledby', describedBy: 'aria-describedby'};   //html attribute names
     xe.replaceAttr = ['placeholder', 'title'];
     xe.attrInh = {section: xe.typePrefix+'section-inh'};                         //html attribute name for section inherited
     xe.forTypePrefix = 'xe-for-';
@@ -288,7 +288,7 @@ var xe = (function (xe) {
             var it = $(xe.selectorToRemove(type,param[type]), element);
             if (it) {
                 // include elements linked to this by aria-labelledby and aria-describedby ids
-                $.merge(it,findAriaLinkedElements(xe.attr.labeledBy,it));
+                $.merge(it,findAriaLinkedElements(xe.attr.labelledBy,it));
                 $.merge(it,findAriaLinkedElements(xe.attr.describedBy,it));
                 xe.log('remove', it);
                 it.replaceWith('<span class="xe-removed" '+xe.attr[type]+'="'+param[type]+'"></span>');
@@ -321,8 +321,8 @@ var xe = (function (xe) {
             var item = $(xe.selector(type,param[type]), element );
             var labelElement;
 
-            if (item[0].attributes[xe.attr.labeledBy]){
-                labelElement = $('#'+item[0].attributes[xe.attr.labeledBy].value,element);
+            if (item[0].attributes[xe.attr.labelledBy]){
+                labelElement = $('#'+item[0].attributes[xe.attr.labelledBy].value,element);
             } else {
                 //get label inside item
                 labelElement = $('label', item);
