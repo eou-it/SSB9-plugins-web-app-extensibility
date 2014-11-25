@@ -3,6 +3,16 @@
 
         // Section Removal
         /*
+         // Tab Removal
+
+        {"name": "finalCourseDetailGrid", "exclude": false},
+        {"name": "midtermCourseDetailGrid", "exclude": false},
+        {"name": "gradebookCourseDetailGrid", "exclude": false},
+        {"name": "finalGradeCourseRoster", "exclude": false},
+        {"name": "finalGradeCourseRosterIncomplete", "exclude": false},
+        {"name": "sectionDetail", "exclude": false},
+        {"name": "infotext", "exclude": true}
+
         { "name": "infotext", "exclude": true },
         { "name": "numberTest", "exclude": true },
         { "name": "comboTest", "exclude": true },
