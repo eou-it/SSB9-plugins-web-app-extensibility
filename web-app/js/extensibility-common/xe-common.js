@@ -291,7 +291,7 @@ var xe = (function (xe) {
                 $.merge(it,findAriaLinkedElements(xe.attr.labelledBy,it));
                 $.merge(it,findAriaLinkedElements(xe.attr.describedBy,it));
                 xe.log('remove', it);
-                it.replaceWith('<span class="xe-removed" '+xe.attr[type]+'="'+param[type]+'"></span>');
+                it.hide();
             } else {
                 xe.log('unable to find ' + type + ' ' + param[type]);
             }
