@@ -162,7 +162,21 @@
               }
           ]
         },
-        { "name": "testFieldAttributes",
+         { "name": "finalGradeCourseRosterGrid",
+           "fields": [
+               { "name": "personFullName",
+                 "attributes": {
+                     "label": {"key":"finalGradeCourseRosterGrid.personFullName.label"}
+                 }
+               },
+               { "name": "bannerId",
+                 "attributes": {
+                     "label": "Banner Id"
+                 }
+               }
+           ]
+         },
+         { "name": "testFieldAttributes",
           "fields": [
               { "name": "textFieldAdd",
                 "attributes": {

@@ -320,17 +320,18 @@ var xe = (function (xe) {
             var type = getType(param);
             var item = $(xe.selector(type,param[type]), element );
             var labelElement;
-
-            if (item[0].attributes[xe.attr.labelledBy]){
-                labelElement = $('#'+item[0].attributes[xe.attr.labelledBy].value,element);
-            } else {
-                //get label inside item
-                labelElement = $('label', item);
-            }
-            if (labelElement.length) {
-                labelElement[0].innerHTML = xe.i18n(param.label);
-            } else {
-                xe.errors.push('Unable to find and replace label for '+param[type]);
+            if (item.length > 0) {
+                if (item[0].attributes[xe.attr.labelledBy]) {
+                    labelElement = $('#' + item[0].attributes[xe.attr.labelledBy].value, element);
+                } else {
+                    //get label inside item
+                    labelElement = $('label', item);
+                }
+                if (labelElement.length) {
+                    labelElement[0].innerHTML = xe.i18n(param.label);
+                } else {
+                    xe.errors.push('Unable to find and replace label for '+param[type]);
+                }
             }
         }
 
