@@ -6,5 +6,6 @@
     "testFieldAttributes.textFieldAdd.placeholder": "Add some text",
     "testFieldAttributes.textFieldAdd.title": "This is a test field to add title to text input",
     "testFieldAttributes.textFieldReplace.placeholder": "Replace some text",
-    "testFieldAttributes.textFieldReplace.title": "This is a test field to replace title on text input"
+    "testFieldAttributes.textFieldReplace.title": "This is a test field to replace title on text input",
+	"comboTest.jEditableCombobox.label": "Your preferred programming language (jEditable)"
 }

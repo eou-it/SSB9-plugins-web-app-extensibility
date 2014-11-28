@@ -101,14 +101,17 @@
 
 
         // Combobox Removal
-        /*
-        { "name": "comboTest",
+        /*{ "name": "comboTest",
           "fields": [
-              { "name": "jEditableCombobox", "exclude": true },
-              { "name": "jQueryUiCombobox", "exclude": true }
+            {
+              "name": "jEditableCombobox", "exclude": true,
+              "attributes": {
+                "label": {"key": "comboTest.jEditableCombobox.label"}
+              }
+            },
+            { "name": "jQueryUiCombobox", "exclude": false }
           ]
-        }
-        */
+        }*/
 
 
         // Select2 Removal

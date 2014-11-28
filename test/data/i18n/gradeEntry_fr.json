@@ -6,5 +6,6 @@
 	"testFieldAttributes.textFieldAdd.placeholder": "Ajoutez un texte",
 	"testFieldAttributes.textFieldAdd.title": "Ceci est un champ d'essai pour ajouter un titre à la saisie",
 	"testFieldAttributes.textFieldReplace.placeholder": "Remplacer un texte",
-	"testFieldAttributes.textFieldReplace.title": "Ceci est un champ d'essai pour remplacer le titre sur la saisie de texte"
+	"testFieldAttributes.textFieldReplace.title": "Ceci est un champ d'essai pour remplacer le titre sur la saisie de texte",
+	"comboTest.jEditableCombobox.label": "Votre langage de programmation préféré ( jEditable )"
 }
