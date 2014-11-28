@@ -227,6 +227,24 @@
           ]
         }
         */
+
+        // button label/value replacement
+        /*
+        { "name": "extz584section",
+          "fields": [
+              { "name": "extz584button1",
+                "attributes": {
+                    "value": "extended"
+                }
+              },
+              { "name": "extz584button2",
+                  "attributes": {
+                      "value": {"key":"extz584section.extz584button2.value"}
+                  }
+              }
+          ]
+        }
+        */
     ]
 }]
 
