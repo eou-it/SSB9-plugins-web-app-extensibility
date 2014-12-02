@@ -5,6 +5,7 @@
 
 modules = {
     'extensibilityCommon' {
+        resource url: [plugin: 'web-app-extensibility', file: 'css/extensibility-ss.css'], attrs: [media: 'screen, projection']
         resource url: [plugin: 'web-app-extensibility', file: 'js/extensibility-common/xe-common.js']
     }
     'extensibilityAngular' {
