@@ -101,17 +101,14 @@
 
 
         // Combobox Removal
-        /*{ "name": "comboTest",
-          "fields": [
-            {
-              "name": "jEditableCombobox", "exclude": true,
-              "attributes": {
-                "label": {"key": "comboTest.jEditableCombobox.label"}
-              }
-            },
-            { "name": "jQueryUiCombobox", "exclude": false }
-          ]
-        }*/
+        /*
+         { "name": "comboTest",
+         "fields": [
+         { "name": "jEditableCombobox", "exclude": true },
+         { "name": "jQueryUiCombobox", "exclude": true }
+         ]
+         }
+         */
 
 
         // Select2 Removal
@@ -259,6 +256,25 @@
               { "name": "saveButton",
                 "attributes": {
                     "buttonText": "extended"
+                }
+              }
+          ]
+        }
+        */
+
+
+        // combobox label replacement
+        /*
+        { "name": "comboTest",
+          "fields": [
+              { "name": "jEditableCombobox",
+                "attributes": {
+                    "label": {"key": "comboTest.jEditableCombobox.label"}
+                }
+              },
+              { "name": "jQueryUiCombobox",
+                "attributes": {
+                    "label": {"key": "comboTest.jQueryUiCombobox.label"}
                 }
               }
           ]

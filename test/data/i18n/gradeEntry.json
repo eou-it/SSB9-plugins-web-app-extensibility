@@ -7,7 +7,8 @@
     "testFieldAttributes.textFieldAdd.title": "This is a test field to add title to text input",
     "testFieldAttributes.textFieldReplace.placeholder": "Replace some text",
     "testFieldAttributes.textFieldReplace.title": "This is a test field to replace title on text input",
-	"comboTest.jEditableCombobox.label": "Your preferred programming language (jEditable)",
+	"comboTest.jEditableCombobox.label": "Programming language (jEditable)",
+    "comboTest.jQueryUiCombobox.label": "Programming language (jQueryUi)",
     "extz584section.extz584button2.value": "I18N extended",
     "extz584section.extz584button4.value": "I18N extended"
 }
