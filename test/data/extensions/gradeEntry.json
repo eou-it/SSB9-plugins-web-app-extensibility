@@ -234,13 +234,32 @@
           "fields": [
               { "name": "extz584button1",
                 "attributes": {
-                    "value": "extended"
+                    "buttonText": "extended"
                 }
               },
               { "name": "extz584button2",
                   "attributes": {
-                      "value": {"key":"extz584section.extz584button2.value"}
+                      "buttonText": {"key":"extz584section.extz584button2.value"}
                   }
+              },
+              { "name": "extz584button3",
+                  "attributes": {
+                      "buttonText": "extended"
+                  }
+              },
+              { "name": "extz584button4",
+                  "attributes": {
+                      "buttonText": {"key":"extz584section.extz584button2.value"}
+                  }
+              }
+          ]
+        },
+        { "name": "mainButtonBar",
+          "fields": [
+              { "name": "saveButton",
+                "attributes": {
+                    "buttonText": "extended"
+                }
               }
           ]
         }

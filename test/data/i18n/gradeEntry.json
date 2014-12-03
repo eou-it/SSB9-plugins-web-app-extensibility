@@ -8,5 +8,6 @@
     "testFieldAttributes.textFieldReplace.placeholder": "Replace some text",
     "testFieldAttributes.textFieldReplace.title": "This is a test field to replace title on text input",
 	"comboTest.jEditableCombobox.label": "Your preferred programming language (jEditable)",
-    "extz584section.extz584button2.value": "I18N extended"
+    "extz584section.extz584button2.value": "I18N extended",
+    "extz584section.extz584button4.value": "I18N extended"
 }

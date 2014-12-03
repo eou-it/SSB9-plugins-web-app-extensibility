@@ -5,7 +5,7 @@ var xe = (function (xe) {
     xe.typePrefix = 'xe-';                                                       //prefix for xe specific html attributes
     xe.type = {field: 'field',section: 'section'};                               //logical type names
     xe.attr = {field: xe.typePrefix+'field', section: xe.typePrefix+'section', labelledBy: 'aria-labelledby', describedBy: 'aria-describedby'};   //html attribute names
-    xe.replaceAttr = ['placeholder', 'title', 'value'];
+    xe.replaceAttr = ['placeholder', 'title', 'buttonText'];
     xe.attrInh = {section: xe.typePrefix+'section-inh'};                         //html attribute name for section inherited
     xe.forTypePrefix = 'xe-for-';
     xe.errors = [];
@@ -310,7 +310,17 @@ var xe = (function (xe) {
             // search for the element to be modified
             var item = $(xe.selector(type,param[type]), element );
             if (item.length > 0 && param[attributeName]) {
-                $(item[0]).attr(attributeName,xe.i18n(param[attributeName]))
+
+                if (attributeName == "buttonText") {
+                    if ( $(item[0]).is("input") ) {
+                        $(item[0]).attr("value",xe.i18n(param[attributeName]));
+                    } else if ( $(item[0]).is("button") ) {
+                        $(item[0]).html(xe.i18n(param[attributeName]));
+                    }
+                } else {
+                    $(item[0]).attr(attributeName,xe.i18n(param[attributeName]))
+                }
+
             } else {
                 xe.errors.push('Unable to find and replace ' + attributeName + ' for '+param[type]);
             }
@@ -353,6 +363,7 @@ var xe = (function (xe) {
                 if (param.label) {
                     replaceLabel(element, param);
                 }
+
                 // Replace any attributes where new value provided
                 _.each(xe.replaceAttr,function(attrName) {
                     if (param[attrName]) {replaceAttribute(attrName,element,param);}
