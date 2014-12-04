@@ -280,6 +280,19 @@
           ]
         }
         */
+
+        // Pillbox label replacement
+        /*
+        { "name": "pillbox",
+          "fields": [
+              { "name": "pillbox",
+                "attributes": {
+                    "label": {"key": "pillbox.pillbox.label"}
+                }
+              }
+          ]
+        }
+        */
     ]
 }]
 
