@@ -5,7 +5,7 @@ var xe = (function (xe) {
     xe.typePrefix = 'xe-';                                                       //prefix for xe specific html attributes
     xe.type = {field: 'field',section: 'section'};                               //logical type names
     xe.attr = {field: xe.typePrefix+'field', section: xe.typePrefix+'section', labelledBy: 'aria-labelledby', describedBy: 'aria-describedby'};   //html attribute names
-    xe.replaceAttr = ['placeholder', 'title', 'buttonText'];
+    xe.replaceAttr = ['placeholder', 'title', 'buttonText', 'tabLabel'];
     xe.attrInh = {section: xe.typePrefix+'section-inh'};                         //html attribute name for section inherited
     xe.forTypePrefix = 'xe-for-';
     xe.errors = [];
@@ -317,7 +317,9 @@ var xe = (function (xe) {
                     } else if ( $(item[0]).is("button") ) {
                         $(item[0]).html(xe.i18n(param[attributeName]));
                     }
-                } else {
+                } else if (attributeName == "tabLabel") {
+                    $(xe.selectorFor(type, param.name)).find("a").html(xe.i18n(param[attributeName]));
+                }  else {
                     $(item[0]).attr(attributeName,xe.i18n(param[attributeName]))
                 }
 
@@ -385,6 +387,9 @@ var xe = (function (xe) {
             }
             if (actions.remove){
                 [actions.remove].map(remove, element);
+            }
+            if (actions.replace){
+                [actions.replace].map(replace, element);
             }
         }
         else {
@@ -671,6 +676,13 @@ var xe = (function (xe) {
                         xe.extensions.groups.sections[pSection.name] = {};
                     xe.extensions.groups.sections[pSection.name].move = pSection;
                 }
+
+                // modify section attributes if required
+                pSection.section = pSection.name;  // make a note that this metadata refers to a section
+                if (!xe.extensions.groups.sections[pSection.name])
+                    xe.extensions.groups.sections[pSection.name] = {};
+                xe.extensions.groups.sections[pSection.name].replace = pSection;
+
 
                 // process the individual section fields
                 if ( pSection.fields ) {

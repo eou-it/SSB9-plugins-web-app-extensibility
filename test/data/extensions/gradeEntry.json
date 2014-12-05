@@ -3,20 +3,21 @@
 
         // Section Removal
         /*
-         // Tab Removal
-
-        {"name": "finalCourseDetailGrid", "exclude": false},
-        {"name": "midtermCourseDetailGrid", "exclude": false},
-        {"name": "gradebookCourseDetailGrid", "exclude": false},
-        {"name": "finalGradeCourseRoster", "exclude": false},
-        {"name": "finalGradeCourseRosterIncomplete", "exclude": false},
-        {"name": "sectionDetail", "exclude": false},
-        {"name": "infotext", "exclude": true}
-
         { "name": "infotext", "exclude": true },
         { "name": "numberTest", "exclude": true },
         { "name": "comboTest", "exclude": true },
         { "name": "select2Test", "exclude": true }
+        */
+
+
+        // Tab Removal
+        /*
+        {"name": "finalCourseDetailGrid", "exclude": true},
+        {"name": "midtermCourseDetailGrid", "exclude": true},
+        {"name": "gradebookCourseDetailGrid", "exclude": true},
+        {"name": "finalGradeCourseRoster", "exclude": true},
+        {"name": "finalGradeCourseRosterIncomplete", "exclude": true},
+        {"name": "sectionDetail", "exclude": true},
         */
 
 
@@ -293,6 +294,13 @@
           ]
         }
         */
+
+
+        // Tab label replacement
+        /*
+        { "name": "finalCourseDetailGrid", "tabLabel": {"key":"finalCourseDetailGrid.label"}, "exclude": false}
+        */
+
     ]
 }]
 
