@@ -301,6 +301,15 @@
         { "name": "finalCourseDetailGrid", "tabLabel": {"key":"finalCourseDetailGrid.label"}, "exclude": false}
         */
 
+        //Test field reorder within a section
+        /*{"name":"testSectionFieldReorder",
+         "fields": [
+         { "name": "testReorderSelect2-home", "nextSibling":"testReorderjCombo" },
+         {"name":"testReorderTextField", "nextSibling":"testReorderHtml5NumberInput"},
+         {"name":"testReorderjDatepickerInput", "nextSibling":"testReorderPillbox"},
+         {"name":"testReorderSubmitButton", "nextSibling":"testReorderButton"}
+         ]
+         }*/
     ]
 }]
 
