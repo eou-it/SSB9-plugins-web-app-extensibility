@@ -22,11 +22,9 @@
 
 
         // Section Reordering
-        /*
-        { "name": "testFieldAttributes", "nextSibling": "datepickerTest"},
-        { "name": "datepickerTest", "nextSibling": "pillbox"},
-        { "name": "pillbox", "nextSibling": "numberTest"}
-        */
+        { "name": "s1", "nextSibling": null },
+        { "name": "s4", "nextSibling": "s3" },
+        { "name": "s5", "nextSibling": null }
 
 
         // Tab Reordering

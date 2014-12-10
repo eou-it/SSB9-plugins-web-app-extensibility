@@ -229,6 +229,9 @@ var xe = (function (xe) {
         function insertElementBeforeOrAfter(element,context,param) {
             var type = getType(param);
             var to;
+            var section;
+            var parent;
+
             if (element.length==0) {
                 xe.errors.push('Unable to find element. ' + JSON.stringify(param));
                 return null;
@@ -245,12 +248,23 @@ var xe = (function (xe) {
             } else {
 
                 // nextSibling specified as null so becomes last element.
-                var section = element.closest( xe.selector(xe.type.section) );
-                if ( !section ) {
-                    xe.errors.push('Unable to find element section. ' + param.name);
-                    return null;
-                } else
-                  section.append(element);
+                if ( type == "field" ) {
+
+                    // xe-field must be defined within xe-section
+                    section = element.closest( xe.selector(xe.type.section) );
+                    if ( !section ) {
+                        xe.errors.push('Unable to find element section. ' + param.name);
+                        return null;
+                    } else {
+                        section.append(element);
+                    }
+                } else {  // type = section
+
+                    // xe-section may be defined within another xe-section or have a non xe-section parent
+                    // for now, sections are confined to their immediate parent
+                    parent = element.parent();
+                    parent.append(element);
+                }
             }
 
             return element;
@@ -670,7 +684,8 @@ var xe = (function (xe) {
                 };
 
                 // move section if specified
-                if ( pSection.nextSibling ) {
+                //if ( pSection.nextSibling ) {
+                if ( _.has(pSection, "nextSibling") ) {
                     pSection.section = pSection.name;  // make a note that this metadata refers to a section
                     if (!xe.extensions.groups.sections[pSection.name])
                         xe.extensions.groups.sections[pSection.name] = {};
@@ -723,9 +738,6 @@ var xe = (function (xe) {
         reorder section and group positioning meta data accordingly
         ***************************************************************************************************/
         var reorderMetadata = function() {
-
-            // process each group in turn
-            reorder( xe.extensions.groups );
 
             // process each section in turn
             _.each( xe.extensions.sections, function(section) {
