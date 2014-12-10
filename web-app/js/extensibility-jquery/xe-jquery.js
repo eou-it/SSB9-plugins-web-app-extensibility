@@ -44,3 +44,39 @@ xe.jq = (function(xe) {
 
     return jq;
 })(xe||{});
+//Reordering of Tabs
+$.fn.tabs = _.wrap($.fn.tabs, function expandTabs(org) {
+    var self = this;
+    var sections = xe.extensions.sections;
+    var list = this.find("ol,ul").eq(0);
+    $.each( sections, function(key, section  ) {   //Iterate through array of JSON objects (extensions)
+        if(typeof section.nextSibling!=='undefined') {
+            var listItemToBeMoved = list.children(xe.selectorFor('section', section.name));
+            if (listItemToBeMoved.length != 0) {
+                if (section.nextSibling) {   // If nextSibling is not null
+                    var listItemTo = list.children(xe.selectorFor('section', section.nextSibling));
+                    if (listItemTo.length == 0) {    // If nextSibling not found
+                        xe.errors.push('Unable to find target element. ' + JSON.stringify(section));
+                        return null;
+                    } else {           //If nextSibling found, add a class to moved element and perform insertBefore operation
+                        listItemToBeMoved.addClass('xe-moved');
+                        listItemToBeMoved.insertBefore(listItemTo);
+                    }
+                } else {  // If nextSibling is null
+                    if (!list) {
+                        xe.errors.push('Unable to find element section. ' + section.name);
+                        return null;
+                    } else {
+                        // nextSibling specified as null so becomes last element.
+                        list.append(listItemToBeMoved);
+                        listItemToBeMoved.addClass('xe-moved');
+                    }
+                }
+            }
+        }
+    });
+    var args = Array.prototype.slice.call(arguments, 1);  // use Array.slice function to copy the arguments array from 1-end, without 'org'
+    return org.apply( this, args );
+});
+
+

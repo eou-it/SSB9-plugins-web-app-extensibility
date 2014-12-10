@@ -29,6 +29,15 @@
         */
 
 
+        // Tab Reordering
+        /*
+        { "name": "gradebookCourseDetailGrid", "nextSibling": "finalCourseDetailGrid" },
+        { "name": "midtermCourseDetailGrid", "nextSibling": null },
+        { "name": "finalGradeCourseRosterIncomplete", "nextSibling": "finalGradeCourseRoster" },
+        { "name": "infotext", "nextSibling": "sectionDetail" },
+        */
+
+
         // Grid Item Removal
         /*
         { "name": "finalCourseDetailGrid",
