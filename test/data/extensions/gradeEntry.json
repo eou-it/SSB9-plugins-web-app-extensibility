@@ -309,14 +309,14 @@
         */
 
         //Test field reorder within a section
-        /*{"name":"testSectionFieldReorder",
-         "fields": [
-         { "name": "testReorderSelect2-home", "nextSibling":"testReorderjCombo" },
-         {"name":"testReorderTextField", "nextSibling":"testReorderHtml5NumberInput"},
-         {"name":"testReorderjDatepickerInput", "nextSibling":"testReorderPillbox"},
-         {"name":"testReorderSubmitButton", "nextSibling":"testReorderButton"}
-         ]
-         }*/
+       /* {
+            "name": "testSectionFieldReorder",
+            "fields": [
+                { "name": "testReorderjCombo", "nextSibling": "testReorderHtml5NumberInput" },
+                { "name": "testReorderjDatepickerInput", "nextSibling": "testReorderSelect2-home" },
+                { "name": "testReorderButton", "nextSibling": "testReorderHtml5NumberInput" }
+            ]
+        }*/
     ]
 }]
 
