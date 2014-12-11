@@ -9,7 +9,9 @@
     "testFieldAttributes.textFieldReplace.title": "This is a test field to replace title on text input",
 	"comboTest.jEditableCombobox.label": "Programming language (jEditable)",
     "comboTest.jQueryUiCombobox.label": "Programming language (jQueryUi)",
-    "extz584section.extz584button2.value": "I18N extended",
+    "datepickerTest.jEditableDatepickerInput.label": "Date picker type 1 - Click on date to edit",
+	"datepickerTest.datepickerInput.label": "Date picker type 2",
+	"extz584section.extz584button2.value": "I18N extended",
     "extz584section.extz584button4.value": "I18N extended",
     "pillbox.pillbox.label": "Extended Pillbox Label",
     "finalCourseDetailGrid.label": "Extended Tab Label"
