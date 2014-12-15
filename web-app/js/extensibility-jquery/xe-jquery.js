@@ -78,5 +78,17 @@ $.fn.tabs = _.wrap($.fn.tabs, function expandTabs(org) {
     var args = Array.prototype.slice.call(arguments, 1);  // use Array.slice function to copy the arguments array from 1-end, without 'org'
     return org.apply( this, args );
 });
-
-
+// Extend jQuery UI Layout options
+$.fn.layout = _.wrap($.fn.layout, function extendLayout(origLayout) {
+    var self = this;
+    var args = Array.prototype.slice.call(arguments, 1);  // use Array.slice function to copy the arguments array from 1-end, without 'org'
+    var layouts = xe.extensions.layouts;
+    if (layouts) {
+        for (var i = 0; i < layouts.length; i++) {
+            if (xe.extensions.layouts[i][this.selector]) {
+                $.extend(true, args[0], xe.extensions.layouts[i][this.selector]);
+            }
+        }
+    }
+    return origLayout.apply( this, args );
+});

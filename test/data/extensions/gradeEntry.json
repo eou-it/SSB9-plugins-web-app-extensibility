@@ -326,6 +326,33 @@
             ]
         }*/
     ]
+    , "layouts": [
+        {
+            "#content":
+            {
+                east: {
+                    initClosed: false,
+                    paneSelector: ".ui-layout-west",
+                    size: 400,
+                    resizable: false,
+                    initHidden: true,
+                },
+                west: {
+                    initHidden: false,
+                    paneSelector: ".ui-layout-east",
+                    slidable: false,
+                    resizable: true,
+                    size: 375
+                }
+            }
+        }
+       ,{
+            "#inner-content":
+            {
+                south__initHidden: false
+            }
+        }
+    ]
 }]
 
 
