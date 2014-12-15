@@ -80,13 +80,13 @@ $.fn.tabs = _.wrap($.fn.tabs, function expandTabs(org) {
 });
 // Extend jQuery UI Layout options
 $.fn.layout = _.wrap($.fn.layout, function extendLayout(origLayout) {
-    var self = this;
-    var args = Array.prototype.slice.call(arguments, 1);  // use Array.slice function to copy the arguments array from 1-end, without 'org'
+    var args = Array.prototype.slice.call(arguments, 1);
     var layouts = xe.extensions.layouts;
     if (layouts) {
         for (var i = 0; i < layouts.length; i++) {
             if (xe.extensions.layouts[i][this.selector]) {
-                $.extend(true, args[0], xe.extensions.layouts[i][this.selector]);
+                var newargs = $.extend(true, {}, args[0], xe.extensions.layouts[i][this.selector]);
+                args[0] = newargs;
             }
         }
     }
