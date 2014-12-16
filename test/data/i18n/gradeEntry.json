@@ -14,5 +14,6 @@
 	"extz584section.extz584button2.value": "I18N extended",
     "extz584section.extz584button4.value": "I18N extended",
     "pillbox.pillbox.label": "Extended Pillbox Label",
-    "finalCourseDetailGrid.label": "Extended Tab Label"
+    "finalCourseDetailGrid.label": "Extended Tab Label",
+    "select2Test.select2Home": "My Home State"
 }
