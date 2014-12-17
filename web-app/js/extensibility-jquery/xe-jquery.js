@@ -92,3 +92,35 @@ $.fn.layout = _.wrap($.fn.layout, function extendLayout(origLayout) {
     }
     return origLayout.apply( this, args );
 });
+
+// Extend the jquery editable function to provide dynamic placeholder and title values
+var oldEditable = $.fn.editable;
+
+$.fn.editable = _.wrap($.fn.editable, function (origEditable){
+    var args = Array.prototype.slice.call( arguments, 1 );
+    // find the xe field and section names
+    var fieldName = this.closest(xe.selector(xe.type.field)).attr(xe.typePrefix + xe.type.field);
+    var sectionName = this.closest(xe.selector(xe.type.section)).attr(xe.typePrefix + xe.type.section );
+    // look for extensions for this section and field
+    var sectionExtensions = sectionName && _.findWhere(xe.extensions.sections,{name: sectionName});
+    if (sectionExtensions && sectionExtensions.fields) {
+        var fieldExtensions = fieldName && _.findWhere(sectionExtensions.fields,{name: fieldName});
+        if (fieldExtensions) {
+            var newargs1 = $.extend(true, {}, args[1]);
+            if (fieldExtensions.placeholder) {
+                newargs1.placeholder = xe.i18n(fieldExtensions.placeholder);
+            }
+            if (fieldExtensions.title) {
+                newargs1.tooltip = xe.i18n(fieldExtensions.title);
+            }
+            args[1] = newargs1;
+        }
+    }
+    // call original editable function with updated arguments
+    return origEditable.apply( this, args );
+
+});
+// copy extra attributes from original function
+$.extend( $.fn.editable, oldEditable );
+
+

@@ -76,12 +76,22 @@
         */
 
 
-        // Number Removal
+        // Number Removal and placeholder/title replacement
         /*
         { "name": "numberTest",
           "fields": [
-              { "name": "jEditableNumberInput", "exclude": true },
-              { "name": "html5NumberInput", "exclude": true }
+              { "name": "html5NumberInput", "exclude": true,
+                "attributes": {
+                    "placeholder": {"key":"numberTest.html5NumberInput.placeholder"},
+                    "title": {"key":"numberTest.html5NumberInput.title"}
+                }
+              },
+              { "name": "jEditableNumberInput", "exclude": true,
+                "attributes": {
+                    "placeholder": "Editable number",
+                    "title": "Click to enter a number"
+                }
+              }
           ]
         }
         */

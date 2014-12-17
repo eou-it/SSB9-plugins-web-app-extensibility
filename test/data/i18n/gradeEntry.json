@@ -15,5 +15,7 @@
     "extz584section.extz584button4.value": "I18N extended",
     "pillbox.pillbox.label": "Extended Pillbox Label",
     "finalCourseDetailGrid.label": "Extended Tab Label",
-    "select2Test.select2Home": "My Home State"
+    "select2Test.select2Home": "My Home State",
+    "numberTest.html5NumberInput.placeholder": "Enter a number please",
+    "numberTest.html5NumberInput.title": "Enter a number or use the spinner please"
 }
