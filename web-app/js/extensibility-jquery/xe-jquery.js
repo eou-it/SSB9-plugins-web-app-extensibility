@@ -103,17 +103,18 @@ $.fn.editable = _.wrap($.fn.editable, function (origEditable){
     var sectionName = this.closest(xe.selector(xe.type.section)).attr(xe.typePrefix + xe.type.section );
     // look for extensions for this section and field
     var sectionExtensions = sectionName && _.findWhere(xe.extensions.sections,{name: sectionName});
+    var settings = null, fieldExtensions = null;
     if (sectionExtensions && sectionExtensions.fields) {
-        var fieldExtensions = fieldName && _.findWhere(sectionExtensions.fields,{name: fieldName});
+        fieldExtensions = fieldName && _.findWhere(sectionExtensions.fields,{name: fieldName});
         if (fieldExtensions) {
-            var newargs1 = $.extend(true, {}, args[1]);
+            settings = $.extend(true, {}, args[1]);
             if (fieldExtensions.placeholder) {
-                newargs1.placeholder = xe.i18n(fieldExtensions.placeholder);
+                settings.placeholder = xe.i18n(fieldExtensions.placeholder);
             }
             if (fieldExtensions.title) {
-                newargs1.tooltip = xe.i18n(fieldExtensions.title);
+                settings.tooltip = xe.i18n(fieldExtensions.title);
             }
-            args[1] = newargs1;
+            args[1] = settings;
         }
     }
     // call original editable function with updated arguments
