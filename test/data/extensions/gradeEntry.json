@@ -340,6 +340,32 @@
                 { "name": "testReorderButton", "nextSibling": "testReorderPillbox" }
             ]
         }*/
+        /* // Test different label arrangement updates
+         { "name": "testFieldLabels", "exclude": false,
+             "fields": [
+               { "name": "testLabelFor",
+                 "attributes": {
+                  "label": "Replace Label For:"
+                 }
+               } ,
+               { "name": "testParentLabel",
+                  "attributes": {
+                     "label": "Replace Parent Label:"
+                  }
+               } ,
+               { "name": "testAriaLabel",
+                  "attributes": {
+                     "label": "Replace Aria Label:"
+                  }
+               } ,
+               { "name": "testChildLabel",
+                  "attributes": {
+                     "label": "Replace Child Label:"
+                  }
+               }
+            ]
+         }
+         */
     ]
     , "layouts": [
         {

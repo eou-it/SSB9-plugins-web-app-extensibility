@@ -51,10 +51,10 @@ $.fn.tabs = _.wrap($.fn.tabs, function expandTabs(org) {
     var list = this.find("ol,ul").eq(0);
     $.each( sections, function(key, section  ) {   //Iterate through array of JSON objects (extensions)
         if(typeof section.nextSibling!=='undefined') {
-            var listItemToBeMoved = list.children(xe.selectorFor('section', section.name));
+            var listItemToBeMoved = list.children(xe.selectorFor(section.name));
             if (listItemToBeMoved.length != 0) {
                 if (section.nextSibling) {   // If nextSibling is not null
-                    var listItemTo = list.children(xe.selectorFor('section', section.nextSibling));
+                    var listItemTo = list.children(xe.selectorFor(section.nextSibling));
                     if (listItemTo.length == 0) {    // If nextSibling not found
                         xe.errors.push('Unable to find target element. ' + JSON.stringify(section));
                         return null;

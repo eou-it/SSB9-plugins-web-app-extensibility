@@ -7,7 +7,7 @@ var xe = (function (xe) {
     xe.attr = {field: xe.typePrefix+'field', section: xe.typePrefix+'section', labelledBy: 'aria-labelledby', describedBy: 'aria-describedby'};   //html attribute names
     xe.replaceAttr = ['placeholder', 'title', 'buttonText', 'tabLabel'];
     xe.attrInh = {section: xe.typePrefix+'section-inh'};                         //html attribute name for section inherited
-    xe.forTypePrefix = 'xe-for-';
+    xe.forAttribute = 'xe-for';
     xe.errors = [];
 
     //Logging
@@ -78,13 +78,13 @@ var xe = (function (xe) {
             return '['+ xe.typePrefix + elementType+']';
     }
 
-    xe.selectorFor = function( elementType, name ) {
-      return '[' + xe.forTypePrefix + elementType + (name ? '=' + name: '') + ']';
+    xe.selectorFor = function( name ) {
+      return '[' + xe.forAttribute + (name ? '=' + name: '') + ']';
     }
 
     // Create a selector for removing an element and its associated labels, etc.
     xe.selectorToRemove = function( elementType, name ) {
-        return xe.selector( elementType, name) + ', ' + xe.selectorFor( elementType, name ); //['+xe.typePrefix+'="' + name + '"]';
+        return xe.selector( elementType, name) + ', ' + xe.selectorFor( name ); //['+xe.typePrefix+'="' + name + '"]';
     }
 
     // get a simple selector for the group (well, nothing specific for a group so far)
@@ -332,7 +332,7 @@ var xe = (function (xe) {
                         $(item[0]).html(xe.i18n(param[attributeName]));
                     }
                 } else if (attributeName == "tabLabel") {
-                    $(xe.selectorFor(type, param.name)).find("a").html(xe.i18n(param[attributeName]));
+                    $(xe.selectorFor(param.name)).find("a").html(xe.i18n(param[attributeName]));
                 }  else {
                     $(item[0]).attr(attributeName,xe.i18n(param[attributeName]))
                 }
@@ -347,14 +347,27 @@ var xe = (function (xe) {
             var item = $(xe.selector(type,param[type]), element );
             var labelElement;
             if (item.length > 0) {
+                var itemId = item[0].attributes["id"] ? item[0].attributes["id"].value : '';
                 if (item[0].attributes[xe.attr.labelledBy]) {
                     labelElement = $('#' + item[0].attributes[xe.attr.labelledBy].value, element);
                 } else {
-                    //get label inside item
+                    //check for label inside item
                     labelElement = $('label', item);
+                    if (!labelElement.length) {
+                        // check if parent element is a label
+                        labelElement = item.parent().is('label') ? item.parent() : $();
+                    }
+                    if (!labelElement.length && itemId)  {
+                        // check for label element marked as for this item id
+                        labelElement = $("label[for='" + itemId + "']");
+                    }
                 }
                 if (labelElement.length) {
-                    labelElement[0].innerHTML = xe.i18n(param.label);
+                    // replace the text in the first text node of the label
+                    var labelTextNode = labelElement.contents().filter(function() { return this.nodeType == 3})[0];
+                    if ( labelTextNode ) {
+                        labelTextNode.nodeValue = xe.i18n(param.label);
+                    }
                 } else {
                     xe.errors.push('Unable to find and replace label for '+param[type]);
                 }
