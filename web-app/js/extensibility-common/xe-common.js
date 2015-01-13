@@ -286,7 +286,7 @@ var xe = (function (xe) {
          Replace the label text on a tab
          *******************************************************************************************************/
         function replaceTabLabel( extensions ) {
-            $(xe.selectorFor(xe.type.section, extensions.name)).find("a").html(xe.i18n(extensions.tabLabel));
+            $(xe.selectorFor(extensions.name)).find("a").html(xe.i18n(extensions.tabLabel));
         }
 
 
@@ -309,7 +309,7 @@ var xe = (function (xe) {
         Remove a section or field from the page
         *******************************************************************************************************/
         function removeElement( type, element ) {
-            var elementsToRemove = $(element).add( $(xe.selectorFor(type,element.attributes[xe.typePrefix + type].value) ) );
+            var elementsToRemove = $(element).add( $(xe.selectorFor(element.attributes[xe.typePrefix + type].value) ) );
 
             // include elements linked to this by aria-labelledby and aria-describedby ids
             $.merge(elementsToRemove,findAriaLinkedElements(xe.attr.labelledBy,elementsToRemove));
@@ -417,7 +417,7 @@ var xe = (function (xe) {
                 labelElement = $('label', fieldElement);
                 if (!labelElement.length) {
                     // check if parent element is a label
-                    labelElement = fieldElement.parent().is('label') ? item.parent() : $();
+                    labelElement = $(fieldElement).parent().is('label') ? $(fieldElement).parent() : $();
                 }
                 if (!labelElement.length && itemId)  {
                     // check for label element marked as for this item id
