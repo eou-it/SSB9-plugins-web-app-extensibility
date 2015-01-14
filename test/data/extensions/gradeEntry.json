@@ -6,7 +6,8 @@
         { "name": "infotext", "exclude": true },
         { "name": "numberTest", "exclude": true },
         { "name": "comboTest", "exclude": true },
-        { "name": "select2Test", "exclude": true }
+        { "name": "select2Test", "exclude": true },
+        {"name": "courseDetailHeadingSection", "exclude": true}
         */
 
 
