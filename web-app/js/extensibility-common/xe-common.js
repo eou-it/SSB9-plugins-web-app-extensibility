@@ -444,7 +444,7 @@ var xe = (function (xe) {
             // Replace any attributes where new value provided
             _.each(xe.replaceAttr,function(attributeName) {
 
-                if ( fieldExtension.attributes[attributeName] ) {
+                if ( fieldExtension.attributes[attributeName] != undefined) {
 
                     switch(attributeName) {
                         case "html":
