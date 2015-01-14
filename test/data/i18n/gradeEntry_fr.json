@@ -9,6 +9,8 @@
 	"testFieldAttributes.textFieldReplace.title": "Ceci est un champ d'essai pour remplacer le titre sur la saisie de texte",
 	"comboTest.jEditableCombobox.label": "Votre langage de programmation préféré ( jEditable )",
 	"datepickerTest.jEditableDatepickerInput.label": "Sélecteur de date type 1 - Cliquez sur la date pour modifier",
+    "datepickerTest.jEditableDatepickerInput.title": "Cliquez sur la date pour modifier",
 	"datepickerTest.datepickerInput.label": "Sélecteur de date type 2",
+    "datepickerTest.datepickerInput.title": "Cliquez ici",
 	"select2Test.select2Home": "My Home État"
 }

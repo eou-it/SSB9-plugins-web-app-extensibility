@@ -128,14 +128,16 @@
         /*
         { "name": "datepickerTest",
           "fields": [
-              { "name": "jEditableDatepickerInput", "exclude": "true" ,
+              { "name": "jEditableDatepickerInput", "exclude": true ,
                 "attributes": {
-                   "label":{"key":"datepickerTest.jEditableDatepickerInput.label"}
+                   "label":{"key":"datepickerTest.jEditableDatepickerInput.label"},
+                   "title":{"key":"datepickerTest.jEditableDatepickerInput.title"}
                 }
               },
               { "name": "datepickerInput", "exclude": true,
                 "attributes": {
-                    "label":{"key":"datepickerTest.datepickerInput.label"}
+                    "label":{"key":"datepickerTest.datepickerInput.label"},
+                    "title":{"key":"datepickerTest.datepickerInput.title"}
                 }
               }
           ]
