@@ -367,8 +367,8 @@ var xe = (function (xe) {
 		/*******************************************************************************************************
         Replace an attribute on a field
         *******************************************************************************************************/
-        function replaceAttribute(fieldElement,attributeName) {
-            $(fieldElement).attr(attributeName,xe.i18n(attributeName));
+        function replaceAttribute(fieldElement,attributeName,attributeValue) {
+            $(fieldElement).attr(attributeName,xe.i18n(attributeValue));
         }
 
 
@@ -457,7 +457,7 @@ var xe = (function (xe) {
                             replaceButtonText(fieldElement, fieldExtension);
                             break;
                         default:
-                            replaceAttribute(fieldElement,attributeName);
+                            replaceAttribute(fieldElement,attributeName,fieldExtension.attributes[attributeName]);
                     }
                 }
             });
