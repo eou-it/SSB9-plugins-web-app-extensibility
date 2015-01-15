@@ -1,3 +1,7 @@
+/*******************************************************************************
+ Copyright 2015 Ellucian Company L.P. and its affiliates.
+ ******************************************************************************/
+
 package net.hedtech.extensibility.metadata
 
 import grails.converters.JSON
@@ -11,12 +15,14 @@ class ResourceService {
 
     //Pages don't have a unique id, have to query by application and page name
     def list(params) {
+        def result =[] //list must return array, should really be using get
         if (params.application && params.page) {
             def md = loadFromFile(params.application,params.page)
             if (md) {
-                return []<<md //list must return array, should really be using get
+                result << md
             }
         }
+        return result
     }
 
     def count(params) {
@@ -66,8 +72,9 @@ class ResourceService {
         def pieces = ["",request.locale.language, request.locale.country, request.locale.variant]
         def postfixes = [""]
         for (i in 1..pieces.size()-1 ){
-            if (pieces[i])
-                postfixes << "${postfixes[i-1]}_${pieces[i]}"
+            if (pieces[i]) {
+                postfixes << "${ postfixes[i - 1] }_${ pieces[i] }"
+            }
         }
         postfixes.each { postfix ->
             def file = new File("${resourcePath}/${application}/${page}${postfix}.json")
@@ -81,9 +88,6 @@ class ResourceService {
             if (file?.exists()) {
                 result = JSON.parse(file.text)
             }
-        }
-        if (!result) {
-            throw new Exception ("Error loading resources from ${file.path}")
         }
         result
     }

@@ -1,3 +1,7 @@
+/*
+ * Copyright 2015 Ellucian Company L.P. and its affiliates.
+ */
+
 // xe namespace is for providing eXtensible Environment functionality.
 // this will likely be provided as a service and injected
 var xe = (function (xe) {
@@ -59,8 +63,7 @@ var xe = (function (xe) {
 
     //Check if we are in developer mode
     xe.devMode = function() {
-        return window.location.search.indexOf("dev=y")>-1;
-        //TODO - secure by role
+        return extensibilityAdmin;
     }
 
     //This gets called several times, is it worth to refactor and eveluate URL parameters only once?
@@ -641,7 +644,7 @@ var xe = (function (xe) {
         //var md = JSON.parse(xe.page.metadata);
         var data={application: xe.page.application, page:xe.page.name, metadata: xe.page.metadata } ;
         $.ajax({
-            url: '/' + xe.page.application + '/internal/extensions',
+            url: '/' + xe.page.application + '/webadmin/extensions',
             type:'POST',
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
