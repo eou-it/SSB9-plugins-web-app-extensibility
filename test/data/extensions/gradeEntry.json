@@ -6,7 +6,8 @@
         { "name": "infotext", "exclude": true },
         { "name": "numberTest", "exclude": true },
         { "name": "comboTest", "exclude": true },
-        { "name": "select2Test", "exclude": true }
+        { "name": "select2Test", "exclude": true },
+        {"name": "courseDetailHeadingSection", "exclude": true}
         */
 
 
@@ -21,18 +22,34 @@
         */
 
 
-        // Section Reordering
-        { "name": "s1", "nextSibling": null },
-        { "name": "s4", "nextSibling": "s3" },
-        { "name": "s5", "nextSibling": null },
+        // Section remove
+        /*
+        { "name": "s1", "exclude": true },
+        { "name": "s2", "exclude": true },
+        { "name": "s3", "exclude": true },
+        { "name": "s4", "exclude": true },
+        { "name": "s5", "exclude": true }
+        */
 
+        // section reorder
+        /*
+        { "name": "s1", "nextSibling": "s5" },
+        { "name": "s5", "nextSibling": "s4" },
+        { "name": "s2", "nextSibling": null },
+        { "name": "sa", "nextSibling": "se" },
+        { "name": "se", "nextSibling": "sd" },
+        { "name": "sb", "nextSibling": null },
+        { "name": "sv", "nextSibling": "sz" },
+        { "name": "sz", "nextSibling": "sy" },
+        { "name": "sw", "nextSibling": null }
+        */
 
         // Tab Reordering
         /*
         { "name": "gradebookCourseDetailGrid", "nextSibling": "finalCourseDetailGrid" },
         { "name": "midtermCourseDetailGrid", "nextSibling": null },
         { "name": "finalGradeCourseRosterIncomplete", "nextSibling": "finalGradeCourseRoster" },
-        { "name": "infotext", "nextSibling": "sectionDetail" },
+        { "name": "infotext", "nextSibling": "sectionDetail" }
         */
 
 
@@ -48,7 +65,7 @@
         },
         { "name": "midtermCourseDetailGrid",
           "fields": [
-              { "name": "bannerId", "exclude": true }
+              { "name": "gradedStatus", "exclude": true }
           ]
         }
         */
@@ -111,14 +128,16 @@
         /*
         { "name": "datepickerTest",
           "fields": [
-              { "name": "jEditableDatepickerInput", "exclude": "true" ,
+              { "name": "jEditableDatepickerInput", "exclude": true ,
                 "attributes": {
-                   "label":{"key":"datepickerTest.jEditableDatepickerInput.label"}
+                   "label":{"key":"datepickerTest.jEditableDatepickerInput.label"},
+                   "title":{"key":"datepickerTest.jEditableDatepickerInput.title"}
                 }
               },
               { "name": "datepickerInput", "exclude": true,
                 "attributes": {
-                    "label":{"key":"datepickerTest.datepickerInput.label"}
+                    "label":{"key":"datepickerTest.datepickerInput.label"},
+                    "title":{"key":"datepickerTest.datepickerInput.title"}
                 }
               }
           ]
@@ -138,7 +157,7 @@
 
 
         // Select2 Removal
-
+        /*
         { "name": "select2Test",
           "fields": [
             {
@@ -150,7 +169,7 @@
             { "name": "select2Favourites", "exclude": false }
           ]
         }
-
+        */
 
 
         // Button Removal
@@ -224,7 +243,7 @@
 			  { "name": "testButton", "exclude": true },
 			  { "name": "testSubmitButton", "exclude": true },
 			  { "name": "nasaLink", "exclude": true },
-			  { "name": "noLink", "exclude": true },
+			  //{ "name": "noLink", "exclude": true },
 			  { "name": "googleLink", "exclude": true },
 			  { "name": "microsoftLink", "exclude": true },
 			  { "name": "amazonLink", "exclude": true },
@@ -327,9 +346,9 @@
 
 
         // Tab label replacement
-        /*
-        { "name": "finalCourseDetailGrid", "tabLabel": {"key":"finalCourseDetailGrid.label"}, "exclude": false}
-        */
+
+       // { "name": "finalCourseDetailGrid", "tabLabel": {"key":"finalCourseDetailGrid.label"}, "exclude": false}
+
 
         //Test field reorder within a section
        /* {
@@ -367,6 +386,7 @@
          }
          */
     ]
+    /*
     , "layouts": [
         {
             "#content":
@@ -394,6 +414,7 @@
             }
         }
     ]
+    */
 }]
 
 

@@ -9,10 +9,11 @@ var xe = (function (xe) {
     xe.typePrefix = 'xe-';                                                       //prefix for xe specific html attributes
     xe.type = {field: 'field',section: 'section'};                               //logical type names
     xe.attr = {field: xe.typePrefix+'field', section: xe.typePrefix+'section', labelledBy: 'aria-labelledby', describedBy: 'aria-describedby'};   //html attribute names
-    xe.replaceAttr = ['placeholder', 'title', 'buttonText', 'tabLabel'];
+    xe.replaceAttr = ['placeholder', 'title', 'label', 'buttonText', 'tabLabel', 'html'];
     xe.attrInh = {section: xe.typePrefix+'section-inh'};                         //html attribute name for section inherited
     xe.forAttribute = 'xe-for';
     xe.errors = [];
+    xe.sections;
 
     //Logging
     xe.logging = {none: 0, debug: 1, verbose: 2};
@@ -216,77 +217,85 @@ var xe = (function (xe) {
         return template( field );
     };
 
-    // Apply configured extensions to an element
-    xe.extend = function (element, attributes, actions) {
 
-        function getType(param) {
-            if (param.section)
-                return xe.type.section;
-            else if (param.field)
-                return xe.type.field;
-            else
-                throw 'Error: section or field is required for the current operation';
+    /*******************************************************************************************************
+    Element positioning information relies on the correct order of repositioning due to dependencies
+    This routine reorders positioning meta data accordingly
+    *******************************************************************************************************/
+    xe.reorderMetadata = function( extensions ) {
+
+        function getDependency ( extension, extensions ){
+
+            var complete = false;
+            var dependency;
+
+            while ( !complete ) {
+
+                dependency = _.find( extensions, function(n){
+                    return (n["name"] == extension.nextSibling) && n.processed == false;
+                });
+
+                if (!dependency) {
+                    complete = true;
+                }
+                else {
+                    extension = dependency;
+                }
+            }
+            return extension;
         }
 
+        var orderedMoves = [];
+        var allExtensionsApplied = false;
+        var extension;
 
-        function insertElementBeforeOrAfter(element,context,param) {
-            var type = getType(param);
-            var to;
-            var section;
-            var parent;
+        // mark all item positioning extensions as currently unprocessed
+        _.each( extensions, function(n) {
+            n.processed = false;
+        });
 
-            if (element.length==0) {
-                xe.errors.push('Unable to find element. ' + JSON.stringify(param));
-                return null;
-            }
+        while ( !allExtensionsApplied ) {
 
-            if ( param.nextSibling ) {
-                to = $(xe.selector(type, param.nextSibling), context);
-                if (to.length==0) {
-                    xe.errors.push('Unable to find target element. '+JSON.stringify(param));
-                    return null;
-                } else {
-                    element.insertBefore(to);
+            // find an unapplied extension
+            extension = _.find( extensions, function(n){ return n.processed == false });
+
+            if ( extension ) {
+
+                extension = getDependency( extension, extensions );
+                orderedMoves.push( extension );
+
+                // reorder fields if this is a section
+                if ( extension.fields ) {
+                    extension.orderedFields = xe.reorderMetadata( extension.fields );
                 }
+
+                extension.processed = true;
+
             } else {
-
-                // nextSibling specified as null so becomes last element.
-                if ( type == "field" ) {
-
-                    // xe-field must be defined within xe-section
-                    section = element.closest( xe.selector(xe.type.section) );
-                    if ( !section ) {
-                        xe.errors.push('Unable to find element section. ' + param.name);
-                        return null;
-                    } else {
-                        section.append(element);
-                    }
-                } else {  // type = section
-
-                    // xe-section may be defined within another xe-section or have a non xe-section parent
-                    // for now, sections are confined to their immediate parent
-                    parent = element.parent();
-                    parent.append(element);
-                }
+                allExtensionsApplied = true;
             }
+        }
+        return orderedMoves;
+    }
 
-            return element;
+
+    /*******************************************************************************************************
+    Apply extensions to all sections within rootElement
+    Note that rootElement may itself be a section
+    *******************************************************************************************************/
+    xe.extend = function ( rootElement ) {
+
+        /*******************************************************************************************************
+         Replace the label text on a tab
+         *******************************************************************************************************/
+        function replaceTabLabel( extensions ) {
+            $(xe.selectorFor(extensions.name)).find("a").html(xe.i18n(extensions.tabLabel));
         }
 
-        function add(param) {
-            var context = this;
-            var it;
-            if (param.component) {
-                it = xe.renderComponent(param.component);
-                xe.log('Component HTML: ',it);
-            } else { //if param.html is set, use it otherwise generate from template
-                it = param.html ? param.html : xe.generateField(param);
-            }
-            it=$(it).addClass("xe-added");
-            insertElementBeforeOrAfter(it,context,param);
-            xe.log('add', it);
-        }
 
+        /*******************************************************************************************************
+        Determine any associated elements of the given element
+        *******************************************************************************************************/
         function findAriaLinkedElements(ariaType, elementList) {
             var linkedElements = $();
             elementList.each(function() {
@@ -294,158 +303,255 @@ var xe = (function (xe) {
                 if (ariaLabels) {
                     $.merge(linkedElements,$('#' + ariaLabels.split(' ').join(',#')));
                 }
-
             })
             return linkedElements;
         }
 
-        function remove(param) {
-            var element = this;
-            var type = getType(param);
-            var it = $(xe.selectorToRemove(type,param[type]), element);
-            if (it) {
-                // include elements linked to this by aria-labelledby and aria-describedby ids
-                $.merge(it,findAriaLinkedElements(xe.attr.labelledBy,it));
-                $.merge(it,findAriaLinkedElements(xe.attr.describedBy,it));
-                xe.log('remove', it);
-                it.addClass('xe-exclude');
-            } else {
-                xe.log('unable to find ' + type + ' ' + param[type]);
-            }
+
+        /*******************************************************************************************************
+        Remove a section or field from the page
+        *******************************************************************************************************/
+        function removeElement( type, element ) {
+            var elementsToRemove = $(element).add( $(xe.selectorFor(element.attributes[xe.typePrefix + type].value) ) );
+
+            // include elements linked to this by aria-labelledby and aria-describedby ids
+            $.merge(elementsToRemove,findAriaLinkedElements(xe.attr.labelledBy,elementsToRemove));
+            $.merge(elementsToRemove,findAriaLinkedElements(xe.attr.describedBy,elementsToRemove));
+
+            elementsToRemove.addClass('xe-exclude');
         }
 
-        function move(param) {
-            var context = this;
-            var type = getType(param);
-            var elementToMove = $(xe.selector(type, param[type]), context).addClass("xe-moved");
-            insertElementBeforeOrAfter(elementToMove,context,param);
-            xe.log('move', elementToMove);
-        }
 
-        function replaceAttribute(attributeName,element,param) {
-            var type = getType(param);
-            // search for the element to be modified
-            var item = $(xe.selector(type,param[type]), element );
-            if (item.length > 0 && param[attributeName]) {
+        /*******************************************************************************************************
+        Reposition a section or field
+         *******************************************************************************************************/
+        function moveElement( elementType, extension ) {
+            var to;
+            var elementToMove = $(extension.element).addClass("xe-moved");
 
-                if (attributeName == "buttonText") {
-                    if ( $(item[0]).is("input") ) {
-                        $(item[0]).attr("value",xe.i18n(param[attributeName]));
-                    } else if ( $(item[0]).is("button") ) {
-                        $(item[0]).html(xe.i18n(param[attributeName]));
-                    }
-                } else if (attributeName == "tabLabel") {
-                    $(xe.selectorFor(param.name)).find("a").html(xe.i18n(param[attributeName]));
-                }  else {
-                    $(item[0]).attr(attributeName,xe.i18n(param[attributeName]))
+            if ( extension.nextSibling ) {
+                to = $(xe.selector(elementType, extension.nextSibling));
+                if (to.length==0) {
+                    xe.errors.push('Unable to find target element. '+JSON.stringify(extension));
+                    return null;
+                } else {
+                    elementToMove.insertBefore(to);
                 }
-
             } else {
-                xe.errors.push('Unable to find and replace ' + attributeName + ' for '+param[type]);
+                // nextSibling specified as null so becomes last element.
+                elementToMove.parent().append(elementToMove);
             }
         }
 
-        function replaceLabel(element,param) {
-            var type = getType(param);
-            var item = $(xe.selector(type,param[type]), element );
+
+        /*******************************************************************************************************
+        Ensures siblings (sections or fields) are correctly ordered on the page as specified by any
+        extensions.
+
+        This routine:
+        - determines an elements siblings which are of the same type as the element itself (section or field)
+        - retrieves ordered extensibility information for element type
+        - reorders the siblings according to this metadata
+        *******************************************************************************************************/
+        function orderSiblings( elementType, element, orderedExtensions ) {
+
+            var siblings = $(element).add( $(element).siblings(xe.selector(elementType)) );
+            _.each( orderedExtensions, function(extension) {
+
+                var sibling = siblings.filter( xe.selector(elementType, extension.name) );
+                if ( sibling ) {
+                    extension.element = sibling;
+                    moveElement(elementType, extension);
+                }
+            });
+        }
+
+
+		/*******************************************************************************************************
+        Replace an attribute on a field
+        *******************************************************************************************************/
+        function replaceAttribute(fieldElement,attributeName,attributeValue) {
+            $(fieldElement).attr(attributeName,xe.i18n(attributeValue));
+        }
+
+
+        /*******************************************************************************************************
+        Replace the HTML of a field
+        *******************************************************************************************************/
+        function replaceHTML( fieldExtension ) {
+
+            var newElement = null;
+            var fieldElement = $( xe.selectorToRemove(xe.type.field, fieldExtension.name) );
+            if (fieldExtension.component) {
+                newElement = xe.renderComponent(fieldExtension.component);
+            } else { //if param.html is set, use it otherwise generate from template
+                newElement = fieldExtension.attributes["html"] ? fieldExtension.attributes["html"] : xe.generateField(fieldExtension);
+            }
+            newElement = $(newElement).addClass("xe-replaced");
+            fieldElement.replaceWith(newElement);
+        }
+
+
+        /*******************************************************************************************************
+        Replace the label text on a button item
+        *******************************************************************************************************/
+        function replaceButtonText( fieldElement, fieldExtension ) {
+
+            if ( $(fieldElement).is("input") ) {
+                $(fieldElement).attr("value",xe.i18n(fieldExtension.attributes["buttonText"]));
+            } else if ( $(fieldElement).is("button") ) {
+                $(fieldElement).html(xe.i18n(fieldExtension.attributes["buttonText"]));
+            }
+        }
+
+
+        /*******************************************************************************************************
+        Replace any labels associated with a field
+        *******************************************************************************************************/
+        function replaceLabel( fieldElement, fieldExtension ) {
+
             var labelElement;
-            if (item.length > 0) {
-                var itemId = item[0].attributes["id"] ? item[0].attributes["id"].value : '';
-                if (item[0].attributes[xe.attr.labelledBy]) {
-                    labelElement = $('#' + item[0].attributes[xe.attr.labelledBy].value, element);
-                } else {
-                    //check for label inside item
-                    labelElement = $('label', item);
-                    if (!labelElement.length) {
-                        // check if parent element is a label
-                        labelElement = item.parent().is('label') ? item.parent() : $();
-                    }
-                    if (!labelElement.length && itemId)  {
-                        // check for label element marked as for this item id
-                        labelElement = $("label[for='" + itemId + "']");
-                    }
-                }
-                if (labelElement.length) {
-                    // replace the text in the first text node of the label
-                    var labelTextNode = labelElement.contents().filter(function() { return this.nodeType == 3})[0];
-                    if ( labelTextNode ) {
-                        labelTextNode.nodeValue = xe.i18n(param.label);
-                    }
-                } else {
-                    xe.errors.push('Unable to find and replace label for '+param[type]);
-                }
-            }
-        }
+            var itemId = fieldElement.attributes["id"] ? fieldElement.attributes["id"].value : '';
 
-        function replace(param) {
-            var element = this;
-            if (param.html) {
-                var type = getType(param);
-                var it = $(xe.selectorToRemove(type,param[type]), element);
-                var to = null;
-                if (param.component) {
-                    to = xe.renderComponent(param.component);
-                } else { //if param.html is set, use it otherwise generate from template
-                    to = param.html ? param.html : xe.generateField(param);
-                }
-                to = $(to).addClass("xe-replaced");
-                xe.log('replace', it);
-                it.replaceWith(to);
+            if ( fieldElement.attributes[xe.attr.labelledBy] ) {
+                labelElement = $('#' + fieldElement.attributes[xe.attr.labelledBy].value);
             } else {
-                if (param.label) {
-                    replaceLabel(element, param);
+                //get label inside item
+                labelElement = $('label', fieldElement);
+                if (!labelElement.length) {
+                    // check if parent element is a label
+                    labelElement = $(fieldElement).parent().is('label') ? $(fieldElement).parent() : $();
                 }
-
-                // Replace any attributes where new value provided
-                _.each(xe.replaceAttr,function(attrName) {
-                    if (param[attrName]) {replaceAttribute(attrName,element,param);}
-                });
-            }
-        }
-
-        // Do nothing if extensions are not enabled
-        if (!xe.enableExtensions())
-            return;
-
-        var start = new Date().getTime();
-        element = element||$('body'); //Make sure element has a value
-
-        if (actions) {
-            //Group / pagePart extensions
-            if (actions.move){
-                [actions.move].map(move, element);
-            }
-            if (actions.remove){
-                [actions.remove].map(remove, element);
-            }
-            if (actions.replace){
-                [actions.replace].map(replace, element);
-            }
-        }
-        else {
-
-            var section = attributes.xeSection || attributes.xeSectionInh;
-            if (section) {
-
-                var extensions = _.find(xe.extensions.sections, function( pSection ) {
-                    return pSection.name == section;
-                })
-
-                if (extensions) {
-
-                    if (extensions.remove)
-                        extensions.remove.map(remove, element);
-                    if (extensions.add)
-                        extensions.add.map(add, element);
-                    if (extensions.move)
-                        extensions.move.map(move, element);
-                    if (extensions.replace)
-                        extensions.replace.map(replace, element);
+                if (!labelElement.length && itemId)  {
+                    // check for label element marked as for this item id
+                    labelElement = $("label[for='" + itemId + "']");
                 }
             }
+            if (labelElement.length) {
+                // replace the text in the first text node of the label
+                var labelTextNode = labelElement.contents().filter(function() { return this.nodeType == 3})[0];
+                if ( labelTextNode ) {
+                    labelTextNode.nodeValue = xe.i18n(fieldExtension.attributes["label"]);
+                }
+            } else {
+                xe.errors.push('Unable to find and replace label for '+ fieldExtension.name);
+            }
         }
-        xe.log("Time to process extensions/ms: "+(new Date().getTime()-start));
+
+
+        /*******************************************************************************************************
+        Extend field attributes
+        *******************************************************************************************************/
+        function extendFieldAttributes( fieldElement, fieldExtension ) {
+
+            // Replace any attributes where new value provided
+            _.each(xe.replaceAttr,function(attributeName) {
+
+                if ( fieldExtension.attributes[attributeName] != undefined) {
+
+                    switch(attributeName) {
+                        case "html":
+                            replaceHTML(fieldExtension);
+                            break;
+                        case "label":
+                            replaceLabel(fieldElement, fieldExtension);
+                            break;
+                        case "buttonText":
+                            replaceButtonText(fieldElement, fieldExtension);
+                            break;
+                        default:
+                            replaceAttribute(fieldElement,attributeName,fieldExtension.attributes[attributeName]);
+                    }
+                }
+            });
+        }
+
+
+        /*******************************************************************************************************
+        Apply any extensions to each section field in turn
+        *******************************************************************************************************/
+        function extendSectionFields( section, extensions ) {
+
+            _.each( extensions.fields, function( fieldExtension ) {
+                var fieldElement = $(xe.selector(xe.type.field, fieldExtension.name ), section)[0];
+
+                if ( fieldElement ) {
+
+                    // exclude field
+                    if ( fieldExtension.exclude ) {
+                        removeElement(xe.type.field, fieldElement );
+                        return;
+                    }
+
+                    // reposition field
+                    if ( _.has(fieldExtension, "nextSibling") &&
+                        !$(fieldElement).hasClass("xe-moved")
+                        ) {
+                        orderSiblings( xe.type.field, fieldElement, extensions.orderedFields );
+                    }
+
+                    // add new field - not yet implemented?
+
+                    // extend field attributes
+                    if ( fieldExtension.attributes ) {
+                        extendFieldAttributes( fieldElement, fieldExtension)
+                    }
+                } else {
+                    xe.errors.push('Unable to find element ' + fieldExtension.name);
+                }
+            })
+        }
+
+
+        /*******************************************************************************************************
+        Retrieve the metadata for a section and apply the extensions
+        *******************************************************************************************************/
+        function extendSection( section ) {
+            var sectionName = section.attributes[xe.typePrefix + xe.type.section].value;
+
+            // retrieve section metadata
+            var extensions = _.find(xe.extensions.sections, function( sectionExtension ) {
+                return sectionName == sectionExtension.name;
+            });
+
+            if ( extensions ) {
+
+                // exclude section
+                if ( extensions.exclude ) {
+                    removeElement( xe.type.section, section );
+                    return;
+                }
+
+                // reposition section
+                if ( _.has(extensions, "nextSibling") &&
+                     !xe.sections.filter(xe.selector(xe.type.section, sectionName )).hasClass("xe-moved")
+                    ) {
+                    orderSiblings(xe.type.section, section, xe.extensions.orderedSections);
+                }
+
+                // modify tab label
+                if ( _.has(extensions, "tabLabel") ) {
+                    replaceTabLabel(extensions);
+                }
+
+                // apply any defined extensions to the fields of this section
+                extendSectionFields( section, extensions );
+            }
+        }
+
+        // determine list of sections to be processed
+        xe.sections = $(xe.selector(xe.type.section), rootElement);
+        if ( $(rootElement[0]).is(xe.selector(xe.type.section))) {
+            xe.sections = xe.sections.add( rootElement[0] );
+        }
+
+        // apply extensions to each section
+        _.each( xe.sections, function(section) {
+            extendSection( section );
+        });
+
     };  // end xe.extend
+
 
     //This function searches element children for sections
     xe.parseGroups = function(element,attributes){
@@ -680,154 +786,6 @@ var xe = (function (xe) {
 
     xe.startup = function(){
 
-        /*******************************************************************************************************
-        Restructure the metadata into a set of arrays for further removal, reordering and replacement processing
-        *******************************************************************************************************/
-        var normalizeMetadata = function() {
-
-            xe.extensions.groups = {}
-            xe.extensions.groups.sections = {}
-
-            // process each section in turn
-            xe.extensions.sections.forEach( function( pSection ) {
-
-                // remove section if specified
-                if ( pSection.exclude ) {
-                    pSection.section = pSection.name;  // make a note that this metadata refers to a section
-                    if (!xe.extensions.groups.sections[pSection.name])
-                        xe.extensions.groups.sections[pSection.name] = {};
-                    xe.extensions.groups.sections[pSection.name].remove = pSection;
-                };
-
-                // move section if specified
-                //if ( pSection.nextSibling ) {
-                if ( _.has(pSection, "nextSibling") ) {
-                    pSection.section = pSection.name;  // make a note that this metadata refers to a section
-                    if (!xe.extensions.groups.sections[pSection.name])
-                        xe.extensions.groups.sections[pSection.name] = {};
-                    xe.extensions.groups.sections[pSection.name].move = pSection;
-                }
-
-                // modify section attributes if required
-                pSection.section = pSection.name;  // make a note that this metadata refers to a section
-                if (!xe.extensions.groups.sections[pSection.name])
-                    xe.extensions.groups.sections[pSection.name] = {};
-                xe.extensions.groups.sections[pSection.name].replace = pSection;
-
-
-                // process the individual section fields
-                if ( pSection.fields ) {
-
-                    pSection.remove = []; pSection.move = []; pSection.replace = [];
-
-                    // process each field in turn
-                    pSection.fields.forEach( function( pField ) {
-
-                        pField.field = pField.name;  // make a note that this metadata refers to a field
-
-                        if ( pField.exclude)
-                            pSection.remove.push(pField);
-
-
-                        if ( _.has(pField, "nextSibling") ) {
-                            pSection.move.push(pField);
-                        }
-
-                        // process each attribute in turn
-                        if ( pField.attributes ) {
-
-                            _.each( _.keys(pField.attributes), function( pAttr ) {
-                                pField[pAttr] = pField.attributes[pAttr];
-                            });
-                            pSection.replace.push(pField);
-                        }
-                    });
-                }
-            });
-
-            reorderMetadata();
-        };
-
-
-        /***************************************************************************************************
-        item positioning information relies on the correct order of repositioning due to dependencies
-        reorder section and group positioning meta data accordingly
-        ***************************************************************************************************/
-        var reorderMetadata = function() {
-
-            // process each section in turn
-            _.each( xe.extensions.sections, function(section) {
-                reorder( section );
-            });
-        };
-
-        /***************************************************************************************************
-        reorder positioning metadata
-         ***************************************************************************************************/
-        var reorder = function( container ) {
-
-            var orderedMoves = [];
-            var allExtensionsApplied = false;
-            var extension;
-
-            // mark all item positioning extensions as currently unprocessed
-            _.each( container.move, function(n) {
-                n.processed = false;
-            });
-
-            while ( !allExtensionsApplied ) {
-
-                // find an unapplied extension
-                extension = _.find( container.move, function(n){ return n.processed == false });
-
-                if ( extension ) {
-
-                    extension = getDependency( extension, container.move );
-                    orderedMoves.push( extension );
-                    extension.processed = true;
-
-                } else {
-                    allExtensionsApplied = true;
-                }
-            }
-            container.move = orderedMoves;
-        }
-
-        /***************************************************************************************************
-
-         Some item moves need to take place before others eg.
-
-         {"field": "courseReferenceNumber", "before": "term"},
-         {"field": "term", "before": "subject"},
-         {"field": "subject", "before": "gradedStatus"}
-
-         subject needs to be moved first as term is dependent on position of subject.
-         term needs to be moved next as courseReferenceNumber is dependent on position of term
-         etc
-
-         This routine determines the next move operation that needs to take place
-
-         ***************************************************************************************************/
-        var getDependency = function( extension, extensions ){
-
-            var complete = false;
-            var dependency;
-
-            while ( !complete ) {
-
-                dependency = _.find( extensions, function(n){
-                    return (n["name"] == extension.nextSibling) && n.processed == false;
-                });
-
-                if (!dependency) {
-                    complete = true;
-                }
-                else {
-                    extension = dependency;
-                }
-            }
-            return extension;
-        }
 
         xe.log('Startup - fetching metadata...');
         //load meta-data synchronously to make sure it is available before compile needs it.
@@ -842,7 +800,7 @@ var xe = (function (xe) {
                 if (xe.devMode()){
                     xe.page.metadata=[$.extend(true,{},xe.extensions)];  //clone of extensions used for editor
                 }
-                normalizeMetadata();
+                xe.extensions.orderedSections = xe.reorderMetadata(xe.extensions.sections);
             }
         });
         xe.log(xe.extensions);
