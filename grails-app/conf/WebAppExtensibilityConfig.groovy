@@ -1,3 +1,5 @@
+import grails.util.Environment
+
 /*******************************************************************************
  Copyright 2015 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
@@ -10,8 +12,9 @@ class WebAppExtensibilityConfig extends Script {
             formControllerMap << [ 'restfulapi': ['SELFSERVICE'] ]
         }
 
-        if (!webAppExtensibility.adminRoles) {  //Set a default role if none configured
-            webAppExtensibility.adminRoles = "ROLE_SELFSERVICE-WTAILORADMIN_BAN_DEFAULT_M"
+        if (!webAppExtensibility.adminRoles) {
+            //When in production do not use a default admin role
+            webAppExtensibility.adminRoles = Environment.current==Environment.PRODUCTION?"":"ROLE_SELFSERVICE-WTAILORADMIN_BAN_DEFAULT_M"
         }
         def adminRoles =  webAppExtensibility.adminRoles.tokenize(',')  // List of adminRoles for Spring security
 
