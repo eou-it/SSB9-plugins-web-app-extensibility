@@ -102,13 +102,13 @@ $.fn.editable = _.wrap($.fn.editable, function (origEditable){
     var settings = null, fieldExtensions = null;
     if (sectionExtensions && sectionExtensions.fields) {
         fieldExtensions = fieldName && _.findWhere(sectionExtensions.fields,{name: fieldName});
-        if (fieldExtensions) {
+        if (fieldExtensions.attributes) {
             settings = $.extend(true, {}, args[1]);
-            if (fieldExtensions.placeholder) {
-                settings.placeholder = xe.i18n(fieldExtensions.placeholder);
+            if (fieldExtensions.attributes.placeholder) {
+                settings.placeholder = xe.i18n(fieldExtensions.attributes.placeholder);
             }
-            if (fieldExtensions.title) {
-                settings.tooltip = xe.i18n(fieldExtensions.title);
+            if (fieldExtensions.attributes.title) {
+                settings.tooltip = xe.i18n(fieldExtensions.attributes.title);
             }
             args[1] = settings;
         }
