@@ -49,7 +49,82 @@
         { "name": "gradebookCourseDetailGrid", "nextSibling": "finalCourseDetailGrid" },
         { "name": "midtermCourseDetailGrid", "nextSibling": null },
         { "name": "finalGradeCourseRosterIncomplete", "nextSibling": "finalGradeCourseRoster" },
-        { "name": "infotext", "nextSibling": "sectionDetail" }
+        { "name": "infotext", "nextSibling": "sectionDetail" },
+        */
+
+        // Change Placeholder text - Backbone.grid
+
+        /*
+        {
+          "name": "finalGradeCourseRoster",
+          "fields": [
+            {
+              "name": "attendanceHour",
+              "attributes": {
+                "placeholder": "Enter Hours"
+              }
+            },
+            {
+              "name": "grade",
+              "attributes": {
+                "placeholder": "Select Grade"
+              }
+            },
+            {
+              "name": "lastAttendance",
+              "attributes": {
+                "placeholder": "Enter Date"
+              }
+            },
+            {
+              "name": "gradeMidTerm",
+              "attributes": {
+                "placeholder": "Select Grade Midterm"
+              }
+            }
+          ]
+        },
+        {
+          "name": "finalGradeCourseRosterIncomplete",
+          "fields": [
+            {
+              "name": "incompleteExtDate",
+              "attributes": {
+                "placeholder": "Enter Date"
+              }
+            },
+            {
+              "name": "gradeIncompleteFinal",
+              "attributes": {
+                "placeholder": "Select Final Grade"
+              }
+            }
+          ]
+        },
+        {
+          "name": "midtermGradeCourseRosterGrid",
+          "fields": [
+            {
+              "name": "gradeMidTerm",
+              "attributes": {
+                "placeholder": "Select Grade Midterm"
+              }
+            },
+            {
+              "name": "attendanceHour",
+              "attributes": {
+                "placeholder": "Enter Hours"
+              }
+            },
+            {
+              "name": "lastAttendance",
+              "attributes": {
+                "placeholder": "Enter Date"
+              }
+            }
+          ]
+        },
+
         */
 
 
