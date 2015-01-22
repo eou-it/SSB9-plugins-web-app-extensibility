@@ -4,3 +4,15 @@
 .xe-exclude {
     display:none !important;
 }
+
+.xe-extensions-editor {
+    border: 1px solid #CCC;
+}
+
+#extensions-edit-input {
+    width: 98%;
+    height: 98%;
+    min-height: 250px;
+    overflow: auto;
+    resize: none;
+}

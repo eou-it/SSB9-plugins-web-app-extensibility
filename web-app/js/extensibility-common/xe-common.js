@@ -624,7 +624,7 @@ var xe = (function (xe) {
 
 
     // Page Editor - well, just show for now just show a simple node hierarchy
-    xe.renderPageStructureNew = function(page){
+    xe.renderPageStructure = function(page){
         var count = 0;
         function renderNode(node, html) {
             count++;
@@ -651,51 +651,6 @@ var xe = (function (xe) {
         return result;
     }
 
-    // If not used by anyone, remove this
-    xe.renderPageStructure = function(page) {
-        var result = "Page Structure "+page.description+" "+page.application+"/"+page.name;
-
-        var renderFields = function(fields) {
-            var res = "<ul>";
-            fields.forEach(
-                function (field,idx,array){
-                    res += "<li>Field: "  +field.name+"\n";
-                    res += "</li>";
-                }
-            );
-            res+="</ul>";
-            return res;
-        }
-
-        var renderSections = function(sections) {
-            var res = "<ul>";
-            sections.forEach(
-                function (section,idx,array){
-                    res += "<li>Section: "+section.name+"\n";
-                    res += renderFields(section.fields);
-                    res += "</li>";
-                }
-            );
-            res+="</ul>";
-            return res;
-        }
-
-        var renderGroups = function(groups) {
-            var res = "<ul>";
-            groups.forEach(
-                function (group,idx,array){
-                    res += "<li >Group "+group.name+"\n";    // have no name really
-                    res += renderSections(group.sections);
-                    res += "</li>";
-                }
-            );
-            res+="</ul>";
-            return res;
-        }
-        result += renderGroups(page.groups);
-        return result;
-    }
-
     xe.popups = [null,null,null];
 
 
@@ -703,7 +658,7 @@ var xe = (function (xe) {
         if (!popup) {
             popup = $('<div id="pageStructure'+page.description+'" ></div>');
             popup.dialog({appendTo: "#content", width: 600, height:"auto"});
-            popup.append(xe.renderPageStructureNew(page));
+            popup.append(xe.renderPageStructure(page));
         }
         popup.dialog("open");
         return popup;
@@ -713,17 +668,17 @@ var xe = (function (xe) {
 
     xe.showStats = function (page, popup) {
         xe.renderStats = function(page){
-            var res=result = "Page Statistics "+page.name;;
+            var res = $.i18n.prop("xe.page.status", [page.name]);
             for (key in xe.stats) {
                 res += '<li>'+key+'='+xe.stats[key];
             }
             if (xe.errors && xe.errors.length)
-                res+='<br>Errors<br>'+xe.errors;
+                res+='<br>'+ $.i18n.prop("xe.page.errors")+'<br>'+xe.errors;
             return res;
         }
 
         if (!popup) {
-            popup = $('<div id="pageStats' + page.name + '" ></div>');
+            popup = $('<div id="pageStats.' + page.name + '" ></div>');
             popup.dialog({appendTo: "#content", width: 600, height: "auto"});
             popup.append(xe.renderStats(page));
         }
@@ -733,8 +688,17 @@ var xe = (function (xe) {
 
     xe.extensionsEditor = function(page,popup) {
         if (!popup) {
-            popup = $('<div id="extensionsEditor' + page.name + '" ></div>');
-            popup.dialog({appendTo: "#content", width: 600, height: "auto"});
+            popup = $('<div id="extensionsEditor.' + page.name + '" ></div>');
+            popup.dialog({
+                dialogClass: "xe-extensions-editor",
+                title: $.i18n.prop("xe.extension.editor.window.title"),
+                appendTo: "#content", width: 600, height: "auto",
+                buttons: [
+                    {text: $.i18n.prop("xe.btn.label.cancel"), click: function() {$( this ).dialog( "close" );} },
+                    {text: $.i18n.prop("xe.btn.label.save"), click: function(){ xe.saveExtensions();} }
+                ]
+            });
+
             popup.load(extensibilityPluginPath+'/templates/extedit.html',
                        function(x){
                            $('#extensions-edit-input',popup).text(JSON.stringify(xe.page.metadata,null,2));
@@ -757,7 +721,7 @@ var xe = (function (xe) {
             data: JSON.stringify(data),
             processData: true,
             success: function(data){
-                        alert('Saved');
+                        alert($.i18n.prop("xe.alert.msg.saved"));
                         xe.log('Data Saved',data);
                      }
         });
@@ -771,16 +735,21 @@ var xe = (function (xe) {
     //Add the tools menu item Extensibility if we are in developer mode
     xe.addExtensibilityMenu = function () {
         if (xe.devMode()) {
-            ToolsMenu.addSection("extensibility", "Extensibility");
+            ToolsMenu.addSection("extensibility", $.i18n.prop("xe.menu.section.extensibility"));
+
+            /* Following item needs to be implemented for non Angular pages. Disable.
             ToolsMenu.addItem("pagestructurebase", "Show Baseline Page Structure", "extensibility", function () {
                 xe.popups[0] = xe.showPageStructure(xe.page, xe.popups[0])
             });
-            ToolsMenu.addItem("pagestats", "Show Page Statistics / Status", "extensibility", function () {
+             */
+            ToolsMenu.addItem("pagestats", $.i18n.prop("xe.menu.extensions.status"), "extensibility", function () {
                 xe.popups[1] = xe.showStats(xe.page, xe.popups[1])
             });
-            ToolsMenu.addItem("extensionseditor", "Edit Extensions", "extensibility", function () {
+
+            ToolsMenu.addItem("extensionseditor", $.i18n.prop("xe.menu.extensions.edit"), "extensibility", function () {
                 xe.popups[2] = xe.extensionsEditor(xe.page, xe.popups[2])
             });
+            ToolsMenu.addSection("base", $.i18n.prop("xe.menu.section.other"));
         }
     }
 
@@ -797,10 +766,12 @@ var xe = (function (xe) {
             success: function(json){
                 xe.log('data loaded');
                 xe.extensions=json[0]; //data used for extending page
-                if (xe.devMode()){
-                    xe.page.metadata=[$.extend(true,{},xe.extensions)];  //clone of extensions used for editor
+                if (xe.extensions) {
+                    if (xe.devMode()){
+                        xe.page.metadata=[$.extend(true,{},xe.extensions)];  //clone of extensions used for editor
+                    }
+                    xe.extensions.orderedSections = xe.reorderMetadata(xe.extensions.sections);
                 }
-                xe.extensions.orderedSections = xe.reorderMetadata(xe.extensions.sections);
             }
         });
         xe.log(xe.extensions);

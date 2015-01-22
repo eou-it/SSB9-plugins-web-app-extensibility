@@ -1,5 +1,6 @@
 package net.hedtech.extensibility.metadata
 import grails.converters.JSON
+import org.codehaus.groovy.grails.plugins.web.taglib.ValidationTagLib
 import org.codehaus.groovy.grails.web.converters.exceptions.ConverterException
 import grails.util.Environment
 import org.apache.log4j.Logger
@@ -7,7 +8,9 @@ import org.apache.log4j.Logger
 class ExtensionService {
     def static extensionsPath = grails.util.Holders.getConfig().webAppExtensibility.locations.extensions
     private static final Logger log = Logger.getLogger( this.getClass() )
-
+    def localizerService = { mapToLocalize ->
+        new ValidationTagLib().message(mapToLocalize)
+    }
     //Pages don't have a unique id, have to query by application and page name
     def list(params) {
         def md = []
@@ -23,12 +26,12 @@ class ExtensionService {
 
     def create(Map content, params) {
         def result = content.metadata
-        println "Saving ${content.application} ${content.page} "
+        log.info "Saving ${content.application} ${content.page} "
         if (content.application && content.page) {
             saveToFile(content.application, content.page, content.metadata)
             result
         } else {
-            throw new Exception("Application and Page are required to save a page extension")
+            throw new Exception(localizerService(code: "extension.service.create.missing.param"))
         }
     }
 

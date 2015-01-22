@@ -6,10 +6,17 @@ package net.hedtech.extensibility.metadata
 
 import grails.converters.JSON
 import grails.util.Environment
+import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.plugins.web.taglib.ValidationTagLib
 import org.springframework.web.context.request.RequestContextHolder
 
 
 class ResourceService {
+    private static final Logger log = Logger.getLogger( this.getClass() )
+    def localizerService = { mapToLocalize ->
+        new ValidationTagLib().message(mapToLocalize)
+    }
+
     def grailsApplication
     def static resourcePath = grails.util.Holders.getConfig().webAppExtensibility.locations.resources
 
@@ -31,12 +38,12 @@ class ResourceService {
 
     def create(Map content, params) {
         def result = content.metadata
-        println "Saving resources for ${content.application} ${content.page} "
+        log.info "Saving resources for ${content.application} ${content.page} "
         if (content.application && content.page) {
             saveToFile(content.application, content.page, content.metadata)
             result
         } else {
-            throw new Exception("Application and Page are required to save page resources")
+            throw new Exception(localizerService(code: "resource.service.create.missing.param"))
         }
     }
 
