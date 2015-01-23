@@ -89,20 +89,37 @@ $.fn.layout = _.wrap($.fn.layout, function extendLayout(origLayout) {
     return origLayout.apply( this, args );
 });
 
+function getExtensions(xeFieldType, section, component) {
+
+    var extensions = null, sectionExtensions = section;
+
+    if (xeFieldType == xe.attr.section && (sectionExtensions == undefined || null == sectionExtensions)) {
+        // fetch the xe section extensions if any
+        var sectionName = component.closest(xe.selector(xe.type.section)).attr(xe.typePrefix + xe.type.section);
+        var extensions = sectionName && _.findWhere(xe.extensions.sections, {name: sectionName});
+    } else if (xeFieldType == xe.attr.field && typeof sectionExtensions == "object") {
+        // fetch the xe field extensions if any
+        var fieldName = component.closest(xe.selector(xe.type.field)).attr(xe.attr.field);
+        if (sectionExtensions.fields) {
+            extensions = fieldName && _.findWhere(sectionExtensions.fields, {name: fieldName});
+
+        }
+    }
+    return extensions;
+}
+
 // Extend the jquery editable function to provide dynamic placeholder and title values
 var oldEditable = $.fn.editable;
 
 $.fn.editable = _.wrap($.fn.editable, function (origEditable){
     var args = Array.prototype.slice.call( arguments, 1 );
-    // find the xe field and section names
-    var fieldName = this.closest(xe.selector(xe.type.field)).attr(xe.typePrefix + xe.type.field);
-    var sectionName = this.closest(xe.selector(xe.type.section)).attr(xe.typePrefix + xe.type.section );
-    // look for extensions for this section and field
-    var sectionExtensions = sectionName && _.findWhere(xe.extensions.sections,{name: sectionName});
+    var element = this;
+    // find the xe field and section name
+    var sectionExtensions = getExtensions(xe.attr.section, null, element);
     var settings = null, fieldExtensions = null;
-    if (sectionExtensions && sectionExtensions.fields) {
-        fieldExtensions = fieldName && _.findWhere(sectionExtensions.fields,{name: fieldName});
-        if (fieldExtensions.attributes) {
+    if(sectionExtensions){
+        fieldExtensions = getExtensions(xe.attr.field, sectionExtensions, element);
+        if ( fieldExtensions && fieldExtensions.attributes) {
             settings = $.extend(true, {}, args[1]);
             if (fieldExtensions.attributes.placeholder) {
                 settings.placeholder = xe.i18n(fieldExtensions.attributes.placeholder);
@@ -119,5 +136,27 @@ $.fn.editable = _.wrap($.fn.editable, function (origEditable){
 });
 // copy extra attributes from original function
 $.extend( $.fn.editable, oldEditable );
+
+//An extension of the select2 jquery plugin function... (EXTZ- 594)
+var originalSelect2 = $.fn.select2;
+
+$.fn.select2 = _.wrap($.fn.select2, function extendSelect2(origSelect2) {
+    var args = Array.prototype.slice.call(arguments, 1);
+    var element = this;
+    var select2Component = origSelect2.apply(this, args);
+
+    //check if any extensions have been applied for this component
+    var sectionExtensions = getExtensions(xe.attr.section, null, element);
+    var fieldExtensions = getExtensions(xe.attr.field, sectionExtensions, element);
+    if (fieldExtensions && fieldExtensions.attributes) {
+        //manipulate the select2 component to set the hint text
+        var select2 = select2Component.data('select2');
+        select2.container.attr("title", xe.i18n(fieldExtensions.attributes.title));
+    }
+
+    return select2Component;
+
+});
+$.extend($.fn.select2, originalSelect2);
 
 
