@@ -12,5 +12,7 @@
     "datepickerTest.jEditableDatepickerInput.title": "Cliquez sur la date pour modifier",
 	"datepickerTest.datepickerInput.label": "Sélecteur de date type 2",
     "datepickerTest.datepickerInput.title": "Cliquez ici",
-	"select2Test.select2Home": "My Home État"
+	"select2Test.select2Home": "My Home État",
+    "select2Test.select2Home.title": "Sélectionnez un état",
+    "select2Test.select2Favourites.title": "Sélectionnez un ou plusieurs État(s)"
 }

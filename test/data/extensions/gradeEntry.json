@@ -347,6 +347,20 @@
                 }
               }
           ]
+        },
+        {"name": "select2Test",
+         "fields": [
+             { "name": "select2Home",
+               "attributes": {
+                   "title": "select2Test.select2Home.title"
+               }
+             } ,
+             { "name": "select2Favourites",
+               "attributes": {
+                  "title": "select2Test.select2Favourites.title"
+               }
+             }
+         ]
         }
         */
 

@@ -20,6 +20,8 @@
     "pillbox.pillbox.label": "Extended Pillbox Label",
     "finalCourseDetailGrid.label": "Extended Tab Label",
     "select2Test.select2Home": "My Home State",
+    "select2Test.select2Home.title": "Select a state",
+    "select2Test.select2Favourites.title": "Select one or more state(s)",
     "testFieldAttributes.testButton.title": "This is a Test button",
     "mainButtonBar.saveButton.title": "This is the Save button",
     "numberTest.html5NumberInput.placeholder": "Enter a number please",
