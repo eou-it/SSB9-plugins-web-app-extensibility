@@ -151,7 +151,9 @@ $.fn.select2 = _.wrap($.fn.select2, function extendSelect2(origSelect2) {
     if (fieldExtensions && fieldExtensions.attributes) {
         //manipulate the select2 component to set the hint text
         var select2 = select2Component.data('select2');
-        select2.container.attr("title", xe.i18n(fieldExtensions.attributes.title));
+        if (fieldExtensions.attributes.title) {
+            select2.container.attr("title", xe.i18n(fieldExtensions.attributes.title));
+        }
     }
 
     return select2Component;
