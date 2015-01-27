@@ -381,17 +381,16 @@ var xe = (function (xe) {
         *******************************************************************************************************/
         function replaceHTML( fieldExtension ) {
 
-            var newElement = null;
+            var newHTML;
             var fieldElement = $( xe.selectorToRemove(xe.type.field, fieldExtension.name) );
             if (fieldExtension.component) {
-                newElement = xe.renderComponent(fieldExtension.component);
+                newHTML = xe.renderComponent(fieldExtension.component);
             } else { //if param.html is set, use it otherwise generate from template
-                newElement = fieldExtension.attributes["html"] ? fieldExtension.attributes["html"] : xe.generateField(fieldExtension);
+                newHTML = fieldExtension.attributes["html"] ? fieldExtension.attributes["html"] : xe.generateField(fieldExtension);
             }
-            newElement = $(newElement).addClass("xe-replaced");
-            fieldElement.replaceWith(newElement);
+            fieldElement.html(newHTML);
+            fieldElement.addClass("xe-replaced");
         }
-
 
         /*******************************************************************************************************
         Replace the label text on a button item
