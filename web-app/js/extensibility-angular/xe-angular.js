@@ -25,7 +25,7 @@ xe.ng.parentElement = function(element){
         }
     }
     return section;
-}
+};
 
 xe.ng.parseElement = function(page,el) {
     if (el.nodeType!=3) {

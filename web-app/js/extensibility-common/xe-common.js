@@ -14,6 +14,7 @@ var xe = (function (xe) {
     xe.forAttribute = 'xe-for';
     xe.errors = [];
     xe.sections;
+    xe.extensionsFound = false;
 
     //Logging
     xe.logging = {none: 0, debug: 1, verbose: 2};
@@ -54,24 +55,24 @@ var xe = (function (xe) {
                 }
             }
         });
-    }
+    };
 
     // item is a string or an object with a key attribute
     // for now we don't support args
     xe.i18n = function (item, args) {
         return (typeof item == 'string')?item: $.i18n.prop(item.key, args);
-    }
+    };
 
     //Check if we are in developer mode
     xe.devMode = function() {
         return extensibilityAdmin;
-    }
+    };
 
     //This gets called several times, is it worth to refactor and eveluate URL parameters only once?
     //Don't bother for now, we may remove this from release as it is not a userstory to have enable/disable extensions
     xe.enableExtensions = function() {
         return window.location.search.indexOf("baseline=y")==-1;
-    }
+    };
 
 
     // create a selector for an element - specify a name or a selector for all with a specific type
@@ -80,16 +81,16 @@ var xe = (function (xe) {
             return '['+ xe.typePrefix + elementType + '=' + name + ']';
         else
             return '['+ xe.typePrefix + elementType+']';
-    }
+    };
 
     xe.selectorFor = function( name ) {
       return '[' + xe.forAttribute + (name ? '=' + name: '') + ']';
-    }
+    };
 
     // Create a selector for removing an element and its associated labels, etc.
     xe.selectorToRemove = function( elementType, name ) {
         return xe.selector( elementType, name) + ', ' + xe.selectorFor( name ); //['+xe.typePrefix+'="' + name + '"]';
-    }
+    };
 
     // get a simple selector for the group (well, nothing specific for a group so far)
     // might want to assure it has a child section
@@ -100,7 +101,7 @@ var xe = (function (xe) {
         if (element[0].class)
             res += '.'+element[0].class;
         return res;
-    }
+    };
 
     xe.getFields = function(section) {
         var fields = $(xe.selector(xe.type.field),section);
@@ -109,15 +110,15 @@ var xe = (function (xe) {
             res.push({name:field.attributes[xe.typePrefix+xe.type.field].value, html:field.outerHTML});
         });
         return res;
-    }
+    };
 
     xe.getPageName = function() {
         // return location.pathname.substring(location.pathname.indexOf('/ssb/')+5);
         return location.pathname.substring(location.pathname.lastIndexOf('/')+1);
-    }
+    };
     xe.getApplication = function() {
         return location.pathname.substring(1,location.pathname.indexOf('/',1));
-    }
+    };
 
     // Metadata definition for page parsing - for now just for showing as a help for extension developers
     // Basic structure (example, Sections can be nested but don't have to):
@@ -182,7 +183,7 @@ var xe = (function (xe) {
                 }
             }
         }
-    }
+    };
 
     //metadata for baseline page
     xe.page = new xe.Page('Baseline Page');
@@ -208,12 +209,12 @@ var xe = (function (xe) {
         'text': function( field ) {
             return '<div data-xe-for="' + field.name + '"><label>' + (field.label||'Empty Label') + '</label><text title="title text" data-xe-field="' + field.name + '" ng-model="' + field.name + '"></text></div>';
         }
-    }
+    };
 
     // utility function to generate the HTML for a specific field
     xe.generateField = function(field) {
         var template = xe.templates[field.template] || xe.templates['static'];
-        xe.log( 'using template ' + field.template + '=' + template)
+        xe.log( 'using template ' + field.template + '=' + template);
         return template( field );
     };
 
@@ -276,7 +277,7 @@ var xe = (function (xe) {
             }
         }
         return orderedMoves;
-    }
+    };
 
 
     /*******************************************************************************************************
@@ -303,7 +304,7 @@ var xe = (function (xe) {
                 if (ariaLabels) {
                     $.merge(linkedElements,$('#' + ariaLabels.split(' ').join(',#')));
                 }
-            })
+            });
             return linkedElements;
         }
 
@@ -592,7 +593,7 @@ var xe = (function (xe) {
             );
         }
         return xe.voidElements[tag.toLowerCase()];
-    }
+    };
 
     //Render a generic component as HTML (a component is a simplified representation of HTML DOM element)
     xe.renderComponent = function ( component ) {
@@ -620,7 +621,7 @@ var xe = (function (xe) {
             result += "</" + component.tagName + ">";
         }
         return result;
-    }
+    };
 
 
     // Page Editor - well, just show for now just show a simple node hierarchy
@@ -649,7 +650,7 @@ var xe = (function (xe) {
         var result = "Page Structure "+page.description+" "+page.application+"/"+page.name;
         result = renderNode(page.dom, result);
         return result;
-    }
+    };
 
     xe.popups = [null,null,null];
 
@@ -662,7 +663,7 @@ var xe = (function (xe) {
         }
         popup.dialog("open");
         return popup;
-    }
+    };
 
     xe.stats = {};
 
@@ -675,7 +676,7 @@ var xe = (function (xe) {
             if (xe.errors && xe.errors.length)
                 res+='<br>'+ $.i18n.prop("xe.page.errors")+'<br>'+xe.errors;
             return res;
-        }
+        };
 
         if (!popup) {
             popup = $('<div id="pageStats.' + page.name + '" ></div>');
@@ -684,7 +685,7 @@ var xe = (function (xe) {
         }
         popup.dialog("open");
         return popup;
-    }
+    };
 
     xe.extensionsEditor = function(page,popup) {
         if (!popup) {
@@ -707,7 +708,7 @@ var xe = (function (xe) {
         }
         popup.dialog("open");
         return popup;
-    }
+    };
 
     //Post updated extensions to the database
     xe.saveExtensions=function(){
@@ -725,12 +726,12 @@ var xe = (function (xe) {
                         xe.log('Data Saved',data);
                      }
         });
-    }
+    };
 
     //Update the model with modifed extensions
     xe.setExtensions = function (value) {
         xe.page.metadata = JSON.parse(value);
-    }
+    };
 
     //Add the tools menu item Extensibility if we are in developer mode
     xe.addExtensibilityMenu = function () {
@@ -751,7 +752,7 @@ var xe = (function (xe) {
             });
             ToolsMenu.addSection("base", $.i18n.prop("xe.menu.section.other"));
         }
-    }
+    };
 
     xe.startup = function(){
 
@@ -764,20 +765,25 @@ var xe = (function (xe) {
             data: {application: xe.page.application,page: xe.page.name,hash:location.hash},
             async: false,
             success: function(json){
-                xe.log('data loaded');
-                xe.extensions=json[0]; //data used for extending page
-                if (xe.extensions) {
-                    if (xe.devMode()){
-                        xe.page.metadata=[$.extend(true,{},xe.extensions)];  //clone of extensions used for editor
+                    xe.log('data loaded');
+                    xe.extensions=json[0]; //data used for extending page
+                    if ((xe.extensions !== undefined)) {
+                        xe.extensionsFound = true;
+                        if (xe.devMode()){
+                            xe.page.metadata=[$.extend(true,{},xe.extensions)];  //clone of extensions used for editor
+                        }
+                        xe.extensions.orderedSections = xe.reorderMetadata(xe.extensions.sections);
                     }
-                    xe.extensions.orderedSections = xe.reorderMetadata(xe.extensions.sections);
-                }
             }
         });
-        xe.log(xe.extensions);
-        xe.loadResources();
+        if (xe.extensionsFound) {
+            xe.log(xe.extensions);
+            xe.loadResources();
+        } else {
+            xe.log('No Extensibility definitions found!');
+        }
         xe.addExtensibilityMenu();
-    }
+    };
 
     $(xe.startup);
 
