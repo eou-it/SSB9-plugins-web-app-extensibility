@@ -16,3 +16,7 @@
     overflow: auto;
     resize: none;
 }
+
+.xe-placeholder {
+    color:#999999;
+}
