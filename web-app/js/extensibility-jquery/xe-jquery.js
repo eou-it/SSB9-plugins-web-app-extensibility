@@ -8,16 +8,14 @@ xe.jq = (function(xe) {
     ***************************************************************************************************/
     jq.extendTemplates = function(rootElement) {
 
-        if (xe.extensionsFound) {
-            if ( xe.enableExtensions() ) {
-                var templates = $('script[type="text/x-handlebars-template"]',rootElement);
-                templates.each(function (template){
-                    var rootElement =  $('<div>'+template.text+'</div>');
-                    $(rootElement[0].firstElementChild).addClass('xe-extended'); // prevent duplicate application
-                    xe.extend( rootElement );
-                    template.text=rootElement[0].innerHTML;
-                });
-            }
+        if ( xe.enableExtensions() ) {
+            var templates = $('script[type="text/x-handlebars-template"]',rootElement);
+            templates.each(function (template){
+                var rootElement =  $('<div>'+template.text+'</div>');
+                $(rootElement[0].firstElementChild).addClass('xe-extended'); // prevent duplicate application
+                xe.extend( rootElement );
+                template.text=rootElement[0].innerHTML;
+            });
         }
     };
 
@@ -44,10 +42,10 @@ xe.jq = (function(xe) {
     return jq;
 })(xe||{});
 
-//Reordering of Tabs
-$.fn.tabs = _.wrap($.fn.tabs, function expandTabs(org) {
-    var self = this;
-    if (xe.extensionsFound) {
+if (xe.extensionsFound) {
+    //Reordering of Tabs
+    $.fn.tabs = _.wrap($.fn.tabs, function expandTabs(org) {
+        var self = this;
         var sections = xe.extensions.orderedSections;
         var list = this.find("ol,ul").eq(0);
         $.each( sections, function(key, section  ) {   //Iterate through array of JSON objects (extensions)
@@ -76,14 +74,13 @@ $.fn.tabs = _.wrap($.fn.tabs, function expandTabs(org) {
                 }
             }
         });
-    }
-    var args = Array.prototype.slice.call(arguments, 1);  // use Array.slice function to copy the arguments array from 1-end, without 'org'
-    return org.apply( this, args );
-});
-// Extend jQuery UI Layout options
-$.fn.layout = _.wrap($.fn.layout, function extendLayout(origLayout) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    if (xe.extensionsFound) {
+        var args = Array.prototype.slice.call(arguments, 1);  // use Array.slice function to copy the arguments array from 1-end, without 'org'
+        return org.apply( this, args );
+    });
+
+    // Extend jQuery UI Layout options
+    $.fn.layout = _.wrap($.fn.layout, function extendLayout(origLayout) {
+        var args = Array.prototype.slice.call(arguments, 1);
         var layouts = xe.extensions.layouts;
         if (layouts) {
             for (var i = 0; i < layouts.length; i++) {
@@ -93,14 +90,12 @@ $.fn.layout = _.wrap($.fn.layout, function extendLayout(origLayout) {
                 }
             }
         }
-    }
-    return origLayout.apply( this, args );
-});
+        return origLayout.apply( this, args );
+    });
 
-function getExtensions(xeFieldType, section, component) {
+    function getExtensions(xeFieldType, section, component) {
 
-    var extensions = null, sectionExtensions = section;
-    if (xe.extensionsFound) {
+        var extensions = null, sectionExtensions = section;
         if (xeFieldType == xe.attr.section && (sectionExtensions == undefined || null == sectionExtensions)) {
             // fetch the xe section extensions if any
             var sectionName = component.closest(xe.selector(xe.type.section)).attr(xe.typePrefix + xe.type.section);
@@ -112,59 +107,60 @@ function getExtensions(xeFieldType, section, component) {
                 extensions = fieldName && _.findWhere(sectionExtensions.fields, {name: fieldName});
             }
         }
+        return extensions;
     }
-    return extensions;
-}
 
-// Extend the jquery editable function to provide dynamic placeholder and title values
-var oldEditable = $.fn.editable;
+    // Extend the jquery editable function to provide dynamic placeholder and title values
+    var oldEditable = $.fn.editable;
 
-$.fn.editable = _.wrap($.fn.editable, function (origEditable){
-    var args = Array.prototype.slice.call( arguments, 1 );
-    var element = this;
-    // find the xe field and section name
-    var sectionExtensions = getExtensions(xe.attr.section, null, element);
-    var settings = null, fieldExtensions = null;
-    if(sectionExtensions){
-        fieldExtensions = getExtensions(xe.attr.field, sectionExtensions, element);
-        if ( fieldExtensions && fieldExtensions.attributes) {
-            settings = $.extend(true, {}, args[1]);
-            if (fieldExtensions.attributes.placeholder) {
-                settings.placeholder = xe.i18n(fieldExtensions.attributes.placeholder);
+    $.fn.editable = _.wrap($.fn.editable, function (origEditable){
+        var args = Array.prototype.slice.call( arguments, 1 );
+        var element = this;
+        // find the xe field and section name
+        var sectionExtensions = getExtensions(xe.attr.section, null, element);
+        var settings = null, fieldExtensions = null;
+        if(sectionExtensions){
+            fieldExtensions = getExtensions(xe.attr.field, sectionExtensions, element);
+            if ( fieldExtensions && fieldExtensions.attributes) {
+                settings = $.extend(true, {}, args[1]);
+                if (fieldExtensions.attributes.placeholder) {
+                    settings.placeholder = xe.i18n(fieldExtensions.attributes.placeholder);
+                }
+                if (fieldExtensions.attributes.title) {
+                    settings.tooltip = xe.i18n(fieldExtensions.attributes.title);
+                }
+                args[1] = settings;
             }
+        }
+        // call original editable function with updated arguments
+        return origEditable.apply( this, args );
+
+    });
+    // copy extra attributes from original function
+    $.extend( $.fn.editable, oldEditable );
+
+    //An extension of the select2 jquery plugin function... (EXTZ- 594)
+    var originalSelect2 = $.fn.select2;
+
+    $.fn.select2 = _.wrap($.fn.select2, function extendSelect2(origSelect2) {
+        var args = Array.prototype.slice.call(arguments, 1);
+        var element = this;
+        var select2Component = origSelect2.apply(this, args);
+
+        //check if any extensions have been applied for this component
+        var sectionExtensions = getExtensions(xe.attr.section, null, element);
+        var fieldExtensions = getExtensions(xe.attr.field, sectionExtensions, element);
+        if (fieldExtensions && fieldExtensions.attributes) {
+            //manipulate the select2 component to set the hint text
+            var select2 = select2Component.data('select2');
             if (fieldExtensions.attributes.title) {
-                settings.tooltip = xe.i18n(fieldExtensions.attributes.title);
+                select2.container.attr("title", xe.i18n(fieldExtensions.attributes.title));
             }
-            args[1] = settings;
         }
-    }
-    // call original editable function with updated arguments
-    return origEditable.apply( this, args );
 
-});
-// copy extra attributes from original function
-$.extend( $.fn.editable, oldEditable );
+        return select2Component;
 
-//An extension of the select2 jquery plugin function... (EXTZ- 594)
-var originalSelect2 = $.fn.select2;
+    });
+    $.extend($.fn.select2, originalSelect2);
 
-$.fn.select2 = _.wrap($.fn.select2, function extendSelect2(origSelect2) {
-    var args = Array.prototype.slice.call(arguments, 1);
-    var element = this;
-    var select2Component = origSelect2.apply(this, args);
-
-    //check if any extensions have been applied for this component
-    var sectionExtensions = getExtensions(xe.attr.section, null, element);
-    var fieldExtensions = getExtensions(xe.attr.field, sectionExtensions, element);
-    if (fieldExtensions && fieldExtensions.attributes) {
-        //manipulate the select2 component to set the hint text
-        var select2 = select2Component.data('select2');
-        if (fieldExtensions.attributes.title) {
-            select2.container.attr("title", xe.i18n(fieldExtensions.attributes.title));
-        }
-    }
-
-    return select2Component;
-
-});
-$.extend($.fn.select2, originalSelect2);
+}
