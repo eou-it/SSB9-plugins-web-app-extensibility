@@ -329,6 +329,8 @@ var xe = (function (xe) {
         function moveElement( elementType, extension ) {
             var to;
             var elementToMove = $(extension.element).addClass("xe-moved");
+            var lastElement;
+            var selector;
 
             if ( extension.nextSibling ) {
                 to = $(xe.selector(elementType, extension.nextSibling));
@@ -339,8 +341,14 @@ var xe = (function (xe) {
                     elementToMove.insertBefore(to);
                 }
             } else {
-                // nextSibling specified as null so becomes last element.
-                elementToMove.parent().append(elementToMove);
+                // nextSibling specified as null so is positioned after it's last sibling of elementType if one exists
+                selector = "[" + xe.typePrefix + elementType + "]";
+                lastElement = elementToMove.siblings(selector).last();
+                if ( lastElement.length > 0 ) {
+                    elementToMove.insertAfter( lastElement );
+                } else {
+                    elementToMove.parent().append(elementToMove);
+                }
             }
         }
 
