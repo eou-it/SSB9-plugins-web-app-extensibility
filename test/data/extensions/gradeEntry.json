@@ -270,7 +270,8 @@
           "fields": [
               { "name": "field4", "nextSibling": "field1" },
               { "name": "field2", "nextSibling": "field4" },
-              { "name": "field1", "nextSibling": null }
+              { "name": "field1", "nextSibling": null },
+              { "name": "field5", "nextSibling": null }
           ]
         }
         */
