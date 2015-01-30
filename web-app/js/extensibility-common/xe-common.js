@@ -780,6 +780,7 @@ var xe = (function (xe) {
                             xe.page.metadata=[$.extend(true,{},xe.extensions)];  //clone of extensions used for editor
                         }
                         xe.extensions.orderedSections = xe.reorderMetadata(xe.extensions.sections);
+                        xe.extendFunctions();
                     }
             }
         });

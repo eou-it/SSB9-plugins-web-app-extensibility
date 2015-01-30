@@ -42,7 +42,7 @@ xe.jq = (function(xe) {
     return jq;
 })(xe||{});
 
-if (xe.extensionsFound) {
+xe.extendFunctions = function () {
     //Reordering of Tabs
     $.fn.tabs = _.wrap($.fn.tabs, function expandTabs(org) {
         var self = this;
@@ -163,4 +163,4 @@ if (xe.extensionsFound) {
     });
     $.extend($.fn.select2, originalSelect2);
 
-}
+};
