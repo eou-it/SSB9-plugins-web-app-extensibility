@@ -19,7 +19,7 @@ class ExtensibilityUrlMappings {
         }
         //secured restful api requiring the webtailor admin role
         "/webadmin/$pluralizedResourceName/$id"(controller: 'restfulApi') {
-            action = [GET: "show", PUT: "update",
+            action = [GET   : "show", PUT: "update",
                       DELETE: "delete"]
             parseRequest = false
             constraints {

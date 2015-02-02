@@ -1,31 +1,31 @@
-import grails.util.Environment
-
 /*******************************************************************************
  Copyright 2015 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
+
+import grails.util.Environment
 
 class WebAppExtensibilityConfig extends Script {
     def run() {
         if (formControllerMap['restfulapi']) {
             println "*WARNING* restfulapi is already configured in the formControllerMap, please make sure ['SELFSERVICE'] is included"
         } else {
-            formControllerMap << [ 'restfulapi': ['SELFSERVICE'] ]
+            formControllerMap << ['restfulapi': ['SELFSERVICE']]
         }
 
         if (!webAppExtensibility.adminRoles) {
             //When in production do not use a default admin role
-            webAppExtensibility.adminRoles = Environment.current==Environment.PRODUCTION?"":"ROLE_SELFSERVICE-WTAILORADMIN_BAN_DEFAULT_M"
+            webAppExtensibility.adminRoles = Environment.current == Environment.PRODUCTION ? "" : "ROLE_SELFSERVICE-WTAILORADMIN_BAN_DEFAULT_M"
         }
-        def adminRoles =  webAppExtensibility.adminRoles.tokenize(',')  // List of adminRoles for Spring security
+        def adminRoles = webAppExtensibility.adminRoles.tokenize(',')  // List of adminRoles for Spring security
 
         // Spring security
         // Make sure to add the extensibility security at the start (odd, a Map should have no order, but spring security appears to consider order)
-        def interceptUrlMap= [
+        def interceptUrlMap = [
                 '/internal/**' : ['IS_AUTHENTICATED_ANONYMOUSLY'],
                 '/webadmin/**' : adminRoles,
-                '/templates/**' : ['IS_AUTHENTICATED_ANONYMOUSLY']
+                '/templates/**': ['IS_AUTHENTICATED_ANONYMOUSLY']
         ]
-        interceptUrlMap <<  grails.plugins.springsecurity.interceptUrlMap
+        interceptUrlMap << grails.plugins.springsecurity.interceptUrlMap
         grails.plugins.springsecurity.interceptUrlMap = interceptUrlMap
 
         //Add Rest configuration if not already added in the main config file.

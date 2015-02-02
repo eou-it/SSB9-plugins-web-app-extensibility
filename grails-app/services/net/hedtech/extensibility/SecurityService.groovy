@@ -10,7 +10,8 @@ class SecurityService {
     static transactional = false
     static def adminRoles = grails.util.Holders.getConfig().webAppExtensibility.adminRoles
 
+
     static def userHasAdminRole() {
-        return  SpringSecurityUtils.ifAnyGranted(adminRoles)
+        return SpringSecurityUtils.ifAnyGranted(adminRoles)
     }
 }

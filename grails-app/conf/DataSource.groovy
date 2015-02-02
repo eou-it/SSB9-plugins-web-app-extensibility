@@ -1,3 +1,7 @@
+/*******************************************************************************
+ Copyright 2015 Ellucian Company L.P. and its affiliates.
+ ******************************************************************************/
+
 dataSource {
     pooled = true
     driverClassName = "org.h2.Driver"
@@ -10,6 +14,7 @@ hibernate {
     cache.region.factory_class = 'net.sf.ehcache.hibernate.EhCacheRegionFactory'
     //show_sql = true
 }
+
 // environment specific settings
 environments {
     development {

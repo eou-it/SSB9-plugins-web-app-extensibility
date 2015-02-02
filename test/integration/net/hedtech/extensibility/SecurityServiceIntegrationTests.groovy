@@ -18,8 +18,8 @@ class SecurityServiceIntegrationTests extends BaseIntegrationTestCase {
     public void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
-
     }
+
 
     @After
     public void tearDown() {
@@ -34,8 +34,9 @@ class SecurityServiceIntegrationTests extends BaseIntegrationTestCase {
         assert grails.util.Holders.getConfig().webAppExtensibility.adminRoles == "ROLE_SELFSERVICE-WTAILORADMIN_BAN_DEFAULT_M"
     }
 
+
     @Test
-    void testUserWithAdminRole(){
+    void testUserWithAdminRole() {
         def auth = selfServiceBannerAuthenticationProvider.authenticate(new UsernamePasswordAuthenticationToken('CBUNTE3', '111111'))
         SecurityContextHolder.getContext().setAuthentication(auth)
         assertNotNull auth
@@ -44,8 +45,9 @@ class SecurityServiceIntegrationTests extends BaseIntegrationTestCase {
         assert hasAdminRole == true
     }
 
+
     @Test
-    void testUserWithoutAdminRole(){
+    void testUserWithoutAdminRole() {
         def auth = selfServiceBannerAuthenticationProvider.authenticate(new UsernamePasswordAuthenticationToken('HOF00760', '111111'))
         SecurityContextHolder.getContext().setAuthentication(auth)
         assertNotNull auth

@@ -1,6 +1,6 @@
-/*
- * Copyright 2015 Ellucian Company L.P. and its affiliates.
- */
+/*******************************************************************************
+ Copyright 2015 Ellucian Company L.P. and its affiliates.
+ ******************************************************************************/
 
 // xe namespace is for providing eXtensible Environment functionality.
 // this will likely be provided as a service and injected

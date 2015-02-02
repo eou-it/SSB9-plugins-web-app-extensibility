@@ -1,6 +1,7 @@
 /*******************************************************************************
  Copyright 2015 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
+
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
@@ -25,7 +26,7 @@ grails.project.dependency.resolution = {
             grailsPlugins()
             grailsHome()
             grailsCentral()
-            
+
             mavenCentral()
             mavenRepo "http://repository.jboss.org/maven2/"
             mavenRepo "http://repository.codehaus.org"

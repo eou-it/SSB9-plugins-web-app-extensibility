@@ -1,3 +1,7 @@
+/*******************************************************************************
+ Copyright 2015 Ellucian Company L.P. and its affiliates.
+ ******************************************************************************/
+
 class WebAppExtensibilityGrailsPlugin {
     // the plugin version
     def version = "0.1"
