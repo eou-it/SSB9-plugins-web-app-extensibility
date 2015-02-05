@@ -13,28 +13,23 @@ var xe = (function (xe) {
     xe.attrInh = {section: xe.typePrefix+'section-inh'};                         //html attribute name for section inherited
     xe.forAttribute = 'xe-for';
     xe.errors = [];
-    xe.sections;
+    xe.sections = null;
     xe.extensionsFound = false;
 
     //Logging
     xe.logging = {none: 0, debug: 1, verbose: 2};
     xe.logging.level = xe.logging.none;
-    if ( window.location.search.indexOf("xeLogging=debug")!=-1 )
-        xe.logging.level=xe.logging.debug;
-    if ( window.location.search.indexOf("xeLogging=verbose")!=-1 )
-        xe.logging.level=xe.logging.verbose;
+    if ( window.location.search.indexOf("xeLogging=debug")!==-1 ) {
+        xe.logging.level = xe.logging.debug;
+    }
+    if ( window.location.search.indexOf("xeLogging=verbose")!==-1 ) {
+        xe.logging.level = xe.logging.verbose;
+    }
 
     xe.log = function () {
         if (xe.logging.level>xe.logging.none) {
-            //probably can implement this more elegantly...
-            if (arguments.length == 1)
-                console.log(arguments[0]);
-            if (arguments.length == 2)
-                console.log(arguments[0], arguments[1]);
-            if (arguments.length == 3)
-                console.log(arguments[0], arguments[1], arguments[2]);
-            if (arguments.length == 4)
-                console.log(arguments[0], arguments[1], arguments[2], arguments[3]);
+            var args = Array.prototype.slice.call( arguments, 0 ); // convert arguments to an array
+            console.log(args);
         }
     };
 
@@ -49,10 +44,7 @@ var xe = (function (xe) {
             async: false,
             success: function(json){
                 xe.log('resources loaded');
-                var resources=json[0]; //data used for extending page
-                for (var key in resources) {
-                    $.i18n.map[key] = resources[key];
-                }
+                _.extend( $.i18n.map, json[0] );  //data used for extending page
             }
         });
     };
@@ -60,7 +52,7 @@ var xe = (function (xe) {
     // item is a string or an object with a key attribute
     // for now we don't support args
     xe.i18n = function (item, args) {
-        return (typeof item == 'string')?item: $.i18n.prop(item.key, args);
+        return (typeof item === 'string')?item: $.i18n.prop(item.key, args);
     };
 
     //Check if we are in developer mode
@@ -71,16 +63,16 @@ var xe = (function (xe) {
     //This gets called several times, is it worth to refactor and eveluate URL parameters only once?
     //Don't bother for now, we may remove this from release as it is not a userstory to have enable/disable extensions
     xe.enableExtensions = function() {
-        return window.location.search.indexOf("baseline=y")==-1;
+        return window.location.search.indexOf("baseline=y") === -1;
     };
 
 
     // create a selector for an element - specify a name or a selector for all with a specific type
     xe.selector = function( elementType, name ) {
-        if (name)
-            return '['+ xe.typePrefix + elementType + '=' + name + ']';
-        else
-            return '['+ xe.typePrefix + elementType+']';
+        if (name) {
+            return '[' + xe.typePrefix + elementType + '=' + name + ']';
+        }
+        return '[' + xe.typePrefix + elementType + ']';
     };
 
     xe.selectorFor = function( name ) {
@@ -96,10 +88,12 @@ var xe = (function (xe) {
     // might want to assure it has a child section
     xe.getGroupSelector = function(element) {
         var res = element[0].tagName;
-        if (element[0].id)
-            res += '#'+element[0].id;
-        if (element[0].class)
-            res += '.'+element[0].class;
+        if (element[0].id) {
+            res += '#' + element[0].id;
+        }
+        if (element[0].class) {
+            res += '.' + element[0].class;
+        }
         return res;
     };
 
@@ -152,23 +146,26 @@ var xe = (function (xe) {
             count: 0,
             addNode: function (node,element){
                 function equ(left,right) {
-                    return (left.section && left.section == right.section) || left.field && left.field == right.field;
+                    return (left.section && left.section === right.section) || (left.field && left.field === right.field);
                 }
                 var found=false;
+                var i;
                 this.level++;
                 this.count++;
-                if (this.level>50 || this.count>100000)
-                    throw ('Recursion / endless loop error '+this.level + '/' + this.count );
+                if (this.level>50 || this.count>100000) {
+                    throw ('Recursion / endless loop error ' + this.level + '/' + this.count );
+                }
                 if (equ(element.parent,node)) {
-                    if (!node.children)
-                        node.children=[];
+                    if (!node.children) {
+                        node.children = [];
+                    }
                     node.children.push(element);
 
                     xe.log('Added Element',element.section || element.field, 'To child of ',node.section || node.field);
                     found = true;
                 }
                 //If not found, recurse children
-                for (var i = 0; !found && node.children && i < node.children.length; i++) {
+                for (i = 0; !found && node.children && i < node.children.length; i++) {
                     found = this.addNode(node.children[i], element);
                 }
                 this.level--;
@@ -176,13 +173,13 @@ var xe = (function (xe) {
             },
             addElement: function (element) {
                 //this.elements.push(element);
-                if (element.parent==null)
+                if (element.parent === null) {
                     this.dom.children.push(element);
-                else {
+                } else {
                     this.addNode(this.dom, element);
                 }
             }
-        }
+        };
     };
 
     //metadata for baseline page
@@ -226,39 +223,41 @@ var xe = (function (xe) {
     xe.reorderMetadata = function( extensions ) {
 
         function getDependency ( extension, extensions ){
-
             var complete = false;
             var dependency;
 
-            while ( !complete ) {
-
-                dependency = _.find( extensions, function(n){
-                    return (n["name"] == extension.nextSibling) && n.processed == false;
+            function findUnprocessedNextSibling(extensions, extension) {
+                var nextSibling = _.find(extensions,  function(n) {
+                    return (n.name === extension.nextSibling) && n.processed === false;
                 });
+                return nextSibling;
+            }
+
+            while ( !complete ) {
+                dependency = findUnprocessedNextSibling(extensions, extension);
 
                 if (!dependency) {
                     complete = true;
-                }
-                else {
+                } else {
                     extension = dependency;
                 }
             }
             return extension;
         }
 
+        function findUnProcessedExtension(extensions) {
+           return  _.find( extensions, function(n){ return n.processed === false; });
+        }
         var orderedMoves = [];
         var allExtensionsApplied = false;
         var extension;
-
         // mark all item positioning extensions as currently unprocessed
         _.each( extensions, function(n) {
             n.processed = false;
         });
 
         while ( !allExtensionsApplied ) {
-
-            // find an unapplied extension
-            extension = _.find( extensions, function(n){ return n.processed == false });
+            extension = findUnProcessedExtension(extensions);
 
             if ( extension ) {
 
@@ -334,9 +333,8 @@ var xe = (function (xe) {
 
             if ( extension.nextSibling ) {
                 to = $(xe.selector(elementType, extension.nextSibling));
-                if (to.length==0) {
+                if (to.length === 0) {
                     xe.errors.push('Unable to find target element. '+JSON.stringify(extension));
-                    return null;
                 } else {
                     elementToMove.insertBefore(to);
                 }
@@ -393,8 +391,8 @@ var xe = (function (xe) {
             var fieldElement = $( xe.selectorToRemove(xe.type.field, fieldExtension.name) );
             if (fieldExtension.component) {
                 newHTML = xe.renderComponent(fieldExtension.component);
-            } else { //if param.html is set, use it otherwise generate from template
-                newHTML = fieldExtension.attributes["html"] ? fieldExtension.attributes["html"] : xe.generateField(fieldExtension);
+            } else {
+                newHTML = fieldExtension.attributes.html || xe.generateField(fieldExtension);
             }
             fieldElement.html(newHTML);
             fieldElement.addClass("xe-replaced");
@@ -406,9 +404,9 @@ var xe = (function (xe) {
         function replaceButtonText( fieldElement, fieldExtension ) {
 
             if ( $(fieldElement).is("input") ) {
-                $(fieldElement).attr("value",xe.i18n(fieldExtension.attributes["buttonText"]));
+                $(fieldElement).attr("value",xe.i18n(fieldExtension.attributes.buttonText));
             } else if ( $(fieldElement).is("button") ) {
-                $(fieldElement).html(xe.i18n(fieldExtension.attributes["buttonText"]));
+                $(fieldElement).html(xe.i18n(fieldExtension.attributes.buttonText));
             }
         }
 
@@ -419,7 +417,7 @@ var xe = (function (xe) {
         function replaceLabel( fieldElement, fieldExtension ) {
 
             var labelElement;
-            var itemId = fieldElement.attributes["id"] ? fieldElement.attributes["id"].value : '';
+            var itemId = fieldElement.attributes.id ? fieldElement.attributes.id.value : '';
 
             if ( fieldElement.attributes[xe.attr.labelledBy] ) {
                 labelElement = $('#' + fieldElement.attributes[xe.attr.labelledBy].value);
@@ -437,9 +435,9 @@ var xe = (function (xe) {
             }
             if (labelElement.length) {
                 // replace the text in the first text node of the label
-                var labelTextNode = labelElement.contents().filter(function() { return this.nodeType == 3})[0];
+                var labelTextNode = labelElement.contents().filter(function() { return this.nodeType === 3;})[0];
                 if ( labelTextNode ) {
-                    labelTextNode.nodeValue = xe.i18n(fieldExtension.attributes["label"]);
+                    labelTextNode.nodeValue = xe.i18n(fieldExtension.attributes.label);
                 }
             } else {
                 xe.errors.push('Unable to find and replace label for '+ fieldExtension.name);
@@ -455,7 +453,7 @@ var xe = (function (xe) {
             // Replace any attributes where new value provided
             _.each(xe.replaceAttr,function(attributeName) {
 
-                if ( fieldExtension.attributes[attributeName] != undefined) {
+                if ( fieldExtension.attributes[attributeName] ) {
 
                     switch(attributeName) {
                         case "html":
@@ -502,12 +500,12 @@ var xe = (function (xe) {
 
                     // extend field attributes
                     if ( fieldExtension.attributes ) {
-                        extendFieldAttributes( fieldElement, fieldExtension)
+                        extendFieldAttributes( fieldElement, fieldExtension);
                     }
                 } else {
                     xe.errors.push('Unable to find element ' + fieldExtension.name);
                 }
-            })
+            });
         }
 
 
@@ -519,7 +517,7 @@ var xe = (function (xe) {
 
             // retrieve section metadata
             var extensions = _.find(xe.extensions.sections, function( sectionExtension ) {
-                return sectionName == sectionExtension.name;
+                return sectionName === sectionExtension.name;
             });
 
             if ( extensions ) {
@@ -562,6 +560,7 @@ var xe = (function (xe) {
 
 
     //This function searches element children for sections
+    //TODO check if used in Angular
     xe.parseGroups = function(element,attributes){
         var sections = element.children(xe.selector(xe.type.section));
         if ( sections.length > 0) {
@@ -579,8 +578,9 @@ var xe = (function (xe) {
                 $.each(sections, function(i,section ){
                     var sectionName = section.attributes[xe.typePrefix+xeType].value;
                     var actions = xe.extensions.groups.sections[sectionName];
-                    if (actions)
+                    if (actions) {
                         xe.extend(element, attributes, actions);
+                    }
                 });
             }
         }
@@ -594,7 +594,7 @@ var xe = (function (xe) {
             xe.voidElements = {};
             //Initialize voidElements map
             ["area", "base", "br", "col", "command", "embed", "hr", "img", "input",
-                "keygen", "link", "meta", "param", "source", "track", "wbr"].forEach(function (val, idx, array) {
+                "keygen", "link", "meta", "param", "source", "track", "wbr"].forEach(function (val) {
                     xe.voidElements[val] = true;
                 }
             );
@@ -608,14 +608,14 @@ var xe = (function (xe) {
         var result="";
         if (component.tagName) {
             result="<"+component.tagName;
-            Object.getOwnPropertyNames(component.attributes).forEach(function(val,idx,array) {
+            Object.getOwnPropertyNames(component.attributes).forEach(function(val) {
                     result+=' '+val+'="'+component.attributes[val]+'"';
                 }
             );
             result += ">";
             //recursively add the child nodes
             if (component.childNodes && !xe.isVoidElement(component.tagName) ) {
-                component.childNodes.forEach(function (val, idx, array) {
+                component.childNodes.forEach(function (val) {
                         result += ' ' + xe.renderComponent(val);
                     }
                 );
@@ -636,8 +636,9 @@ var xe = (function (xe) {
         var count = 0;
         function renderNode(node, html) {
             count++;
-            if (count>10000)
+            if (count>10000) {
                 throw ('Recursion error');
+            }
             if (node.section) {
                 html += "<li>Section: " + node.section + "</li>\n";
             }
@@ -677,11 +678,13 @@ var xe = (function (xe) {
     xe.showStats = function (page, popup) {
         xe.renderStats = function(page){
             var res = $.i18n.prop("xe.page.status", [page.name]);
-            for (var key in xe.stats) {
+            var key;
+            for (key in xe.stats) {
                 res += '<li>'+key+'='+xe.stats[key];
             }
-            if (xe.errors && xe.errors.length)
-                res+='<br>'+ $.i18n.prop("xe.page.errors")+'<br>'+xe.errors;
+            if (xe.errors && xe.errors.length) {
+                res += '<br>' + $.i18n.prop("xe.page.errors") + '<br>' + xe.errors;
+            }
             return res;
         };
 
@@ -708,7 +711,7 @@ var xe = (function (xe) {
             });
 
             popup.load(extensibilityPluginPath+'/templates/extedit.html',
-                       function(x){
+                       function(){
                            $('#extensions-edit-input',popup).text(JSON.stringify(xe.page.metadata,null,2));
                        }
             );
@@ -732,6 +735,7 @@ var xe = (function (xe) {
                         alert($.i18n.prop("xe.alert.msg.saved"));
                         xe.log('Data Saved',data);
                      }
+            //Todo Add error handler
         });
     };
 
@@ -751,11 +755,11 @@ var xe = (function (xe) {
             });
              */
             ToolsMenu.addItem("pagestats", $.i18n.prop("xe.menu.extensions.status"), "extensibility", function () {
-                xe.popups[1] = xe.showStats(xe.page, xe.popups[1])
+                xe.popups[1] = xe.showStats(xe.page, xe.popups[1]);
             });
 
             ToolsMenu.addItem("extensionseditor", $.i18n.prop("xe.menu.extensions.edit"), "extensibility", function () {
-                xe.popups[2] = xe.extensionsEditor(xe.page, xe.popups[2])
+                xe.popups[2] = xe.extensionsEditor(xe.page, xe.popups[2]);
             });
             ToolsMenu.addSection("base", $.i18n.prop("xe.menu.section.other"));
         }
