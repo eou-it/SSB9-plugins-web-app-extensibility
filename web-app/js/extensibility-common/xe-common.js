@@ -50,7 +50,7 @@ var xe = (function (xe) {
             success: function(json){
                 xe.log('resources loaded');
                 var resources=json[0]; //data used for extending page
-                for (key in resources) {
+                for (var key in resources) {
                     $.i18n.map[key] = resources[key];
                 }
             }
@@ -65,7 +65,7 @@ var xe = (function (xe) {
 
     //Check if we are in developer mode
     xe.devMode = function() {
-        return extensibilityAdmin;
+        return !!window.extensibilityAdmin;
     };
 
     //This gets called several times, is it worth to refactor and eveluate URL parameters only once?
@@ -677,7 +677,7 @@ var xe = (function (xe) {
     xe.showStats = function (page, popup) {
         xe.renderStats = function(page){
             var res = $.i18n.prop("xe.page.status", [page.name]);
-            for (key in xe.stats) {
+            for (var key in xe.stats) {
                 res += '<li>'+key+'='+xe.stats[key];
             }
             if (xe.errors && xe.errors.length)
