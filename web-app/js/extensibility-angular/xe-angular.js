@@ -51,6 +51,7 @@ xe.ng.groupCompile = function(prio, context) {
             restrict: 'E',
             prio: prio,
             compile: function (element, attributes) {
+                xe.stats.groupCompileCount++;
                 // check if parent has attribute xeSectionInh
                 if (element[0].parentNode && element[0].parentNode.attributes) {
                     var section = element[0].parentNode.attributes[xe.attrInh.section];
@@ -121,17 +122,20 @@ angular.module('extensibility', [])
                     ;// Section processing to happen in a child of this tag
                 } else {
                     xe.log('Compile Section', attributes.xeSection);
+                    xe.extend(element);
+                    /*
                     if (xe.extensions.sections[attributes.xeSection]) {
                         xe.log('Extending section ' + attributes.xeSection);
                         xe.extend(element, attributes);
                     }
+                    */
                 }
             }
         }
     })
     //Assume pages loaded via ng-include or ui-view start with one of the tags with groupCompile below
     //If the parentNode has xeSectionInh, treat the content as if it were a section with name xeSectionInh
-    .directive( 'div', xe.ng.groupCompile(0,'div' ))
+    .directive('div',  xe.ng.groupCompile(0,'div' ))
     .directive('span', xe.ng.groupCompile(0,'span'))
     .directive('form', xe.ng.groupCompile(0,'form'))
     //

@@ -569,7 +569,8 @@ var xe = (function (xe) {
         }
     };
 
-    //This function does group level changes on a page or part of a page (ng-include, ui-view or a handlebars template)
+    //This function does high level changes (hide sections, reorder sections) on a page or part of a page (ng-include, ui-view or a handlebars template)
+    //It looks like jquery extensibility has been reprogrammed to work without using this on handlebars templates
     xe.extendPagePart = function(element,attributes){
         var xeType = xe.type.section;
         var sections = $(xe.selector(xeType),element);
@@ -577,10 +578,14 @@ var xe = (function (xe) {
             if (xe.enableExtensions() ) {
                 $.each(sections, function(i,section ){
                     var sectionName = section.attributes[xe.typePrefix+xeType].value;
+                    //Todo reimplement section reordering
+                    /*
                     var actions = xe.extensions.groups.sections[sectionName];
                     if (actions) {
                         xe.extend(element, attributes, actions);
                     }
+                    */
+                    xe.log('extendPagePart sections:', sections );
                 });
             }
         }

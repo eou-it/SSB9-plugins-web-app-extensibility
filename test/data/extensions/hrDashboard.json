@@ -1,4 +1,22 @@
-[{
+[
+    {
+        "sections": [
+            {
+                "name": "employeeSummary",
+                "fields": [
+                    {
+                        "name": "firstWorkDate",
+                        "attributes": {"label": "*First Work Date*"}
+                        //,"exclude": true
+                        ,"nextSibling": "status"
+                    }
+
+                ]
+            }
+        ]
+    }
+/*
+    {
     "groups": {
          "remove": [{"section":"tax"}],
          "move": [{"section": "employee-earnings", "before": "employee-pay-information"}]
@@ -49,4 +67,5 @@
         }
     }
 }
+*/
 ]
