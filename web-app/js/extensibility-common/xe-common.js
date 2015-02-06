@@ -335,7 +335,7 @@ var xe = (function (xe) {
             if ( extension.nextSibling ) {
                 to = $(xe.selector(elementType, extension.nextSibling));
                 if (to.length==0) {
-                    xe.errors.push('Unable to find target element. '+JSON.stringify(extension));
+                    xe.errors.push('Unable to find target element. '+JSON.stringify(extension.nextSibling));
                     return null;
                 } else {
                     elementToMove.insertBefore(to);
