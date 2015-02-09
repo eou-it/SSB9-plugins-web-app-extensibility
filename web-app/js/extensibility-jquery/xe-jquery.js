@@ -132,6 +132,12 @@ xe.extendFunctions = function () {
                 }
                 if (fieldExtensions.attributes.title) {
                     settings.tooltip = xe.i18n(fieldExtensions.attributes.title);
+                    //Verify and unset any additional 'title' attributes on the wrapping xe-field element in order to
+                    //have the display of hint text in a consistent manner across the extended jeditable fields. [EXTZ-755]
+                    var extendedElement = element.closest(xe.selector(xe.type.field));
+                    if(!(extendedElement.is(element))){
+                        extendedElement.removeAttr("title");
+                    }
                 }
                 args[1] = settings;
             }
