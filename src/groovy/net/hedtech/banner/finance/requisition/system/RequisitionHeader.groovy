@@ -96,31 +96,31 @@ class RequisitionHeader implements Serializable {
     String phoneExtension
 
     /**
-     * VENDOR PERSONAL IDENTIFICATION MASTER:  The unique personal identification      master of a vendor.
+     * VENDOR PERSONAL IDENTIFICATION MASTER:  The unique personal identification master of a vendor.
      */
     @Column(name = "FPBREQH_VEND_PIDM")
     Integer vendorPidm
 
     /**
-     * ACCOUNT TYPE CODE:  Classifies an account type i.e., asset, liabilities,        control, fund balance, revenue, and labor expenses are used for reporting       purposes.
+     * ACCOUNT TYPE CODE:  Classifies an account type i.e., asset, liabilities, control, fund balance, revenue, and labor expenses are used for reporting       purposes.
      */
     @Column(name = "FPBREQH_ATYP_CODE")
     String accountType
 
     /**
-     * ACCOUNT TYPE SEQUENCE NUMBER:  The internal account type that is predefined     on the FTVSDAT table.  This number is used for collecting data on financial     reports.
+     * ACCOUNT TYPE SEQUENCE NUMBER:  The internal account type that is predefined on the FTVSDAT table.  This number is used for collecting data on financial     reports.
      */
     @Column(name = "FPBREQH_ATYP_SEQ_NUM")
     Integer accountTypeSequenceNumber
 
     /**
-     * CHART OF ACCOUNTS CODE:  The primary identification code for any chart of       accounts that uniquely identifies that chart from any other in a multi-chart    environment.
+     * CHART OF ACCOUNTS CODE:  The primary identification code for any chart of accounts that uniquely identifies that chart from any other in a multi-chart    environment.
      */
     @Column(name = "FPBREQH_COAS_CODE")
     String chartOfAccount
 
     /**
-     * ORGANIZATION CODE:  Identifies the organization code that appears on a          transacation.
+     * ORGANIZATION CODE:  Identifies the organization code that appears on a transaction.
      */
     @Column(name = "FPBREQH_ORGN_CODE")
     String organization
@@ -149,14 +149,14 @@ class RequisitionHeader implements Serializable {
     String encumbranceIndicator
 
     /**
-     * SUSPENSE INDICATOR:  An indicator used to inform the user that a document       is being held in suspense due to missing or erroneous data content.
+     * SUSPENSE INDICATOR:  An indicator used to inform the user that a document is being held in suspense due to missing or erroneous data content.
      */
     @Type(type = "yes_no")
     @Column(name = "FPBREQH_SUSP_IND")
     Boolean suspenseIndicator
 
     /**
-     * CANCEL INDICATOR:  The indicator associated with the check cancellation         processing.
+     * CANCEL INDICATOR:  The indicator associated with the check cancellation processing.
      */
     @Column(name = "FPBREQH_CANCEL_IND")
     String cancelIndicator
@@ -176,7 +176,7 @@ class RequisitionHeader implements Serializable {
     Date postingDate
 
     /**
-     * APPROVAL INDICATOR:  An indicator that tells whether the document has been      approved.  This value is set to Y on final approval.
+     * APPROVAL INDICATOR:  An indicator that tells whether the document has been approved. This value is set to Y on final approval.
      */
     @Type(type = "yes_no")
     @Column(name = "FPBREQH_APPR_IND")
@@ -190,7 +190,7 @@ class RequisitionHeader implements Serializable {
     Boolean textIndicator
 
     /**
-     * DEFER EDIT INDICATOR:  This indicator is used to defer editing of the           transaction until posting.
+     * DEFER EDIT INDICATOR:  This indicator is used to defer editing of the transaction until posting.
      */
     @Type(type = "yes_no")
     @Column(name = "FPBREQH_EDIT_DEFER_IND")
