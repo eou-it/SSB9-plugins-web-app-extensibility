@@ -20,7 +20,7 @@
     min-height: 250px;
     overflow: auto;
     resize: none;
-    font-family: monospace;
+    font-family: "Courier New", Courier, monospace;
 }
 
 .xe-placeholder {
