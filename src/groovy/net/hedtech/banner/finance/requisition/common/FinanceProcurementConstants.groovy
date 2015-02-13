@@ -18,7 +18,10 @@ class FinanceProcurementConstants {
     /* Constant for Requisition Header Domain*/
 
     public static final def REQUISITION_HEADER_FINDER_BY_REQUEST_CODE = 'RequisitionHeader.fetchByRequestCode'
+    public static final def REQUISITION_HEADER_FINDER_BY_USER = 'RequisitionHeader.fetchByUser'
+
     public static final def REQUISITION_HEADER_FINDER_BY_REQUEST_CODE_PARAM_REQUEST_CODE = 'requestCode'
+    public static final def REQUISITION_HEADER_FINDER_BY_REQUEST_CODE_PARAM_USER_ID = 'userId'
     public static final def REQUISITION_HEADER_VIEW = 'FPVREQH'
     public static final def REQUISITION_HEADER_FIELD_FPBREQH_SURROGATE_ID = 'FPBREQH_SURROGATE_ID'
     public static final def REQUISITION_HEADER_SEQ_FPBREQH_SURROGATE_ID_SEQUENCE = 'FPBREQH_SURROGATE_ID_SEQUENCE'

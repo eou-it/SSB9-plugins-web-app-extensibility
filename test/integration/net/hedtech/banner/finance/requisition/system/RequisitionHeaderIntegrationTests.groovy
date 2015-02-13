@@ -1,3 +1,6 @@
+/*******************************************************************************
+ Copyright 2015 Ellucian Company L.P. and its affiliates.
+ *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -8,20 +11,6 @@ import org.junit.Test
 class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
 
     def reqCode = "R0000026"
-    def institutionName = "Maneesh"
-    def requestorPhoneAreaCode = "080"
-    def requestorPhoneNumber = "242037662"
-    def requestorPhoneExt = "9066"
-    def vendorPidm = 278
-    def requestorAccountTypeCode = "BU"
-    def requestorAccountTypeSeqNum = 1
-    def chartOfAccountsCode = "B"
-    def orgnCode = "11103"
-    def attentionTo = "Avery Johnson"
-    def singleAcctgIndicator = true
-    def requestTypeIndicator = "P"
-    def ship_Code = "EAST"
-    def matchRequired = "U"
 
 
     @Before
@@ -41,10 +30,32 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
      * Test Fetch Request for specified requestCode
      */
     @Test
-    void testFetchRequest() {
-        def request = RequisitionHeader.fetchByRequestCode( reqCode )
-        assertNotNull request
-        assertEquals reqCode, request.requestCode
+    void testFetchRequisitionHeaderByRequestCode() {
+        def header = RequisitionHeader.fetchByRequestCode( reqCode )
+        assertNotNull header
+        assertEquals reqCode, header.requestCode
+    }
+
+    /**
+     * Test Fetch Request for specified user
+     */
+    @Test
+    void testFetchRequisitionHeaderByUser() {
+        def pagingParams = [max: 500, offset: 0]
+        def header = RequisitionHeader.fetchByUser( 'FIMSPRD', pagingParams )
+        assertNotNull header
+        assertTrue( header.list.size() > 0 )
+    }
+
+    /**
+     * Test Fetch Request for specified user Invalid user
+     */
+    @Test
+    void testFetchRequisitionHeaderByUserInvalidCase() {
+        def pagingParams = [max: 500, offset: 0]
+        def header = RequisitionHeader.fetchByUser( 'INVALID_USER', pagingParams )
+        assertNotNull header
+        assertTrue( header.list.size() == 0 )
     }
 
     /**
@@ -55,11 +66,11 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
 
         def requestHeader = newRequisitionHeader()
         try {
-        requestHeader.save( failOnError: true, flush: true )
-        assertNotNull requestHeader.id
+            requestHeader.save( failOnError: true, flush: true )
+            assertNotNull requestHeader.id
         }
-        catch(e){
-            e.printStackTrace(  )
+        catch (e) {
+            e.printStackTrace()
         }
         def reqId = requestHeader.id
         requestHeader.refresh()
@@ -70,12 +81,13 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
         assertFalse( request.requestCode == "NEXT" )
     }
 
-
+    /**
+     * Test invalid case for create requisition header
+     */
     @Test
     void testInvalidCreate() {
         def requestHeader = newRequisitionHeader()
         requestHeader.deliveryDate = null
-
         shouldFail {
             requestHeader.save( failOnError: true, flush: true )
         }
@@ -87,6 +99,21 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
      */
     public RequisitionHeader newRequisitionHeader() {
 
+
+        def institutionName = "Maneesh"
+        def requestorPhoneAreaCode = "080"
+        def requestorPhoneNumber = "242037662"
+        def requestorPhoneExt = "9066"
+        def vendorPidm = 278
+        def requestorAccountTypeCode = "BU"
+        def requestorAccountTypeSeqNum = 1
+        def chartOfAccountsCode = "B"
+        def orgnCode = "11103"
+        def attentionTo = "Avery Johnson"
+        def singleAcctgIndicator = true
+        def requestTypeIndicator = "P"
+        def ship_Code = "EAST"
+        def matchRequired = "U"
         def requisitionHeader = new RequisitionHeader(
                 requestCode: "NEXT",
                 requestDate: new Date(),
