@@ -41,6 +41,14 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testFetchRequisitionHeaderByUser() {
+        def requestHeader = newRequisitionHeader()
+        try {
+            requestHeader.save( failOnError: true, flush: true )
+            assertNotNull requestHeader.id
+        }
+        catch (e) {
+            e.printStackTrace()
+        }
         def pagingParams = [max: 500, offset: 0]
         def header = RequisitionHeader.fetchByUser( 'FIMSPRD', pagingParams )
         assertNotNull header
