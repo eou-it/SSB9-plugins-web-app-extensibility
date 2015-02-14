@@ -11,6 +11,7 @@ import org.junit.Test
 class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
 
     def reqCode = "R0000026"
+    def final DEFAULT_REQ_CODE = 'NEXT'
 
 
     @Before
@@ -86,7 +87,7 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
         def request = RequisitionHeader.findById( reqId )
         assertNotNull request.id
         assertNotNull request.requestCode
-        assertFalse( request.requestCode == "NEXT" )
+        assertFalse( request.requestCode == DEFAULT_REQ_CODE )
     }
 
     /**
@@ -123,7 +124,7 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
         def ship_Code = "EAST"
         def matchRequired = "U"
         def requisitionHeader = new RequisitionHeader(
-                requestCode: "NEXT",
+                requestCode: DEFAULT_REQ_CODE,
                 requestDate: new Date(),
                 transactionDate: new Date(),
                 postingDate: new Date(),
