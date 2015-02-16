@@ -547,11 +547,12 @@ var xe = (function (xe) {
             }
         }
 
-        var rootDomElement = rootElement instanceof jQuery ? rootElement[0] : rootElement;
         // determine list of sections to be processed
-        xe.sections = $(xe.selector(xe.type.section), rootElement);
-        if ( $(rootDomElement).is(xe.selector(xe.type.section))) {
-            xe.sections = xe.sections.add( rootDomElement );
+        var $rootElement = $(rootElement);
+        var sectionSelector = xe.selector( xe.type.section );
+        xe.sections = $(sectionSelector, $rootElement);
+        if ( $rootElement.is(sectionSelector)) {
+            xe.sections = xe.sections.add( $rootElement );
         }
 
         // apply extensions to each section
