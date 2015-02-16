@@ -35,4 +35,42 @@ class RequisitionHeaderCompositeService {
             }
         }
     }
+
+    /**
+     * Delete requisition Header
+     * @param requestCode
+     */
+    def deleteRequisitionHeader( requestCode ) {
+        def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
+        requisitionHeaderService.delete( [domainModel: requisitionHeader] )
+    }
+
+    /**
+     * Delete requisition Header
+     *
+     * @param map the header map
+     * @param requestCode
+     */
+    def updateRequisitionHeader( map, requestCode ) {
+        def existingHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
+        if (map?.requisitionHeader) {
+            RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
+            requisitionHeaderRequest.id = existingHeader.id
+            requisitionHeaderRequest.version = existingHeader.version
+            requisitionHeaderRequest.requestCode = existingHeader.requestCode
+            def user = springSecurityService.getAuthentication()?.user
+            if (user) {
+                def oracleUserName = user?.oracleUserName
+                requisitionHeaderRequest.userId = oracleUserName
+                def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
+                log.debug "Requisition Header updated " + requisitionHeader
+                def header = RequisitionHeader.read( requisitionHeader.id )
+                return header
+            } else {
+                log.error( 'User' + user + ' is not valid' )
+                throw new ApplicationException( RequisitionHeaderCompositeService, new BusinessLogicValidationException( "user.not.valid", [] ) )
+            }
+        }
+    }
+
 }
