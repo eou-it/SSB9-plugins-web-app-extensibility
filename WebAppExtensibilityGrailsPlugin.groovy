@@ -4,7 +4,7 @@
 
 class WebAppExtensibilityGrailsPlugin {
     // the plugin version
-    def version = "0.1"
+    def version = "1.0"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.2 > *"
     // resources that are excluded from plugin packaging
@@ -13,7 +13,7 @@ class WebAppExtensibilityGrailsPlugin {
     ]
 
     // TODO Fill in these fields
-    def title = "Banner Ui Ext Ss Plugin" // Headline display name of the plugin
+    def title = "Self-Service Web Application Extensibility plugin" // Headline display name of the plugin
     def author = "Your name"
     def authorEmail = ""
     def description = '''\
