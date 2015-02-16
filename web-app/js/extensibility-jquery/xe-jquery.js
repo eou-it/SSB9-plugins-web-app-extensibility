@@ -2,6 +2,8 @@
  Copyright 2015 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
 // jquery/backbone-specific extensibility code
+/* global xe */
+/* global _ */
 xe.jq = (function(xe) {
 
 	var jq = xe.jq || {};

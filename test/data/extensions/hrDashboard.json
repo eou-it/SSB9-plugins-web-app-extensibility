@@ -8,12 +8,41 @@
                         "name": "firstWorkDate",
                         "attributes": {"label": "*First Work Date*"}
                         //,"exclude": true
-                        ,"nextSibling": "status"
+                        //,"nextSibling": "status"
+                        ,"nextSibling": null
                     }
 
                 ]
+            },
+            {
+                "name": "employeeProfile", //"leaveBalanceMain",
+                "nextSibling": null//"employeeProfile"
+            },
+            {
+                "name": "leaveBalance",
+                "fields": [
+                  {
+                    "name": "availableInput",
+                    "nextSibling": null,
+                    "attributes":{"html": " "}, //TODO Fix. need to specify dummy non empty html attribute to render component
+                    "component": {
+                        "tagName": "P",
+                        "attributes" : {"id": "div1", "class": "class1 class2", "xe-field":"availableInput"},
+                        "childNodes": [
+                          {
+                            "tagName": "INPUT",
+                            "attributes": {"type": "ng-number", "max": "100", "ng-model": "leaveBalance.available"}
+                          },
+                          {
+                            "textContent" : "Enter"
+                          }
+                        ]
+                    }
+                  }
+                ]
             }
         ]
+
     }
 /*
     {

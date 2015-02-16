@@ -1,25 +1,28 @@
+//noinspection JSHint
 /*******************************************************************************
  Copyright 2015 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
-
+"use strict";
+/* global xe */
 xe.stats.groupCompileCount = 0;
 
 xe.ng={};
 xe.ng.deferedSectionTags = {'XE-ACCORDION':true};
-xe.ng.priorities={ngIncludeBase:400, ngRepeatBase:1000}; // Priorities for Angualar directives to which we want to hook
+xe.ng.priorities={ngIncludeBase:400, ngRepeatBase:1000}; // Priorities for Angular directives to which we want to hook
 
 xe.ng.attributes = function(element) {
     var result = null;
-    if (element.attributes[xe.typePrefix+xe.type.field])
-        result =  {field:element.attributes[xe.typePrefix+xe.type.field].value};
-    else if (element.attributes[xe.typePrefix+xe.type.section])
-        result = {section:element.attributes[xe.typePrefix+xe.type.section].value};
+    if (element.attributes[xe.typePrefix+xe.type.field]) {
+        result = {field: element.attributes[xe.typePrefix + xe.type.field].value};
+    } else if (element.attributes[xe.typePrefix+xe.type.section]) {
+        result = {section: element.attributes[xe.typePrefix + xe.type.section].value};
+    }
     return result;
 };
 
 xe.ng.parentElement = function(element){
     var section=null;
-    for (var parent=element.parentNode ;parent && (section == null) && parent.attributes; parent=parent.parentNode) {
+    for (var parent=element.parentNode ;parent && (section === null) && parent.attributes; parent=parent.parentNode) {
         if (parent.attributes[xe.typePrefix+xe.type.section]) {
             section = { section:parent.attributes[xe.typePrefix+xe.type.section].value /*, element:parent*/};
         }
@@ -32,7 +35,7 @@ xe.ng.parentElement = function(element){
 };
 
 xe.ng.parseElement = function(page,el) {
-    if (el.nodeType!=3) {
+    if (el.nodeType!==3) {
         var attributes = xe.ng.attributes(el);
         if (attributes) {
             attributes.element = el;
@@ -57,14 +60,17 @@ xe.ng.groupCompile = function(prio, context) {
                     var section = element[0].parentNode.attributes[xe.attrInh.section];
                     if (section) {
                         attributes.xeSection = section.value;
-                        xe.log('Compile ', context, prio, attributes, xe.logging.level == xe.logging.verbose ? element[0].innerHTML : element);
+                        xe.log('Compile ', context, prio, attributes, xe.logging.level === xe.logging.verbose ? element[0].innerHTML : element);
                         xe.log('Extending inherited section ' + attributes.xeSection);
-                        xe.extend(element, attributes);
+                        //make xe.extend think it is extending xeSection
+                        element.attr(xe.attr.section, attributes.xeSection);
+                        xe.extend(element);
+                        element.prop(xe.attr.section,null); //Remove xeSection attribute
                     }
                 }
             }
-        }
-    }
+        };
+    };
 };
 
 xe.ng.groupProcessing = function(prio, context) {
@@ -73,65 +79,68 @@ xe.ng.groupProcessing = function(prio, context) {
             restrict: 'ECA',
             priority: prio,  //AngularJS ngInclude directive has 400
             link: function ($scope, element, attributes) {
-                xe.log('Link ', context, prio, $scope.src||attributes.src||'', '\n', xe.logging.level==xe.logging.verbose?element[0].innerHTML:element);
-                xe.extendPagePart(element, attributes);
+                xe.log('Link ', context, prio, $scope.src||attributes.src||'', '\n', xe.logging.level===xe.logging.verbose?element[0].innerHTML:element);
+                //xe.extendPagePart(element, attributes);
+                xe.extend(element);
             }
-        }
-    }
+        };
+    };
 };
 
-//add secion name to a child of a section (used when parent is not available when compiling child)
+//add section name to a child of a section (used when parent is not available when compiling child)
 xe.ng.inheritSection = function(prio, context) {
     return function() {
         return {
             restrict: 'ECA',
             priority: prio,
             compile:  function (element, attributes)  {
-                xe.log('Compile ', context,prio, attributes.src||'', '\n', xe.logging.level==xe.logging.verbose?element[0].innerHTML:element);
-                // find parent xe-section
-                var section=null;
-                for (var parent=element[0].parentNode ;parent && (section == null) && parent.attributes; parent=parent.parentNode) {
-                    if (parent.attributes[xe.attr.section]) {
-                        section = parent.attributes[xe.attr.section].value;
+                try {
+                    xe.log('Compile ', context,prio, attributes.src||'', '\n', xe.logging.level===xe.logging.verbose?element[0].innerHTML:element);
+                    // find parent xe-section
+                    var section = null;
+                    for (var parent = element[0].parentNode; parent && (section === null) && parent.attributes; parent = parent.parentNode) {
+                        if (parent.attributes[xe.attr.section]) {
+                            section = parent.attributes[xe.attr.section].value;
+                        }
                     }
-                }
-                if (section) {
-                    element.attr(xe.attrInh.section, section);
+                    if (section) {
+                        element.attr(xe.attrInh.section, section);
+                    }
+                } catch (e) {
+                    xe.log("Exception trying to find parent xe-section for ",attributes);
                 }
             }
-        }
-    }
+        };
+    };
 };
 
-
+/*global angular*/
 angular.module('extensibility', [])
     .directive('xeField', function() {
         return {
             restrict: 'A',
-            compile: function (element, attributes) {
+            compile: function (element /*, attributes*/) {
                 xe.ng.parseElement(xe.page,element[0]);
             }
-        }
+        };
     })
     .directive('xeSection', function() {
         return {
             restrict: 'A',
             compile: function ( element, attributes /*, transclude */ ) {
                 xe.ng.parseElement(xe.page,element[0]);
-                if ( xe.ng.deferedSectionTags[element[0].tagName] ) {
-                    ;// Section processing to happen in a child of this tag
-                } else {
+                if (!xe.ng.deferedSectionTags[element[0].tagName]) {
                     xe.log('Compile Section', attributes.xeSection);
                     xe.extend(element);
                     /*
-                    if (xe.extensions.sections[attributes.xeSection]) {
-                        xe.log('Extending section ' + attributes.xeSection);
-                        xe.extend(element, attributes);
-                    }
-                    */
+                     if (xe.extensions.sections[attributes.xeSection]) {
+                     xe.log('Extending section ' + attributes.xeSection);
+                     xe.extend(element, attributes);
+                     }
+                     */
                 }
             }
-        }
+        };
     })
     //Assume pages loaded via ng-include or ui-view start with one of the tags with groupCompile below
     //If the parentNode has xeSectionInh, treat the content as if it were a section with name xeSectionInh

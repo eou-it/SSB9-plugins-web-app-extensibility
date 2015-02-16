@@ -2,6 +2,10 @@
  Copyright 2015 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
 
+/* global _  */
+/* global extensibilityPluginPath */
+/* global ToolsMenu */
+
 // xe namespace is for providing eXtensible Environment functionality.
 // this will likely be provided as a service and injected
 var xe = (function (xe) {
@@ -13,7 +17,7 @@ var xe = (function (xe) {
     xe.attrInh = {section: xe.typePrefix+'section-inh'};                         //html attribute name for section inherited
     xe.forAttribute = 'xe-for';
     xe.errors = [];
-    xe.sections = null;
+    //xe.sections = null; make local variable
     xe.extensionsFound = false;
 
     //Logging
@@ -227,10 +231,9 @@ var xe = (function (xe) {
             var dependency;
 
             function findUnprocessedNextSibling(extensions, extension) {
-                var nextSibling = _.find(extensions,  function(n) {
+                return _.find(extensions,  function(n) {
                     return (n.name === extension.nextSibling) && n.processed === false;
                 });
-                return nextSibling;
             }
 
             while ( !complete ) {
@@ -285,6 +288,8 @@ var xe = (function (xe) {
     *******************************************************************************************************/
     xe.extend = function ( rootElement ) {
 
+        var sections;
+
         /*******************************************************************************************************
          Replace the label text on a tab
          *******************************************************************************************************/
@@ -313,7 +318,7 @@ var xe = (function (xe) {
         *******************************************************************************************************/
         function removeElement( type, element ) {
             var elementsToRemove = $(element).add( $(xe.selectorFor(element.attributes[xe.typePrefix + type].value) ) );
-
+            xe.log('Removing element '+type);
             // include elements linked to this by aria-labelledby and aria-describedby ids
             $.merge(elementsToRemove,findAriaLinkedElements(xe.attr.labelledBy,elementsToRemove));
             $.merge(elementsToRemove,findAriaLinkedElements(xe.attr.describedBy,elementsToRemove));
@@ -331,10 +336,11 @@ var xe = (function (xe) {
             var lastElement;
             var selector;
 
+            xe.log('Move '+elementType +' '+ extension.name);
             if ( extension.nextSibling ) {
-                to = $(xe.selector(elementType, extension.nextSibling));
+                to = $(xe.selector(elementType, extension.nextSibling),rootElement); //Should not select anything outside rootElement
                 if (to.length === 0) {
-                    xe.errors.push('Unable to find target element. '+JSON.stringify(extension));
+                    xe.errors.push('Unable to find target element. Type: ' + elementType + ' Name: ' + extension.nextSibling);
                 } else {
                     elementToMove.insertBefore(to);
                 }
@@ -480,6 +486,15 @@ var xe = (function (xe) {
 
             _.each( extensions.fields, function( fieldExtension ) {
                 var fieldElement = $(xe.selector(xe.type.field, fieldExtension.name ), section)[0];
+                if (!fieldElement) {
+                    //Must be a new field, add a placeholder
+                    var anchor = $(xe.selector(xe.type.field),section)[0];
+                    if (anchor) {
+                        var placeholder = $('<div xe-field="' + fieldExtension.name + '"></div>')[0];
+                        fieldElement = anchor.parentNode.insertBefore(placeholder, null);
+                    }
+
+                }
 
                 if ( fieldElement ) {
 
@@ -528,9 +543,9 @@ var xe = (function (xe) {
                     return;
                 }
 
-                // reposition section
-                if ( _.has(extensions, "nextSibling") &&
-                     !xe.sections.filter(xe.selector(xe.type.section, sectionName )).hasClass("xe-moved")
+                // reposition section   //Added for Angular: only move children of the rootElement
+                if ( section !==rootElement[0] && _.has(extensions, "nextSibling") &&
+                     !sections.filter(xe.selector(xe.type.section, sectionName )).hasClass("xe-moved")
                     ) {
                     orderSiblings(xe.type.section, section, xe.extensions.orderedSections);
                 }
@@ -546,13 +561,13 @@ var xe = (function (xe) {
         }
 
         // determine list of sections to be processed
-        xe.sections = $(xe.selector(xe.type.section), rootElement);
+        sections = $(xe.selector(xe.type.section), rootElement);
         if ( $(rootElement[0]).is(xe.selector(xe.type.section))) {
-            xe.sections = xe.sections.add( rootElement[0] );
+            sections = sections.add( rootElement[0] );
         }
 
         // apply extensions to each section
-        _.each( xe.sections, function(section) {
+        _.each( sections, function(section) {
             extendSection( section );
         });
 
@@ -571,14 +586,14 @@ var xe = (function (xe) {
 
     //This function does high level changes (hide sections, reorder sections) on a page or part of a page (ng-include, ui-view or a handlebars template)
     //It looks like jquery extensibility has been reprogrammed to work without using this on handlebars templates
-    xe.extendPagePart = function(element,attributes){
+    xe.extendPagePart = function(element, attributes){
         var xeType = xe.type.section;
         var sections = $(xe.selector(xeType),element);
         if ( sections.length > 0) {
             if (xe.enableExtensions() ) {
                 $.each(sections, function(i,section ){
                     var sectionName = section.attributes[xe.typePrefix+xeType].value;
-                    //Todo reimplement section reordering
+                    //Todo re-implement section reordering
                     /*
                     var actions = xe.extensions.groups.sections[sectionName];
                     if (actions) {
@@ -754,11 +769,11 @@ var xe = (function (xe) {
         if (xe.devMode()) {
             ToolsMenu.addSection("extensibility", $.i18n.prop("xe.menu.section.extensibility"));
 
-            /* Following item needs to be implemented for non Angular pages. Disable.
+            /* Following item needs to be implemented for non Angular pages. Disable.  */
             ToolsMenu.addItem("pagestructurebase", "Show Baseline Page Structure", "extensibility", function () {
-                xe.popups[0] = xe.showPageStructure(xe.page, xe.popups[0])
+                xe.popups[0] = xe.showPageStructure(xe.page, xe.popups[0]);
             });
-             */
+
             ToolsMenu.addItem("pagestats", $.i18n.prop("xe.menu.extensions.status"), "extensibility", function () {
                 xe.popups[1] = xe.showStats(xe.page, xe.popups[1]);
             });
