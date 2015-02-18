@@ -132,7 +132,7 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
                 institutionName: institutionName,
                 ship: ship_Code,
                 phoneArea: requestorPhoneAreaCode,
-                shipToPhoneNumber: requestorPhoneNumber,
+                phoneNumber: requestorPhoneNumber,
                 phoneExtension: requestorPhoneExt,
                 vendorPidm: vendorPidm,
                 accountType: requestorAccountTypeCode,

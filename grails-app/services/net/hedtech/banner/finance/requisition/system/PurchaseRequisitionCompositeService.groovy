@@ -30,7 +30,12 @@ class PurchaseRequisitionCompositeService {
             if (user) {
                 def oracleUserName = user?.oracleUserName
                 requisitionHeaderRequest.userId = oracleUserName
-                def requisitionHeader = requisitionHeaderService.create( [domainModel: requisitionHeaderRequest] )
+                def requisitionHeader
+                try {
+                    requisitionHeader = requisitionHeaderService.create( [domainModel: requisitionHeaderRequest] )
+                } catch (ApplicationException e) {
+
+                }
                 log.debug "Requisition Header created " + requisitionHeader
                 def header = RequisitionHeader.read( requisitionHeader.id )
                 return header.requestCode

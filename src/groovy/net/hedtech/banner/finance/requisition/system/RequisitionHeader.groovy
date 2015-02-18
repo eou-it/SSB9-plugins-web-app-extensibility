@@ -97,7 +97,7 @@ class RequisitionHeader implements Serializable {
      * SHIP TO PHONE NUMBER:  The ship to phone number.
      */
     @Column(name = FinanceProcurementConstants.REQUISITION_HEADER_FIELD_FPBREQH_PHONE_NUM)
-    String shipToPhoneNumber
+    String phoneNumber
 
     /**
      * PHONE EXTENSION:  The telephone extension number for this particular record.
@@ -395,7 +395,7 @@ class RequisitionHeader implements Serializable {
         transactionDate( nullable: false )
         institutionName( nullable: true, maxSize: 35 )
         phoneArea( nullable: true, maxSize: 6 )
-        shipToPhoneNumber( nullable: true, maxSize: 12 )
+        phoneNumber( nullable: true, maxSize: 12 )
         phoneExtension( nullable: true, maxSize: 10 )
         vendorPidm( nullable: true )
         accountType( nullable: true, maxSize: 2 )
