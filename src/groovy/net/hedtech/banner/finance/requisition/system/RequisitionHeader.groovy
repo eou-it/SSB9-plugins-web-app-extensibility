@@ -12,6 +12,9 @@ import org.hibernate.annotations.Type
 
 import javax.persistence.*
 
+/**
+ * Class for Requisiton Header
+ */
 @NamedQueries(value = [
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_HEADER_FINDER_BY_REQUEST_CODE,
                 query = """FROM RequisitionHeader a

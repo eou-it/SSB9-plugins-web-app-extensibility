@@ -5,6 +5,7 @@ package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
+import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.service.ServiceBase
 import org.apache.log4j.Logger
 
@@ -22,7 +23,7 @@ class RequisitionHeaderService extends ServiceBase {
         def retRequisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode )
 
         if (retRequisitionHeader == null) {
-            throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( "missing.requisition.header", [] ) )
+            throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }
         return retRequisitionHeader;
     }
@@ -36,14 +37,12 @@ class RequisitionHeaderService extends ServiceBase {
             def oracleUserName = user?.oracleUserName
             def requisitionHeaderList = RequisitionHeader.fetchByUser( oracleUserName, pagingParams )
             if (requisitionHeaderList?.size() == 0) {
-                throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( "missing.requisition.header", [] ) )
+                throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
             }
             return requisitionHeaderList;
         } else {
-            log.error( 'User' + user + ' is not valid' )
-            throw new ApplicationException( RequisitionHeaderCompositeService, new BusinessLogicValidationException( "user.not.valid", [] ) )
+            log.debug( 'User' + user + ' is not valid' )
+            throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
     }
-
-
 }

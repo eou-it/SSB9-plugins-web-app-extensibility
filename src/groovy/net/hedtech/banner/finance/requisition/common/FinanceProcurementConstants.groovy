@@ -80,4 +80,18 @@ class FinanceProcurementConstants {
     public static final def REQUISITION_HEADER_FIELD_FPBREQH_CTRY_CODE_FAX = 'FPBREQH_CTRY_CODE_FAX'
     public static final def REQUISITION_HEADER_FIELD_FPBREQH_VERSION = 'FPBREQH_VERSION'
     public static final def REQUISITION_HEADER_FIELD_FPBREQH_DATA_ORIGIN = 'FPBREQH_DATA_ORIGIN'
+
+    public static final def DEFAULT_REQUEST_CODE = 'NEXT'
+    public static final def DEFAULT_REQUISITION_ORIGIN = 'SELF_SERVICE'
+
+    public static final def ERROR_MESSAGE_USER_NOT_VALID = 'user.not.valid'
+
+    public static final def ERROR_MESSAGE_MISSING_REQUISITION_HEADER = 'missing.requisition.header'
+    public static final
+    def SUCCESS_MESSAGE_CREATE_REQUISITION_HEADER = 'net.hedtech.banner.finance.requisition.create.requisition.header.success'
+    public static final
+    def SUCCESS_MESSAGE_UPDATE_REQUISITION_HEADER = 'net.hedtech.banner.finance.requisition.update.requisition.header.success'
+    public static final
+    def SUCCESS_MESSAGE_DELETE_REQUISITION_HEADER = 'net.hedtech.banner.finance.requisition.delete.requisition.header.success'
+
 }

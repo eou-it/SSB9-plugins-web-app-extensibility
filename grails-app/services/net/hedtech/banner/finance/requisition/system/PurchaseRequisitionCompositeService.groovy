@@ -5,20 +5,25 @@ package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
+import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import org.apache.log4j.Logger
 
-class RequisitionHeaderCompositeService {
+/**
+ * Class for Purchase Requisition Composite
+ */
+class PurchaseRequisitionCompositeService {
     def requisitionHeaderService
     boolean transactional = true
     def log = Logger.getLogger( this.getClass() )
     def springSecurityService
 
     /**
-     * Create requisition Header
+     * Create purchase requisition Header
      * @param map
      * @return
      */
-    def createOrUpdate( map ) {
+    def createPurchaseRequisition( map ) {
+        // Create Header
         if (map?.requisitionHeader) {
             RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
             def user = springSecurityService.getAuthentication()?.user
@@ -31,27 +36,28 @@ class RequisitionHeaderCompositeService {
                 return header.requestCode
             } else {
                 log.error( 'User' + user + ' is not valid' )
-                throw new ApplicationException( RequisitionHeaderCompositeService, new BusinessLogicValidationException( "user.not.valid", [] ) )
+                throw new ApplicationException( PurchaseRequisitionCompositeService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID ) )
             }
         }
     }
 
     /**
-     * Delete requisition Header
+     * Delete Purchase Requisition
      * @param requestCode
      */
-    def deleteRequisitionHeader( requestCode ) {
+    def deletePurchaseRequisition( requestCode ) {
         def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         requisitionHeaderService.delete( [domainModel: requisitionHeader] )
     }
 
     /**
-     * Delete requisition Header
+     * Update Purchase requisition
      *
-     * @param map the header map
+     * @param map the requisition map
      * @param requestCode
      */
     def updateRequisitionHeader( map, requestCode ) {
+        // Update header
         def existingHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         if (map?.requisitionHeader) {
             RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
@@ -68,7 +74,7 @@ class RequisitionHeaderCompositeService {
                 return header
             } else {
                 log.error( 'User' + user + ' is not valid' )
-                throw new ApplicationException( RequisitionHeaderCompositeService, new BusinessLogicValidationException( "user.not.valid", [] ) )
+                throw new ApplicationException( PurchaseRequisitionCompositeService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, ) )
             }
         }
     }
