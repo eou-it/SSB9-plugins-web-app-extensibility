@@ -85,7 +85,7 @@ class RequisitionHeader implements Serializable {
      * INSTITUTION NAME:  The name of the separate accountable institution.
      */
     @Column(name = FinanceProcurementConstants.REQUISITION_HEADER_FIELD_FPBREQH_NAME)
-    String institutionName
+    String name
 
     /**
      * PHONE AREA:  The telephone area code for this particular record.
@@ -112,16 +112,16 @@ class RequisitionHeader implements Serializable {
     Integer vendorPidm
 
     /**
-     * ACCOUNT TYPE CODE:  Classifies an account type i.e., asset, liabilities, control, fund balance, revenue, and labor expenses are used for reporting       purposes.
+     * Address Type
      */
     @Column(name = FinanceProcurementConstants.REQUISITION_HEADER_FIELD_FPBREQH_ATYP_CODE)
-    String accountType
+    String addressType
 
     /**
-     * ACCOUNT TYPE SEQUENCE NUMBER:  The internal account type that is predefined on the FTVSDAT table.  This number is used for collecting data on financial     reports.
+     * Address Type Sequence number
      */
     @Column(name = FinanceProcurementConstants.REQUISITION_HEADER_FIELD_FPBREQH_ATYP_SEQ_NUM)
-    Integer accountTypeSequenceNumber
+    Integer addressTypeSequence
 
     /**
      * CHART OF ACCOUNTS CODE:  The primary identification code for any chart of accounts that uniquely identifies that chart from any other in a multi-chart    environment.
@@ -393,13 +393,13 @@ class RequisitionHeader implements Serializable {
         userId( nullable: true, maxSize: 30 )
         requestDate( nullable: false )
         transactionDate( nullable: false )
-        institutionName( nullable: true, maxSize: 35 )
+        name( nullable: true, maxSize: 35 )
         phoneArea( nullable: true, maxSize: 6 )
         phoneNumber( nullable: true, maxSize: 12 )
         phoneExtension( nullable: true, maxSize: 10 )
         vendorPidm( nullable: true )
-        accountType( nullable: true, maxSize: 2 )
-        accountTypeSequenceNumber( nullable: true )
+        addressType( nullable: true, maxSize: 2 )
+        addressTypeSequence( nullable: true )
         chartOfAccount( nullable: true, maxSize: 1 )
         organization( nullable: true, maxSize: 6 )
         deliveryDate( nullable: true )

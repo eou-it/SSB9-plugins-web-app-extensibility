@@ -8,6 +8,9 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
+/**
+ * Test class for RequisitionHeaderIntegration
+ */
 class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
 
     def reqCode = "R0000026"
@@ -109,13 +112,13 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
     public RequisitionHeader newRequisitionHeader() {
 
 
-        def institutionName = "Maneesh"
+        def name = "Maneesh"
         def requestorPhoneAreaCode = "080"
         def requestorPhoneNumber = "242037662"
         def requestorPhoneExt = "9066"
         def vendorPidm = 278
-        def requestorAccountTypeCode = "BU"
-        def requestorAccountTypeSeqNum = 1
+        def addressType = "BU"
+        def addressTypeSequence = 1
         def chartOfAccountsCode = "B"
         def orgnCode = "11103"
         def attentionTo = "Avery Johnson"
@@ -129,14 +132,14 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
                 transactionDate: new Date(),
                 postingDate: new Date(),
                 deliveryDate: new Date() + 20,
-                institutionName: institutionName,
+                name: name,
                 ship: ship_Code,
                 phoneArea: requestorPhoneAreaCode,
                 phoneNumber: requestorPhoneNumber,
                 phoneExtension: requestorPhoneExt,
                 vendorPidm: vendorPidm,
-                accountType: requestorAccountTypeCode,
-                accountTypeSequenceNumber: requestorAccountTypeSeqNum,
+                addressType: addressType,
+                addressTypeSequence: addressTypeSequence,
                 chartOfAccount: chartOfAccountsCode,
                 organization: orgnCode,
                 attentionTo: attentionTo,
@@ -147,7 +150,6 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
                 userId: "FIMSPRD",
                 dataOrigin: "Banner"
         )
-
         return requisitionHeader
     }
 }
