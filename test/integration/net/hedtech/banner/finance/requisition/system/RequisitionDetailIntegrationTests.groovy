@@ -97,10 +97,11 @@ class RequisitionDetailIntegrationTests extends BaseIntegrationTestCase {
      * @return RequisitionDetail.
      */
     private RequisitionDetail getRequisitionDetails() {
-        def lastItem = RequisitionDetail.getLastItem() + 1
+        def lastItem = RequisitionDetail.getLastItem()[0]
+        lastItem = lastItem + 1
         def requisitionDetail = new RequisitionDetail(
                 requestCode: reqCode,
-                item: lastItem + 1,
+                item: lastItem,
                 userId: 'FIMSUSR',
                 commodity: commodityCode,
                 commodityDescription: 'New',
