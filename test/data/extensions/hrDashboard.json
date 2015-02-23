@@ -8,8 +8,12 @@
                         "name": "firstWorkDate",
                         "attributes": {"label": "*First Work Date*"}
                         //,"exclude": true
-                        //,"nextSibling": "status"
-                        ,"nextSibling": null
+                        ,"nextSibling": "seniorityDate"
+                        //,"nextSibling": null
+                    },
+                    {
+                      "name": "division"
+                      ,"exclude": true
                     }
 
                 ]

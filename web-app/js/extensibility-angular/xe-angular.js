@@ -45,9 +45,9 @@ xe.ng.parseElement = function(page,el) {
     }
 };
 
-
-
-
+//Do extensions of Div, Form, Span elements (maybe more to add)  that might otherwise not be extended.
+//Assuming content loaded dynamically using ngInclude or uiView will have all content within such element.
+//Some logic exists to propagate the section name from the directive loading the dynamic content down to loaded content directives
 xe.ng.groupCompile = function(prio, context) {
     return function() {
         return {
@@ -56,16 +56,16 @@ xe.ng.groupCompile = function(prio, context) {
             compile: function (element, attributes) {
                 xe.stats.groupCompileCount++;
                 // check if parent has attribute xeSectionInh
-                if (element[0].parentNode && element[0].parentNode.attributes) {
+                if (!attributes.xeSection && element[0].parentNode && element[0].parentNode.attributes) {
                     var section = element[0].parentNode.attributes[xe.attrInh.section];
                     if (section) {
                         attributes.xeSection = section.value;
                         xe.log('Compile ', context, prio, attributes, xe.logging.level === xe.logging.verbose ? element[0].innerHTML : element);
-                        xe.log('Extending inherited section ' + attributes.xeSection);
-                        //make xe.extend think it is extending xeSection
+                        xe.log('-->Extending inherited section ' + attributes.xeSection);
+                        //make xe.extend think it is extending xeSection by putting a temp section attribute on it
                         element.attr(xe.attr.section, attributes.xeSection);
                         xe.extend(element);
-                        element.prop(xe.attr.section,null); //Remove xeSection attribute
+                        element[0].removeAttribute(xe.attr.section); //clean up temp section attribute
                     }
                 }
             }
@@ -73,6 +73,10 @@ xe.ng.groupCompile = function(prio, context) {
     };
 };
 
+
+//This handles processing 'above' section level (remove section, move section), invoked after the baseline linking of uiView, ngInclude and the main body.
+//Now using xe.extend which tries to extend everything - possibly some performance to win to have a more lightweight version of extend
+//(like extendPagePart, but it doesn't work any more)
 xe.ng.groupProcessing = function(prio, context) {
     return function() {
         return {
@@ -88,6 +92,7 @@ xe.ng.groupProcessing = function(prio, context) {
 };
 
 //add section name to a child of a section (used when parent is not available when compiling child)
+//invoked before baseline compile of ngInclude and ngRepeat
 xe.ng.inheritSection = function(prio, context) {
     return function() {
         return {
@@ -132,12 +137,6 @@ angular.module('extensibility', [])
                 if (!xe.ng.deferedSectionTags[element[0].tagName]) {
                     xe.log('Compile Section', attributes.xeSection);
                     xe.extend(element);
-                    /*
-                     if (xe.extensions.sections[attributes.xeSection]) {
-                     xe.log('Extending section ' + attributes.xeSection);
-                     xe.extend(element, attributes);
-                     }
-                     */
                 }
             }
         };
@@ -152,6 +151,6 @@ angular.module('extensibility', [])
     .directive('ngInclude', xe.ng.groupProcessing(xe.ng.priorities.ngIncludeBase-1, 'after ng-include' ))  // after  baseline include do the group processing like moving/removing sections
     .directive('uiView'   , xe.ng.groupProcessing(  0,'ui-view'))
     .directive('body'     , xe.ng.groupProcessing(  0,'body'   ))
-    .directive('ngRepeat' , xe.ng.inheritSection (   xe.ng.priorities.ngRepeatBase+1, 'before ng-repeat')) // before baseline repeat, add xeSectionInh attribute (priority > baseline )
+    .directive('ngRepeat' , xe.ng.inheritSection (xe.ng.priorities.ngRepeatBase+1, 'before ng-repeat')) // before baseline repeat, add xeSectionInh attribute (priority > baseline )
     //.directive('xeAccordion' , xe.groupLink(0,'xeAccordion',true))
 ;
