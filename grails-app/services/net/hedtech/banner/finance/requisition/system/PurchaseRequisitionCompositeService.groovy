@@ -27,7 +27,7 @@ class PurchaseRequisitionCompositeService {
         if (map?.requisitionHeader) {
             RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
             def user = springSecurityService.getAuthentication()?.user
-            if (user) {
+            if (user.oracleUserName) {
                 def oracleUserName = user?.oracleUserName
                 requisitionHeaderRequest.userId = oracleUserName
                 def requisitionHeader = requisitionHeaderService.create( [domainModel: requisitionHeaderRequest] )
@@ -36,7 +36,7 @@ class PurchaseRequisitionCompositeService {
                 return header.requestCode
             } else {
                 log.error( 'User' + user + ' is not valid' )
-                throw new ApplicationException( PurchaseRequisitionCompositeService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID ) )
+                throw new ApplicationException( PurchaseRequisitionCompositeService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
             }
         }
     }
@@ -65,7 +65,7 @@ class PurchaseRequisitionCompositeService {
             requisitionHeaderRequest.version = existingHeader.version
             requisitionHeaderRequest.requestCode = existingHeader.requestCode
             def user = springSecurityService.getAuthentication()?.user
-            if (user) {
+            if (user.oracleUserName) {
                 def oracleUserName = user?.oracleUserName
                 requisitionHeaderRequest.userId = oracleUserName
                 def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
@@ -74,7 +74,7 @@ class PurchaseRequisitionCompositeService {
                 return header
             } else {
                 log.error( 'User' + user + ' is not valid' )
-                throw new ApplicationException( PurchaseRequisitionCompositeService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, ) )
+                throw new ApplicationException( PurchaseRequisitionCompositeService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
             }
         }
     }

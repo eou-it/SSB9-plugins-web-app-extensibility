@@ -118,11 +118,11 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
         def requestorPhoneExt = "9066"
         def vendorPidm = 278
         def addressType = "BU"
-        def addressTypeSequence = 1
+        def vendorAddressTypeSequence = 1
         def chartOfAccountsCode = "B"
         def orgnCode = "11103"
         def attentionTo = "Avery Johnson"
-        def singleAcctgIndicator = true
+        def isDocumentLevelAccounting = true
         def requestTypeIndicator = "P"
         def ship_Code = "EAST"
         def matchRequired = "U"
@@ -132,18 +132,18 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
                 transactionDate: new Date(),
                 postingDate: new Date(),
                 deliveryDate: new Date() + 20,
-                name: name,
+                requesterName: name,
                 ship: ship_Code,
-                phoneArea: requestorPhoneAreaCode,
-                phoneNumber: requestorPhoneNumber,
-                phoneExtension: requestorPhoneExt,
+                requesterPhoneArea: requestorPhoneAreaCode,
+                requesterPhoneNumber: requestorPhoneNumber,
+                requesterPhoneExtension: requestorPhoneExt,
                 vendorPidm: vendorPidm,
-                addressType: addressType,
-                addressTypeSequence: addressTypeSequence,
+                vendorAddressType: addressType,
+                vendorAddressTypeSequence: vendorAddressTypeSequence,
                 chartOfAccount: chartOfAccountsCode,
                 organization: orgnCode,
                 attentionTo: attentionTo,
-                singleAcctgDistrIndicator: singleAcctgIndicator,
+                isDocumentLevelAccounting: isDocumentLevelAccounting,
                 requestTypeIndicator: requestTypeIndicator,
                 matchRequired: matchRequired,
                 lastModified: new Date(),
