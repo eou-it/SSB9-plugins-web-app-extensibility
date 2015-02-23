@@ -83,6 +83,8 @@ class FinanceProcurementConstants {
 
     public static final def DEFAULT_REQUEST_CODE = 'NEXT'
     public static final def DEFAULT_REQUISITION_ORIGIN = 'SELF_SERVICE'
+    public static final def DEFAULT_TEST_ORACLE_LOGIN_USER_NAME = 'FIMSPRD'
+    public static final def DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD = 'u_pick_it'
 
     public static final def ERROR_MESSAGE_USER_NOT_VALID = 'user.not.valid'
 

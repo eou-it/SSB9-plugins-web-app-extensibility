@@ -3,6 +3,7 @@
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
+import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
@@ -10,13 +11,16 @@ import org.junit.Before
 import org.junit.Test
 
 /**
- * Test class for RequisitionHeaderIntegration
+ * Test class for RequisitionHeaderService
  */
-class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
-
-    def reqCode = "R0000026"
+class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
 
 
+    def requisitionHeaderService
+
+    /**
+     * Super class setup
+     */
     @Before
     void setUp() {
         formContext = ['GUAGMNU']
@@ -24,94 +28,57 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
     }
 
-
+    /**
+     * Tear Down actions
+     */
     @After
     void tearDown() {
         super.tearDown()
     }
 
     /**
-     * Test Fetch Request for specified requestCode
+     * test Listing headers
      */
     @Test
-    void testFetchRequisitionHeaderByRequestCode() {
-        def header = RequisitionHeader.fetchByRequestCode( reqCode )
-        assertNotNull header
-        assertEquals reqCode, header.requestCode
+    void testListRequisitionHeadersByUserName() {
+        def paginationParam = [max: 500, offset: 0]
+        def headers = requisitionHeaderService.listRequisitionHeaderForLoggedInUser( paginationParam )
+        assertTrue headers.size() > 0
     }
 
     /**
-     * Test Fetch Request for specified user
+     *  Test Finding headers for specified code. Failed case
      */
     @Test
-    void testFetchRequisitionHeaderByUser() {
-        def requestHeader = newRequisitionHeader()
+    void testFindRequisitionHeaderByRequestCodeFailedCase() {
+
         try {
-            requestHeader.save( failOnError: true, flush: true )
-            assertNotNull requestHeader.id
+            def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( 'INVALID_CODE' )
+            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
         }
-        catch (e) {
-            e.printStackTrace()
+        catch (ApplicationException ae) {
+            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
         }
-        def pagingParams = [max: 500, offset: 0]
-        def header = RequisitionHeader.fetchByUser( FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, pagingParams )
-        assertNotNull header
-        assertTrue( header.list.size() > 0 )
     }
 
     /**
-     * Test Fetch Request for specified user Invalid user
+     *  Test Finding headers for specified code
      */
     @Test
-    void testFetchRequisitionHeaderByUserInvalidCase() {
-        def pagingParams = [max: 500, offset: 0]
-        def header = RequisitionHeader.fetchByUser( 'INVALID_USER', pagingParams )
-        assertNotNull header
-        assertTrue( header.list.size() == 0 )
-    }
-
-    /**
-     * Test to create requisition Headers
-     */
-    @Test
-    void testCreate() {
+    void testFindRequisitionHeaderByRequestCode() {
 
         def requestHeader = newRequisitionHeader()
-        try {
-            requestHeader.save( failOnError: true, flush: true )
-            assertNotNull requestHeader.id
-        }
-        catch (e) {
-            e.printStackTrace()
-        }
-        def reqId = requestHeader.id
+        requestHeader.save( failOnError: true, flush: true )
         requestHeader.refresh()
-
-        def request = RequisitionHeader.findById( reqId )
-        assertNotNull request.id
-        assertNotNull request.requestCode
-        assertFalse( request.requestCode == FinanceProcurementConstants.DEFAULT_REQUEST_CODE )
-    }
-
-    /**
-     * Test invalid case for create requisition header
-     */
-    @Test
-    void testInvalidCreate() {
-        def requestHeader = newRequisitionHeader()
-        requestHeader.deliveryDate = null
-        shouldFail {
-            requestHeader.save( failOnError: true, flush: true )
-        }
+        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestHeader.requestCode )
+        assertTrue header.requestCode == requestHeader.requestCode
     }
 
     /**
      * New object of Requisition Header
      * @return
      */
-    public RequisitionHeader newRequisitionHeader() {
-
-
+    private RequisitionHeader newRequisitionHeader() {
         def name = "Maneesh"
         def requestorPhoneAreaCode = "080"
         def requestorPhoneNumber = "242037662"
@@ -148,7 +115,7 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
                 matchRequired: matchRequired,
                 lastModified: new Date(),
                 userId: FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                dataOrigin: FinanceProcurementConstants.DEFAULT_REQUISITION_ORIGIN
+                dataOrigin: "Banner"
         )
         return requisitionHeader
     }

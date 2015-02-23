@@ -17,8 +17,6 @@ class PurchaseRequisitionCompositeService {
     def log = Logger.getLogger( this.getClass() )
     def springSecurityService
     def requisitionDetailService
-    def financeSystemControlService
-    def financeCommodityService
 
     /**
      * Create purchase requisition Header
@@ -44,7 +42,7 @@ class PurchaseRequisitionCompositeService {
     private def createRequisitionHeader( map ) {
         RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
         def user = springSecurityService.getAuthentication()?.user
-        if (user) {
+        if (user.oracleUserName) {
             def oracleUserName = user?.oracleUserName
             requisitionHeaderRequest.userId = oracleUserName
             def requisitionHeader = requisitionHeaderService.create( [domainModel: requisitionHeaderRequest] )
@@ -62,14 +60,14 @@ class PurchaseRequisitionCompositeService {
     /**
      * This private method is used to create Requisition Detail.
      * @param map Map contains RequisitionDetail domain model.
-     * @return Reauisition Code.
+     * @return Requisition Code.
      */
     private def createRequisitionDetail( map ) {
         RequisitionDetail requisitionDetailRequest = map.requisitionDetail
         def user = springSecurityService.getAuthentication()?.user
-        if (user) {
+        if (user.oracleUserName) {
             def oracleUserName = user?.oracleUserName
-            def lastItem = requisitionDetailService.getLastItem(  )
+            def lastItem = requisitionDetailService.getLastItem()
             requisitionDetailRequest.userId = oracleUserName
             requisitionDetailRequest.item = lastItem + 1
             RequisitionDetail requisitionDetail = requisitionDetailService.create( [domainModel: requisitionDetailRequest] )
@@ -107,7 +105,7 @@ class PurchaseRequisitionCompositeService {
             requisitionHeaderRequest.version = existingHeader.version
             requisitionHeaderRequest.requestCode = existingHeader.requestCode
             def user = springSecurityService.getAuthentication()?.user
-            if (user) {
+            if (user.oracleUserName) {
                 def oracleUserName = user?.oracleUserName
                 requisitionHeaderRequest.userId = oracleUserName
                 def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
@@ -116,10 +114,9 @@ class PurchaseRequisitionCompositeService {
                 return header
             } else {
                 log.error( 'User' + user + ' is not valid' )
-                throw new ApplicationException(
-                        PurchaseRequisitionCompositeService,
-                        new BusinessLogicValidationException(
-                                FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
+                throw new ApplicationException( PurchaseRequisitionCompositeService,
+                                                new BusinessLogicValidationException(
+                                                        FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
             }
         }
     }

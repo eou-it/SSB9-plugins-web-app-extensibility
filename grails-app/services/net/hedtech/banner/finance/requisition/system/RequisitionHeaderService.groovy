@@ -36,10 +36,10 @@ class RequisitionHeaderService extends ServiceBase {
         if (user) {
             def oracleUserName = user?.oracleUserName
             def requisitionHeaderList = RequisitionHeader.fetchByUser( oracleUserName, pagingParams )
-            if (requisitionHeaderList?.size() == 0) {
+            if (requisitionHeaderList?.list?.size() == 0) {
                 throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
             }
-            return requisitionHeaderList;
+            return requisitionHeaderList.list;
         } else {
             log.debug( 'User' + user + ' is not valid' )
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
