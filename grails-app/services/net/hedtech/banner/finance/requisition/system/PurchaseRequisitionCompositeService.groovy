@@ -119,7 +119,7 @@ class PurchaseRequisitionCompositeService {
                 throw new ApplicationException(
                         PurchaseRequisitionCompositeService,
                         new BusinessLogicValidationException(
-                                FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, ), [] )
+                                FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
             }
         }
     }
