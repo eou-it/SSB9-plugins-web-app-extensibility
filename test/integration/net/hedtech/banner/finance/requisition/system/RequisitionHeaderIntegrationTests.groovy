@@ -96,14 +96,14 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
     /**
      * Test invalid case for create requisition header
      */
-    @Test
+    /*@Test
     void testInvalidCreate() {
         def requestHeader = newRequisitionHeader()
         requestHeader.deliveryDate = null
         shouldFail {
             requestHeader.save( failOnError: true, flush: true )
         }
-    }
+    }*/
 
     /**
      * New object of Requisition Header
