@@ -2,14 +2,6 @@
  Copyright 2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.common
-
-import org.hibernate.annotations.Type
-
-import javax.persistence.Column
-import javax.persistence.Temporal
-import javax.persistence.TemporalType
-import javax.persistence.Version
-
 /**
  * Util class for Finance Procurement module where in this class will holds all common method and variables will be
  * used across the banner-finance-procurement plugin.

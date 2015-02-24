@@ -149,7 +149,7 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
                 'requesterFaxNumber'       : '23823292',
                 'requesterFaxExtension'    : '2323',
                 'requesterFaxCountry'      : 'IND',
-                'requesterEmailAddress'    : 'shiv@shiv.com',
+                'requesterEmailAddress'    : 'test@test.com',
                 'deliveryComment'          : 'test',
                 'taxGroup'                 : 'AU',
                 'discount'                 : 30,
