@@ -20,7 +20,7 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
     def purchaseRequisitionCompositeService
 
     def requisitionHeaderService
-
+    def requisitionDetailService
     /**
      * Super class setup
      */
@@ -159,5 +159,67 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
                 'requisitionOrigination'   : FinanceProcurementConstants.DEFAULT_REQUISITION_ORIGIN,
                 'deliveryDate'             : new Date( '20-Feb-2015' )
         ]
+    }
+
+    def requestHeaderCode = "R0000129"
+
+    /**
+     * Test create Requisition Detail
+     */
+    @Test
+    void createPurchaseRequisitionDetail() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def reqDetailDomainModel = getRequisitionDetails()
+        def domainModelMap = [requisitionDetail: reqDetailDomainModel]
+        def requestCode = purchaseRequisitionCompositeService.createPurchaseRequisition( domainModelMap )
+        assertTrue requestCode?.detailReqCode == requestHeaderCode
+    }
+
+    /**
+     * Test create With Invalid user
+     */
+    @Test(expected = BadCredentialsException.class)
+    void createPurchaseRequisitionDetailInvalidUser() {
+        login 'Invalid_user', 'invalid_password'
+        def reqDetailDomainModel = getRequisitionDetails()
+        def domainModelMap = [requisitionDetail: reqDetailDomainModel]
+        purchaseRequisitionCompositeService.createPurchaseRequisition( domainModelMap )
+    }
+
+    /**
+     * Test create With invalid Requisition Header Code
+     */
+    @Test(expected = ApplicationException.class)
+    void createPurchaseRequisitionInvalidRequisitionCode() {
+        def reqDetailDomainModel = getRequisitionDetails()
+        reqDetailDomainModel.requestCode = 'R0000129182991'
+        def domainModelMap = [requisitionDetail: reqDetailDomainModel]
+        purchaseRequisitionCompositeService.createPurchaseRequisition( domainModelMap )
+    }
+
+    /**
+     * The method is used to get the RequisitionDetail object with all required values to insert/update.
+     * @return RequisitionDetail.
+     */
+    private RequisitionDetail getRequisitionDetails() {
+        def requisitionDetail = new RequisitionDetail(
+                requestCode: requestHeaderCode,
+                userId: FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                commodity: '2210000000',
+                commodityDescription: 'New Requisition Detail',
+                chartOfAccount: 'B',
+                organization: '11003',
+                quantity: '2',
+                unitOfMeasure: 'EA',
+                unitPrice: '99.99',
+                suspenseIndicator: true,
+                textUsageIndicator: FinanceProcurementConstants.DEFAULT_FPBREQD_TEXT_USAGE,
+                discountAmount: '0',
+                taxAmount: '0',
+                additionalChargeAmount: '9',
+                taxGroup: 'NT',
+                dataOrigin: FinanceProcurementConstants.DEFAULT_REQUISITION_ORIGIN
+        )
+        return requisitionDetail
     }
 }

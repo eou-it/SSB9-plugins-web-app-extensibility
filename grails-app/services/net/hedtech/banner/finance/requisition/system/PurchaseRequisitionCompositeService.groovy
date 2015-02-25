@@ -6,6 +6,7 @@ package net.hedtech.banner.finance.requisition.system
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import org.apache.commons.lang.StringUtils
 import org.apache.log4j.Logger
 
 /**
@@ -17,6 +18,8 @@ class PurchaseRequisitionCompositeService {
     def log = Logger.getLogger( this.getClass() )
     def springSecurityService
     def requisitionDetailService
+    def financeSystemControlService
+    def financeCommodityService
 
     /**
      * Create purchase requisition Header
@@ -67,9 +70,20 @@ class PurchaseRequisitionCompositeService {
         def user = springSecurityService.getAuthentication()?.user
         if (user.oracleUserName) {
             def oracleUserName = user?.oracleUserName
-            def lastItem = requisitionDetailService.getLastItem()
+            def lastItem = requisitionDetailService.getLastItem(requisitionDetailRequest.requestCode)
             requisitionDetailRequest.userId = oracleUserName
             requisitionDetailRequest.item = lastItem + 1
+            def requestCode = requisitionDetailRequest.requestCode
+            // Set all the required information from the Requisition Header.
+            def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
+            requisitionDetailRequest.chartOfAccount = requisitionHeader.chartOfAccount
+            requisitionDetailRequest.organization = requisitionHeader.organization
+            requisitionDetailRequest.ship = requisitionHeader.ship
+            requisitionDetailRequest.requisitionDate = requisitionHeader.requestDate
+            // If header don’t have discount code setup then remove the discountAmount value
+            if (!requisitionHeader.discount == null) {
+                requisitionDetailRequest.remove('discountAmount')
+            }
             RequisitionDetail requisitionDetail = requisitionDetailService.create( [domainModel: requisitionDetailRequest] )
             log.debug "Requisition Detail created " + requisitionDetail
             return requisitionDetail.requestCode
@@ -77,7 +91,7 @@ class PurchaseRequisitionCompositeService {
             log.error( 'User' + user + ' is not valid' )
             throw new ApplicationException(
                     PurchaseRequisitionCompositeService,
-                    new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID ), [] )
+                    new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID , []) )
         }
     }
 

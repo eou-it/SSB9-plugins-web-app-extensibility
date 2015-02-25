@@ -23,9 +23,9 @@ class RequisitionDetailService extends ServiceBase {
      * @param requisitionCode Requisition code.
      * @return List of requisition code.
      */
-    def findRequisitionDetailListByRequistionCode( requisitionCode ) {
+    def findRequisitionDetailListByRequistionCode( requisitionCode, paginationParams ) {
         log.debug( 'Input parameter for findRequisitionDetailByRequestionCode :' + requisitionCode )
-        def requisitionDetails = RequisitionDetail.fetchByRequestCode( requisitionCode )
+        def requisitionDetails = RequisitionDetail.fetchByRequestCode( requisitionCode, paginationParams ).list
         return requisitionDetails
     }
 
@@ -49,7 +49,7 @@ class RequisitionDetailService extends ServiceBase {
         def loggedInUser = springSecurityService.getAuthentication()?.user
         if (loggedInUser) {
             def oracleUserName = loggedInUser?.oracleUserName
-            def requisitionDetailList = RequisitionDetail.fetchByUserId( oracleUserName, paginationParam )
+            def requisitionDetailList = RequisitionDetail.fetchByUserId( oracleUserName, paginationParam ).list
             if (requisitionDetailList?.isEmpty()) {
                 throw new ApplicationException(
                         RequisitionDetailService,
@@ -67,12 +67,13 @@ class RequisitionDetailService extends ServiceBase {
 
     /**
      * This method is used get last inserted 'item' from RequisitionDetail.
+     * @param requestCode Requisition Code.
      * @return last item.
      */
-    def getLastItem () {
-        def lastItem = 0
-        if (!RequisitionDetail.getLastItem()?.empty) {
-            lastItem = RequisitionDetail.getLastItem().getAt( 0 )
+    def getLastItem (requestCode) {
+        def lastItem = RequisitionDetail.getLastItem(requestCode).getAt( 0 )
+        if (lastItem == null) {
+            lastItem = 0
         }
         return lastItem
     }

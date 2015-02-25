@@ -17,7 +17,8 @@ import javax.persistence.*
  */
 @NamedQueries(value = [
         @NamedQuery(name = FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_GET_LAST_ITEM,
-                query = """SELECT MAX(requisitionDetail.item) FROM RequisitionDetail requisitionDetail"""),
+                query = """SELECT MAX(requisitionDetail.item) FROM RequisitionDetail requisitionDetail
+                            WHERE requisitionDetail.requestCode = :requestCode"""),
         @NamedQuery(name = FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_CODE,
                 query = """FROM RequisitionDetail requisitionDetail
                             WHERE requisitionDetail.requestCode = :requestCode
@@ -382,9 +383,11 @@ class RequisitionDetail implements Serializable {
      * This method is used to called named query for get last item generated in requisition detail.
      * @return last generated item.
      */
-    public static def getLastItem() {
+    public static def getLastItem(requestCode) {
         def lastItem = RequisitionDetail.withSession {session ->
-            session.getNamedQuery( FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_GET_LAST_ITEM ).list()
+            session.getNamedQuery( FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_GET_LAST_ITEM )
+                    .setString(FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode)
+                    .list()
         }
         return lastItem
     }

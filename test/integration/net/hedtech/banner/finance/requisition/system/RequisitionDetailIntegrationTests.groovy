@@ -10,6 +10,7 @@
  ****************************************************************************** */
 package net.hedtech.banner.finance.requisition.system
 
+import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
@@ -58,8 +59,9 @@ class RequisitionDetailIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testFetchRequisitionDetailByUserId() {
         def pagingParams = [max: 500, offset: 0]
-        def requestDetailList = RequisitionDetail.fetchByUserId( 'FIMSUSR', pagingParams ).list;
-        assert requestDetailList.size() > 0
+        def requestDetailList = RequisitionDetail.fetchByUserId(
+                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, pagingParams ).list;
+        assertTrue( requestDetailList.size() > 0 || requestDetailList.isEmpty() )
     }
 
     /**
@@ -77,19 +79,17 @@ class RequisitionDetailIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testCreateRequisitionDetail() {
-        def requesitionDetail = getRequisitionDetails()
+        def requisitionDetail = getRequisitionDetails()
         try {
-            requesitionDetail.save( failOnError: true, flush: true )
-            assertNotNull requesitionDetail.id
+            requisitionDetail.save( failOnError: true, flush: true )
+            assertNotNull requisitionDetail.id
+            def reqId = requisitionDetail.id
+            def request = RequisitionDetail.findById( reqId )
+            assertTrue( request?.id != null || request?.requestCode != null )
         }
         catch (e) {
             e.printStackTrace()
         }
-        def reqId = requesitionDetail.id
-        requesitionDetail.refresh()
-
-        def request = RequisitionDetail.findById( reqId )
-        assertTrue( request?.id != null || request?.requestCode != null )
     }
 
     /**
@@ -97,12 +97,15 @@ class RequisitionDetailIntegrationTests extends BaseIntegrationTestCase {
      * @return RequisitionDetail.
      */
     private RequisitionDetail getRequisitionDetails() {
-        def lastItem = RequisitionDetail.getLastItem()[0]
+        def lastItem = RequisitionDetail.getLastItem().getAt( 0 )
+        if (lastItem == null) {
+            lastItem = 0
+        }
         lastItem = lastItem + 1
         def requisitionDetail = new RequisitionDetail(
                 requestCode: reqCode,
                 item: lastItem,
-                userId: 'FIMSUSR',
+                userId: FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                 commodity: commodityCode,
                 commodityDescription: 'New',
                 chartOfAccount: 'B',

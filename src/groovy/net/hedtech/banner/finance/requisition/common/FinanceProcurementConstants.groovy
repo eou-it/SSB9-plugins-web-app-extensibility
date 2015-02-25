@@ -150,5 +150,6 @@ class FinanceProcurementConstants {
     static final def ERROR_MESSAGE_MISSING_REQUISITION_DETAIL = 'missing.requisition.detail'
 
     static final def SUCCESS_MESSAGE_CREATE_REQUISITION_DETAIL = 'net.hedtech.banner.finance.requisition.create.requisition.detail.success'
+    static final def DEFAULT_YES = 'Y'
 
 }
