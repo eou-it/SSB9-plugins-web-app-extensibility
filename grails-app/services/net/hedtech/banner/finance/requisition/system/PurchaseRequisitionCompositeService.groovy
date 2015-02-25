@@ -6,7 +6,6 @@ package net.hedtech.banner.finance.requisition.system
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
-import org.apache.commons.lang.StringUtils
 import org.apache.log4j.Logger
 
 /**
@@ -70,7 +69,7 @@ class PurchaseRequisitionCompositeService {
         def user = springSecurityService.getAuthentication()?.user
         if (user.oracleUserName) {
             def oracleUserName = user?.oracleUserName
-            def lastItem = requisitionDetailService.getLastItem(requisitionDetailRequest.requestCode)
+            def lastItem = requisitionDetailService.getLastItem( requisitionDetailRequest.requestCode )
             requisitionDetailRequest.userId = oracleUserName
             requisitionDetailRequest.item = lastItem + 1
             def requestCode = requisitionDetailRequest.requestCode
@@ -82,7 +81,7 @@ class PurchaseRequisitionCompositeService {
             requisitionDetailRequest.requisitionDate = requisitionHeader.requestDate
             // If header don’t have discount code setup then remove the discountAmount value
             if (!requisitionHeader.discount == null) {
-                requisitionDetailRequest.remove('discountAmount')
+                requisitionDetailRequest.remove( 'discountAmount' )
             }
             RequisitionDetail requisitionDetail = requisitionDetailService.create( [domainModel: requisitionDetailRequest] )
             log.debug "Requisition Detail created " + requisitionDetail
@@ -91,7 +90,7 @@ class PurchaseRequisitionCompositeService {
             log.error( 'User' + user + ' is not valid' )
             throw new ApplicationException(
                     PurchaseRequisitionCompositeService,
-                    new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID , []) )
+                    new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
     }
 
