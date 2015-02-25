@@ -17,8 +17,6 @@ class PurchaseRequisitionCompositeService {
     def log = Logger.getLogger( this.getClass() )
     def springSecurityService
     def requisitionDetailService
-    def financeSystemControlService
-    def financeCommodityService
 
     /**
      * Create purchase requisition Header
