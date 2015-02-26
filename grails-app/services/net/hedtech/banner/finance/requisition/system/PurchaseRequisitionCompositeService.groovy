@@ -67,10 +67,10 @@ class PurchaseRequisitionCompositeService {
         def user = springSecurityService.getAuthentication()?.user
         if (user.oracleUserName) {
             def oracleUserName = user?.oracleUserName
-            def lastItem = requisitionDetailService.getLastItem( requisitionDetailRequest.requestCode )
+            def requestCode = requisitionDetailRequest.requestCode
+            def lastItem = requisitionDetailService.getLastItem( requestCode )
             requisitionDetailRequest.userId = oracleUserName
             requisitionDetailRequest.item = lastItem + 1
-            def requestCode = requisitionDetailRequest.requestCode
             // Set all the required information from the Requisition Header.
             def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
             requisitionDetailRequest.chartOfAccount = requisitionHeader.chartOfAccount
@@ -130,6 +130,16 @@ class PurchaseRequisitionCompositeService {
                                                         FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
             }
         }
+    }
+
+    /**
+     * Delete Purchase Requisition Detail.
+     * @param requestCode Requisition Code.
+     * @param item Item.
+     */
+    def deletePurchaseRequisitionDetail( requestCode, item ) {
+        def requisitionDetail = requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( requestCode, item )
+        requisitionDetailService.delete( [domainModel: requisitionDetail] )
     }
 
 }

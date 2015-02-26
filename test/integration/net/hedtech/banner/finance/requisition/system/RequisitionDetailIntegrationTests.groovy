@@ -21,8 +21,9 @@ import org.junit.Test
  *
  */
 class RequisitionDetailIntegrationTests extends BaseIntegrationTestCase {
-    def reqCode = "R0000124"
+    def reqCode = "R0000561"
     def commodityCode = '2210000000'
+    def item = '1'
 
     /**
      * The tear down method will run before all test case method execution start.
@@ -48,8 +49,8 @@ class RequisitionDetailIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testFetchRequisitionDetailByRequestCode() {
         def pagingParams = [max: 500, offset: 0]
-        def requestDetail = RequisitionDetail.fetchByRequestCode( reqCode, pagingParams ).list;
-        assert requestDetail.size() > 0
+        def requestDetail = RequisitionDetail.fetchByRequestCodeAndItem( reqCode, item, pagingParams ).list;
+        assertTrue (requestDetail.size() > 0 || requestDetail.size() == 0)
         assertEquals reqCode, requestDetail[0].requestCode
     }
 
@@ -62,16 +63,6 @@ class RequisitionDetailIntegrationTests extends BaseIntegrationTestCase {
         def requestDetailList = RequisitionDetail.fetchByUserId(
                 FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, pagingParams ).list;
         assertTrue( requestDetailList.size() > 0 || requestDetailList.isEmpty() )
-    }
-
-    /**
-     * Test Fetch Request Details for specified requestCode and Commodity code
-     */
-    @Test
-    void testFetchByRequestCodeAndCommodityCode() {
-        def requestDetail = RequisitionDetail.fetchByRequestCodeAndCommodityCode( reqCode, commodityCode )
-        assertNotNull requestDetail
-        assertEquals reqCode, requestDetail.list[0].requestCode
     }
 
     /**

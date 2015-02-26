@@ -9,7 +9,7 @@ package net.hedtech.banner.finance.requisition.common
 class FinanceProcurementConstants {
     /* Constant for Requisition Header Domain*/
 
-    public static final def REQUISITION_HEADER_FINDER_BY_REQUEST_CODE = 'RequisitionHeader.fetchByRequestCode'
+    public static final def REQUISITION_HEADER_FINDER_BY_REQUEST_CODE = 'RequisitionHeader.fetchByRequestCodeAndItem'
     public static final def REQUISITION_HEADER_FINDER_BY_USER = 'RequisitionHeader.fetchByUser'
 
     public static final def REQUISITION_HEADER_FINDER_BY_REQUEST_CODE_PARAM_REQUEST_CODE = 'requestCode'
@@ -140,16 +140,22 @@ class FinanceProcurementConstants {
     static final def DEFAULT_FPBREQD_TEXT_USAGE = 'S'
 
     static final def QUERY_PARAM_REQUEST_CODE = 'requestCode'
-    static final def QUERY_PARAM_REQUISITION_DETAIL_COMMODITY_CODE = 'commodity'
-    static final def QUERY_PARAM_ITEM = 'item'
+    static final def QUERY_PARAM_REQUISITION_DETAIL_ITEM = 'item'
     static final def QUERY_PARAM_USER_ID = 'userId'
     static final def NAMED_QUERY_REQUEST_DETAIL_GET_LAST_ITEM = 'RequestDetail.getLastItem'
     static final def NAMED_QUERY_REQUEST_DETAIL_BY_CODE = 'RequestDetail.fetchByrequestCode'
     static final def NAMED_QUERY_REQUEST_DETAIL_BY_USER = 'RequestDetail.fetchByUser'
-    static final def NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE_AND_COMM_CODE = 'RequestDetail.fetchByrequestCodeAndCommodityCode'
+    static final
+    def NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE_AND_ITEM = 'RequestDetail.fetchByrequestCodeAndCommodityCode'
     static final def ERROR_MESSAGE_MISSING_REQUISITION_DETAIL = 'missing.requisition.detail'
 
-    static final def SUCCESS_MESSAGE_CREATE_REQUISITION_DETAIL = 'net.hedtech.banner.finance.requisition.create.requisition.detail.success'
-    static final def DEFAULT_YES = 'Y'
+    static final
+    def SUCCESS_MESSAGE_CREATE_REQUISITION_DETAIL = 'net.hedtech.banner.finance.requisition.create.requisition.detail.success'
+    static final
+    def SUCCESS_MESSAGE_DELETE_REQUISITION_DETAIL = 'net.hedtech.banner.finance.requisition.delete.requisition.detail.success'
 
+    /**
+     * static final variable used for wildcard search.
+     */
+    static final WILDCARD_STR_PERCENTAGE = '%'
 }

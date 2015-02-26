@@ -7,6 +7,7 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.service.ServiceBase
+import org.apache.commons.lang.StringUtils
 import org.apache.log4j.Logger
 
 /**
@@ -23,21 +24,26 @@ class RequisitionDetailService extends ServiceBase {
      * @param requisitionCode Requisition code.
      * @return List of requisition code.
      */
-    def findRequisitionDetailListByRequistionCode( requisitionCode, paginationParams ) {
-        log.debug( 'Input parameter for findRequisitionDetailByRequestionCode :' + requisitionCode )
-        def requisitionDetails = RequisitionDetail.fetchByRequestCode( requisitionCode, paginationParams ).list
+    def fetchByRequestCodeAndItem( requisitionCode, item, paginationParams ) {
+        log.debug( 'Input parameter for fetchByRequestCodeAndItem :' + requisitionCode )
+        if (StringUtils.isBlank( requisitionCode )) {
+            requisitionCode = FinanceProcurementConstants.WILDCARD_STR_PERCENTAGE
+        } else if (!(requisitionCode =~ /FinanceProcurementConstants.WILDCARD_STR_PERCENTAGE/)) {
+            requisitionCode += FinanceProcurementConstants.WILDCARD_STR_PERCENTAGE
+        }
+        if (StringUtils.isBlank( item )) {
+            item = FinanceProcurementConstants.WILDCARD_STR_PERCENTAGE
+        } else if (!(item =~ /FinanceProcurementConstants.WILDCARD_STR_PERCENTAGE/)) {
+            item += FinanceProcurementConstants.WILDCARD_STR_PERCENTAGE
+        }
+        def requisitionDetails = RequisitionDetail.fetchByRequestCodeAndItem( requisitionCode, item, paginationParams ).list
+        if (requisitionDetails.isEmpty()) {
+            throw new ApplicationException(
+                    RequisitionDetailService,
+                    new BusinessLogicValidationException(
+                            FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL, [] ) )
+        }
         return requisitionDetails
-    }
-
-    /**
-     * This method is used to find RequisitionDetail by code and commodity code.
-     * @param map Map which contains requisitionCode and commodityCode.
-     * @return RequisitionDetail.
-     */
-    def findRequisitionDetailByCodeAndCommodityCode( map ) {
-        def requisitionCode = map.requisitionCode
-        def commodityCode = map.commodityCode
-        return RequisitionDetail.fetchByRequestCodeAndCommodityCode( requisitionCode, commodityCode ).list[0]
     }
 
     /**
@@ -70,11 +76,22 @@ class RequisitionDetailService extends ServiceBase {
      * @param requestCode Requisition Code.
      * @return last item.
      */
-    def getLastItem (requestCode) {
-        def lastItem = RequisitionDetail.getLastItem(requestCode).getAt( 0 )
-        if (lastItem == null) {
-            lastItem = 0
-        }
-        return lastItem
+    def getLastItem( requestCode ) {
+        def lastItem = RequisitionDetail.getLastItem( requestCode ).getAt( 0 )
+        return lastItem ? lastItem : 0
     }
+
+
+    def getRequisitionDetailByRequestCodeAndItem( requestCode, item ) {
+        def pagingParams = [max: 500, offset: 0]
+        def requisitionDetail = RequisitionDetail.fetchByRequestCodeAndItem( requestCode, item, pagingParams ).list.getAt( 0 )
+        if (!requisitionDetail) {
+            log.debug( 'Requisition Detail Not found for Request Code :' + requestCode + ' and Item : ' + item )
+            throw new ApplicationException( RequisitionDetailService,
+                                            new BusinessLogicValidationException(
+                                                    FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL, [] ) )
+        }
+        return requisitionDetail
+    }
+
 }

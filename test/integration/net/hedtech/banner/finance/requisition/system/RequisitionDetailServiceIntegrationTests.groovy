@@ -18,7 +18,7 @@ import org.springframework.security.authentication.BadCredentialsException
 class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
     def requisitionDetailService
     def reqCode = 'R0000124'
-    def commodityCode = '2210000000'
+    def item = '1'
     /**
      * Super class setup
      */
@@ -42,22 +42,10 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
      * Test case to test find requisition detail list by request code.
      */
     @Test
-    public void testFindRequisitionDetailListByRequistionCode() {
+    public void testFindRequisitionDetailListByRiquistionCode() {
         def pagingParams = [max: 500, offset: 0]
-        def requisitionDetails = requisitionDetailService.findRequisitionDetailListByRequistionCode( reqCode, pagingParams )
+        def requisitionDetails = requisitionDetailService.fetchByRequestCodeAndItem( reqCode, item, pagingParams )
         assertTrue( requisitionDetails.size() > 0 || requisitionDetails.isEmpty() )
-    }
-
-    /**
-     * Test case to test find requisition detail by request code and commodity.
-     */
-    @Test
-    public void testFindRequisitionDetailByCodeAndCommodityCode() {
-        def map = [:]
-        map.requisitionCode = reqCode
-        map.commodityCode = commodityCode
-        def requisitionDetail = requisitionDetailService.findRequisitionDetailByCodeAndCommodityCode( map )
-        assertTrue( requisitionDetail == null || requisitionDetail.requestCode == reqCode )
     }
 
     /**
@@ -91,5 +79,22 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
     public void testGetLastItem() {
         def lastItem = requisitionDetailService.getLastItem( reqCode )
         assertTrue( lastItem == 0 || lastItem > 0 )
+    }
+
+    /**
+     * Test case to test get requisition detail by request code and item.
+     */
+    @Test
+    public void testGetRequisitionDetailByRequestCodeAndItem() {
+        def requisitionDetail = requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'R0000561', '1' )
+        assertTrue( (requisitionDetail.requestCode == 'R0000561' && requisitionDetail.item == 1) || requisitionDetail == null )
+    }
+
+    /**
+     * Test case to test get requisition detail by sending wrong request code and item.
+     */
+    @Test(expected = ApplicationException.class)
+    public void testGetRequisitionDetailByRequestCodeAndItemFailureCase() {
+        requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'R000012912R121', '12' )
     }
 }

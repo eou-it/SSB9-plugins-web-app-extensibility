@@ -19,19 +19,15 @@ import javax.persistence.*
         @NamedQuery(name = FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_GET_LAST_ITEM,
                 query = """SELECT MAX(requisitionDetail.item) FROM RequisitionDetail requisitionDetail
                             WHERE requisitionDetail.requestCode = :requestCode"""),
-        @NamedQuery(name = FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_CODE,
+        @NamedQuery(name = FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE_AND_ITEM,
                 query = """FROM RequisitionDetail requisitionDetail
-                            WHERE requisitionDetail.requestCode = :requestCode
-                            ORDER BY requisitionDetail.requestCode ASC"""),
+                            WHERE requisitionDetail.requestCode LIKE :requestCode
+                            AND STR(requisitionDetail.item) LIKE :item
+                            ORDER BY requisitionDetail.item"""),
         @NamedQuery(name = FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_USER,
                 query = """FROM RequisitionDetail requisitionDetail
                             WHERE requisitionDetail.userId = :userId
-                            ORDER BY requisitionDetail.userId ASC"""),
-        @NamedQuery(name = FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE_AND_COMM_CODE,
-                query = """FROM RequisitionDetail requisitionDetail
-                            WHERE requisitionDetail.requestCode = :requestCode
-                            AND requisitionDetail.commodity = :commodity
-                            ORDER BY requisitionDetail.requestCode, requisitionDetail.commodity ASC""")
+                            ORDER BY requisitionDetail.requestCode""")
 ])
 @Entity
 @Table(name = FinanceProcurementConstants.FPVREQD)
@@ -383,10 +379,10 @@ class RequisitionDetail implements Serializable {
      * This method is used to called named query for get last item generated in requisition detail.
      * @return last generated item.
      */
-    public static def getLastItem(requestCode) {
+    public static def getLastItem( requestCode ) {
         def lastItem = RequisitionDetail.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_GET_LAST_ITEM )
-                    .setString(FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode)
+                    .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
                     .list()
         }
         return lastItem
@@ -395,12 +391,14 @@ class RequisitionDetail implements Serializable {
     /**
      * This method is used to fetch requisition detail by requisition code.
      * @param requestCode Requisition code.
+     * @param item Item Number.
      * @return list of requisition.
      */
-    public static def fetchByRequestCode( requestCode, paginationParams ) {
+    public static def fetchByRequestCodeAndItem( requestCode, item, paginationParams ) {
         def requestDetailList = RequisitionDetail.withSession {session ->
-            session.getNamedQuery( FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_CODE )
+            session.getNamedQuery( FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE_AND_ITEM )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
+                    .setString( FinanceProcurementConstants.QUERY_PARAM_REQUISITION_DETAIL_ITEM, item )
                     .setMaxResults( paginationParams.max )
                     .setFirstResult( paginationParams.offset )
                     .list()
@@ -420,21 +418,6 @@ class RequisitionDetail implements Serializable {
                     .setString( FinanceProcurementConstants.QUERY_PARAM_USER_ID, userId )
                     .setMaxResults( paginationParams.max )
                     .setFirstResult( paginationParams.offset )
-                    .list()
-        }
-        return [list: requestDetailList]
-    }
-
-    /**
-     * This method is used to fetch requisition detail by requisition code.
-     * @param requestCode Requisition code.
-     * @return list of requisition.
-     */
-    public static def fetchByRequestCodeAndCommodityCode( requestCode, commodity ) {
-        def requestDetailList = RequisitionDetail.withSession {session ->
-            session.getNamedQuery( FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE_AND_COMM_CODE )
-                    .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
-                    .setString( FinanceProcurementConstants.QUERY_PARAM_REQUISITION_DETAIL_COMMODITY_CODE, commodity )
                     .list()
         }
         return [list: requestDetailList]

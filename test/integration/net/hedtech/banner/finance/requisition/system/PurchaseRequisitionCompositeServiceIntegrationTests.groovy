@@ -167,7 +167,7 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
      * Test create Requisition Detail
      */
     @Test
-    void createPurchaseRequisitionDetail() {
+    void testCreatePurchaseRequisitionDetail() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def reqDetailDomainModel = getRequisitionDetails()
         def domainModelMap = [requisitionDetail: reqDetailDomainModel]
@@ -179,7 +179,7 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
      * Test create With Invalid user
      */
     @Test(expected = BadCredentialsException.class)
-    void createPurchaseRequisitionDetailInvalidUser() {
+    void testCreatePurchaseRequisitionDetailInvalidUser() {
         login 'Invalid_user', 'invalid_password'
         def reqDetailDomainModel = getRequisitionDetails()
         def domainModelMap = [requisitionDetail: reqDetailDomainModel]
@@ -190,11 +190,27 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
      * Test create With invalid Requisition Header Code
      */
     @Test(expected = ApplicationException.class)
-    void createPurchaseRequisitionInvalidRequisitionCode() {
+    void testCreatePurchaseRequisitionInvalidRequisitionCode() {
         def reqDetailDomainModel = getRequisitionDetails()
         reqDetailDomainModel.requestCode = 'R0000129182991'
         def domainModelMap = [requisitionDetail: reqDetailDomainModel]
         purchaseRequisitionCompositeService.createPurchaseRequisition( domainModelMap )
+    }
+
+    /**
+     * Test case to test delete purchase requisition detail.
+     */
+    @Test
+    void testDeletePurchaseRequisitionDetail(){
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        purchaseRequisitionCompositeService.deletePurchaseRequisitionDetail( 'R0000561', '1'  )
+        try {
+            requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'R0000561', '1' )
+            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL
+        }
+        catch (ApplicationException ae) {
+            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL
+        }
     }
 
     /**
