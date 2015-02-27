@@ -1,13 +1,6 @@
-/** *****************************************************************************
- © 2015 SunGard Higher Education.  All Rights Reserved.
-
- CONFIDENTIAL BUSINESS INFORMATION
-
- THIS PROGRAM IS PROPRIETARY INFORMATION OF SUNGARD HIGHER EDUCATION
- AND IS NOT TO BE COPIED, REPRODUCED, LENT, OR DISPOSED OF,
- NOR USED FOR ANY PURPOSE OTHER THAN THAT WHICH IT IS SPECIFICALLY PROVIDED
- WITHOUT THE WRITTEN PERMISSION OF THE SAID COMPANY
- ****************************************************************************** */
+/*********************************************************************************
+ Copyright 2015 Ellucian Company L.P. and its affiliates.
+ ********************************************************************************* */
 package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
@@ -50,7 +43,7 @@ class RequisitionDetailIntegrationTests extends BaseIntegrationTestCase {
     void testFetchRequisitionDetailByRequestCode() {
         def pagingParams = [max: 500, offset: 0]
         def requestDetail = RequisitionDetail.fetchByRequestCodeAndItem( reqCode, item, pagingParams ).list;
-        assertTrue (requestDetail.size() > 0 || requestDetail.size() == 0)
+        assertTrue( requestDetail.size() > 0 || requestDetail.size() == 0 )
         assertEquals reqCode, requestDetail[0].requestCode
     }
 

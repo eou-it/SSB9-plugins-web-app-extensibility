@@ -19,5 +19,7 @@
         <property name="dialect">org.hibernate.dialect.Oracle10gDialect</property>
         <mapping class="net.hedtech.banner.finance.requisition.system.RequisitionHeader"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.RequisitionDetail"/>
+        <mapping class="net.hedtech.banner.finance.system.FinanceSystemControl"/>
+        <mapping class="net.hedtech.banner.finance.system.FinanceCommodity"/>
     </session-factory>
 </hibernate-configuration>

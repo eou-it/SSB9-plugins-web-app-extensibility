@@ -5,18 +5,25 @@ package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
+import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import net.hedtech.banner.finance.system.FinanceSystemControl
+import net.hedtech.banner.finance.util.FinanceCommonUtility
+import org.apache.commons.lang3.StringUtils
 import org.apache.log4j.Logger
 
 /**
  * Class for Purchase Requisition Composite
  */
 class PurchaseRequisitionCompositeService {
-    def requisitionHeaderService
+    private static final Logger LOGGER = Logger.getLogger( this.getClass() )
     boolean transactional = true
-    def log = Logger.getLogger( this.getClass() )
+
+    def requisitionHeaderService
     def springSecurityService
     def requisitionDetailService
+    def financeSystemControlService
+    def financeCommodityService
 
     /**
      * Create purchase requisition Header
@@ -45,12 +52,17 @@ class PurchaseRequisitionCompositeService {
         if (user.oracleUserName) {
             def oracleUserName = user?.oracleUserName
             requisitionHeaderRequest.userId = oracleUserName
+            // Check for tax group
+            FinanceSystemControl financeSystemControl = financeSystemControlService.findActiveFundOrgSecurityIndicator()
+            if (financeSystemControl?.taxProcessingIndicator == FinanceValidationConstants.FUND_ORG_SECURITY_INDICATOR_NO) {
+                requisitionHeaderRequest.taxGroup = null
+            }
             def requisitionHeader = requisitionHeaderService.create( [domainModel: requisitionHeaderRequest] )
-            log.debug "Requisition Header created " + requisitionHeader
+            LOGGER.debug "Requisition Header created " + requisitionHeader
             def header = RequisitionHeader.read( requisitionHeader.id )
             return header.requestCode
         } else {
-            log.error( 'User' + user + ' is not valid' )
+            LOGGER.error( 'User' + user + ' is not valid' )
             throw new ApplicationException(
                     PurchaseRequisitionCompositeService,
                     new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID ), [] )
@@ -71,25 +83,52 @@ class PurchaseRequisitionCompositeService {
             def lastItem = requisitionDetailService.getLastItem( requestCode )
             requisitionDetailRequest.userId = oracleUserName
             requisitionDetailRequest.item = lastItem + 1
-            // Set all the required information from the Requisition Header.
-            def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
-            requisitionDetailRequest.chartOfAccount = requisitionHeader.chartOfAccount
-            requisitionDetailRequest.organization = requisitionHeader.organization
-            requisitionDetailRequest.ship = requisitionHeader.ship
-            requisitionDetailRequest.requisitionDate = requisitionHeader.requestDate
-            // If header don’t have discount code setup then remove the discountAmount value
-            if (!requisitionHeader.discount == null) {
-                requisitionDetailRequest.remove( 'discountAmount' )
-            }
+            // Set all data with business logic.
+            requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
             RequisitionDetail requisitionDetail = requisitionDetailService.create( [domainModel: requisitionDetailRequest] )
-            log.debug "Requisition Detail created " + requisitionDetail
+            LOGGER.debug "Requisition Detail created " + requisitionDetail
             return requisitionDetail.requestCode
         } else {
-            log.error( 'User' + user + ' is not valid' )
+            LOGGER.error( 'User' + user + ' is not valid' )
             throw new ApplicationException(
                     PurchaseRequisitionCompositeService,
                     new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
+    }
+
+    /**
+     * This method is used to set data for Create/Update requisition detail
+     * @param requestCode Requisition Code.
+     * @param requisitionDetailRequest Requisition details.
+     * @return updated requisition details.
+     */
+    private def setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest ) {
+        // Set all the required information from the Requisition Header.
+        def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
+        requisitionDetailRequest.chartOfAccount = requisitionHeader.chartOfAccount
+        requisitionDetailRequest.organization = requisitionHeader.organization
+        requisitionDetailRequest.ship = requisitionHeader.ship
+        requisitionDetailRequest.requisitionDate = requisitionHeader.requestDate
+        // start check tax amount.
+        FinanceSystemControl financeSystemControl = financeSystemControlService.findActiveFundOrgSecurityIndicator()
+        if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.FUND_ORG_SECURITY_INDICATOR_NO) {
+            requisitionDetailRequest.taxGroup = null
+        } else if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.FUND_ORG_SECURITY_INDICATOR_YES) {
+            if (StringUtils.isBlank( requisitionDetailRequest.taxGroup )) {
+                requisitionDetailRequest.taxGroup = null
+            }
+        }
+        // end check tax amount.
+        // Check for Commodity
+        if (requisitionDetailRequest.commodity) {
+            def commodity = financeCommodityService.findCommodityByCode( requisitionDetailRequest.commodity )
+            requisitionDetailRequest.commodityDescription = commodity.description
+        }
+        // If header don’t have discount code setup then remove the discountAmount value
+        if (!requisitionHeader.discount == null) {
+            requisitionDetailRequest.remove( 'discountAmount' )
+        }
+        return requisitionDetailRequest
     }
 
     /**
@@ -120,11 +159,11 @@ class PurchaseRequisitionCompositeService {
                 def oracleUserName = user?.oracleUserName
                 requisitionHeaderRequest.userId = oracleUserName
                 def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
-                log.debug "Requisition Header updated " + requisitionHeader
+                LOGGER.debug "Requisition Header updated " + requisitionHeader
                 def header = RequisitionHeader.read( requisitionHeader.id )
                 return header
             } else {
-                log.error( 'User' + user + ' is not valid' )
+                LOGGER.error( 'User' + user + ' is not valid' )
                 throw new ApplicationException( PurchaseRequisitionCompositeService,
                                                 new BusinessLogicValidationException(
                                                         FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -140,6 +179,45 @@ class PurchaseRequisitionCompositeService {
     def deletePurchaseRequisitionDetail( requestCode, item ) {
         def requisitionDetail = requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( requestCode, item )
         requisitionDetailService.delete( [domainModel: requisitionDetail] )
+    }
+
+    /**
+     * Update Purchase requisition detail commodity level.
+     *
+     * @param map the requisition detail map
+     * @param requestCode
+     */
+    def updateRequisitionDetail( detailDomainModel, requestCode, item ) {
+        // Null or empty check for item.
+        if (StringUtils.isEmpty( item )) {
+            LOGGER.error( 'Item is required to update the detail.' )
+            throw new ApplicationException( PurchaseRequisitionCompositeService,
+                                            new BusinessLogicValidationException(
+                                                    FinanceProcurementConstants.ERROR_MESSAGE_ITEM_IS_REQUIRED, [] ) )
+        }
+        def paginationParam = FinanceCommonUtility.getPagingParams( null, null )
+        def existingDetail = requisitionDetailService.fetchByRequestCodeAndItem( requestCode, item, paginationParam ).getAt( 0 )
+        if (detailDomainModel?.requisitionDetail) {
+            RequisitionDetail requisitionDetailRequest = detailDomainModel.requisitionDetail
+            requisitionDetailRequest.id = existingDetail.id
+            requisitionDetailRequest.version = existingDetail.version
+            requisitionDetailRequest.requestCode = existingDetail.requestCode
+            def user = springSecurityService.getAuthentication()?.user
+            if (user.oracleUserName) {
+                requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
+                requisitionDetailRequest.lastModified = new Date()
+                requisitionDetailRequest.item = existingDetail.item
+                def requisitionDetail = requisitionDetailService.update( [domainModel: requisitionDetailRequest] )
+                LOGGER.debug "Requisition Detail updated " + requisitionDetail
+                def detail = RequisitionDetail.read( requisitionDetail.id )
+                return detail
+            } else {
+                LOGGER.error( 'User' + user + ' is not valid' )
+                throw new ApplicationException( PurchaseRequisitionCompositeService,
+                                                new BusinessLogicValidationException(
+                                                        FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
+            }
+        }
     }
 
 }

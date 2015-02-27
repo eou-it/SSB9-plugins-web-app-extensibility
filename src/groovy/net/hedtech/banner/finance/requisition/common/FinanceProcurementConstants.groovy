@@ -153,9 +153,13 @@ class FinanceProcurementConstants {
     def SUCCESS_MESSAGE_CREATE_REQUISITION_DETAIL = 'net.hedtech.banner.finance.requisition.create.requisition.detail.success'
     static final
     def SUCCESS_MESSAGE_DELETE_REQUISITION_DETAIL = 'net.hedtech.banner.finance.requisition.delete.requisition.detail.success'
+    static final
+    def SUCCESS_MESSAGE_UPDATE_REQUISITION_DETAIL = 'net.hedtech.banner.finance.requisition.update.requisition.header.success'
+    static final def ERROR_MESSAGE_ITEM_IS_REQUIRED = 'item.is.required'
 
     /**
      * static final variable used for wildcard search.
      */
     static final WILDCARD_STR_PERCENTAGE = '%'
+
 }

@@ -161,7 +161,7 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         ]
     }
 
-    def requestHeaderCode = "R0000129"
+    def requestHeaderCode = "R0001228"
 
     /**
      * Test create Requisition Detail
@@ -201,9 +201,9 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
      * Test case to test delete purchase requisition detail.
      */
     @Test
-    void testDeletePurchaseRequisitionDetail(){
+    void testDeletePurchaseRequisitionDetail() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        purchaseRequisitionCompositeService.deletePurchaseRequisitionDetail( 'R0000561', '1'  )
+        purchaseRequisitionCompositeService.deletePurchaseRequisitionDetail( 'R0000561', '1' )
         try {
             requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'R0000561', '1' )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL
@@ -211,6 +211,19 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         catch (ApplicationException ae) {
             assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL
         }
+    }
+
+    /**
+     * Test update
+     */
+    @Test
+    void updatePurchaseDetail() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def detailDomainModel = getRequisitionDetails()
+        def domainModelMap = [requisitionDetail: detailDomainModel]
+        def detail = purchaseRequisitionCompositeService.updateRequisitionDetail( domainModelMap, requestHeaderCode, '1' )
+        detail.requestCode = requestHeaderCode
     }
 
     /**
