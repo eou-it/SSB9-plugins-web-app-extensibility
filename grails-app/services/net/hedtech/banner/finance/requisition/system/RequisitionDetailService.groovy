@@ -6,6 +6,7 @@ package net.hedtech.banner.finance.requisition.system
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import net.hedtech.banner.finance.util.FinanceCommonUtility
 import net.hedtech.banner.service.ServiceBase
 import org.apache.commons.lang.StringUtils
 import org.apache.log4j.Logger
@@ -16,7 +17,7 @@ import org.apache.log4j.Logger
  */
 class RequisitionDetailService extends ServiceBase {
     static transactional = true
-    def log = Logger.getLogger( this.getClass() )
+    def log = Logger.getLogger(this.getClass())
     def springSecurityService
 
     /**
@@ -24,24 +25,16 @@ class RequisitionDetailService extends ServiceBase {
      * @param requisitionCode Requisition code.
      * @return List of requisition code.
      */
-    def fetchByRequestCodeAndItem( requisitionCode, item, paginationParams ) {
-        log.debug( 'Input parameter for fetchByRequestCodeAndItem :' + requisitionCode )
-        if (StringUtils.isBlank( requisitionCode )) {
-            requisitionCode = FinanceProcurementConstants.WILDCARD_STR_PERCENTAGE
-        } else if (!(requisitionCode =~ /FinanceProcurementConstants.WILDCARD_STR_PERCENTAGE/)) {
-            requisitionCode += FinanceProcurementConstants.WILDCARD_STR_PERCENTAGE
-        }
-        if (StringUtils.isBlank( item )) {
-            item = FinanceProcurementConstants.WILDCARD_STR_PERCENTAGE
-        } else if (!(item =~ /FinanceProcurementConstants.WILDCARD_STR_PERCENTAGE/)) {
-            item += FinanceProcurementConstants.WILDCARD_STR_PERCENTAGE
-        }
-        def requisitionDetails = RequisitionDetail.fetchByRequestCodeAndItem( requisitionCode, item, paginationParams ).list
+    def fetchByRequestCodeAndItem(requisitionCode, item, paginationParams) {
+        log.debug('Input parameter for fetchByRequestCodeAndItem :' + requisitionCode)
+        def inputMap = [requisitionCode: requisitionCode, item: item]
+        FinanceCommonUtility.applyWildCard(inputMap, false, true)
+        def requisitionDetails = RequisitionDetail.fetchByRequestCodeAndItem(inputMap.requisitionCode, inputMap.item, paginationParams).list
         if (requisitionDetails.isEmpty()) {
             throw new ApplicationException(
                     RequisitionDetailService,
                     new BusinessLogicValidationException(
-                            FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL, [] ) )
+                            FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL, []))
         }
         return requisitionDetails
     }
@@ -51,23 +44,23 @@ class RequisitionDetailService extends ServiceBase {
      * @param paginationParam Map containing Pagination parameters.
      * @return List of RequisitionDetail.
      */
-    def findRequisitionDetailListByUser( paginationParam ) {
+    def findRequisitionDetailListByUser(paginationParam) {
         def loggedInUser = springSecurityService.getAuthentication()?.user
         if (loggedInUser?.oracleUserName) {
             def oracleUserName = loggedInUser.oracleUserName
-            def requisitionDetailList = RequisitionDetail.fetchByUserId( oracleUserName, paginationParam ).list
+            def requisitionDetailList = RequisitionDetail.fetchByUserId(oracleUserName, paginationParam).list
             if (requisitionDetailList?.isEmpty()) {
                 throw new ApplicationException(
                         RequisitionDetailService,
                         new BusinessLogicValidationException(
-                                FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL, [] ) )
+                                FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL, []))
             }
             return requisitionDetailList
         } else {
-            log.debug( 'User' + loggedInUser + ' is not valid' )
-            throw new ApplicationException( RequisitionDetailService,
-                                            new BusinessLogicValidationException(
-                                                    FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
+            log.debug('User' + loggedInUser + ' is not valid')
+            throw new ApplicationException(RequisitionDetailService,
+                    new BusinessLogicValidationException(
+                            FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, []))
         }
     }
 
@@ -76,20 +69,20 @@ class RequisitionDetailService extends ServiceBase {
      * @param requestCode Requisition Code.
      * @return last item.
      */
-    def getLastItem( requestCode ) {
-        def lastItem = RequisitionDetail.getLastItem( requestCode ).getAt( 0 )
+    def getLastItem(requestCode) {
+        def lastItem = RequisitionDetail.getLastItem(requestCode).getAt(0)
         return lastItem ? lastItem : 0
     }
 
 
-    def getRequisitionDetailByRequestCodeAndItem( requestCode, item ) {
+    def getRequisitionDetailByRequestCodeAndItem(requestCode, item) {
         def pagingParams = [max: 500, offset: 0]
-        def requisitionDetail = RequisitionDetail.fetchByRequestCodeAndItem( requestCode, item, pagingParams ).list.getAt( 0 )
+        def requisitionDetail = RequisitionDetail.fetchByRequestCodeAndItem(requestCode, item, pagingParams).list.getAt(0)
         if (!requisitionDetail) {
-            log.debug( 'Requisition Detail Not found for Request Code :' + requestCode + ' and Item : ' + item )
-            throw new ApplicationException( RequisitionDetailService,
-                                            new BusinessLogicValidationException(
-                                                    FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL, [] ) )
+            log.debug('Requisition Detail Not found for Request Code :' + requestCode + ' and Item : ' + item)
+            throw new ApplicationException(RequisitionDetailService,
+                    new BusinessLogicValidationException(
+                            FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL, []))
         }
         return requisitionDetail
     }
