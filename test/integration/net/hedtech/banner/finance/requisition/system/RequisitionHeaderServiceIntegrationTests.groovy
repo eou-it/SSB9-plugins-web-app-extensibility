@@ -17,6 +17,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
 
 
     def requisitionHeaderService
+    def springSecurityService
 
     /**
      * Super class setup
@@ -25,7 +26,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
     void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
     }
 
     /**
@@ -44,6 +45,23 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
         def paginationParam = [max: 500, offset: 0]
         def headers = requisitionHeaderService.listRequisitionHeaderForLoggedInUser( paginationParam )
         assertTrue headers.size() > 0
+    }
+
+    /**
+     * test Listing headers Invalid user
+     */
+    @Test
+    void testListRequisitionHeadersByInValidUserName() {
+        def paginationParam = [max: 500, offset: 0]
+        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        springSecurityService.getAuthentication().user.oracleUserName = ''
+        try {
+            requisitionHeaderService.listRequisitionHeaderForLoggedInUser( paginationParam )
+            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID
+        }
+        catch (ApplicationException ae) {
+            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID
+        }
     }
 
     /**

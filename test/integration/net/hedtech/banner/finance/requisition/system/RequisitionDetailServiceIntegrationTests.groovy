@@ -17,6 +17,7 @@ import org.springframework.security.authentication.BadCredentialsException
  */
 class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
     def requisitionDetailService
+    def springSecurityService
     def reqCode = 'R0000124'
     def item = '1'
     /**
@@ -59,6 +60,24 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
             assertTrue( list.size() > 0 )
         } catch (ApplicationException e) {
             assertApplicationException e, (FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL)
+        }
+    }
+
+
+    /**
+     * test Listing headers Invalid user
+     */
+    @Test
+    void testFindRequisitionDetailListByInvalidUser() {
+        def pagingParams = [max: 500, offset: 0]
+        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        springSecurityService.getAuthentication().user.oracleUserName = ''
+        try {
+            requisitionDetailService.findRequisitionDetailListByUser( pagingParams )
+            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID
+        }
+        catch (ApplicationException ae) {
+            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID
         }
     }
 

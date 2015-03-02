@@ -122,12 +122,9 @@ class RequisitionDetail implements Serializable {
     @Column(name = FinanceProcurementConstants.FIELD_FPRREQD_AGRE_CODE)
     String agreement
 
-    /**
-     * REQUISITION DATE:  The date on which the requisition was issued.
-     */
     @Column(name = FinanceProcurementConstants.FIELD_FPRREQD_REQD_DATE)
     @Temporal(TemporalType.DATE)
-    Date requisitionDate
+    Date deliveryDate
 
     /**
      * SHIP CODE:  The ship to address within the institution to which the goods are to be delivered.
@@ -297,9 +294,6 @@ class RequisitionDetail implements Serializable {
     @Column(name = FinanceProcurementConstants.FIELD_FPRREQD_TGRP_CODE)
     String taxGroup
 
-    /**
-     *
-     */
     @Column(name = FinanceProcurementConstants.FIELD_FPRREQD_AMT)
     BigDecimal amt
 
@@ -341,7 +335,7 @@ class RequisitionDetail implements Serializable {
         unitOfMeasure( nullable: true, maxSize: 3 )
         unitPrice( nullable: true )
         agreement( nullable: true, maxSize: 15 )
-        requisitionDate( nullable: true )
+        deliveryDate( nullable: true )
         ship( nullable: true, maxSize: 6 )
         vendorPidm( nullable: true )
         vendorReferenceNumber( nullable: true, maxSize: 15 )

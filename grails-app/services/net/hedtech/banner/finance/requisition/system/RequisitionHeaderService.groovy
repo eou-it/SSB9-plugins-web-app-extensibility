@@ -33,8 +33,8 @@ class RequisitionHeaderService extends ServiceBase {
      */
     def listRequisitionHeaderForLoggedInUser( pagingParams ) {
         def user = springSecurityService.getAuthentication()?.user
-        if (user) {
-            def oracleUserName = user?.oracleUserName
+        if (user?.oracleUserName) {
+            def oracleUserName = user.oracleUserName
             def requisitionHeaderList = RequisitionHeader.fetchByUser( oracleUserName, pagingParams )
             if (requisitionHeaderList?.list?.size() == 0) {
                 throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )

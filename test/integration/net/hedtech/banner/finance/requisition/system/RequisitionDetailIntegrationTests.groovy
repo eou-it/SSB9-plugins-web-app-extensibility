@@ -97,7 +97,7 @@ class RequisitionDetailIntegrationTests extends BaseIntegrationTestCase {
                 quantity: '2',
                 unitOfMeasure: 'EA',
                 unitPrice: '99.99',
-                requisitionDate: new Date() + 30,
+                deliveryDate: new Date() + 30,
                 ship: 'EAST',
                 suspenseIndicator: false,
                 textUsageIndicator: 'S',

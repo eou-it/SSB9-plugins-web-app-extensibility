@@ -21,6 +21,7 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
 
     def requisitionHeaderService
     def requisitionDetailService
+    def springSecurityService
     /**
      * Super class setup
      */
@@ -43,11 +44,29 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
      */
     @Test
     void createPurchaseRequisition() {
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def headerDomainModel = newRequisitionHeader()
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def requestCode = purchaseRequisitionCompositeService.createPurchaseRequisition( domainModelMap )
         assertTrue requestCode?.headerReqCode != FinanceProcurementConstants.DEFAULT_REQUEST_CODE
+    }
+
+    /**
+     * Test create with non-oracle user
+     */
+    @Test
+    void createPurchaseRequisitionWithInvalidUser() {
+        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        springSecurityService.getAuthentication().user.oracleUserName = ''
+        def headerDomainModel = newRequisitionHeader()
+        def domainModelMap = [requisitionHeader: headerDomainModel]
+        try {
+            purchaseRequisitionCompositeService.createPurchaseRequisition( domainModelMap )
+            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID
+        }
+        catch (ApplicationException ae) {
+            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID
+        }
     }
 
     /**

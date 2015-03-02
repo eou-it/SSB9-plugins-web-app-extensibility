@@ -65,7 +65,7 @@ class PurchaseRequisitionCompositeService {
             LOGGER.error( 'User' + user + ' is not valid' )
             throw new ApplicationException(
                     PurchaseRequisitionCompositeService,
-                    new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID ), [] )
+                    new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
     }
 
@@ -108,7 +108,7 @@ class PurchaseRequisitionCompositeService {
         requisitionDetailRequest.chartOfAccount = requisitionHeader.chartOfAccount
         requisitionDetailRequest.organization = requisitionHeader.organization
         requisitionDetailRequest.ship = requisitionHeader.ship
-        requisitionDetailRequest.requisitionDate = requisitionHeader.requestDate
+        requisitionDetailRequest.deliveryDate = requisitionHeader.deliveryDate
         // start check tax amount.
         FinanceSystemControl financeSystemControl = financeSystemControlService.findActiveFundOrgSecurityIndicator()
         if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.FUND_ORG_SECURITY_INDICATOR_NO) {
