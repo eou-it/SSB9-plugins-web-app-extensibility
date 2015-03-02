@@ -126,7 +126,7 @@ class PurchaseRequisitionCompositeService {
         }
         // If header have discount code setup then remove the discountAmount value from details
         if (requisitionHeader.discount != null) {
-            requisitionDetailRequest.remove( 'discountAmount' )
+            requisitionDetailRequest.discountAmount = null
         }
         return requisitionDetailRequest
     }
