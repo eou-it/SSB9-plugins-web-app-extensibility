@@ -4,7 +4,7 @@
 
 package net.hedtech.extensibility.metadata
 import grails.converters.JSON
-import org.codehaus.groovy.grails.plugins.web.taglib.ValidationTagLib
+import net.hedtech.banner.i18n.MessageHelper
 import org.codehaus.groovy.grails.web.converters.exceptions.ConverterException
 import grails.util.Environment
 import org.apache.log4j.Logger
@@ -13,7 +13,7 @@ class ExtensionService {
     def static extensionsPath = grails.util.Holders.getConfig().webAppExtensibility.locations.extensions
     private static final Logger log = Logger.getLogger( this.getClass() )
     def localizerService = { mapToLocalize ->
-        new ValidationTagLib().message(mapToLocalize)
+        new MessageHelper().message(mapToLocalize)
     }
     //Pages don't have a unique id, have to query by application and page name
     def list(params) {

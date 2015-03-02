@@ -6,15 +6,15 @@ package net.hedtech.extensibility.metadata
 
 import grails.converters.JSON
 import grails.util.Environment
+import net.hedtech.banner.i18n.MessageHelper
 import org.apache.log4j.Logger
-import org.codehaus.groovy.grails.plugins.web.taglib.ValidationTagLib
 import org.springframework.web.context.request.RequestContextHolder
 
 
 class ResourceService {
     private static final Logger log = Logger.getLogger( this.getClass() )
     def localizerService = { mapToLocalize ->
-        new ValidationTagLib().message(mapToLocalize)
+        new MessageHelper().message(mapToLocalize)
     }
 
     def grailsApplication
