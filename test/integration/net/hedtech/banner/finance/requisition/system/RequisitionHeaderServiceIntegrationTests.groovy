@@ -26,7 +26,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
     void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
-        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
     }
 
     /**

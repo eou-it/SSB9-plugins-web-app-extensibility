@@ -44,7 +44,7 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
      */
     @Test
     void createPurchaseRequisition() {
-        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def headerDomainModel = newRequisitionHeader()
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def requestCode = purchaseRequisitionCompositeService.createPurchaseRequisition( domainModelMap )
