@@ -63,24 +63,6 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
-
-    /**
-     * test Listing headers Invalid user
-     */
-    @Test
-    void testFindRequisitionDetailListByInvalidUser() {
-        def pagingParams = [max: 500, offset: 0]
-        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        springSecurityService.getAuthentication().user.oracleUserName = ''
-        try {
-            requisitionDetailService.findRequisitionDetailListByUser( pagingParams )
-            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID
-        }
-        catch (ApplicationException ae) {
-            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID
-        }
-    }
-
     /**
      * Test case to test find requisition detail list by sending invalid user and expecting BadCredentialsException.
      */

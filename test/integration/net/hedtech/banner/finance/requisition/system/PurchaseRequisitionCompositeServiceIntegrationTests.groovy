@@ -52,24 +52,6 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
     }
 
     /**
-     * Test create with non-oracle user
-     */
-    @Test
-    void createPurchaseRequisitionWithInvalidUser() {
-        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        springSecurityService.getAuthentication().user.oracleUserName = ''
-        def headerDomainModel = newRequisitionHeader()
-        def domainModelMap = [requisitionHeader: headerDomainModel]
-        try {
-            purchaseRequisitionCompositeService.createPurchaseRequisition( domainModelMap )
-            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID
-        }
-        catch (ApplicationException ae) {
-            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID
-        }
-    }
-
-    /**
      * Test create With Invalid user
      */
     @Test(expected = BadCredentialsException.class)
