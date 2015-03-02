@@ -8,7 +8,6 @@ import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.FinanceCommonUtility
 import net.hedtech.banner.service.ServiceBase
-import org.apache.commons.lang.StringUtils
 import org.apache.log4j.Logger
 
 /**

@@ -228,6 +228,23 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
     }
 
     /**
+     * Test update  with empty list
+     */
+    @Test
+    void updatePurchaseDetailWithEmptyList() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def detailDomainModel = getRequisitionDetails()
+        def domainModelMap = [requisitionDetail: detailDomainModel]
+        try {
+            purchaseRequisitionCompositeService.updateRequisitionDetail( domainModelMap, requestHeaderCode, '' )
+            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_ITEM_IS_REQUIRED
+        } catch (ApplicationException e) {
+            assertApplicationException e, FinanceProcurementConstants.ERROR_MESSAGE_ITEM_IS_REQUIRED
+        }
+    }
+
+    /**
      * The method is used to get the RequisitionDetail object with all required values to insert/update.
      * @return RequisitionDetail.
      */

@@ -64,16 +64,13 @@ class RequisitionDetailIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testCreateRequisitionDetail() {
         def requisitionDetail = getRequisitionDetails()
-        try {
-            requisitionDetail.save( failOnError: true, flush: true )
-            assertNotNull requisitionDetail.id
-            def reqId = requisitionDetail.id
-            def request = RequisitionDetail.findById( reqId )
-            assertTrue( request?.id != null || request?.requestCode != null )
-        }
-        catch (e) {
-            e.printStackTrace()
-        }
+        def lastItem = RequisitionDetail.getLastItem(requisitionDetail.requestCode)
+        requisitionDetail.item = lastItem[0].next()
+        requisitionDetail.save( failOnError: true, flush: true )
+        assertNotNull requisitionDetail.id
+        def reqId = requisitionDetail.id
+        def request = RequisitionDetail.findById( reqId )
+        assertTrue( request?.id != null || request?.requestCode != null )
     }
 
     /**

@@ -46,6 +46,21 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
         def headers = requisitionHeaderService.listRequisitionHeaderForLoggedInUser( paginationParam )
         assertTrue headers.size() > 0
     }
+    /**
+     * test Listing headers with now list
+     */
+    @Test
+    void testListRequisitionHeadersNoList() {
+        login 'grails_user', 'u_pick_it'
+        def paginationParam = [max: 500, offset: 0]
+        try {
+            requisitionHeaderService.listRequisitionHeaderForLoggedInUser( paginationParam )
+            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
+        }
+        catch (ApplicationException ae) {
+            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
+        }
+    }
 
     /**
      *  Test Finding headers for specified code. Failed case
@@ -54,7 +69,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
     void testFindRequisitionHeaderByRequestCodeFailedCase() {
 
         try {
-            def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( 'INVALID_CODE' )
+            requisitionHeaderService.findRequisitionHeaderByRequestCode( 'INVALID_CODE' )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
         }
         catch (ApplicationException ae) {

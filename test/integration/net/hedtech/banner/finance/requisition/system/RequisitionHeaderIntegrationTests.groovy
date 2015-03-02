@@ -51,7 +51,7 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
             assertNotNull requestHeader.id
         }
         catch (e) {
-            e.printStackTrace()
+            Lo
         }
         def pagingParams = [max: 500, offset: 0]
         def header = RequisitionHeader.fetchByUser( FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, pagingParams )
@@ -77,16 +77,10 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
     void testCreate() {
 
         def requestHeader = newRequisitionHeader()
-        try {
-            requestHeader.save( failOnError: true, flush: true )
-            assertNotNull requestHeader.id
-        }
-        catch (e) {
-            e.printStackTrace()
-        }
+        requestHeader.save( failOnError: true, flush: true )
+        assertNotNull requestHeader.id
         def reqId = requestHeader.id
         requestHeader.refresh()
-
         def request = RequisitionHeader.findById( reqId )
         assertNotNull request.id
         assertNotNull request.requestCode
