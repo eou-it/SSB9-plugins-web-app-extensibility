@@ -85,7 +85,7 @@ class RequisitionDetailIntegrationTests extends BaseIntegrationTestCase {
         if (lastItem == null) {
             lastItem = 0
         }
-        lastItem = lastItem + 1
+        lastItem = lastItem.next()
         def requisitionDetail = new RequisitionDetail(
                 requestCode: reqCode,
                 item: lastItem,

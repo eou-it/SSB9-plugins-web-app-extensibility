@@ -16,7 +16,7 @@ import org.apache.log4j.Logger
  * Class for Purchase Requisition Composite
  */
 class PurchaseRequisitionCompositeService {
-    private static final Logger LOGGER = Logger.getLogger( this.getClass() )
+    private static final Logger LOGGER = Logger.getLogger( this.class )
     boolean transactional = true
 
     def requisitionHeaderService
@@ -53,8 +53,8 @@ class PurchaseRequisitionCompositeService {
             def oracleUserName = user?.oracleUserName
             requisitionHeaderRequest.userId = oracleUserName
             // Check for tax group
-            FinanceSystemControl financeSystemControl = financeSystemControlService.findActiveFundOrgSecurityIndicator()
-            if (financeSystemControl?.taxProcessingIndicator == FinanceValidationConstants.FUND_ORG_SECURITY_INDICATOR_NO) {
+            FinanceSystemControl financeSystemControl = financeSystemControlService.findActiveFinanceSystemControl()
+            if (financeSystemControl?.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_NO) {
                 requisitionHeaderRequest.taxGroup = null
             }
             def requisitionHeader = requisitionHeaderService.create( [domainModel: requisitionHeaderRequest] )
@@ -82,7 +82,7 @@ class PurchaseRequisitionCompositeService {
             def requestCode = requisitionDetailRequest.requestCode
             def lastItem = requisitionDetailService.getLastItem( requestCode )
             requisitionDetailRequest.userId = oracleUserName
-            requisitionDetailRequest.item = lastItem + 1
+            requisitionDetailRequest.item = lastItem.next()
             // Set all data with business logic.
             requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
             RequisitionDetail requisitionDetail = requisitionDetailService.create( [domainModel: requisitionDetailRequest] )
@@ -110,10 +110,10 @@ class PurchaseRequisitionCompositeService {
         requisitionDetailRequest.ship = requisitionHeader.ship
         requisitionDetailRequest.deliveryDate = requisitionHeader.deliveryDate
         // start check tax amount.
-        FinanceSystemControl financeSystemControl = financeSystemControlService.findActiveFundOrgSecurityIndicator()
-        if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.FUND_ORG_SECURITY_INDICATOR_NO) {
+        FinanceSystemControl financeSystemControl = financeSystemControlService.findActiveFinanceSystemControl()
+        if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_NO) {
             requisitionDetailRequest.taxGroup = null
-        } else if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.FUND_ORG_SECURITY_INDICATOR_YES) {
+        } else if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_YES) {
             if (StringUtils.isBlank( requisitionDetailRequest.taxGroup )) {
                 requisitionDetailRequest.taxGroup = null
             }
@@ -124,8 +124,8 @@ class PurchaseRequisitionCompositeService {
             def commodity = financeCommodityService.findCommodityByCode( requisitionDetailRequest.commodity )
             requisitionDetailRequest.commodityDescription = commodity.description
         }
-        // If header don’t have discount code setup then remove the discountAmount value
-        if (!requisitionHeader.discount == null) {
+        // If header have discount code setup then remove the discountAmount value from details
+        if (requisitionHeader.discount != null) {
             requisitionDetailRequest.remove( 'discountAmount' )
         }
         return requisitionDetailRequest
