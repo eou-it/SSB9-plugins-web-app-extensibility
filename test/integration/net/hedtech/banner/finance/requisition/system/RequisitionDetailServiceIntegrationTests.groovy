@@ -56,7 +56,7 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
      public void testFetchByRequestCodeAndItemWithEmptyItem() {
          def pagingParams = [max: 500, offset: 0]
          try {
-             def list = requisitionDetailService.fetchByRequestCodeAndItem(reqCode, '', pagingParams )
+             requisitionDetailService.fetchByRequestCodeAndItem(reqCode, '', pagingParams )
          } catch (ApplicationException e) {
              assertApplicationException e, (FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL)
          }
@@ -69,7 +69,7 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
     public void testFindRequisitionDetailListByUser() {
         def pagingParams = [max: 500, offset: 0]
         try {
-            def list = requisitionDetailService.findRequisitionDetailListByUser( pagingParams )
+            requisitionDetailService.findRequisitionDetailListByUser( pagingParams )
         } catch (ApplicationException e) {
             assertApplicationException e, (FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL)
         }
