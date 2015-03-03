@@ -249,24 +249,21 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
      * @return RequisitionDetail.
      */
     private RequisitionDetail getRequisitionDetails() {
-        def requisitionDetail = new RequisitionDetail(
-                requestCode: requestHeaderCode,
-                userId: FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                commodity: '2210000000',
-                commodityDescription: 'New Requisition Detail',
-                chartOfAccount: 'B',
-                organization: '11003',
-                quantity: '2',
-                unitOfMeasure: 'EA',
-                unitPrice: '99.99',
-                suspenseIndicator: true,
-                textUsageIndicator: FinanceProcurementConstants.DEFAULT_FPBREQD_TEXT_USAGE,
-                discountAmount: '0',
-                taxAmount: '0',
-                additionalChargeAmount: '9',
-                taxGroup: 'NT',
-                dataOrigin: FinanceProcurementConstants.DEFAULT_REQUISITION_ORIGIN
-        )
+        def requisitionDetail = [
+                'requestCode': requestHeaderCode,
+                'userId': FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                'commodity': '2210000000',
+                'commodityDescription': 'New Requisition Detail',
+                'quantity': '2',
+                'unitOfMeasure': 'EA',
+                'unitPrice': '99.99',
+                'suspenseIndicator': true,
+                'textUsageIndicator': FinanceProcurementConstants.DEFAULT_FPBREQD_TEXT_USAGE,
+                'discountAmount': '0',
+                'additionalChargeAmount': '9',
+                'taxGroup': 'NT',
+                'dataOrigin': FinanceProcurementConstants.DEFAULT_REQUISITION_ORIGIN
+        ]
         return requisitionDetail
     }
 }

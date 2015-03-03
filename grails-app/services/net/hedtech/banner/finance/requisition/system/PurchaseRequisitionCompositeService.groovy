@@ -36,7 +36,7 @@ class PurchaseRequisitionCompositeService {
         if (map?.requisitionHeader) {
             resultMap.headerReqCode = createRequisitionHeader( map )
         } else if (map?.requisitionDetail) {
-            resultMap.detailReqCode = createRequisitionDetail( map )
+            resultMap = createRequisitionDetail( map )
         }
         return resultMap
     }
@@ -87,7 +87,10 @@ class PurchaseRequisitionCompositeService {
             requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
             RequisitionDetail requisitionDetail = requisitionDetailService.create( [domainModel: requisitionDetailRequest] )
             LOGGER.debug "Requisition Detail created " + requisitionDetail
-            return requisitionDetail.requestCode
+            def requisitionDetailMap = [:]
+            requisitionDetailMap.requestCode = requisitionDetail.requestCode
+            requisitionDetailMap.item = requisitionDetail.item
+            return requisitionDetailMap
         } else {
             LOGGER.error( 'User' + user + ' is not valid' )
             throw new ApplicationException(
