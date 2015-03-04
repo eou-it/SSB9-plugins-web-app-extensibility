@@ -210,6 +210,7 @@ class PurchaseRequisitionCompositeService {
                 requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
                 requisitionDetailRequest.lastModified = new Date()
                 requisitionDetailRequest.item = existingDetail.item
+                requisitionDetailRequest.userId = user.oracleUserName
                 def requisitionDetail = requisitionDetailService.update( [domainModel: requisitionDetailRequest] )
                 LOGGER.debug "Requisition Detail updated " + requisitionDetail
                 def detail = RequisitionDetail.read( requisitionDetail.id )
