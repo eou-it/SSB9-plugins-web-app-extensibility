@@ -173,7 +173,7 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         def reqDetailDomainModel = getRequisitionDetails()
         def domainModelMap = [requisitionDetail: reqDetailDomainModel]
         def requestCode = purchaseRequisitionCompositeService.createPurchaseRequisition( domainModelMap )
-        assertTrue requestCode?.detailReqCode == requestHeaderCode
+        assertTrue requestCode?.requestCode == requestHeaderCode
     }
 
     /**
