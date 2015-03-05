@@ -12,7 +12,7 @@ import org.junit.Test
 import org.springframework.security.authentication.BadCredentialsException
 
 /**
- * Test class for RequisitionHeaderService
+ * Test class for PurchaseRequisitionCompositeService
  */
 class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
