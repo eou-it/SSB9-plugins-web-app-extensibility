@@ -45,7 +45,7 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
     @Test
     public void testFindRequisitionDetailListByRiquistionCode() {
         def requisitionDetails = requisitionDetailService.findByRequestCodeAndItem( reqCode, item )
-        assertTrue( requisitionDetails.size() > 0 || requisitionDetails.isEmpty() )
+        assertTrue( requisitionDetails != null )
     }
 
     /**
