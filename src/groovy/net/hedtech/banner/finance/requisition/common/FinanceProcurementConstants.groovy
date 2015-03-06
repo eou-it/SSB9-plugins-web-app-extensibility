@@ -9,7 +9,7 @@ package net.hedtech.banner.finance.requisition.common
 class FinanceProcurementConstants {
     /* Constant for Requisition Header Domain*/
 
-    public static final def REQUISITION_HEADER_FINDER_BY_REQUEST_CODE = 'RequisitionHeader.fetchByRequestCodeAndItem'
+    public static final def REQUISITION_HEADER_FINDER_BY_REQUEST_CODE = 'RequisitionHeader.findByRequestCodeAndItem'
     public static final def REQUISITION_HEADER_FINDER_BY_USER = 'RequisitionHeader.fetchByUser'
 
     public static final def REQUISITION_HEADER_FINDER_BY_REQUEST_CODE_PARAM_REQUEST_CODE = 'requestCode'

@@ -47,8 +47,8 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def headerDomainModel = newRequisitionHeader()
         def domainModelMap = [requisitionHeader: headerDomainModel]
-        def requestCode = purchaseRequisitionCompositeService.createPurchaseRequisition( domainModelMap )
-        assertTrue requestCode?.headerReqCode != FinanceProcurementConstants.DEFAULT_REQUEST_CODE
+        def requestCode = purchaseRequisitionCompositeService.createPurchaseRequisitionHeader( domainModelMap )
+        assertTrue requestCode != FinanceProcurementConstants.DEFAULT_REQUEST_CODE
     }
 
     /**
@@ -59,7 +59,7 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         login 'Invalid_user', 'invalid_password'
         def headerDomainModel = newRequisitionHeader()
         def domainModelMap = [requisitionHeader: headerDomainModel]
-        purchaseRequisitionCompositeService.createPurchaseRequisition( domainModelMap )
+        purchaseRequisitionCompositeService.createPurchaseRequisitionHeader( domainModelMap )
     }
 
     /**
@@ -70,7 +70,7 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         def headerDomainModel = newRequisitionHeader()
         headerDomainModel.currency = 'ABC'
         def domainModelMap = [requisitionHeader: headerDomainModel]
-        purchaseRequisitionCompositeService.createPurchaseRequisition( domainModelMap )
+        purchaseRequisitionCompositeService.createPurchaseRequisitionHeader( domainModelMap )
     }
 
     /**
@@ -81,10 +81,10 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def headerDomainModel = newRequisitionHeader()
         def domainModelMap = [requisitionHeader: headerDomainModel]
-        def requestCode = purchaseRequisitionCompositeService.createPurchaseRequisition( domainModelMap )
-        purchaseRequisitionCompositeService.deletePurchaseRequisition( requestCode?.headerReqCode )
+        def requestCode = purchaseRequisitionCompositeService.createPurchaseRequisitionHeader( domainModelMap )
+        purchaseRequisitionCompositeService.deletePurchaseRequisition( requestCode )
         try {
-            requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode?.headerReqCode )
+            requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
         }
         catch (ApplicationException ae) {
@@ -172,7 +172,7 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def reqDetailDomainModel = getRequisitionDetails()
         def domainModelMap = [requisitionDetail: reqDetailDomainModel]
-        def requestCode = purchaseRequisitionCompositeService.createPurchaseRequisition( domainModelMap )
+        def requestCode = purchaseRequisitionCompositeService.createPurchaseRequisitionDetail( domainModelMap )
         assertTrue requestCode?.requestCode == requestHeaderCode
     }
 
@@ -184,7 +184,7 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         login 'Invalid_user', 'invalid_password'
         def reqDetailDomainModel = getRequisitionDetails()
         def domainModelMap = [requisitionDetail: reqDetailDomainModel]
-        purchaseRequisitionCompositeService.createPurchaseRequisition( domainModelMap )
+        purchaseRequisitionCompositeService.createPurchaseRequisitionDetail( domainModelMap )
     }
 
     /**
@@ -195,7 +195,7 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         def reqDetailDomainModel = getRequisitionDetails()
         reqDetailDomainModel.requestCode = 'R0000129182991'
         def domainModelMap = [requisitionDetail: reqDetailDomainModel]
-        purchaseRequisitionCompositeService.createPurchaseRequisition( domainModelMap )
+        purchaseRequisitionCompositeService.createPurchaseRequisitionDetail( domainModelMap )
     }
 
     /**
@@ -204,9 +204,9 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
     @Test
     void testDeletePurchaseRequisitionDetail() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        purchaseRequisitionCompositeService.deletePurchaseRequisitionDetail( 'R0000561', '1' )
+        purchaseRequisitionCompositeService.deletePurchaseRequisitionDetail( 'R0000561', 1 )
         try {
-            requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'R0000561', '1' )
+            requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'R0000561', 1 )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL
         }
         catch (ApplicationException ae) {
@@ -223,7 +223,7 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
                     FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def detailDomainModel = getRequisitionDetails()
         def domainModelMap = [requisitionDetail: detailDomainModel]
-        def detail = purchaseRequisitionCompositeService.updateRequisitionDetail( domainModelMap, requestHeaderCode, '1' )
+        def detail = purchaseRequisitionCompositeService.updateRequisitionDetail( domainModelMap, requestHeaderCode, 1 )
         detail.requestCode = requestHeaderCode
     }
 
@@ -237,7 +237,7 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         def detailDomainModel = getRequisitionDetails()
         def domainModelMap = [requisitionDetail: detailDomainModel]
         try {
-            purchaseRequisitionCompositeService.updateRequisitionDetail( domainModelMap, requestHeaderCode, '' )
+            purchaseRequisitionCompositeService.updateRequisitionDetail( domainModelMap, requestHeaderCode, 0 )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_ITEM_IS_REQUIRED
         } catch (ApplicationException e) {
             assertApplicationException e, FinanceProcurementConstants.ERROR_MESSAGE_ITEM_IS_REQUIRED

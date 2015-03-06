@@ -21,9 +21,8 @@ import javax.persistence.*
                             WHERE requisitionDetail.requestCode = :requestCode"""),
         @NamedQuery(name = FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE_AND_ITEM,
                 query = """FROM RequisitionDetail requisitionDetail
-                            WHERE requisitionDetail.requestCode LIKE :requestCode
-                            AND STR(requisitionDetail.item) LIKE :item
-                            ORDER BY requisitionDetail.item"""),
+                            WHERE requisitionDetail.requestCode = :requestCode
+                            AND requisitionDetail.item = :item"""),
         @NamedQuery(name = FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_USER,
                 query = """FROM RequisitionDetail requisitionDetail
                             WHERE requisitionDetail.userId = :userId
@@ -367,13 +366,13 @@ class RequisitionDetail implements Serializable {
         dataOrigin( nullable: true, maxSize: 30 )
     }
 
-    public static readonlyProperties = ['requestCode', 'item']
+    static readonlyProperties = ['requestCode', 'item']
 
     /**
      * This method is used to called named query for get last item generated in requisition detail.
      * @return last generated item.
      */
-    public static def getLastItem( requestCode ) {
+    static def getLastItem( requestCode ) {
         def lastItem = RequisitionDetail.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_GET_LAST_ITEM )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
@@ -388,13 +387,11 @@ class RequisitionDetail implements Serializable {
      * @param item Item Number.
      * @return list of requisition.
      */
-    public static def fetchByRequestCodeAndItem( requestCode, item, paginationParams ) {
+    static def fetchByRequestCodeAndItem( requestCode, Integer item ) {
         def requestDetailList = RequisitionDetail.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE_AND_ITEM )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
-                    .setString( FinanceProcurementConstants.QUERY_PARAM_REQUISITION_DETAIL_ITEM, item )
-                    .setMaxResults( paginationParams.max )
-                    .setFirstResult( paginationParams.offset )
+                    .setInteger( FinanceProcurementConstants.QUERY_PARAM_REQUISITION_DETAIL_ITEM, item )
                     .list()
         }
         return [list: requestDetailList]
@@ -406,7 +403,7 @@ class RequisitionDetail implements Serializable {
      * @param paginationParams pagination parameters.
      * @return List of requisition details.
      */
-    public static def fetchByUserId( userId, paginationParams ) {
+     static def fetchByUserId( userId, paginationParams ) {
         def requestDetailList = RequisitionDetail.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_USER )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_USER_ID, userId )

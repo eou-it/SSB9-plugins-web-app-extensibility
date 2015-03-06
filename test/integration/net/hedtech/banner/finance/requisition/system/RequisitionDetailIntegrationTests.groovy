@@ -41,8 +41,7 @@ class RequisitionDetailIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testFetchRequisitionDetailByRequestCode() {
-        def pagingParams = [max: 500, offset: 0]
-        def requestDetail = RequisitionDetail.fetchByRequestCodeAndItem( reqCode, item, pagingParams ).list;
+        def requestDetail = RequisitionDetail.fetchByRequestCodeAndItem( reqCode, item ).list;
         assertTrue( requestDetail.size() > 0 || requestDetail.size() == 0 )
         assertEquals reqCode, requestDetail[0].requestCode
     }
@@ -64,7 +63,7 @@ class RequisitionDetailIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testCreateRequisitionDetail() {
         def requisitionDetail = getRequisitionDetails()
-        def lastItem = RequisitionDetail.getLastItem(requisitionDetail.requestCode)
+        def lastItem = RequisitionDetail.getLastItem( requisitionDetail.requestCode )
         requisitionDetail.item = lastItem[0].next()
         requisitionDetail.save( failOnError: true, flush: true )
         assertNotNull requisitionDetail.id

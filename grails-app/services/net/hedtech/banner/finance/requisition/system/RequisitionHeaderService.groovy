@@ -11,7 +11,7 @@ import org.apache.log4j.Logger
 
 class RequisitionHeaderService extends ServiceBase {
     boolean transactional = true
-    def log = Logger.getLogger( this.getClass() )
+    private static final def LOGGER = Logger.getLogger( this.getClass() )
     def springSecurityService
 
     /**
@@ -19,7 +19,7 @@ class RequisitionHeaderService extends ServiceBase {
      * @param requestCode
      */
     def findRequisitionHeaderByRequestCode( requestCode ) {
-        log.debug( 'Input parameters for findRequisitionHeaderByRequestCode :' + requestCode )
+        LOGGER.debug( 'Input parameters for findRequisitionHeaderByRequestCode :' + requestCode )
         def retRequisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode )
 
         if (retRequisitionHeader == null) {
@@ -41,7 +41,7 @@ class RequisitionHeaderService extends ServiceBase {
             }
             return requisitionHeaderList.list;
         } else {
-            log.debug( 'User' + user + ' is not valid' )
+            LOGGER.error( 'User' + user + ' is not valid' )
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
     }

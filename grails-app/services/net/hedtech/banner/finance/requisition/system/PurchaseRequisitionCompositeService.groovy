@@ -8,7 +8,6 @@ import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.system.FinanceSystemControl
-import net.hedtech.banner.finance.util.FinanceCommonUtility
 import org.apache.commons.lang3.StringUtils
 import org.apache.log4j.Logger
 
@@ -27,26 +26,10 @@ class PurchaseRequisitionCompositeService {
 
     /**
      * Create purchase requisition Header
-     * @param map Map which contains the RequisitionHeader/RequisitionDetail domains with values.
+     * @param map Map which contains the RequisitionHeader domain with values.
      * @return Requisition code.
      */
-    def createPurchaseRequisition( map ) {
-        def resultMap = [:]
-        // Create Header/Detail
-        if (map?.requisitionHeader) {
-            resultMap.headerReqCode = createRequisitionHeader( map )
-        } else if (map?.requisitionDetail) {
-            resultMap = createRequisitionDetail( map )
-        }
-        return resultMap
-    }
-
-    /**
-     * This private method is used to create Requisition Header.
-     * @param map Map contains RequisitionHeader domain model.
-     * @return Requisition Code.
-     */
-    private def createRequisitionHeader( map ) {
+    def createPurchaseRequisitionHeader( map ) {
         RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
         def user = springSecurityService.getAuthentication()?.user
         if (user.oracleUserName) {
@@ -70,11 +53,11 @@ class PurchaseRequisitionCompositeService {
     }
 
     /**
-     * This private method is used to create Requisition Detail.
-     * @param map Map contains RequisitionDetail domain model.
-     * @return Requisition Code.
+     * Create purchase requisition detail
+     * @param map Map which contains the RequisitionDetail domain with values.
+     * @return requestCode and item number.
      */
-    private def createRequisitionDetail( map ) {
+    def createPurchaseRequisitionDetail( map ) {
         RequisitionDetail requisitionDetailRequest = map.requisitionDetail
         def user = springSecurityService.getAuthentication()?.user
         if (user.oracleUserName) {
@@ -97,41 +80,6 @@ class PurchaseRequisitionCompositeService {
                     PurchaseRequisitionCompositeService,
                     new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
-    }
-
-    /**
-     * This method is used to set data for Create/Update requisition detail
-     * @param requestCode Requisition Code.
-     * @param requisitionDetailRequest Requisition details.
-     * @return updated requisition details.
-     */
-    private def setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest ) {
-        // Set all the required information from the Requisition Header.
-        def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
-        requisitionDetailRequest.chartOfAccount = requisitionHeader.chartOfAccount
-        requisitionDetailRequest.organization = requisitionHeader.organization
-        requisitionDetailRequest.ship = requisitionHeader.ship
-        requisitionDetailRequest.deliveryDate = requisitionHeader.deliveryDate
-        // start check tax amount.
-        FinanceSystemControl financeSystemControl = financeSystemControlService.findActiveFinanceSystemControl()
-        if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_NO) {
-            requisitionDetailRequest.taxGroup = null
-        } else if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_YES) {
-            if (StringUtils.isBlank( requisitionDetailRequest.taxGroup )) {
-                requisitionDetailRequest.taxGroup = null
-            }
-        }
-        // end check tax amount.
-        // Check for Commodity
-        if (requisitionDetailRequest.commodity) {
-            def commodity = financeCommodityService.findCommodityByCode( requisitionDetailRequest.commodity )
-            requisitionDetailRequest.commodityDescription = commodity.description
-        }
-        // If header have discount code setup then remove the discountAmount value from details
-        if (requisitionHeader.discount != null) {
-            requisitionDetailRequest.discountAmount = null
-        }
-        return requisitionDetailRequest
     }
 
     /**
@@ -179,7 +127,7 @@ class PurchaseRequisitionCompositeService {
      * @param requestCode Requisition Code.
      * @param item Item.
      */
-    def deletePurchaseRequisitionDetail( requestCode, item ) {
+    def deletePurchaseRequisitionDetail( requestCode, Integer item ) {
         def requisitionDetail = requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( requestCode, item )
         requisitionDetailService.delete( [domainModel: requisitionDetail] )
     }
@@ -192,14 +140,13 @@ class PurchaseRequisitionCompositeService {
      */
     def updateRequisitionDetail( detailDomainModel, requestCode, item ) {
         // Null or empty check for item.
-        if (StringUtils.isEmpty( item )) {
+        if (!item) {
             LOGGER.error( 'Item is required to update the detail.' )
             throw new ApplicationException( PurchaseRequisitionCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_ITEM_IS_REQUIRED, [] ) )
         }
-        def paginationParam = FinanceCommonUtility.getPagingParams( null, null )
-        def existingDetail = requisitionDetailService.fetchByRequestCodeAndItem( requestCode, item, paginationParam ).getAt( 0 )
+        def existingDetail = requisitionDetailService.findByRequestCodeAndItem( requestCode, item )
         if (detailDomainModel?.requisitionDetail) {
             RequisitionDetail requisitionDetailRequest = detailDomainModel.requisitionDetail
             requisitionDetailRequest.id = existingDetail.id
@@ -222,6 +169,40 @@ class PurchaseRequisitionCompositeService {
                                                         FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
             }
         }
+    }
+
+    /**
+     * This method is used to set data for Create/Update requisition detail
+     * @param requestCode Requisition Code.
+     * @param requisitionDetailRequest Requisition details.
+     * @return updated requisition details.
+     */
+    private def setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest ) {
+        // Set all the required information from the Requisition Header.
+        def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
+        requisitionDetailRequest.chartOfAccount = requisitionHeader.chartOfAccount
+        requisitionDetailRequest.organization = requisitionHeader.organization
+        requisitionDetailRequest.ship = requisitionHeader.ship
+        requisitionDetailRequest.deliveryDate = requisitionHeader.deliveryDate
+        // start check tax amount.
+        FinanceSystemControl financeSystemControl = financeSystemControlService.findActiveFinanceSystemControl()
+        if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_NO) {
+            requisitionDetailRequest.taxGroup = null
+        } else if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_YES
+                    && StringUtils.isBlank( requisitionDetailRequest.taxGroup )) {
+            requisitionDetailRequest.taxGroup = null
+        }
+        // end check tax amount.
+        // Check for Commodity
+        if (requisitionDetailRequest.commodity) {
+            def commodity = financeCommodityService.findCommodityByCode( requisitionDetailRequest.commodity )
+            requisitionDetailRequest.commodityDescription = commodity.description
+        }
+        // If header have discount code setup then remove the discountAmount value from details
+        if (requisitionHeader.discount != null) {
+            requisitionDetailRequest.discountAmount = null
+        }
+        return requisitionDetailRequest
     }
 
 }

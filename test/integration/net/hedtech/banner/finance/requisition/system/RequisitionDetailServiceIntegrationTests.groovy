@@ -44,8 +44,7 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testFindRequisitionDetailListByRiquistionCode() {
-        def pagingParams = [max: 500, offset: 0]
-        def requisitionDetails = requisitionDetailService.fetchByRequestCodeAndItem( reqCode, item, pagingParams )
+        def requisitionDetails = requisitionDetailService.findByRequestCodeAndItem( reqCode, item )
         assertTrue( requisitionDetails.size() > 0 || requisitionDetails.isEmpty() )
     }
 
@@ -56,7 +55,7 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
      public void testFetchByRequestCodeAndItemWithEmptyItem() {
          def pagingParams = [max: 500, offset: 0]
          try {
-             requisitionDetailService.fetchByRequestCodeAndItem(reqCode, '', pagingParams )
+             requisitionDetailService.findByRequestCodeAndItem(reqCode, '' )
          } catch (ApplicationException e) {
              assertApplicationException e, (FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL)
          }
@@ -69,7 +68,7 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
     public void testFindRequisitionDetailListByUser() {
         def pagingParams = [max: 500, offset: 0]
         try {
-            requisitionDetailService.findRequisitionDetailListByUser( pagingParams )
+            requisitionDetailService.fetchRequisitionDetailListByUser( pagingParams )
         } catch (ApplicationException e) {
             assertApplicationException e, (FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL)
         }
@@ -83,7 +82,7 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
     public void testFindRequisitionDetailListByUserInvalidUserCase() {
         super.login 'INVALID_USER', 'INVALID_PASSWORD'
         def pagingParams = [max: 500, offset: 0]
-        requisitionDetailService.findRequisitionDetailListByUser( pagingParams )
+        requisitionDetailService.fetchRequisitionDetailListByUser( pagingParams )
     }
 
     /**
