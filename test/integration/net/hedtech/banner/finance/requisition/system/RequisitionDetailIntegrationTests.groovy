@@ -16,7 +16,7 @@ import org.junit.Test
 class RequisitionDetailIntegrationTests extends BaseIntegrationTestCase {
     def reqCode = "R0000561"
     def commodityCode = '2210000000'
-    def item = '1'
+    def item = 1
 
     /**
      * The tear down method will run before all test case method execution start.

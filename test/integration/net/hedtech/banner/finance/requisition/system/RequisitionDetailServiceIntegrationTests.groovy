@@ -19,7 +19,7 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
     def requisitionDetailService
     def springSecurityService
     def reqCode = 'R0000124'
-    def item = '1'
+    def item = 1
     /**
      * Super class setup
      */
@@ -55,7 +55,7 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
      public void testFetchByRequestCodeAndItemWithEmptyItem() {
          def pagingParams = [max: 500, offset: 0]
          try {
-             requisitionDetailService.findByRequestCodeAndItem(reqCode, '' )
+             requisitionDetailService.findByRequestCodeAndItem(reqCode, 0 )
          } catch (ApplicationException e) {
              assertApplicationException e, (FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL)
          }
@@ -99,7 +99,7 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testGetRequisitionDetailByRequestCodeAndItem() {
-        def requisitionDetail = requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'R0000561', '1' )
+        def requisitionDetail = requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'R0000561', 1 )
         assertTrue( (requisitionDetail.requestCode == 'R0000561' && requisitionDetail.item == 1) || requisitionDetail == null )
     }
 
@@ -108,6 +108,6 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test(expected = ApplicationException.class)
     public void testGetRequisitionDetailByRequestCodeAndItemFailureCase() {
-        requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'R000012912R121', '12' )
+        requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'R000012912R121', 12 )
     }
 }
