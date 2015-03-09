@@ -43,7 +43,12 @@ div.ui-dialog.ui-widget.ui-widget-content.ui-corner-all.xe-extensions-editor.ui-
 }
 
 .xe-extensions-editor.ui-dialog .ui-dialog-titlebar-close {
+    left: auto;
     right: 1em;
+}
+
+.xe-extensions-editor.ui-dialog .ui-resizable-se {
+    left: auto;
 }
 
 div.ui-dialog.ui-widget.ui-widget-content.ui-corner-all.xe-extensions-editor.ui-draggable.ui-resizable > div.ui-dialog-titlebar.ui-widget-header span {
