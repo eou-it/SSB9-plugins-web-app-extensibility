@@ -16,9 +16,7 @@ modules = {
         resource url: [plugin: 'web-app-extensibility', file: 'js/extensibility-jquery/xe-jquery.js']
     }
     'extensibilityJQueryRTL' {
-        dependsOn "extensibilityCommonRTL"
-    }
-    'extensibilityCommonRTL' {
+        dependsOn "extensibilityJQuery"
         resource url: [plugin: 'web-app-extensibility', file: 'css/extensibility-ss-rtl.css'], attrs: [media: 'screen, projection']
         resource url: [plugin: 'web-app-extensibility', file: 'css/extensibility-ss-rtl-patch.css'], attrs: [media: 'screen, projection']
     }
