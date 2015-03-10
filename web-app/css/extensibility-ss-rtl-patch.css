@@ -13,3 +13,7 @@
 #extensions-edit-input {
     direction: ltr;
 }
+
+.xe-extensions-editor.ui-dialog .ui-resizable-se {
+    cursor: sw-resize;
+}
