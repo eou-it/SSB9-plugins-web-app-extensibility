@@ -23,6 +23,7 @@ class PurchaseRequisitionCompositeService {
     def requisitionDetailService
     def financeSystemControlService
     def financeCommodityService
+    def requisitionInformationService
     def requisitionAccountingService
 
     /**
@@ -45,6 +46,36 @@ class PurchaseRequisitionCompositeService {
             LOGGER.debug "Requisition Header created " + requisitionHeader
             def header = RequisitionHeader.read( requisitionHeader.id )
             return header.requestCode
+        } else {
+            LOGGER.error( 'User' + user + ' is not valid' )
+            throw new ApplicationException(
+                    PurchaseRequisitionCompositeService,
+                    new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
+        }
+    }
+
+    /**
+     * Create purchase requisition detail
+     * @param map Map which contains the RequisitionDetail domain with values.
+     * @return requestCode and item number.
+     */
+    def createPurchaseRequisitionDetail( map ) {
+        RequisitionDetail requisitionDetailRequest = map.requisitionDetail
+        def user = springSecurityService.getAuthentication()?.user
+        if (user.oracleUserName) {
+            def oracleUserName = user?.oracleUserName
+            def requestCode = requisitionDetailRequest.requestCode
+            def lastItem = requisitionDetailService.getLastItem( requestCode )
+            requisitionDetailRequest.userId = oracleUserName
+            requisitionDetailRequest.item = lastItem.next()
+            // Set all data with business logic.
+            requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
+            RequisitionDetail requisitionDetail = requisitionDetailService.create( [domainModel: requisitionDetailRequest] )
+            LOGGER.debug "Requisition Detail created " + requisitionDetail
+            def requisitionDetailMap = [:]
+            requisitionDetailMap.requestCode = requisitionDetail.requestCode
+            requisitionDetailMap.item = requisitionDetail.item
+            return requisitionDetailMap
         } else {
             LOGGER.error( 'User' + user + ' is not valid' )
             throw new ApplicationException(
@@ -90,36 +121,6 @@ class PurchaseRequisitionCompositeService {
                                                 new BusinessLogicValidationException(
                                                         FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
             }
-        }
-    }
-
-    /**
-     * Create purchase requisition detail
-     * @param map Map which contains the RequisitionDetail domain with values.
-     * @return requestCode and item number.
-     */
-    def createPurchaseRequisitionDetail( map ) {
-        RequisitionDetail requisitionDetailRequest = map.requisitionDetail
-        def user = springSecurityService.getAuthentication()?.user
-        if (user.oracleUserName) {
-            def oracleUserName = user?.oracleUserName
-            def requestCode = requisitionDetailRequest.requestCode
-            def lastItem = requisitionDetailService.getLastItem( requestCode )
-            requisitionDetailRequest.userId = oracleUserName
-            requisitionDetailRequest.item = lastItem.next()
-            // Set all data with business logic.
-            requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
-            RequisitionDetail requisitionDetail = requisitionDetailService.create( [domainModel: requisitionDetailRequest] )
-            LOGGER.debug "Requisition Detail created " + requisitionDetail
-            def requisitionDetailMap = [:]
-            requisitionDetailMap.requestCode = requisitionDetail.requestCode
-            requisitionDetailMap.item = requisitionDetail.item
-            return requisitionDetailMap
-        } else {
-            LOGGER.error( 'User' + user + ' is not valid' )
-            throw new ApplicationException(
-                    PurchaseRequisitionCompositeService,
-                    new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
     }
 
@@ -220,6 +221,58 @@ class PurchaseRequisitionCompositeService {
     }
 
     /**
+     * Returns list of Requisitions in defined data structure
+     * @param buckets
+     */
+    def listRequisitionsByBucket( buckets, pagingParams ) {
+        def user = springSecurityService.getAuthentication()?.user
+        if (user == null || user.oracleUserName == null) {
+            LOGGER.error( 'User' + user + ' is not valid' )
+            throw new ApplicationException( PurchaseRequisitionCompositeService,
+                                            new BusinessLogicValidationException(
+                                                    FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
+        }
+        def wrapperList = [];
+        if (buckets?.isEmpty()) {
+            buckets = [FinanceProcurementConstants.REQUISITION_LIST_BUCKET_ALL]
+        }
+        buckets = new ArrayList( buckets ).unique()
+        buckets.each() {bucket ->
+            switch (bucket) {
+                case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_ALL:
+                    wrapperList.add( groupResult( FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT,
+                                                  listRequisitions( user.oracleUserName, pagingParams, [FinanceProcurementConstants.REQUISITION_LIST_STATUS_DRAFT,
+                                                                                                        FinanceProcurementConstants.REQUISITION_LIST_STATUS_DISAPPROVED] ) ) )
+                    wrapperList.add( groupResult( FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING,
+                                                  listRequisitions( user.oracleUserName, pagingParams, [FinanceProcurementConstants.REQUISITION_LIST_STATUS_PENDING] ) ) )
+                    wrapperList.add( groupResult( FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE,
+                                                  listRequisitions( user.oracleUserName, pagingParams, [FinanceProcurementConstants.REQUISITION_LIST_STATUS_COMPLETED,
+                                                                                                        FinanceProcurementConstants.REQUISITION_LIST_STATUS_BUYER_ASSIGNED,
+                                                                                                        FinanceProcurementConstants.REQUISITION_LIST_STATUS_CONVERTED_TO_PO] ) ) )
+                    break
+                case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT:
+                    wrapperList.add( groupResult( bucket, listRequisitions( user.oracleUserName, pagingParams, [FinanceProcurementConstants.REQUISITION_LIST_STATUS_DRAFT,
+                                                                                                                FinanceProcurementConstants.REQUISITION_LIST_STATUS_DISAPPROVED] ) ) )
+                    break
+                case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING:
+                    wrapperList.add( groupResult( bucket, listRequisitions( user.oracleUserName, pagingParams, [FinanceProcurementConstants.REQUISITION_LIST_STATUS_PENDING] ) ) )
+                    break
+                case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE:
+                    wrapperList.add( groupResult( bucket, listRequisitions( user.oracleUserName, pagingParams, [FinanceProcurementConstants.REQUISITION_LIST_STATUS_COMPLETED,
+                                                                                                                FinanceProcurementConstants.REQUISITION_LIST_STATUS_BUYER_ASSIGNED,
+                                                                                                                FinanceProcurementConstants.REQUISITION_LIST_STATUS_CONVERTED_TO_PO] ) ) )
+                    break
+                default:
+                    LOGGER.error( 'Group Type not valid' )
+                    throw new ApplicationException( PurchaseRequisitionCompositeService,
+                                                    new BusinessLogicValidationException(
+                                                            FinanceProcurementConstants.ERROR_MESSAGE_INVALID_BUCKET_TYPE, [bucket] ) )
+            }
+        }
+        return wrapperList
+    }
+
+    /**
      * This method is used to set data for Create/Update requisition detail
      * @param requestCode Requisition Code.
      * @param requisitionDetailRequest Requisition details.
@@ -237,7 +290,7 @@ class PurchaseRequisitionCompositeService {
         if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_NO) {
             requisitionDetailRequest.taxGroup = null
         } else if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_YES
-                && StringUtils.isBlank( requisitionDetailRequest.taxGroup )) {
+                    && StringUtils.isBlank( requisitionDetailRequest.taxGroup )) {
             requisitionDetailRequest.taxGroup = null
         }
         // end check tax amount.
@@ -253,4 +306,24 @@ class PurchaseRequisitionCompositeService {
         return requisitionDetailRequest
     }
 
+    /**
+     * Gets List of requisitions
+     * @param pagingParams
+     * @param status
+     * @return
+     */
+    private listRequisitions( oracleUserName, pagingParams, status ) {
+        return requisitionInformationService.listRequisitionsByStatus( status, pagingParams, oracleUserName )
+    }
+
+    /**
+     * Groups the records as per buckets
+     * @param groupType
+     * @param records
+     * @return
+     */
+
+    private def groupResult( groupType, records ) {
+        [category: groupType, count: records.size(), list: records]
+    }
 }

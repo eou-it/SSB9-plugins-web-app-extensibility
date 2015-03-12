@@ -220,9 +220,42 @@ class FinanceProcurementConstants {
     static final def SUCCESS_MESSAGE_DELETE_REQUISITION_ACCOUNTING = 'net.hedtech.banner.finance.requisition.delete.requisition.accounting.success'
     static final def SUCCESS_MESSAGE_UPDATE_REQUISITION_ACCOUNTING = 'net.hedtech.banner.finance.requisition.update.requisition.accounting.success'
 
-    /**
-     * static final variable used for wildcard search.
-     */
-    static final WILDCARD_STR_PERCENTAGE = '%'
+    /** Constants for Requisition Information */
+    static final def VIEW_FPVREQLIST = 'FPVREQLIST'
+    static final def ERROR_MESSAGE_INVALID_BUCKET_TYPE = 'invalid.bucket.type'
+    static final def REQUISITION_INFO_FIELD_FPVREQLIST_SURROGATE_ID = 'FPBREQH_SURROGATE_ID'
+    static final def REQUISITION_INFO_FIELD_FPVREQLIST_AMOUNT = 'AMOUNT'
+    static final def REQUISITION_INFO_FIELD_FPVREQLIST_REQUESTOR_NAME = 'REQUESTOR_NAME'
+    static final def REQUISITION_INFO_FIELD_FPVREQLIST_VENDOR_NAME = 'VENDOR_NAME'
+    static final def REQUISITION_INFO_FIELD_FPVREQLIST_FPBREQH_TRANS_DATE = 'FPBREQH_TRANS_DATE'
+    static final def REQUISITION_INFO_FIELD_FPVREQLIST_REQUEST_DATE = 'REQUEST_DATE'
+    static final def REQUISITION_INFO_FIELD_FPVREQLIST_DELIVERY_DATE = 'DELIVERY_DATE'
+    static final def REQUISITION_INFO_FIELD_FPVREQLIST_FPBREQH_USER_ID = 'FPBREQH_USER_ID'
+    static final def REQUISITION_INFO_FIELD_FPVREQLIST_FPBREQH_ORIGIN_CODE = 'FPBREQH_ORIGIN_CODE'
+    static final def REQUISITION_INFO_FIELD_FPVREQLIST_FPBREQH_ORGN_CODE = 'FPBREQH_ORGN_CODE'
+
+    static final def REQUISITION_INFO_FIELD_FPVREQLIST_ORG_TITLE = 'ORG_TITLE'
+    static final def REQUISITION_INFO_FIELD_FPVREQLIST_FPBREQH_COAS_CODE = 'FPBREQH_COAS_CODE'
+    static final def REQUISITION_INFO_FIELD_FPVREQLIST_FPBREQH_VEND_PIDM = 'FPBREQH_VEND_PIDM'
+    static final def REQUISITION_INFO_FIELD_FPVREQLIST_FPBREQH_ACTIVITY_DATE = 'FPBREQH_ACTIVITY_DATE'
+    static final def REQUISITION_INFO_FIELD_FPVREQLIST_FPBREQH_FPBREQH_SURROGATE_ID = 'FPBREQH_SURROGATE_ID'
+    static final def REQUISITION_INFO_FIELD_FPVREQLIST_FPBREQH_FPBREQH_CODE = 'FPBREQH_CODE'
+    static final def REQUISITION_INFO_FIELD_FPVREQLIST_STATUS = 'STATUS'
+    static final def REQUISITION_INFO_FINDER_BY_STATUS = 'RequisitionInformation.listRequisitionByStatus'
+    static final def REQUISITION_INFO_FINDER_PARAM_STATUS = 'status'
+    static final def REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID = 'userId'
+
+    /** Constants for listing and search Requisitions */
+
+    static final def REQUISITION_LIST_BUCKET_DRAFT = 'draft'
+    static final def REQUISITION_LIST_BUCKET_PENDING = 'pending'
+    static final def REQUISITION_LIST_BUCKET_COMPLETE = 'completed'
+    static final def REQUISITION_LIST_BUCKET_ALL = 'all'
+    static final def REQUISITION_LIST_STATUS_DRAFT = 'Draft'
+    static final def REQUISITION_LIST_STATUS_DISAPPROVED = 'Disapproved'
+    static final def REQUISITION_LIST_STATUS_PENDING = 'Pending'
+    static final def REQUISITION_LIST_STATUS_COMPLETED = 'Completed'
+    static final def REQUISITION_LIST_STATUS_BUYER_ASSIGNED = 'Buyer Assigned'
+    static final def REQUISITION_LIST_STATUS_CONVERTED_TO_PO = 'Converted to PO'
 
 }
