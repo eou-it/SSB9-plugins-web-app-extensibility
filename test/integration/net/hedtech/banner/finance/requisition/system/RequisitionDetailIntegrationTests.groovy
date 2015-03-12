@@ -47,7 +47,7 @@ class RequisitionDetailIntegrationTests extends BaseIntegrationTestCase {
     }
 
     /**
-     * Test Fetch Request Details for specified requestCode and item
+     * Test Fetch Request Details by user.
      */
     @Test
     void testFetchRequisitionDetailByUserId() {
@@ -77,7 +77,7 @@ class RequisitionDetailIntegrationTests extends BaseIntegrationTestCase {
      * @return RequisitionDetail.
      */
     private RequisitionDetail getRequisitionDetails() {
-        def lastItem = RequisitionDetail.getLastItem().getAt( 0 )
+        def lastItem = RequisitionDetail.getLastItem( reqCode ).getAt( 0 )
         if (lastItem == null) {
             lastItem = 0
         }

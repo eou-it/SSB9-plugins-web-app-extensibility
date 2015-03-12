@@ -245,25 +245,110 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
     }
 
     /**
+     * Test create Requisition Accounting.
+     */
+    @Test
+    void testCreateRequisitionAccounting() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def reqAccountingDomainModel = getRequestAccounting()
+        def domainModelMap = [requisitionAccounting: reqAccountingDomainModel]
+        def requestCode = purchaseRequisitionCompositeService.createPurchaseRequisitionAccounting( domainModelMap )
+        assertTrue requestCode?.requestCode == reqAccountingDomainModel.requestCode
+        assertTrue requestCode?.item == reqAccountingDomainModel.item
+        assertTrue requestCode?.sequenceNumber == reqAccountingDomainModel.sequenceNumber
+    }
+
+    /**
+     * Test create Requisition Accounting by passing wrong user.
+     */
+    @Test
+    void testCreateRequisitionAccountingByPassingWrongUser() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
+        springSecurityService.getAuthentication().user.oracleUserName = ''
+        def reqAccountingDomainModel = getRequestAccounting()
+        def domainModelMap = [requisitionAccounting: reqAccountingDomainModel]
+        try {
+            purchaseRequisitionCompositeService.createPurchaseRequisitionAccounting( domainModelMap )
+        } catch (ApplicationException ae) {
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
+        } finally {
+            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
+        }
+    }
+
+    /**
      * The method is used to get the RequisitionDetail object with all required values to insert/update.
      * @return RequisitionDetail.
      */
     private RequisitionDetail getRequisitionDetails() {
         def requisitionDetail = [
-                'requestCode': requestHeaderCode,
-                'userId': FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                'commodity': '2210000000',
-                'commodityDescription': 'New Requisition Detail',
-                'quantity': '2',
-                'unitOfMeasure': 'EA',
-                'unitPrice': '99.99',
-                'suspenseIndicator': true,
-                'textUsageIndicator': FinanceProcurementConstants.DEFAULT_FPBREQD_TEXT_USAGE,
-                'discountAmount': '0',
+                'requestCode'           : requestHeaderCode,
+                'userId'                : FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                'commodity'             : '2210000000',
+                'commodityDescription'  : 'New Requisition Detail',
+                'quantity'              : '2',
+                'unitOfMeasure'         : 'EA',
+                'unitPrice'             : '99.99',
+                'suspenseIndicator'     : true,
+                'textUsageIndicator'    : FinanceProcurementConstants.DEFAULT_FPBREQD_TEXT_USAGE,
+                'discountAmount'        : '0',
                 'additionalChargeAmount': '9',
-                'taxGroup': 'NT',
-                'dataOrigin': FinanceProcurementConstants.DEFAULT_REQUISITION_ORIGIN
+                'taxGroup'              : 'NT',
+                'dataOrigin'            : FinanceProcurementConstants.DEFAULT_REQUISITION_ORIGIN
         ]
         return requisitionDetail
+    }
+
+    /**
+     * The method is used to get the RequisitionAccounting object with all required values to insert/update.
+     * @return RequisitionAccounting.
+     */
+    private RequisitionAccounting getRequestAccounting() {
+        def requestCode = 'R0001397'
+        def amount = 100.00
+        def fiscalCode = '15'
+        def period = '09'
+        def ruleClassCode = 'REQP'
+        def chartOfAccountsCode = 'B'
+        def indexCode = 'EPHM54'
+        def fundCode = 'EPMSF1'
+        def orgnCode = '11007'
+        def accountCode = '1006'
+        def programCode = '10'
+        def insufficentFundsOverrideIndicator = true
+        def activityCode = ''
+        def location = ''
+        def projectCode = ''
+        def percentage = ''
+        def discountAmount = ''
+        def discountAmountPercent = ''
+        def additionalChargeAmount = ''
+        def additionalChargeAmountPct = ''
+        def requestAccounting = [
+                'requestCode'                      : requestCode,
+                'activity'                         : activityCode,
+                'location'                         : location,
+                'project'                          : projectCode,
+                'percentage'                       : percentage,
+                'discountAmount'                   : discountAmount,
+                'discountAmountPercent'            : discountAmountPercent,
+                'additionalChargeAmount'           : additionalChargeAmount,
+                'additionalChargeAmountPct'        : additionalChargeAmountPct,
+                'requisitionAmount'                : amount,
+                'fiscalYearCode'                   : fiscalCode,
+                'period'                           : period,
+                'ruleClass'                        : ruleClassCode,
+                'chartOfAccounts'                  : chartOfAccountsCode,
+                'accountIndex'                     : indexCode,
+                'fund'                             : fundCode,
+                'organization'                     : orgnCode,
+                'account'                          : accountCode,
+                'program'                          : programCode,
+                'insufficentFundsOverrideIndicator': insufficentFundsOverrideIndicator
+        ]
+        return requestAccounting
     }
 }

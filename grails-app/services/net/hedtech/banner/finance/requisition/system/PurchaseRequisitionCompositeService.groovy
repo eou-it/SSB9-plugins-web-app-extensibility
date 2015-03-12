@@ -23,6 +23,7 @@ class PurchaseRequisitionCompositeService {
     def requisitionDetailService
     def financeSystemControlService
     def financeCommodityService
+    def requisitionAccountingService
 
     /**
      * Create purchase requisition Header
@@ -44,36 +45,6 @@ class PurchaseRequisitionCompositeService {
             LOGGER.debug "Requisition Header created " + requisitionHeader
             def header = RequisitionHeader.read( requisitionHeader.id )
             return header.requestCode
-        } else {
-            LOGGER.error( 'User' + user + ' is not valid' )
-            throw new ApplicationException(
-                    PurchaseRequisitionCompositeService,
-                    new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
-        }
-    }
-
-    /**
-     * Create purchase requisition detail
-     * @param map Map which contains the RequisitionDetail domain with values.
-     * @return requestCode and item number.
-     */
-    def createPurchaseRequisitionDetail( map ) {
-        RequisitionDetail requisitionDetailRequest = map.requisitionDetail
-        def user = springSecurityService.getAuthentication()?.user
-        if (user.oracleUserName) {
-            def oracleUserName = user?.oracleUserName
-            def requestCode = requisitionDetailRequest.requestCode
-            def lastItem = requisitionDetailService.getLastItem( requestCode )
-            requisitionDetailRequest.userId = oracleUserName
-            requisitionDetailRequest.item = lastItem.next()
-            // Set all data with business logic.
-            requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
-            RequisitionDetail requisitionDetail = requisitionDetailService.create( [domainModel: requisitionDetailRequest] )
-            LOGGER.debug "Requisition Detail created " + requisitionDetail
-            def requisitionDetailMap = [:]
-            requisitionDetailMap.requestCode = requisitionDetail.requestCode
-            requisitionDetailMap.item = requisitionDetail.item
-            return requisitionDetailMap
         } else {
             LOGGER.error( 'User' + user + ' is not valid' )
             throw new ApplicationException(
@@ -119,6 +90,36 @@ class PurchaseRequisitionCompositeService {
                                                 new BusinessLogicValidationException(
                                                         FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
             }
+        }
+    }
+
+    /**
+     * Create purchase requisition detail
+     * @param map Map which contains the RequisitionDetail domain with values.
+     * @return requestCode and item number.
+     */
+    def createPurchaseRequisitionDetail( map ) {
+        RequisitionDetail requisitionDetailRequest = map.requisitionDetail
+        def user = springSecurityService.getAuthentication()?.user
+        if (user.oracleUserName) {
+            def oracleUserName = user?.oracleUserName
+            def requestCode = requisitionDetailRequest.requestCode
+            def lastItem = requisitionDetailService.getLastItem( requestCode )
+            requisitionDetailRequest.userId = oracleUserName
+            requisitionDetailRequest.item = lastItem.next()
+            // Set all data with business logic.
+            requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
+            RequisitionDetail requisitionDetail = requisitionDetailService.create( [domainModel: requisitionDetailRequest] )
+            LOGGER.debug "Requisition Detail created " + requisitionDetail
+            def requisitionDetailMap = [:]
+            requisitionDetailMap.requestCode = requisitionDetail.requestCode
+            requisitionDetailMap.item = requisitionDetail.item
+            return requisitionDetailMap
+        } else {
+            LOGGER.error( 'User' + user + ' is not valid' )
+            throw new ApplicationException(
+                    PurchaseRequisitionCompositeService,
+                    new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
     }
 
@@ -172,6 +173,42 @@ class PurchaseRequisitionCompositeService {
     }
 
     /**
+     * Service method to create Requisition Accounting level.
+     * @param map Map which have all the required date to create requisition accounting.
+     * @return map Map having requestCode, item and sequenceNumber of created requisition accounting.
+     */
+    def createPurchaseRequisitionAccounting( map ) {
+        RequisitionAccounting requisitionAccountingRequest = map.requisitionAccounting
+        def user = springSecurityService.getAuthentication()?.user
+        if (user.oracleUserName) {
+            def oracleUserName = user?.oracleUserName
+            def requestCode = requisitionAccountingRequest.requestCode
+            def lastSequenceNumber = requisitionAccountingService.getLastSequenceNumberByRequestCode( requestCode )
+            requisitionAccountingRequest.userId = oracleUserName
+            requisitionAccountingRequest.sequenceNumber = lastSequenceNumber.next()
+            def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
+            if (requisitionHeader && requisitionHeader.isDocumentLevelAccounting) {
+                requisitionAccountingRequest.item = 0
+            } else if (requisitionHeader && !requisitionHeader.isDocumentLevelAccounting) {
+                def lastItem = requisitionAccountingService.getLastItemNumberByRequestCode( requestCode )
+                requisitionAccountingRequest.item = lastItem.next()
+            }
+            RequisitionAccounting requisitionAccounting = requisitionAccountingService.create( [domainModel: requisitionAccountingRequest] )
+            LOGGER.debug "Requisition Accounting created " + requisitionAccounting
+            def requisitionAccountingMap = [:]
+            requisitionAccountingMap.requestCode = requisitionAccounting.requestCode
+            requisitionAccountingMap.item = requisitionAccounting.item
+            requisitionAccountingMap.sequenceNumber = requisitionAccounting.sequenceNumber
+            return requisitionAccountingMap
+        } else {
+            LOGGER.error( 'User' + user + ' is not valid' )
+            throw new ApplicationException(
+                    PurchaseRequisitionCompositeService,
+                    new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
+        }
+    }
+
+    /**
      * This method is used to set data for Create/Update requisition detail
      * @param requestCode Requisition Code.
      * @param requisitionDetailRequest Requisition details.
@@ -189,7 +226,7 @@ class PurchaseRequisitionCompositeService {
         if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_NO) {
             requisitionDetailRequest.taxGroup = null
         } else if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_YES
-                    && StringUtils.isBlank( requisitionDetailRequest.taxGroup )) {
+                && StringUtils.isBlank( requisitionDetailRequest.taxGroup )) {
             requisitionDetailRequest.taxGroup = null
         }
         // end check tax amount.

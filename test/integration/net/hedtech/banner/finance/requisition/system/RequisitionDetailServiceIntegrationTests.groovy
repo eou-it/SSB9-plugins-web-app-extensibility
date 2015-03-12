@@ -49,17 +49,17 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
     /**
-      * Test case to test find requisition detail list by request code. Empty items
-      */
-     @Test
-     public void testFetchByRequestCodeAndItemWithEmptyItem() {
-         def pagingParams = [max: 500, offset: 0]
-         try {
-             requisitionDetailService.findByRequestCodeAndItem(reqCode, 0 )
-         } catch (ApplicationException e) {
-             assertApplicationException e, (FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL)
-         }
-     }
+     * Test case to test find requisition detail list by request code. Empty items
+     */
+    @Test
+    public void testFetchByRequestCodeAndItemWithEmptyItem() {
+        def pagingParams = [max: 500, offset: 0]
+        try {
+            requisitionDetailService.findByRequestCodeAndItem( reqCode, 0 )
+        } catch (ApplicationException e) {
+            assertApplicationException e, (FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL)
+        }
+    }
 
     /**
      * Test case to test find requisition detail list by user.
@@ -74,7 +74,6 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
         }
     }
 
-
     /**
      * Test case to test find requisition detail list by sending invalid user and expecting BadCredentialsException.
      */
@@ -83,6 +82,23 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
         super.login 'INVALID_USER', 'INVALID_PASSWORD'
         def pagingParams = [max: 500, offset: 0]
         requisitionDetailService.fetchRequisitionDetailListByUser( pagingParams )
+    }
+
+    /**
+     * Test case to test find requisition detail list by sending invalid user and expecting ApplicationException.
+     */
+    @Test
+    public void testFindRequisitionDetailListByUserInvalidUser() {
+        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
+        springSecurityService.getAuthentication().user.oracleUserName = ''
+        def pagingParams = [max: 500, offset: 0]
+        try {
+            requisitionDetailService.fetchRequisitionDetailListByUser( pagingParams )
+        } catch (ApplicationException ae) {
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
+        } finally {
+            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
+        }
     }
 
     /**
@@ -109,5 +125,55 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
     @Test(expected = ApplicationException.class)
     public void testGetRequisitionDetailByRequestCodeAndItemFailureCase() {
         requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'R000012912R121', 12 )
+    }
+
+    /**
+     * Test case method to create requisition detail commodity level.
+     */
+    @Test
+    public void testCreateRequisitionDetail() {
+        def requestDetail = getRequisitionDetails()
+        requestDetail.save( failOnError: true, flush: true )
+        requestDetail.refresh()
+        def requisitionDetailCommodityLevel = requisitionDetailService.findByRequestCodeAndItem(
+                requestDetail.requestCode, requestDetail.item )
+        assertTrue requisitionDetailCommodityLevel.requestCode == requestDetail.requestCode
+        assertTrue requisitionDetailCommodityLevel.item == requestDetail.item
+    }
+
+    /**
+     * The method is used to get the RequisitionDetail object with all required values to insert/update.
+     * @return RequisitionDetail.
+     */
+    private RequisitionDetail getRequisitionDetails() {
+        def reqCode = "R0000561"
+        def commodityCode = '2210000000'
+        def lastItem = RequisitionDetail.getLastItem( reqCode ).getAt( 0 )
+        if (lastItem == null) {
+            lastItem = 0
+        }
+        lastItem = lastItem.next()
+        def requisitionDetail = new RequisitionDetail(
+                requestCode: reqCode,
+                item: lastItem,
+                userId: FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                commodity: commodityCode,
+                commodityDescription: 'New',
+                chartOfAccount: 'B',
+                organization: '11003',
+                quantity: '2',
+                unitOfMeasure: 'EA',
+                unitPrice: '99.99',
+                deliveryDate: new Date() + 30,
+                ship: 'EAST',
+                suspenseIndicator: false,
+                textUsageIndicator: 'S',
+                discountAmount: '0',
+                taxAmount: '0',
+                additionalChargeAmount: '0',
+                taxGroup: null,
+                dataOrigin: 'Banner'
+        )
+        return requisitionDetail
     }
 }

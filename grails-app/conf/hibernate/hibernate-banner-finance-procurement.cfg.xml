@@ -21,5 +21,6 @@
         <mapping class="net.hedtech.banner.finance.requisition.system.RequisitionDetail"/>
         <mapping class="net.hedtech.banner.finance.system.FinanceSystemControl"/>
         <mapping class="net.hedtech.banner.finance.system.FinanceCommodity"/>
+        <mapping class="net.hedtech.banner.finance.requisition.system.RequisitionAccounting"/>
     </session-factory>
 </hibernate-configuration>
