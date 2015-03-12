@@ -21,6 +21,7 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
 
     def requisitionHeaderService
     def requisitionDetailService
+    def requisitionAccountingService
     def springSecurityService
     /**
      * Super class setup
@@ -276,6 +277,22 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
             assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
         } finally {
             springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
+        }
+    }
+
+    /**
+     * Test case to test delete purchase requisition accounting information.
+     */
+    @Test
+    void testDeletePurchaseRequisitionAccounting() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        purchaseRequisitionCompositeService.deletePurchaseRequisitionAccountingInformation( 'R0001397', 0, 1 )
+        try {
+            requisitionAccountingService.findByRequestCodeItemAndSeq( 'R0001397', 0, 1 )
+            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_ACCOUNTING
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_ACCOUNTING
         }
     }
 

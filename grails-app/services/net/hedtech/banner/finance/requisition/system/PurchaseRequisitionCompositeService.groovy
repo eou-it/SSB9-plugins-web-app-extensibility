@@ -209,6 +209,17 @@ class PurchaseRequisitionCompositeService {
     }
 
     /**
+     * Delete Purchase Requisition Accounting Information.
+     * @param requestCode Requisition Code.
+     * @param item Item.
+     * @param sequenceNumber Sequence number.
+     */
+    def deletePurchaseRequisitionAccountingInformation( requestCode, Integer item, Integer sequenceNumber ) {
+        def requisitionAccounting = requisitionAccountingService.findByRequestCodeItemAndSeq( requestCode, item, sequenceNumber )
+        requisitionAccountingService.delete( [domainModel: requisitionAccounting] )
+    }
+
+    /**
      * This method is used to set data for Create/Update requisition detail
      * @param requestCode Requisition Code.
      * @param requisitionDetailRequest Requisition details.
