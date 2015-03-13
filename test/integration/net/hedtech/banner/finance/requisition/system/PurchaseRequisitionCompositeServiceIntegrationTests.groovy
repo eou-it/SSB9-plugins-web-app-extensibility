@@ -432,6 +432,28 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
     }
 
     /**
+     * Test update Requisition Accounting.
+     */
+    @Test
+    void updatePurchaseAccountingForInvalidUser() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
+        springSecurityService.getAuthentication().user.oracleUserName = ''
+        def accountingDomainModel = getRequestAccounting()
+        def domainModelMap = [requisitionAccounting: accountingDomainModel]
+        Integer item = 0
+        Integer sequence = 1
+        try {
+            purchaseRequisitionCompositeService.updateRequisitionAccounting( domainModelMap, 'R0001397', item, sequence )
+        } catch (ApplicationException ae) {
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
+        } finally {
+            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
+        }
+    }
+
+    /**
      * The method is used to get the RequisitionDetail object with all required values to insert/update.
      * @return RequisitionDetail.
      */
