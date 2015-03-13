@@ -46,6 +46,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
         def headers = requisitionHeaderService.listRequisitionHeaderForLoggedInUser( paginationParam )
         assertTrue headers.size() > 0
     }
+
     /**
      * test Listing headers with now list
      */
@@ -59,6 +60,24 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
         }
         catch (ApplicationException ae) {
             assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
+        }
+    }
+
+    /**
+     * test Listing headers with invalid user.
+     */
+    @Test
+    void testListRequisitionHeadersInvalidUser() {
+        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
+        springSecurityService.getAuthentication().user.oracleUserName = ''
+        def paginationParam = [max: 500, offset: 0]
+        try {
+            requisitionHeaderService.listRequisitionHeaderForLoggedInUser( paginationParam )
+            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID
+        } finally {
+            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
         }
     }
 
