@@ -45,13 +45,13 @@ class RequisitionInformation implements Serializable {
     String requisitionCode
 
     @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQLIST_FPBREQH_TRANS_DATE)
-    String transactionDate
+    Date transactionDate
     @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQLIST_REQUEST_DATE)
-    String requestDate
+    Date requestDate
     @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQLIST_DELIVERY_DATE)
-    String deliveryDate
+    Date deliveryDate
     @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQLIST_FPBREQH_ACTIVITY_DATE)
-    String activityDate
+    Date activityDate
 
     @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQLIST_FPBREQH_USER_ID)
     String lastModifiedBy
