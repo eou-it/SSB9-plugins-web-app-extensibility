@@ -91,7 +91,7 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
     }
 
     /**
-     * Test case method to find requisition accounting list by logged in user.
+     * Test case method to find requisition accounting list by passing wrong user.
      */
     @Test
     public void testFetchRequisitionAccountingListByPassingWrongUser() {
@@ -102,6 +102,23 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
             requisitionAccountingService.findRequisitionAccountingListByUser( pagingParams )
         } catch (ApplicationException ae) {
             assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
+        } finally {
+            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
+        }
+    }
+
+    /**
+     * Test case method to find requisition accounting list to test empty list.
+     */
+    @Test
+    public void testFetchRequisitionAccountingListForEmptyTest() {
+        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
+        springSecurityService.getAuthentication().user.oracleUserName = 'SYSTESTFINAUSR'
+        def pagingParams = [max: 500, offset: 0]
+        try {
+            requisitionAccountingService.findRequisitionAccountingListByUser( pagingParams )
+        } catch (ApplicationException ae) {
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_ACCOUNTING )
         } finally {
             springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
         }

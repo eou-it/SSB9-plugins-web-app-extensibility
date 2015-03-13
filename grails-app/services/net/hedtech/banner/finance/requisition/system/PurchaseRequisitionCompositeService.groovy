@@ -221,6 +221,45 @@ class PurchaseRequisitionCompositeService {
     }
 
     /**
+     * Update Purchase requisition Accounting information.
+     *
+     * @param map the requisition accounting map
+     * @param requestCode
+     */
+    def updateRequisitionAccounting( accountingDomainModel, requestCode, Integer item, Integer sequenceNumber ) {
+        // Null or empty check for item number and sequence number.
+        if (item == null || sequenceNumber == null) {
+            LOGGER.error( 'Item and Sequence number are required to update the Requisition Accounting information.' )
+            throw new ApplicationException( PurchaseRequisitionCompositeService,
+                                            new BusinessLogicValidationException(
+                                                    FinanceProcurementConstants.ERROR_MESSAGE_ITEM_SEQUENCE_REQUIRED, [] ) )
+        }
+        RequisitionAccounting existingAccountingInfo = requisitionAccountingService.findByRequestCodeItemAndSeq( requestCode, item, sequenceNumber )
+        if (accountingDomainModel?.requisitionAccounting) {
+            RequisitionAccounting requisitionAccountingRequest = accountingDomainModel.requisitionAccounting
+            requisitionAccountingRequest.id = existingAccountingInfo.id
+            requisitionAccountingRequest.version = existingAccountingInfo.version
+            requisitionAccountingRequest.requestCode = existingAccountingInfo.requestCode
+            def user = springSecurityService.getAuthentication()?.user
+            if (user.oracleUserName) {
+                requisitionAccountingRequest.lastModified = new Date()
+                requisitionAccountingRequest.item = existingAccountingInfo.item
+                requisitionAccountingRequest.sequenceNumber = existingAccountingInfo.sequenceNumber
+                requisitionAccountingRequest.userId = user.oracleUserName
+                def requisitionAccounting = requisitionAccountingService.update( [domainModel: requisitionAccountingRequest] )
+                LOGGER.debug "Requisition Accounting information updated " + requisitionAccounting
+                def detail = RequisitionAccounting.read( requisitionAccounting.id )
+                return detail
+            } else {
+                LOGGER.error( 'User' + user + ' is not valid' )
+                throw new ApplicationException( PurchaseRequisitionCompositeService,
+                                                new BusinessLogicValidationException(
+                                                        FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
+            }
+        }
+    }
+
+    /**
      * Returns list of Requisitions in defined data structure
      * @param buckets
      */
@@ -290,7 +329,7 @@ class PurchaseRequisitionCompositeService {
         if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_NO) {
             requisitionDetailRequest.taxGroup = null
         } else if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_YES
-                    && StringUtils.isBlank( requisitionDetailRequest.taxGroup )) {
+                && StringUtils.isBlank( requisitionDetailRequest.taxGroup )) {
             requisitionDetailRequest.taxGroup = null
         }
         // end check tax amount.

@@ -53,7 +53,6 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testFetchByRequestCodeAndItemWithEmptyItem() {
-        def pagingParams = [max: 500, offset: 0]
         try {
             requisitionDetailService.findByRequestCodeAndItem( reqCode, 0 )
         } catch (ApplicationException e) {
@@ -68,7 +67,8 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
     public void testFindRequisitionDetailListByUser() {
         def pagingParams = [max: 500, offset: 0]
         try {
-            requisitionDetailService.fetchRequisitionDetailListByUser( pagingParams )
+            def list = requisitionDetailService.fetchRequisitionDetailListByUser( pagingParams )
+            assertTrue( list.size() > 0 )
         } catch (ApplicationException e) {
             assertApplicationException e, (FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL)
         }
@@ -82,6 +82,23 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
         super.login 'INVALID_USER', 'INVALID_PASSWORD'
         def pagingParams = [max: 500, offset: 0]
         requisitionDetailService.fetchRequisitionDetailListByUser( pagingParams )
+    }
+
+    /**
+     * Test case to test find requisition detail list and expecting ApplicationException.
+     */
+    @Test
+    public void testFindRequisitionDetailList() {
+        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
+        springSecurityService.getAuthentication().user.oracleUserName = 'SYSTESTFINAUSR'
+        def pagingParams = [max: 500, offset: 0]
+        try {
+            requisitionDetailService.fetchRequisitionDetailListByUser( pagingParams )
+        } catch (ApplicationException ae) {
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL )
+        } finally {
+            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
+        }
     }
 
     /**

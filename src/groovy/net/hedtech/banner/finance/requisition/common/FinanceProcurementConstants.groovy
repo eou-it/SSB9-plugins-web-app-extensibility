@@ -216,6 +216,8 @@ class FinanceProcurementConstants {
     static final def TRUE = true
     static final def FALSE = false
 
+    static final def ERROR_MESSAGE_ITEM_SEQUENCE_REQUIRED = 'item.sequence.required'
+
     static final def SUCCESS_MESSAGE_CREATE_REQUISITION_ACCOUNTING = 'net.hedtech.banner.finance.requisition.create.requisition.accounting.success'
     static final def SUCCESS_MESSAGE_DELETE_REQUISITION_ACCOUNTING = 'net.hedtech.banner.finance.requisition.delete.requisition.accounting.success'
     static final def SUCCESS_MESSAGE_UPDATE_REQUISITION_ACCOUNTING = 'net.hedtech.banner.finance.requisition.update.requisition.accounting.success'
