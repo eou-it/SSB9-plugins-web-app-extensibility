@@ -25,7 +25,20 @@ class RequisitionInformationService extends ServiceBase {
         if (oracleUserName == null) {
             oracleUserName = getOracleUserNameForLoggedInUser()
         }
-        RequisitionInformation.listRequisitionsByStatus( oracleUserName, pagingParams, status ).list
+        [list: RequisitionInformation.listRequisitionsByStatus( oracleUserName, pagingParams, status ), count: fetchRequisitionsCountByStatus( status, oracleUserName )]
+    }
+
+    /**
+     * Fetch Requisition Count
+     * @param status
+     * @param oracleUserName
+     * @return
+     */
+    def fetchRequisitionsCountByStatus( status, oracleUserName ) {
+        if (oracleUserName == null) {
+            oracleUserName = getOracleUserNameForLoggedInUser()
+        }
+        RequisitionInformation.fetchRequisitionsCountByStatus( oracleUserName, status )
     }
 
     /**

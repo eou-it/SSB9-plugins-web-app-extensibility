@@ -267,9 +267,8 @@ class PurchaseRequisitionCompositeService {
         def user = springSecurityService.getAuthentication()?.user
         if (user == null || user.oracleUserName == null) {
             LOGGER.error( 'User' + user + ' is not valid' )
-            throw new ApplicationException( PurchaseRequisitionCompositeService,
-                                            new BusinessLogicValidationException(
-                                                    FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
+            throw new ApplicationException( PurchaseRequisitionCompositeService, new BusinessLogicValidationException(
+                    FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
         def wrapperList = [];
         if (buckets?.isEmpty()) {
@@ -277,38 +276,49 @@ class PurchaseRequisitionCompositeService {
         }
         buckets = new ArrayList( buckets ).unique()
         buckets.each() {bucket ->
-            switch (bucket) {
-                case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_ALL:
-                    wrapperList.add( groupResult( FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT,
-                                                  listRequisitions( user.oracleUserName, pagingParams, [FinanceProcurementConstants.REQUISITION_LIST_STATUS_DRAFT,
-                                                                                                        FinanceProcurementConstants.REQUISITION_LIST_STATUS_DISAPPROVED] ) ) )
-                    wrapperList.add( groupResult( FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING,
-                                                  listRequisitions( user.oracleUserName, pagingParams, [FinanceProcurementConstants.REQUISITION_LIST_STATUS_PENDING] ) ) )
-                    wrapperList.add( groupResult( FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE,
-                                                  listRequisitions( user.oracleUserName, pagingParams, [FinanceProcurementConstants.REQUISITION_LIST_STATUS_COMPLETED,
-                                                                                                        FinanceProcurementConstants.REQUISITION_LIST_STATUS_BUYER_ASSIGNED,
-                                                                                                        FinanceProcurementConstants.REQUISITION_LIST_STATUS_CONVERTED_TO_PO] ) ) )
-                    break
-                case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT:
-                    wrapperList.add( groupResult( bucket, listRequisitions( user.oracleUserName, pagingParams, [FinanceProcurementConstants.REQUISITION_LIST_STATUS_DRAFT,
-                                                                                                                FinanceProcurementConstants.REQUISITION_LIST_STATUS_DISAPPROVED] ) ) )
-                    break
-                case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING:
-                    wrapperList.add( groupResult( bucket, listRequisitions( user.oracleUserName, pagingParams, [FinanceProcurementConstants.REQUISITION_LIST_STATUS_PENDING] ) ) )
-                    break
-                case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE:
-                    wrapperList.add( groupResult( bucket, listRequisitions( user.oracleUserName, pagingParams, [FinanceProcurementConstants.REQUISITION_LIST_STATUS_COMPLETED,
-                                                                                                                FinanceProcurementConstants.REQUISITION_LIST_STATUS_BUYER_ASSIGNED,
-                                                                                                                FinanceProcurementConstants.REQUISITION_LIST_STATUS_CONVERTED_TO_PO] ) ) )
-                    break
-                default:
-                    LOGGER.error( 'Group Type not valid' )
-                    throw new ApplicationException( PurchaseRequisitionCompositeService,
-                                                    new BusinessLogicValidationException(
-                                                            FinanceProcurementConstants.ERROR_MESSAGE_INVALID_BUCKET_TYPE, [bucket] ) )
-            }
+            processBucket wrapperList, bucket, pagingParams, user.oracleUserName
         }
         return wrapperList
+    }
+
+    /**
+     * Process each Bucket
+     *
+     * @param wrapperList
+     * @param bucket
+     * @param pagingParams
+     * @return
+     */
+    private def processBucket( wrapperList, bucket, pagingParams, user ) {
+        def draftStatus = [FinanceProcurementConstants.REQUISITION_LIST_STATUS_DRAFT, FinanceProcurementConstants.REQUISITION_LIST_STATUS_DISAPPROVED]
+
+        def pendingStatus = [FinanceProcurementConstants.REQUISITION_LIST_STATUS_COMPLETED, FinanceProcurementConstants.REQUISITION_LIST_STATUS_BUYER_ASSIGNED,
+                             FinanceProcurementConstants.REQUISITION_LIST_STATUS_CONVERTED_TO_PO]
+
+        def completedStatus = [FinanceProcurementConstants.REQUISITION_LIST_STATUS_DRAFT, FinanceProcurementConstants.REQUISITION_LIST_STATUS_DISAPPROVED]
+        switch (bucket) {
+            case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_ALL:
+                wrapperList.add( groupResult( FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT,
+                                              listRequisitions( user, pagingParams, draftStatus ) ) )
+                wrapperList.add( groupResult( FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING,
+                                              listRequisitions( user, pagingParams, pendingStatus ) ) )
+                wrapperList.add( groupResult( FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE,
+                                              listRequisitions( user, pagingParams, completedStatus ) ) )
+                break
+            case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT:
+                wrapperList.add( groupResult( bucket, listRequisitions( user, pagingParams, draftStatus ) ) )
+                break
+            case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING:
+                wrapperList.add( groupResult( bucket, listRequisitions( user, pagingParams, pendingStatus ) ) )
+                break
+            case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE:
+                wrapperList.add( groupResult( bucket, listRequisitions( user, pagingParams, completedStatus ) ) )
+                break
+            default:
+                LOGGER.error( 'Group Type not valid' )
+                throw new ApplicationException( PurchaseRequisitionCompositeService, new BusinessLogicValidationException(
+                        FinanceProcurementConstants.ERROR_MESSAGE_INVALID_BUCKET_TYPE, [bucket] ) )
+        }
     }
 
     /**
@@ -363,6 +373,6 @@ class PurchaseRequisitionCompositeService {
      */
 
     private def groupResult( groupType, records ) {
-        [category: groupType, count: records.size(), list: records]
+        [category: groupType, count: records.count, list: records.list]
     }
 }

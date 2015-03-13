@@ -244,6 +244,7 @@ class FinanceProcurementConstants {
     static final def REQUISITION_INFO_FIELD_FPVREQLIST_FPBREQH_FPBREQH_CODE = 'FPBREQH_CODE'
     static final def REQUISITION_INFO_FIELD_FPVREQLIST_STATUS = 'STATUS'
     static final def REQUISITION_INFO_FINDER_BY_STATUS = 'RequisitionInformation.listRequisitionByStatus'
+    static final def REQUISITION_INFO_COUNT_FINDER_BY_STATUS = 'RequisitionInformation.countRequisitionsByStatus'
     static final def REQUISITION_INFO_FINDER_PARAM_STATUS = 'status'
     static final def REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID = 'userId'
 
