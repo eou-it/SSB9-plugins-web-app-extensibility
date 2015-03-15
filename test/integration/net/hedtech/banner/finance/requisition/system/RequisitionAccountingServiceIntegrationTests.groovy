@@ -176,7 +176,7 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
         def orgnCode = '11007'
         def accountCode = '1006'
         def programCode = '10'
-        def insufficentFundsOverrideIndicator = true
+        def insufficientFundsOverrideIndicator = true
         def activityCode = ''
         def location = ''
         def projectCode = ''
@@ -207,7 +207,7 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
                 organization: orgnCode,
                 account: accountCode,
                 program: programCode,
-                insufficentFundsOverrideIndicator: insufficentFundsOverrideIndicator
+                insufficientFundsOverrideIndicator: insufficientFundsOverrideIndicator
         )
         return requestAccounting
     }

@@ -6,9 +6,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-import static org.junit.Assert.assertNotNull
-import static org.junit.Assert.assertNull
-
 class RequisitionAccountingIntegrationTests extends BaseIntegrationTestCase {
 
     //def i_success_requestCode = "R0000047"
@@ -25,7 +22,7 @@ class RequisitionAccountingIntegrationTests extends BaseIntegrationTestCase {
     def orgnCode = "11007"
     def accountCode = "1006"
     def programCode = "10"
-    def insufficentFundsOverrideIndicator = true
+    def insufficientFundsOverrideIndicator = true
     def activityCode = ''
     def location = ''
     def projectCode = ''
@@ -127,7 +124,7 @@ class RequisitionAccountingIntegrationTests extends BaseIntegrationTestCase {
                 organization: orgnCode,
                 account: accountCode,
                 program: programCode,
-                insufficentFundsOverrideIndicator: insufficentFundsOverrideIndicator
+                insufficientFundsOverrideIndicator: insufficientFundsOverrideIndicator
         )
         return requestAccounting
     }

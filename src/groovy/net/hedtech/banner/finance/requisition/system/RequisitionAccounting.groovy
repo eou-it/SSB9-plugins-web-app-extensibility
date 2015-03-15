@@ -204,7 +204,7 @@ class RequisitionAccounting implements Serializable {
      */
     @Type(type = "yes_no")
     @Column(name = FinanceProcurementConstants.REQ_ACC_FIELD_FPRREQA_NSF_OVERRIDE_IND)
-    Boolean insufficentFundsOverrideIndicator
+    Boolean insufficientFundsOverrideIndicator
 
     /**
      * AVAILABLE BUDGET OVERRIDE:  This indicator is used to override the availablity  of funds checking process, if the user has the authority.
@@ -341,7 +341,7 @@ class RequisitionAccounting implements Serializable {
         cancellationDate( nullable: true )
         project( nullable: true, maxSize: 8 )
         approvalIndicator( nullable: true )
-        insufficentFundsOverrideIndicator( nullable: true )
+        insufficientFundsOverrideIndicator( nullable: true )
         availableBudgetOverride( nullable: true, maxSize: 1 )
         convertedAmount( nullable: true )
         closedIndicator( nullable: true )
