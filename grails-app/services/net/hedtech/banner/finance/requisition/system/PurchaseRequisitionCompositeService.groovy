@@ -292,10 +292,10 @@ class PurchaseRequisitionCompositeService {
     private def processBucket( wrapperList, bucket, pagingParams, user ) {
         def draftStatus = [FinanceProcurementConstants.REQUISITION_LIST_STATUS_DRAFT, FinanceProcurementConstants.REQUISITION_LIST_STATUS_DISAPPROVED]
 
-        def pendingStatus = [FinanceProcurementConstants.REQUISITION_LIST_STATUS_COMPLETED, FinanceProcurementConstants.REQUISITION_LIST_STATUS_BUYER_ASSIGNED,
-                             FinanceProcurementConstants.REQUISITION_LIST_STATUS_CONVERTED_TO_PO]
+        def completedStatus = [FinanceProcurementConstants.REQUISITION_LIST_STATUS_COMPLETED, FinanceProcurementConstants.REQUISITION_LIST_STATUS_BUYER_ASSIGNED,
+                               FinanceProcurementConstants.REQUISITION_LIST_STATUS_CONVERTED_TO_PO]
 
-        def completedStatus = [FinanceProcurementConstants.REQUISITION_LIST_STATUS_DRAFT, FinanceProcurementConstants.REQUISITION_LIST_STATUS_DISAPPROVED]
+        def pendingStatus = [FinanceProcurementConstants.REQUISITION_LIST_STATUS_PENDING]
         switch (bucket) {
             case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_ALL:
                 wrapperList.add( groupResult( FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT,
