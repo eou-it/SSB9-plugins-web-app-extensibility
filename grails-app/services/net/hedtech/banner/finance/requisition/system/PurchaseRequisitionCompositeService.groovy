@@ -262,6 +262,7 @@ class PurchaseRequisitionCompositeService {
     /**
      * Returns list of Requisitions in defined data structure
      * @param buckets
+     * @param pagingParams
      */
     def listRequisitionsByBucket( buckets, pagingParams ) {
         def user = springSecurityService.getAuthentication()?.user
@@ -270,11 +271,12 @@ class PurchaseRequisitionCompositeService {
             throw new ApplicationException( PurchaseRequisitionCompositeService, new BusinessLogicValidationException(
                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
-        def wrapperList = [];
         if (buckets?.isEmpty()) {
             buckets = [FinanceProcurementConstants.REQUISITION_LIST_BUCKET_ALL]
+        } else {
+            buckets = new ArrayList( buckets ).unique()
         }
-        buckets = new ArrayList( buckets ).unique()
+        def wrapperList = [];
         buckets.each() {bucket ->
             processBucket wrapperList, bucket, pagingParams, user.oracleUserName
         }
