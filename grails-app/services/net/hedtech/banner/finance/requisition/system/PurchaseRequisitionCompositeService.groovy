@@ -175,28 +175,29 @@ class PurchaseRequisitionCompositeService {
     }
 
     /**
-     * Service method to create Requisition Accounting level.
+     * Creates Requisition Accounting level.
+     *
      * @param map Map which have all the required date to create requisition accounting.
      * @return map Map having requestCode, item and sequenceNumber of created requisition accounting.
      */
     def createPurchaseRequisitionAccounting( map ) {
         RequisitionAccounting requisitionAccountingRequest = map.requisitionAccounting
         def user = springSecurityService.getAuthentication()?.user
-        if (user.oracleUserName) {
-            def oracleUserName = user?.oracleUserName
+        if (user?.oracleUserName) {
+            def oracleUserName = user.oracleUserName
             def requestCode = requisitionAccountingRequest.requestCode
             def lastSequenceNumber = requisitionAccountingService.getLastSequenceNumberByRequestCode( requestCode )
             requisitionAccountingRequest.userId = oracleUserName
             requisitionAccountingRequest.sequenceNumber = lastSequenceNumber.next()
             def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
-            if (requisitionHeader && requisitionHeader.isDocumentLevelAccounting) {
+            if (requisitionHeader.isDocumentLevelAccounting) {
                 requisitionAccountingRequest.item = 0
-            } else if (requisitionHeader && !requisitionHeader.isDocumentLevelAccounting) {
+            } else {
                 def lastItem = requisitionAccountingService.getLastItemNumberByRequestCode( requestCode )
                 requisitionAccountingRequest.item = lastItem.next()
             }
             RequisitionAccounting requisitionAccounting = requisitionAccountingService.create( [domainModel: requisitionAccountingRequest] )
-            LoggerUtility.debug LOGGER, "Requisition Accounting created " + requisitionAccounting
+            LoggerUtility.debug LOGGER, 'Requisition Accounting created ' + requisitionAccounting
             def requisitionAccountingMap = [:]
             requisitionAccountingMap.requestCode = requisitionAccounting.requestCode
             requisitionAccountingMap.item = requisitionAccounting.item
@@ -222,7 +223,7 @@ class PurchaseRequisitionCompositeService {
     }
 
     /**
-     * Update Purchase requisition Accounting information.
+     * Updates Purchase requisition Accounting information.
      *
      * @param map the requisition accounting map
      * @param requestCode
@@ -249,8 +250,7 @@ class PurchaseRequisitionCompositeService {
                 requisitionAccountingRequest.userId = user.oracleUserName
                 def requisitionAccounting = requisitionAccountingService.update( [domainModel: requisitionAccountingRequest] )
                 LoggerUtility.debug LOGGER, "Requisition Accounting information updated " + requisitionAccounting
-                def detail = RequisitionAccounting.read( requisitionAccounting.id )
-                return detail
+                return requisitionAccounting
             } else {
                 LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
                 throw new ApplicationException( PurchaseRequisitionCompositeService,

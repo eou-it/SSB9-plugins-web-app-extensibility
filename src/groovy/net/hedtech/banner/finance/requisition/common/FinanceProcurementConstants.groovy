@@ -264,5 +264,6 @@ class FinanceProcurementConstants {
     static final def REQUISITION_LIST_STATUS_COMPLETED = 'Completed'
     static final def REQUISITION_LIST_STATUS_BUYER_ASSIGNED = 'Buyer Assigned'
     static final def REQUISITION_LIST_STATUS_CONVERTED_TO_PO = 'Converted to PO'
-
+    static final def REQUEST_PARAM_ACCOUNTING_ITEM = 'item'
+    static final def REQUEST_PARAM_ACCOUNTING_SEQUENCE = 'sequence'
 }
