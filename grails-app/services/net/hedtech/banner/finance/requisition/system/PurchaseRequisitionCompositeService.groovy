@@ -184,12 +184,12 @@ class PurchaseRequisitionCompositeService {
         RequisitionAccounting requisitionAccountingRequest = map.requisitionAccounting
         def user = springSecurityService.getAuthentication()?.user
         if (user?.oracleUserName) {
-            def oracleUserName = user.oracleUserName
+
             def requestCode = requisitionAccountingRequest.requestCode
-            def lastSequenceNumber = requisitionAccountingService.getLastSequenceNumberByRequestCode( requestCode )
-            requisitionAccountingRequest.userId = oracleUserName
-            requisitionAccountingRequest.sequenceNumber = lastSequenceNumber.next()
             def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
+            def lastSequenceNumber = requisitionAccountingService.getLastSequenceNumberByRequestCode( requestCode )
+            requisitionAccountingRequest.userId = user.oracleUserName
+            requisitionAccountingRequest.sequenceNumber = lastSequenceNumber.next()
             if (requisitionHeader.isDocumentLevelAccounting) {
                 requisitionAccountingRequest.item = 0
             } else {
