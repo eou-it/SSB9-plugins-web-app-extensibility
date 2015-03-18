@@ -6,6 +6,7 @@ package net.hedtech.banner.finance.requisition.system
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.service.ServiceBase
 import org.apache.log4j.Logger
 
@@ -19,7 +20,7 @@ class RequisitionHeaderService extends ServiceBase {
      * @param requestCode
      */
     def findRequisitionHeaderByRequestCode( requestCode ) {
-        LOGGER.debug( 'Input parameters for findRequisitionHeaderByRequestCode :' + requestCode )
+        LoggerUtility.debug( LOGGER, 'Input parameters for findRequisitionHeaderByRequestCode :' + requestCode )
         def retRequisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode )
 
         if (retRequisitionHeader == null) {
@@ -41,7 +42,7 @@ class RequisitionHeaderService extends ServiceBase {
             }
             return requisitionHeaderList.list;
         } else {
-            LOGGER.error( 'User' + user + ' is not valid' )
+            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
     }

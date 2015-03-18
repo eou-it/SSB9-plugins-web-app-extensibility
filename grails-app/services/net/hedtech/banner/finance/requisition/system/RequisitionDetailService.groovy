@@ -6,6 +6,7 @@ package net.hedtech.banner.finance.requisition.system
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.service.ServiceBase
 import org.apache.log4j.Logger
 
@@ -24,11 +25,11 @@ class RequisitionDetailService extends ServiceBase {
      * @return List of requisition code.
      */
     def findByRequestCodeAndItem( requisitionCode, Integer item ) {
-        LOGGER.debug( 'Input parameter for findByRequestCodeAndItem :' + requisitionCode )
+        LoggerUtility.debug( LOGGER, 'Input parameter for findByRequestCodeAndItem :' + requisitionCode )
         def inputMap = [requisitionCode: requisitionCode, item: item]
         def requisitionDetails = RequisitionDetail.fetchByRequestCodeAndItem( inputMap.requisitionCode, inputMap.item ).list
         if (requisitionDetails.isEmpty()) {
-            LOGGER.error( 'Requisition Commodity Details are empty for requestCode=' + requisitionCode )
+            LoggerUtility.error( LOGGER, 'Requisition Commodity Details are empty for requestCode=' + requisitionCode )
             throw new ApplicationException(
                     RequisitionDetailService,
                     new BusinessLogicValidationException(
@@ -55,7 +56,7 @@ class RequisitionDetailService extends ServiceBase {
             }
             return requisitionDetailList
         } else {
-            LOGGER.error( 'User' + loggedInUser + ' is not valid' )
+            LoggerUtility.error( LOGGER, 'User' + loggedInUser + ' is not valid' )
             throw new ApplicationException( RequisitionDetailService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -81,7 +82,7 @@ class RequisitionDetailService extends ServiceBase {
     def getRequisitionDetailByRequestCodeAndItem( requestCode, Integer item ) {
         def requisitionDetail = RequisitionDetail.fetchByRequestCodeAndItem( requestCode, item ).list.getAt( 0 )
         if (!requisitionDetail) {
-            LOGGER.error( 'Requisition Detail Not found for Request Code :' + requestCode + ' and Item : ' + item )
+            LoggerUtility.error( LOGGER, 'Requisition Detail Not found for Request Code :' + requestCode + ' and Item : ' + item )
             throw new ApplicationException( RequisitionDetailService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL, [] ) )

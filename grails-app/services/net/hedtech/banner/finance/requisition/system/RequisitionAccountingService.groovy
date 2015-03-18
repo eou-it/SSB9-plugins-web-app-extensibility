@@ -6,6 +6,7 @@ package net.hedtech.banner.finance.requisition.system
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.service.ServiceBase
 import org.apache.log4j.Logger
 
@@ -25,11 +26,11 @@ class RequisitionAccountingService extends ServiceBase {
      * @return RequisitionAccounting.
      */
     def findByRequestCodeItemAndSeq( requisitionCode, Integer item, Integer sequenceNumber ) {
-        LOGGER.debug( 'Input parameter for findByRequestCodeItemAndSeq :' + requisitionCode )
+        LoggerUtility.debug( LOGGER, 'Input parameter for findByRequestCodeItemAndSeq :' + requisitionCode )
         def requisitionAccounting = RequisitionAccounting.fetchByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber ).list
         if (requisitionAccounting.isEmpty()) {
-            LOGGER.error( 'Requisition Accounting Information are empty for requestCode='
-                                  + requisitionCode + ', Item: ' + item + ' and Sequence: ' + sequenceNumber )
+            LoggerUtility.error( LOGGER, 'Requisition Accounting Information are empty for requestCode='
+                    + requisitionCode + ', Item: ' + item + ' and Sequence: ' + sequenceNumber )
             throw new ApplicationException(
                     RequisitionAccountingService,
                     new BusinessLogicValidationException(
@@ -49,7 +50,7 @@ class RequisitionAccountingService extends ServiceBase {
             def oracleUserName = loggedInUser.oracleUserName
             def requisitionAccountingList = RequisitionAccounting.fetchByUserId( oracleUserName, paginationParam ).list
             if (requisitionAccountingList?.isEmpty()) {
-                LOGGER.error( 'Requisition Accounting Information are empty for User : ' + oracleUserName )
+                LoggerUtility.error( LOGGER, 'Requisition Accounting Information are empty for User : ' + oracleUserName )
                 throw new ApplicationException(
                         RequisitionAccountingService,
                         new BusinessLogicValidationException(
@@ -57,7 +58,7 @@ class RequisitionAccountingService extends ServiceBase {
             }
             return requisitionAccountingList
         } else {
-            LOGGER.error( 'User' + loggedInUser + ' is not valid' )
+            LoggerUtility.error( LOGGER, 'User' + loggedInUser + ' is not valid' )
             throw new ApplicationException( RequisitionAccountingService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )

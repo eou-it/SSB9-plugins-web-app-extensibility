@@ -218,9 +218,12 @@ class FinanceProcurementConstants {
 
     static final def ERROR_MESSAGE_ITEM_SEQUENCE_REQUIRED = 'item.sequence.required'
 
-    static final def SUCCESS_MESSAGE_CREATE_REQUISITION_ACCOUNTING = 'net.hedtech.banner.finance.requisition.create.requisition.accounting.success'
-    static final def SUCCESS_MESSAGE_DELETE_REQUISITION_ACCOUNTING = 'net.hedtech.banner.finance.requisition.delete.requisition.accounting.success'
-    static final def SUCCESS_MESSAGE_UPDATE_REQUISITION_ACCOUNTING = 'net.hedtech.banner.finance.requisition.update.requisition.accounting.success'
+    static final
+    def SUCCESS_MESSAGE_CREATE_REQUISITION_ACCOUNTING = 'net.hedtech.banner.finance.requisition.create.requisition.accounting.success'
+    static final
+    def SUCCESS_MESSAGE_DELETE_REQUISITION_ACCOUNTING = 'net.hedtech.banner.finance.requisition.delete.requisition.accounting.success'
+    static final
+    def SUCCESS_MESSAGE_UPDATE_REQUISITION_ACCOUNTING = 'net.hedtech.banner.finance.requisition.update.requisition.accounting.success'
 
     /** Constants for Requisition Information */
     static final def VIEW_FPVREQLIST = 'FPVREQLIST'
@@ -247,6 +250,7 @@ class FinanceProcurementConstants {
     static final def REQUISITION_INFO_COUNT_FINDER_BY_STATUS = 'RequisitionInformation.countRequisitionsByStatus'
     static final def REQUISITION_INFO_FINDER_PARAM_STATUS = 'status'
     static final def REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID = 'userId'
+    static final def REQUEST_PARAM_BUCKET_TYPES = 'bucketTypes'
 
     /** Constants for listing and search Requisitions */
 

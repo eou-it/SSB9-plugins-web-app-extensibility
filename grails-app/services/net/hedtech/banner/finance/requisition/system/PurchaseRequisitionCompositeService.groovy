@@ -8,6 +8,7 @@ import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.system.FinanceSystemControl
+import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.commons.lang3.StringUtils
 import org.apache.log4j.Logger
 
@@ -43,11 +44,11 @@ class PurchaseRequisitionCompositeService {
                 requisitionHeaderRequest.taxGroup = null
             }
             def requisitionHeader = requisitionHeaderService.create( [domainModel: requisitionHeaderRequest] )
-            LOGGER.debug "Requisition Header created " + requisitionHeader
+            LoggerUtility.debug LOGGER, "Requisition Header created " + requisitionHeader
             def header = RequisitionHeader.read( requisitionHeader.id )
             return header.requestCode
         } else {
-            LOGGER.error( 'User' + user + ' is not valid' )
+            LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
             throw new ApplicationException(
                     PurchaseRequisitionCompositeService,
                     new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -71,13 +72,13 @@ class PurchaseRequisitionCompositeService {
             // Set all data with business logic.
             requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
             RequisitionDetail requisitionDetail = requisitionDetailService.create( [domainModel: requisitionDetailRequest] )
-            LOGGER.debug "Requisition Detail created " + requisitionDetail
+            LoggerUtility.debug LOGGER, "Requisition Detail created " + requisitionDetail
             def requisitionDetailMap = [:]
             requisitionDetailMap.requestCode = requisitionDetail.requestCode
             requisitionDetailMap.item = requisitionDetail.item
             return requisitionDetailMap
         } else {
-            LOGGER.error( 'User' + user + ' is not valid' )
+            LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
             throw new ApplicationException(
                     PurchaseRequisitionCompositeService,
                     new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -112,11 +113,11 @@ class PurchaseRequisitionCompositeService {
                 def oracleUserName = user?.oracleUserName
                 requisitionHeaderRequest.userId = oracleUserName
                 def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
-                LOGGER.debug "Requisition Header updated " + requisitionHeader
+                LoggerUtility.debug LOGGER, "Requisition Header updated " + requisitionHeader
                 def header = RequisitionHeader.read( requisitionHeader.id )
                 return header
             } else {
-                LOGGER.error( 'User' + user + ' is not valid' )
+                LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
                 throw new ApplicationException( PurchaseRequisitionCompositeService,
                                                 new BusinessLogicValidationException(
                                                         FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -143,7 +144,7 @@ class PurchaseRequisitionCompositeService {
     def updateRequisitionDetail( detailDomainModel, requestCode, item ) {
         // Null or empty check for item.
         if (!item) {
-            LOGGER.error( 'Item is required to update the detail.' )
+            LoggerUtility.error LOGGER, 'Item is required to update the detail.'
             throw new ApplicationException( PurchaseRequisitionCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_ITEM_IS_REQUIRED, [] ) )
@@ -161,11 +162,11 @@ class PurchaseRequisitionCompositeService {
                 requisitionDetailRequest.item = existingDetail.item
                 requisitionDetailRequest.userId = user.oracleUserName
                 def requisitionDetail = requisitionDetailService.update( [domainModel: requisitionDetailRequest] )
-                LOGGER.debug "Requisition Detail updated " + requisitionDetail
+                LoggerUtility.debug LOGGER, "Requisition Detail updated " + requisitionDetail
                 def detail = RequisitionDetail.read( requisitionDetail.id )
                 return detail
             } else {
-                LOGGER.error( 'User' + user + ' is not valid' )
+                LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
                 throw new ApplicationException( PurchaseRequisitionCompositeService,
                                                 new BusinessLogicValidationException(
                                                         FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -195,14 +196,14 @@ class PurchaseRequisitionCompositeService {
                 requisitionAccountingRequest.item = lastItem.next()
             }
             RequisitionAccounting requisitionAccounting = requisitionAccountingService.create( [domainModel: requisitionAccountingRequest] )
-            LOGGER.debug "Requisition Accounting created " + requisitionAccounting
+            LoggerUtility.debug LOGGER, "Requisition Accounting created " + requisitionAccounting
             def requisitionAccountingMap = [:]
             requisitionAccountingMap.requestCode = requisitionAccounting.requestCode
             requisitionAccountingMap.item = requisitionAccounting.item
             requisitionAccountingMap.sequenceNumber = requisitionAccounting.sequenceNumber
             return requisitionAccountingMap
         } else {
-            LOGGER.error( 'User' + user + ' is not valid' )
+            LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
             throw new ApplicationException(
                     PurchaseRequisitionCompositeService,
                     new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -229,7 +230,7 @@ class PurchaseRequisitionCompositeService {
     def updateRequisitionAccounting( accountingDomainModel, requestCode, Integer item, Integer sequenceNumber ) {
         // Null or empty check for item number and sequence number.
         if (item == null || sequenceNumber == null) {
-            LOGGER.error( 'Item and Sequence number are required to update the Requisition Accounting information.' )
+            LoggerUtility.error LOGGER, 'Item and Sequence number are required to update the Requisition Accounting information.'
             throw new ApplicationException( PurchaseRequisitionCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_ITEM_SEQUENCE_REQUIRED, [] ) )
@@ -247,11 +248,11 @@ class PurchaseRequisitionCompositeService {
                 requisitionAccountingRequest.sequenceNumber = existingAccountingInfo.sequenceNumber
                 requisitionAccountingRequest.userId = user.oracleUserName
                 def requisitionAccounting = requisitionAccountingService.update( [domainModel: requisitionAccountingRequest] )
-                LOGGER.debug "Requisition Accounting information updated " + requisitionAccounting
+                LoggerUtility.debug LOGGER, "Requisition Accounting information updated " + requisitionAccounting
                 def detail = RequisitionAccounting.read( requisitionAccounting.id )
                 return detail
             } else {
-                LOGGER.error( 'User' + user + ' is not valid' )
+                LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
                 throw new ApplicationException( PurchaseRequisitionCompositeService,
                                                 new BusinessLogicValidationException(
                                                         FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -267,7 +268,7 @@ class PurchaseRequisitionCompositeService {
     def listRequisitionsByBucket( buckets, pagingParams ) {
         def user = springSecurityService.getAuthentication()?.user
         if (user == null || user.oracleUserName == null) {
-            LOGGER.error( 'User' + user + ' is not valid' )
+            LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
             throw new ApplicationException( PurchaseRequisitionCompositeService, new BusinessLogicValidationException(
                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
@@ -317,7 +318,7 @@ class PurchaseRequisitionCompositeService {
                 wrapperList.add( groupResult( bucket, listRequisitions( user, pagingParams, completedStatus ) ) )
                 break
             default:
-                LOGGER.error( 'Group Type not valid' )
+                LoggerUtility.error LOGGER, 'Group Type not valid'
                 throw new ApplicationException( PurchaseRequisitionCompositeService, new BusinessLogicValidationException(
                         FinanceProcurementConstants.ERROR_MESSAGE_INVALID_BUCKET_TYPE, [bucket] ) )
         }
