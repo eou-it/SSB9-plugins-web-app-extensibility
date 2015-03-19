@@ -752,9 +752,11 @@ var xe = (function (xe) {
                 xe.popups[0] = xe.showPageStructure(xe.page, xe.popups[0])
             });
              */
+            /*
             ToolsMenu.addItem("pagestats", $.i18n.prop("xe.menu.extensions.status"), "extensibility", function () {
                 xe.popups[1] = xe.showStats(xe.page, xe.popups[1])
             });
+            */
 
             ToolsMenu.addItem("extensionseditor", $.i18n.prop("xe.menu.extensions.edit"), "extensibility", function () {
                 xe.popups[2] = xe.extensionsEditor(xe.page, xe.popups[2])
