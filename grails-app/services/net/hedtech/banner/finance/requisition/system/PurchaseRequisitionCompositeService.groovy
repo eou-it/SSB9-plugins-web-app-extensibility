@@ -73,10 +73,7 @@ class PurchaseRequisitionCompositeService {
             requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
             RequisitionDetail requisitionDetail = requisitionDetailService.create( [domainModel: requisitionDetailRequest] )
             LoggerUtility.debug LOGGER, "Requisition Detail created " + requisitionDetail
-            def requisitionDetailMap = [:]
-            requisitionDetailMap.requestCode = requisitionDetail.requestCode
-            requisitionDetailMap.item = requisitionDetail.item
-            return requisitionDetailMap
+            return [requestCode: requisitionDetail.requestCode, item: requisitionDetail.item]
         } else {
             LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
             throw new ApplicationException(
@@ -114,8 +111,7 @@ class PurchaseRequisitionCompositeService {
                 requisitionHeaderRequest.userId = oracleUserName
                 def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
                 LoggerUtility.debug LOGGER, "Requisition Header updated " + requisitionHeader
-                def header = RequisitionHeader.read( requisitionHeader.id )
-                return header
+                return requisitionHeader
             } else {
                 LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
                 throw new ApplicationException( PurchaseRequisitionCompositeService,
@@ -184,24 +180,17 @@ class PurchaseRequisitionCompositeService {
         RequisitionAccounting requisitionAccountingRequest = map.requisitionAccounting
         def user = springSecurityService.getAuthentication()?.user
         if (user?.oracleUserName) {
-            def requestCode = requisitionAccountingRequest.requestCode
-            def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
-            def lastSequenceNumber = requisitionAccountingService.getLastSequenceNumberByRequestCode( requestCode )
             requisitionAccountingRequest.userId = user.oracleUserName
-            requisitionAccountingRequest.sequenceNumber = lastSequenceNumber.next()
-            if (requisitionHeader.isDocumentLevelAccounting) {
+            requisitionAccountingRequest.sequenceNumber = requisitionAccountingService.getLastSequenceNumberByRequestCode( requisitionAccountingRequest.requestCode ).next()
+            if (requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionAccountingRequest.requestCode ).isDocumentLevelAccounting) {
                 requisitionAccountingRequest.item = 0
             } else {
-                def lastItem = requisitionAccountingService.getLastItemNumberByRequestCode( requestCode )
-                requisitionAccountingRequest.item = lastItem.next()
+                requisitionAccountingRequest.item = requisitionAccountingService.getLastItemNumberByRequestCode( requisitionAccountingRequest.requestCode ).next()
             }
             RequisitionAccounting requisitionAccounting = requisitionAccountingService.create( [domainModel: requisitionAccountingRequest] )
             LoggerUtility.debug LOGGER, 'Requisition Accounting created ' + requisitionAccounting
-            def requisitionAccountingMap = [:]
-            requisitionAccountingMap.requestCode = requisitionAccounting.requestCode
-            requisitionAccountingMap.item = requisitionAccounting.item
-            requisitionAccountingMap.sequenceNumber = requisitionAccounting.sequenceNumber
-            return requisitionAccountingMap
+            return [requestCode: requisitionAccounting.requestCode,
+                    item       : requisitionAccounting.item, sequenceNumber: requisitionAccounting.sequenceNumber]
         } else {
             LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
             throw new ApplicationException(
