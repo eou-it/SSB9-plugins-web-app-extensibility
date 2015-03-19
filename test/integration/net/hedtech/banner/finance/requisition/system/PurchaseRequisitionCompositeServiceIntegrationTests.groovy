@@ -325,8 +325,9 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                     FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def detailDomainModel = getRequisitionDetails()
+        detailDomainModel.item = 1
         def domainModelMap = [requisitionDetail: detailDomainModel]
-        def detail = purchaseRequisitionCompositeService.updateRequisitionDetail( domainModelMap, requestHeaderCode, 1 )
+        def detail = purchaseRequisitionCompositeService.updateRequisitionDetail( domainModelMap )
         assertTrue( detail.requestCode == requestHeaderCode )
     }
 
@@ -341,9 +342,10 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
         springSecurityService.getAuthentication().user.oracleUserName = ''
         def detailDomainModel = getRequisitionDetails()
+        detailDomainModel.item = 1
         def domainModelMap = [requisitionDetail: detailDomainModel]
         try {
-            purchaseRequisitionCompositeService.updateRequisitionDetail( domainModelMap, requestHeaderCode, 1 )
+            purchaseRequisitionCompositeService.updateRequisitionDetail( domainModelMap )
         } catch (ApplicationException ae) {
             assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
         } finally {
@@ -359,9 +361,10 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                     FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def detailDomainModel = getRequisitionDetails()
+        detailDomainModel.item = 0
         def domainModelMap = [requisitionDetail: detailDomainModel]
         try {
-            purchaseRequisitionCompositeService.updateRequisitionDetail( domainModelMap, requestHeaderCode, 0 )
+            purchaseRequisitionCompositeService.updateRequisitionDetail( domainModelMap )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_ITEM_IS_REQUIRED
         } catch (ApplicationException e) {
             assertApplicationException e, FinanceProcurementConstants.ERROR_MESSAGE_ITEM_IS_REQUIRED
@@ -427,10 +430,11 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                     FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def accountingDomainModel = getRequestAccounting()
+        accountingDomainModel.item = 0
+        accountingDomainModel.sequenceNumber = 1
+        accountingDomainModel.requestCode = 'R0001397'
         def domainModelMap = [requisitionAccounting: accountingDomainModel]
-        Integer item = 0
-        Integer sequence = 1
-        def accounting = purchaseRequisitionCompositeService.updateRequisitionAccounting( domainModelMap, 'R0001397', item, sequence )
+        def accounting = purchaseRequisitionCompositeService.updateRequisitionAccounting( domainModelMap )
         assertTrue( accounting.requestCode == 'R0001397' )
     }
 
@@ -442,11 +446,12 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                     FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def accountingDomainModel = getRequestAccounting()
+        accountingDomainModel.item = null
+        accountingDomainModel.sequenceNumber = null
+        accountingDomainModel.requestCode = 'R0001397'
         def domainModelMap = [requisitionAccounting: accountingDomainModel]
         try {
-            Integer item = null
-            Integer sequence = null
-            purchaseRequisitionCompositeService.updateRequisitionAccounting( domainModelMap, 'R0001397', item, sequence )
+            purchaseRequisitionCompositeService.updateRequisitionAccounting( domainModelMap )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_ITEM_SEQUENCE_REQUIRED
         } catch (ApplicationException e) {
             assertApplicationException e, FinanceProcurementConstants.ERROR_MESSAGE_ITEM_SEQUENCE_REQUIRED
@@ -461,11 +466,12 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                     FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def accountingDomainModel = getRequestAccounting()
+        accountingDomainModel.item = 98999
+        accountingDomainModel.sequenceNumber = 10221
+        accountingDomainModel.requestCode = 'R0001397'
         def domainModelMap = [requisitionAccounting: accountingDomainModel]
         try {
-            Integer item = 98999
-            Integer sequence = 10221
-            purchaseRequisitionCompositeService.updateRequisitionAccounting( domainModelMap, 'R0001397', item, sequence )
+            purchaseRequisitionCompositeService.updateRequisitionAccounting( domainModelMap )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_ACCOUNTING
         } catch (ApplicationException e) {
             assertApplicationException e, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_ACCOUNTING
@@ -482,11 +488,12 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
         springSecurityService.getAuthentication().user.oracleUserName = ''
         def accountingDomainModel = getRequestAccounting()
+        accountingDomainModel.item = 0
+        accountingDomainModel.sequenceNumber = 1
+        accountingDomainModel.requestCode = 'R0001397'
         def domainModelMap = [requisitionAccounting: accountingDomainModel]
-        Integer item = 0
-        Integer sequence = 1
         try {
-            purchaseRequisitionCompositeService.updateRequisitionAccounting( domainModelMap, 'R0001397', item, sequence )
+            purchaseRequisitionCompositeService.updateRequisitionAccounting( domainModelMap )
         } catch (ApplicationException ae) {
             assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
         } finally {

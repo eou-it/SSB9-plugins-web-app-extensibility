@@ -139,9 +139,10 @@ class PurchaseRequisitionCompositeService {
      * Update Purchase requisition detail commodity level.
      *
      * @param map the requisition detail map
-     * @param requestCode
      */
-    def updateRequisitionDetail( detailDomainModel, requestCode, item ) {
+    def updateRequisitionDetail( detailDomainModel ) {
+        def requestCode = detailDomainModel.requisitionDetail.requestCode
+        Integer item = detailDomainModel.requisitionDetail.item
         // Null or empty check for item.
         if (!item) {
             LoggerUtility.error LOGGER, 'Item is required to update the detail.'
@@ -163,8 +164,7 @@ class PurchaseRequisitionCompositeService {
                 requisitionDetailRequest.userId = user.oracleUserName
                 def requisitionDetail = requisitionDetailService.update( [domainModel: requisitionDetailRequest] )
                 LoggerUtility.debug LOGGER, "Requisition Detail updated " + requisitionDetail
-                def detail = RequisitionDetail.read( requisitionDetail.id )
-                return detail
+                return requisitionDetail
             } else {
                 LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
                 throw new ApplicationException( PurchaseRequisitionCompositeService,
@@ -184,7 +184,6 @@ class PurchaseRequisitionCompositeService {
         RequisitionAccounting requisitionAccountingRequest = map.requisitionAccounting
         def user = springSecurityService.getAuthentication()?.user
         if (user?.oracleUserName) {
-
             def requestCode = requisitionAccountingRequest.requestCode
             def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
             def lastSequenceNumber = requisitionAccountingService.getLastSequenceNumberByRequestCode( requestCode )
@@ -226,10 +225,12 @@ class PurchaseRequisitionCompositeService {
      * Updates Purchase requisition Accounting information.
      *
      * @param map the requisition accounting map
-     * @param requestCode
      */
-    def updateRequisitionAccounting( accountingDomainModel, requestCode, Integer item, Integer sequenceNumber ) {
+    def updateRequisitionAccounting( accountingDomainModel ) {
         // Null or empty check for item number and sequence number.
+        Integer item = accountingDomainModel.requisitionAccounting.item
+        Integer sequenceNumber = accountingDomainModel.requisitionAccounting.sequenceNumber
+        def requestCode = accountingDomainModel.requisitionAccounting.requestCode
         if (item == null || sequenceNumber == null) {
             LoggerUtility.error LOGGER, 'Item and Sequence number are required to update the Requisition Accounting information.'
             throw new ApplicationException( PurchaseRequisitionCompositeService,
