@@ -731,9 +731,13 @@ var xe = (function (xe) {
             data: JSON.stringify(data),
             processData: true,
             success: function(data){
-                        alert($.i18n.prop("xe.alert.msg.saved"));
-                        xe.log('Data Saved',data);
-                     }
+                notifications.addNotification( new Notification({
+                    message: $.i18n.prop("xe.alert.msg.saved"),
+                    type: "success",
+                    flash: true
+                }));
+                xe.log('Data Saved',data);
+            }
         });
     };
 
