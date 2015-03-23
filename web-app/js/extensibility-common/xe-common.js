@@ -368,7 +368,7 @@ var xe = (function (xe) {
             _.each( orderedExtensions, function(extension) {
 
                 var sibling = siblings.filter( xe.selector(elementType, extension.name) );
-                if ( sibling ) {
+                if ( sibling && _.has(extension, "nextSibling") ) {
                     extension.element = sibling;
                     moveElement(elementType, extension);
                 }
