@@ -326,14 +326,14 @@ var xe = (function (xe) {
         /*******************************************************************************************************
         Reposition a section or field
          *******************************************************************************************************/
-        function moveElement( elementType, extension ) {
+        function moveElement( elementType, extension, parent ) {
             var to;
             var elementToMove = $(extension.element).addClass("xe-moved");
             var lastElement;
             var selector;
 
             if ( extension.nextSibling ) {
-                to = $(xe.selector(elementType, extension.nextSibling));
+                to = $(xe.selector(elementType, extension.nextSibling), parent);
                 if (to.length==0) {
                     xe.errors.push('Unable to find target element. '+JSON.stringify(extension.nextSibling));
                     return null;
@@ -368,9 +368,9 @@ var xe = (function (xe) {
             _.each( orderedExtensions, function(extension) {
 
                 var sibling = siblings.filter( xe.selector(elementType, extension.name) );
-                if ( sibling && _.has(extension, "nextSibling") ) {
+                if ( sibling.length > 0 && _.has(extension, "nextSibling") ) {
                     extension.element = sibling;
-                    moveElement(elementType, extension);
+                    moveElement(elementType, extension, $(element).parent());
                 }
             });
         }
