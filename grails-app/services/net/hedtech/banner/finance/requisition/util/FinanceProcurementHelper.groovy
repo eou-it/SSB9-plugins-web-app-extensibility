@@ -93,8 +93,6 @@ class FinanceProcurementHelper {
                 additionalChargeAmount            : requisitionAccountingJSON.additionalChargeAmount,
                 additionalChargeAmountPct         : requisitionAccountingJSON.additionalChargeAmountPct,
                 requisitionAmount                 : requisitionAccountingJSON.requisitionAmount,
-                fiscalYearCode                    : requisitionAccountingJSON.fiscalYearCode,
-                period                            : requisitionAccountingJSON.period,
                 ruleClass                         : requisitionAccountingJSON.ruleClass,
                 chartOfAccounts                   : requisitionAccountingJSON.chartOfAccounts,
                 accountIndex                      : requisitionAccountingJSON.accountIndex,
