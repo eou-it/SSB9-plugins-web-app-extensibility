@@ -59,6 +59,9 @@ class RequisitionInformation implements Serializable {
     @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQLIST_FPBREQH_ORIGIN_CODE)
     String origin
 
+    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQLIST_FPBREQH_CURR_CODE)
+    String currency
+
     @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQLIST_AMOUNT)
     String amount
 
@@ -113,7 +116,7 @@ class RequisitionInformation implements Serializable {
      * @return
      */
     static def fetchRequisitionsCountByStatus( userId, status ) {
-        def requisitionsCount= RequisitionInformation.withSession {session ->
+        def requisitionsCount = RequisitionInformation.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_COUNT_FINDER_BY_STATUS )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
                     .setParameterList( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS, status )
