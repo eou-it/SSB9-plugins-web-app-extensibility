@@ -5,12 +5,16 @@ package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
+import net.hedtech.banner.exceptions.CurrencyNotFoundException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.system.FinanceSystemControl
+import net.hedtech.banner.finance.util.FinanceCommonUtility
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.commons.lang3.StringUtils
 import org.apache.log4j.Logger
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * Class for Purchase Requisition Composite
@@ -26,6 +30,29 @@ class PurchaseRequisitionCompositeService {
     def financeCommodityService
     def requisitionInformationService
     def requisitionAccountingService
+    def shipToCodeService
+    def financeOrganizationCompositeService
+    def institutionalDescriptionService
+    def currencyFormatService
+    def chartOfAccountsService
+    def financeTaxGroupService
+    def financeVendorService
+
+    /**
+     * Fetches Requisition Information
+     * @param requestCode
+     */
+    def fetchPurchaseRequisition( requestCode ) {
+        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
+        def shipTo = shipToCodeService.findShipToCodesByCode( header.ship )
+        def pagination = [offset: 0, max: 1]
+        def organization = financeOrganizationCompositeService.
+                findOrganizationListByEffectiveDateAndSearchParam( [searchParam: header.organization, coaCode: header.chartOfAccount], pagination )
+        def coa = chartOfAccountsService.getListBySearchParamAndEffectiveDate( header.chartOfAccount, null, pagination )
+        def taxGroup = financeTaxGroupService.findTaxGroupsBySearchParamAndEffectiveDate( [searchParam: header.taxGroup], pagination )
+        def vendor = financeVendorService.fetchFinanceVendor( [vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence] )
+        return [header: header, shipTo: shipTo, organization: organization[0], coa: coa[0], taxGroup: taxGroup[0], vendor: vendor];
+    }
 
     /**
      * Create purchase requisition Header
@@ -349,13 +376,39 @@ class PurchaseRequisitionCompositeService {
     }
 
     /**
+     * Gives derived formatted amount
+     *
+     * @param amount
+     * @param currency
+     * @param baseCcy
+     * @return
+     */
+    @Transactional(propagation = Propagation.REQUIRED)
+    public def deriveFormattedAmount( amount, currency, baseCcy ) {
+        try {
+            return amount == null ? amount :
+                    currencyFormatService.format( currency != null ? currency : baseCcy, (amount).toBigDecimal() )
+        }
+        catch (CurrencyNotFoundException cnf) {
+            return FinanceCommonUtility.formatAmountForLocale( (amount).toBigDecimal() )
+        }
+    }
+
+    /**
      * Gets List of requisitions
      * @param pagingParams
      * @param status
      * @return
      */
-    private listRequisitions( oracleUserName, pagingParams, status ) {
-        return requisitionInformationService.listRequisitionsByStatus( status, pagingParams, oracleUserName )
+    public listRequisitions( oracleUserName, pagingParams, status ) {
+        def ret = requisitionInformationService.listRequisitionsByStatus( status, pagingParams, oracleUserName )
+        def baseCcy = institutionalDescriptionService.findByKey().baseCurrCode
+        ret.list = ret.list.collect() {
+            [id        : it.id, version: it.version, amount: deriveFormattedAmount( it.amount, it.currency, baseCcy ),
+             coasCode  : it.coasCode, requestDate: it.requestDate, requisitionCode: it.requisitionCode, status: it.status, transactionDate: it.transactionDate,
+             vendorName: it.vendorName]
+        }
+        return ret
     }
 
     /**
@@ -364,7 +417,6 @@ class PurchaseRequisitionCompositeService {
      * @param records
      * @return
      */
-
     private def groupResult( groupType, records ) {
         [category: groupType, count: records.count, list: records.list]
     }
