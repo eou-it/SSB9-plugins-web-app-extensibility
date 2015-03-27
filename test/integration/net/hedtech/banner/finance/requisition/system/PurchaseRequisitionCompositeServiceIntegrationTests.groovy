@@ -69,7 +69,7 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
     void listRequisitionsByALlBucketInvalidUser() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
-        springSecurityService.getAuthentication().user.oracleUserName = ''
+        springSecurityService.getAuthentication().user.oracleUserName = null
         try {
             def pagingParams = [max: 500, offset: 0]
             purchaseRequisitionCompositeService.listRequisitionsByBucket( [FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE], pagingParams )
@@ -91,6 +91,16 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def requestCode = purchaseRequisitionCompositeService.createPurchaseRequisitionHeader( domainModelMap )
         assertTrue requestCode != FinanceProcurementConstants.DEFAULT_REQUEST_CODE
+    }
+
+    /**
+     * Test fetchPurchaseRequisition
+     */
+    @Test
+    void fetchPurchaseRequisition() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def code = purchaseRequisitionCompositeService.createPurchaseRequisitionHeader( [requisitionHeader: newRequisitionHeader()] )
+        assertTrue purchaseRequisitionCompositeService.fetchPurchaseRequisition( code ).header.requestCode == code
     }
 
     /**
