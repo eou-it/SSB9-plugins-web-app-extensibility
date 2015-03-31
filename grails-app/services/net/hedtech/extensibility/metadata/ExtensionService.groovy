@@ -10,6 +10,7 @@ import grails.util.Environment
 import org.apache.log4j.Logger
 
 class ExtensionService {
+    static transactional=false
     def static extensionsPath = grails.util.Holders.getConfig().webAppExtensibility.locations.extensions
     private static final Logger log = Logger.getLogger( this.getClass() )
     def localizerService = { mapToLocalize ->
