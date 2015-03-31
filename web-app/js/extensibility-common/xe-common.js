@@ -330,7 +330,7 @@ var xe = (function (xe) {
         /*******************************************************************************************************
         Reposition a section or field
          *******************************************************************************************************/
-        function moveElement( elementType, extension, parent ) {
+        function moveElement( elementType, extension ) {
             var to;
             var elementToMove = $(extension.element).addClass("xe-moved");
             var lastElement;
@@ -338,10 +338,9 @@ var xe = (function (xe) {
 
             xe.log('Move '+elementType +' '+ extension.name);
             if ( extension.nextSibling ) {
-                to = $(xe.selector(elementType, extension.nextSibling), parent);
+                to = $(xe.selector(elementType, extension.nextSibling),rootElement); //Should not select anything outside rootElement
                 if (to.length === 0) {
-                    xe.errors.push('Unable to find target element. ' + JSON.stringify(extension.nextSibling));
-                    return null;
+                    xe.errors.push('Unable to find target element. Type: ' + elementType + ' Name: ' + extension.nextSibling);
                 } else {
                     elementToMove.insertBefore(to);
                 }
@@ -373,9 +372,9 @@ var xe = (function (xe) {
             _.each( orderedExtensions, function(extension) {
 
                 var sibling = siblings.filter( xe.selector(elementType, extension.name) );
-                if ( sibling.length > 0 && _.has(extension, "nextSibling") ) {
+                if ( sibling ) {
                     extension.element = sibling;
-                    moveElement(elementType, extension, $(element).parent());
+                    moveElement(elementType, extension);
                 }
             });
         }
@@ -562,11 +561,9 @@ var xe = (function (xe) {
         }
 
         // determine list of sections to be processed
-        var $rootElement = $(rootElement);
-        var sectionSelector = xe.selector( xe.type.section );
-        xe.sections = $(sectionSelector, $rootElement);
-        if ( $rootElement.is(sectionSelector)) {
-            xe.sections = xe.sections.add( $rootElement );
+        sections = $(xe.selector(xe.type.section), rootElement);
+        if ( $(rootElement[0]).is(xe.selector(xe.type.section))) {
+            sections = sections.add( rootElement[0] );
         }
 
         // apply extensions to each section
