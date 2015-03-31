@@ -12,7 +12,7 @@ import org.springframework.web.context.request.RequestContextHolder
 
 
 class ResourceService {
-    static transactional=false
+    static transactional = false
     private static final Logger log = Logger.getLogger( this.getClass() )
     def localizerService = { mapToLocalize ->
         new MessageHelper().message(mapToLocalize)
