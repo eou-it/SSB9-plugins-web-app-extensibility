@@ -48,13 +48,13 @@ class PurchaseRequisitionCompositeService {
         def pagination = [offset: 0, max: 1]
         def organization = financeOrganizationCompositeService.
                 findOrganizationListByEffectiveDateAndSearchParam( [searchParam: header.organization, coaCode: header.chartOfAccount], pagination )
-        def coa = chartOfAccountsService.getListBySearchParamAndEffectiveDate( header.chartOfAccount, null, pagination )
+        def coa = chartOfAccountsService.getChartOfAccountByCode( header.chartOfAccount )
         def taxGroup = financeTaxGroupService.findTaxGroupsBySearchParamAndEffectiveDate( [searchParam: header.taxGroup], pagination )
         def vendor = []
         if (header.vendorPidm != null) {
             vendor = financeVendorService.fetchFinanceVendor( [vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence] )
         }
-        return [header: header, shipTo: shipTo, organization: organization[0], coa: coa[0], taxGroup: taxGroup[0], vendor: vendor];
+        return [header: header, shipTo: shipTo, organization: organization[0], coa: coa, taxGroup: taxGroup[0], vendor: vendor]
     }
 
     /**

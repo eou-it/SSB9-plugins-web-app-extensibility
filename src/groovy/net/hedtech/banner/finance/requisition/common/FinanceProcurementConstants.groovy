@@ -7,6 +7,11 @@ package net.hedtech.banner.finance.requisition.common
  * used across the banner-finance-procurement plugin.
  */
 class FinanceProcurementConstants {
+
+    static final String USER_PROFILE_KEY='userProfile'
+    static final String DASHBOARD_PAGE='financeDashboard'
+    static final String DEFAULT_ACTION='dashboard'
+
     /* Constant for Requisition Header Domain*/
 
     public static final String REQUISITION_HEADER_FINDER_BY_REQUEST_CODE = 'RequisitionHeader.findByRequestCodeAndItem'
