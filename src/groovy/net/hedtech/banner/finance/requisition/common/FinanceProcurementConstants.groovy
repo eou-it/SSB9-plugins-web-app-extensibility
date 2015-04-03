@@ -268,7 +268,7 @@ class FinanceProcurementConstants {
     static final String REQUISITION_LIST_STATUS_DISAPPROVED = 'Disapproved'
     static final String REQUISITION_LIST_STATUS_PENDING = 'Pending'
     static final String REQUISITION_LIST_STATUS_COMPLETED = 'Completed'
-    static final String REQUISITION_LIST_STATUS_BUYER_ASSIGNED = 'Buyer Assigned'
+    static final String REQUISITION_LIST_STATUS_BUYER_ASSIGNED = 'Assigned to Buyer'
     static final String REQUISITION_LIST_STATUS_CONVERTED_TO_PO = 'Converted to PO'
     static final String REQUEST_PARAM_ACCOUNTING_ITEM = 'item'
     static final String REQUEST_PARAM_ACCOUNTING_SEQUENCE = 'sequence'
