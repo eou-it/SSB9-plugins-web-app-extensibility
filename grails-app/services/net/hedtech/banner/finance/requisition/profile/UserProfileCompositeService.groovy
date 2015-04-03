@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional
  * Class for User Profile Composite Service
  */
 class UserProfileCompositeService {
+    boolean transactional =false
     def springSecurityService
     def financeUserProfileService
     def shipToCodeService
@@ -25,7 +26,7 @@ class UserProfileCompositeService {
      * Fetches User profile and associated information
      * @param user
      */
-    @Transactional(propagation = Propagation.NEVER)
+    @Transactional(propagation = Propagation.REQUIRED)
     def getUserProfileDetail( user ) {
         def coa = [:], shipToCode = [:], org = [:], userProfile = [:]
 
