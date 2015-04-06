@@ -58,16 +58,23 @@ class PurchaseRequisitionCompositeService {
         if (header.vendorPidm != null) {
             vendor = financeVendorService.fetchFinanceVendor( [vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence] )
         }
-        def discountObj = financeDiscountService.findDiscountByDiscountCode( header.discount )
-        def currencyObj = financeCurrencyService.findCurrencyByCurrencyCode( header.currency )
+        def discount = [], currency = []
+        if (header.discount) {
+            def discountObj = financeDiscountService.findDiscountByDiscountCode()
+            discount = [discountCode: discountObj.discountCode, discountDescription: discountObj.discountDescription]
+        }
+        if (header.currency) {
+            def currencyObj = financeCurrencyService.findCurrencyByCurrencyCode( header.currency )
+            currency = [currencyCode: currencyObj.currencyCode, title: currencyObj.title]
+        }
         return [header      : header, shipTo: [zipCode     : shipTo.zipCode, state: shipTo.state, city: shipTo.city, shipCode: shipTo.shipCode, addressLine1: shipTo.addressLine1,
                                                addressLine2: shipTo.addressLine2, addressLine3: shipTo.addressLine3, contact: shipTo.contact],
                 organization: [coaCode: organization[0].coaCode, orgnCode: organization[0].orgnCode, orgnTitle: organization[0].orgnTitle],
                 coa         : [title: coa.title, chartOfAccountsCode: coa.chartOfAccountsCode],
                 taxGroup    : [taxGroupCode: taxGroup[0].taxGroupCode, taxGroupTitle: taxGroup[0].taxGroupTitle],
                 vendor      : vendor,
-                discount    : [discountCode: discountObj.discountCode, discountDescription: discountObj.discountDescription],
-                currency    : [currencyCode: currencyObj.currencyCode, title: currencyObj.title]]
+                discount    : discount,
+                currency    : currency]
     }
 
     /**
