@@ -8,6 +8,8 @@ import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.CurrencyNotFoundException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import net.hedtech.banner.finance.system.FinanceCurrencyService
+import net.hedtech.banner.finance.system.FinanceDiscountService
 import net.hedtech.banner.finance.system.FinanceSystemControl
 import net.hedtech.banner.finance.util.FinanceCommonUtility
 import net.hedtech.banner.finance.util.LoggerUtility
@@ -37,6 +39,8 @@ class PurchaseRequisitionCompositeService {
     def chartOfAccountsService
     def financeTaxGroupService
     def financeVendorService
+    def financeDiscountService
+    def financeCurrencyService
 
     /**
      * Fetches Requisition Information
@@ -50,11 +54,20 @@ class PurchaseRequisitionCompositeService {
                 findOrganizationListByEffectiveDateAndSearchParam( [searchParam: header.organization, coaCode: header.chartOfAccount], pagination )
         def coa = chartOfAccountsService.getChartOfAccountByCode( header.chartOfAccount )
         def taxGroup = financeTaxGroupService.findTaxGroupsBySearchParamAndEffectiveDate( [searchParam: header.taxGroup], pagination )
-        def vendor = []
+        def vendor
         if (header.vendorPidm != null) {
             vendor = financeVendorService.fetchFinanceVendor( [vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence] )
         }
-        return [header: header, shipTo: shipTo, organization: organization[0], coa: coa, taxGroup: taxGroup[0], vendor: vendor]
+        def discountObj = financeDiscountService.findDiscountByDiscountCode( header.discount )
+        def currencyObj = financeCurrencyService.findCurrencyByCurrencyCode( header.currency )
+        return [header      : header, shipTo: [zipCode     : shipTo.zipCode, state: shipTo.state, city: shipTo.city, shipCode: shipTo.shipCode, addressLine1: shipTo.addressLine1,
+                                               addressLine2: shipTo.addressLine2, addressLine3: shipTo.addressLine3, contact: shipTo.contact],
+                organization: [coaCode: organization[0].coaCode, orgnCode: organization[0].orgnCode, orgnTitle: organization[0].orgnTitle],
+                coa         : [title: coa.title, chartOfAccountsCode: coa.chartOfAccountsCode],
+                taxGroup    : [taxGroupCode: taxGroup[0].taxGroupCode, taxGroupTitle: taxGroup[0].taxGroupTitle],
+                vendor      : vendor,
+                discount    : [discountCode: discountObj.discountCode, discountDescription: discountObj.discountDescription],
+                currency    : [currencyCode: currencyObj.currencyCode, title: currencyObj.title]]
     }
 
     /**
