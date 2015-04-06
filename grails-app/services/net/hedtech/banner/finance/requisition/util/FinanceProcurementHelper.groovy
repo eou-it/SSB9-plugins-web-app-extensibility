@@ -19,7 +19,7 @@ class FinanceProcurementHelper {
         return [
                 requestCode              : FinanceProcurementConstants.DEFAULT_REQUEST_CODE,
                 item                     : requisitionHeaderJSON.item ? requisitionHeaderJSON.item : null,
-                requestDate              : new Date( requisitionHeaderJSON.requestDate ),
+                requestDate              : requisitionHeaderJSON.requestDate ? new Date( requisitionHeaderJSON.requestDate ) : new Date(),
                 transactionDate          : new Date( requisitionHeaderJSON.transactionDate ),
                 requesterName            : requisitionHeaderJSON.requesterName,
                 ship                     : requisitionHeaderJSON.ship,

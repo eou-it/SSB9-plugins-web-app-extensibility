@@ -13,6 +13,7 @@ import net.hedtech.banner.finance.system.FinanceDiscountService
 import net.hedtech.banner.finance.system.FinanceSystemControl
 import net.hedtech.banner.finance.util.FinanceCommonUtility
 import net.hedtech.banner.finance.util.LoggerUtility
+import net.hedtech.banner.utility.DateUtility
 import org.apache.commons.lang3.StringUtils
 import org.apache.log4j.Logger
 import org.springframework.transaction.annotation.Propagation
@@ -155,6 +156,7 @@ class PurchaseRequisitionCompositeService {
             requisitionHeaderRequest.id = existingHeader.id
             requisitionHeaderRequest.version = existingHeader.version
             requisitionHeaderRequest.requestCode = existingHeader.requestCode
+            requisitionHeaderRequest.requestDate = existingHeader.requestDate
             def user = springSecurityService.getAuthentication()?.user
             if (user.oracleUserName) {
                 def oracleUserName = user?.oracleUserName
