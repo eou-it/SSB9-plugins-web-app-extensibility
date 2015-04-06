@@ -54,13 +54,16 @@ class PurchaseRequisitionCompositeService {
                 findOrganizationListByEffectiveDateAndSearchParam( [searchParam: header.organization, coaCode: header.chartOfAccount], pagination )
         def coa = chartOfAccountsService.getChartOfAccountByCode( header.chartOfAccount )
         def taxGroup = financeTaxGroupService.findTaxGroupsBySearchParamAndEffectiveDate( [searchParam: header.taxGroup], pagination )
-        def vendor
+        def vendor = [], discount = [], currency = []
         if (header.vendorPidm != null) {
-            vendor = financeVendorService.fetchFinanceVendor( [vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence] )
+            def vendorObj = financeVendorService.fetchFinanceVendor( [vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence] )
+            vendor = [vendorLastName  : vendorObj.vendorLastName, vendorCode: vendorObj.vendorCode, addressLine1: vendorObj.addressLine1,
+                      addressLine2    : vendorObj.addressLine2, addressLine3: vendorObj.addressLine3, addressPostal: vendorObj.addressPostal,
+                      addressStateCode: vendorObj.addressStateCode, addressCity: vendorObj.addressCity]
         }
-        def discount = [], currency = []
+
         if (header.discount) {
-            def discountObj = financeDiscountService.findDiscountByDiscountCode()
+            def discountObj = financeDiscountService.findDiscountByDiscountCode( header.discount )
             discount = [discountCode: discountObj.discountCode, discountDescription: discountObj.discountDescription]
         }
         if (header.currency) {
