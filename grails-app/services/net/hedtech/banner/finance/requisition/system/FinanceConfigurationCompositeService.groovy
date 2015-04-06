@@ -4,25 +4,20 @@
 package net.hedtech.banner.finance.requisition.system
 
 /**
- * The composite service RequisitionConfigurationCompositeService
+ * The composite service FinanceConfigurationCompositeService
  * used for getting Configuration values.
  *
  */
-class RequisitionConfigurationCompositeService {
+class FinanceConfigurationCompositeService {
     def institutionalDescriptionService
     def financeCurrencyService
 
     /**
      * The method is used to get the institutional level currency code and title from the Institution Description.
-     * @return  map which has values for currencyCode and title.
+     * @return map which has values for currencyCode and title.
      */
     def getInstitutionBasedCurrency() {
-        def configuration = institutionalDescriptionService.findByKey(  )
-        def currencyCode = configuration?.baseCurrCode
-        def currency = financeCurrencyService.findCurrencyByCurrencyCode( currencyCode )
-        def map = [:]
-        map.currencyCode = configuration?.baseCurrCode
-        map.currencyTitle = currency.title
-        return map
+        def currency = financeCurrencyService.findCurrencyByCurrencyCode( institutionalDescriptionService.findByKey().baseCurrCode )
+        [currencyCode: currency.currencyCode, currencyTitle: currency.title]
     }
 }

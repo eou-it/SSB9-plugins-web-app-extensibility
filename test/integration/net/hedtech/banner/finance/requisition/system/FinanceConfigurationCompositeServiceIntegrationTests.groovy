@@ -13,8 +13,8 @@ import org.junit.Test
  * The test case class for RequisitionConfigurationCompositeService.
  *
  */
-class RequisitionConfigurationCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
-    def requisitionConfigurationCompositeService
+class FinanceConfigurationCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
+    def financeConfigurationCompositeService
     /**
      * The tear down method will run before all test case method execution start.
      */
@@ -39,7 +39,7 @@ class RequisitionConfigurationCompositeServiceIntegrationTests extends BaseInteg
      */
     @Test
     public void testGetInstitutionBasedCurrency() {
-        def map = requisitionConfigurationCompositeService.getInstitutionBasedCurrency()
+        def map = financeConfigurationCompositeService.getInstitutionBasedCurrency()
         assertNotNull( map )
     }
 }
