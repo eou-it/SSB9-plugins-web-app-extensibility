@@ -54,14 +54,10 @@ class PurchaseRequisitionCompositeService {
                 findOrganizationListByEffectiveDateAndSearchParam( [searchParam: header.organization, coaCode: header.chartOfAccount], pagination )
         def coa = chartOfAccountsService.getChartOfAccountByCode( header.chartOfAccount )
         def taxGroup = financeTaxGroupService.findTaxGroupsBySearchParamAndEffectiveDate( [searchParam: header.taxGroup], pagination )
-        def vendor = [], discount = [], currency = []
+        def vendor, discount = [], currency = []
         if (header.vendorPidm != null) {
-            def vendorObj = financeVendorService.fetchFinanceVendor( [vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence] )
-            vendor = [vendorLastName  : vendorObj.vendorLastName, vendorCode: vendorObj.vendorCode, addressLine1: vendorObj.addressLine1,
-                      addressLine2    : vendorObj.addressLine2, addressLine3: vendorObj.addressLine3, addressPostal: vendorObj.addressPostal,
-                      addressStateCode: vendorObj.addressStateCode, addressCity: vendorObj.addressCity]
+            vendor = financeVendorService.fetchFinanceVendor( [vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence] )
         }
-
         if (header.discount) {
             def discountObj = financeDiscountService.findDiscountByDiscountCode( header.discount )
             discount = [discountCode: discountObj.discountCode, discountDescription: discountObj.discountDescription]
@@ -70,8 +66,9 @@ class PurchaseRequisitionCompositeService {
             def currencyObj = financeCurrencyService.findCurrencyByCurrencyCode( header.currency )
             currency = [currencyCode: currencyObj.currencyCode, title: currencyObj.title]
         }
-        return [header      : header, shipTo: [zipCode     : shipTo.zipCode, state: shipTo.state, city: shipTo.city, shipCode: shipTo.shipCode, addressLine1: shipTo.addressLine1,
-                                               addressLine2: shipTo.addressLine2, addressLine3: shipTo.addressLine3, contact: shipTo.contact],
+        return [header      : header,
+                shipTo      : [zipCode     : shipTo.zipCode, state: shipTo.state, city: shipTo.city, shipCode: shipTo.shipCode, addressLine1: shipTo.addressLine1,
+                               addressLine2: shipTo.addressLine2, addressLine3: shipTo.addressLine3, contact: shipTo.contact],
                 organization: [coaCode: organization[0].coaCode, orgnCode: organization[0].orgnCode, orgnTitle: organization[0].orgnTitle],
                 coa         : [title: coa.title, chartOfAccountsCode: coa.chartOfAccountsCode],
                 taxGroup    : [taxGroupCode: taxGroup[0].taxGroupCode, taxGroupTitle: taxGroup[0].taxGroupTitle],
