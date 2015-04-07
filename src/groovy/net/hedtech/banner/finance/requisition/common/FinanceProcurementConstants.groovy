@@ -11,6 +11,7 @@ class FinanceProcurementConstants {
     static final String USER_PROFILE_KEY='userProfile'
     static final String DASHBOARD_PAGE='financeDashboard'
     static final String DEFAULT_ACTION='dashboard'
+    static final String INSTITUTION_BASE_CCY='institutionBaseCcy'
 
     /* Constant for Requisition Header Domain*/
 
