@@ -68,7 +68,7 @@ class PurchaseRequisitionCompositeService {
                                addressLine2: shipTo.addressLine2, addressLine3: shipTo.addressLine3, contact: shipTo.contact],
                 organization: [coaCode: organization[0].coaCode, orgnCode: organization[0].orgnCode, orgnTitle: organization[0].orgnTitle],
                 coa         : [title: coa.title, chartOfAccountsCode: coa.chartOfAccountsCode],
-                taxGroup    : [taxGroupCode: taxGroup.taxGroupCode, taxGroupTitle: taxGroup.taxGroupTitle],
+                taxGroup    : [taxGroupCode: taxGroup?.taxGroupCode, taxGroupTitle: taxGroup?.taxGroupTitle],
                 vendor      : vendor,
                 discount    : discount,
                 currency    : currency]
