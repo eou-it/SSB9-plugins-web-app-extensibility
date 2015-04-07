@@ -8,12 +8,9 @@ import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.CurrencyNotFoundException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
-import net.hedtech.banner.finance.system.FinanceCurrencyService
-import net.hedtech.banner.finance.system.FinanceDiscountService
 import net.hedtech.banner.finance.system.FinanceSystemControl
 import net.hedtech.banner.finance.util.FinanceCommonUtility
 import net.hedtech.banner.finance.util.LoggerUtility
-import net.hedtech.banner.utility.DateUtility
 import org.apache.commons.lang3.StringUtils
 import org.apache.log4j.Logger
 import org.springframework.transaction.annotation.Propagation
