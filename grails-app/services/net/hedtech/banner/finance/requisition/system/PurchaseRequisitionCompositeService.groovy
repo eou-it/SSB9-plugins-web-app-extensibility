@@ -50,11 +50,10 @@ class PurchaseRequisitionCompositeService {
     def fetchPurchaseRequisition( requestCode ) {
         def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         def shipTo = shipToCodeService.findShipToCodesByCode( header.ship )
-        def pagination = [offset: 0, max: 1]
         def organization = financeOrganizationCompositeService.
-                findOrganizationListByEffectiveDateAndSearchParam( [searchParam: header.organization, coaCode: header.chartOfAccount], pagination )
+                findOrganizationListByEffectiveDateAndSearchParam( [searchParam: header.organization, coaCode: header.chartOfAccount], [offset: 0, max: 1] )
         def coa = chartOfAccountsService.getChartOfAccountByCode( header.chartOfAccount )
-        def taxGroup = financeTaxGroupService.findTaxGroupsBySearchParamAndEffectiveDate( [searchParam: header.taxGroup], pagination )
+        def taxGroup = financeTaxGroupService.findTaxGroupsByTaxGroupCode( header.taxGroup )
         def vendor, discount = [], currency = []
         if (header.vendorPidm != null) {
             vendor = financeVendorService.fetchFinanceVendor( [vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence] )
