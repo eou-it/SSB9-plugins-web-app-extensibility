@@ -48,9 +48,11 @@ class PurchaseRequisitionCompositeService {
         def organization = financeOrganizationCompositeService.
                 findOrganizationListByEffectiveDateAndSearchParam( [searchParam: header.organization, coaCode: header.chartOfAccount], [offset: 0, max: 1] )
         def coa = chartOfAccountsService.getChartOfAccountByCode( header.chartOfAccount )
-        def taxGroup = financeTaxGroupService.findTaxGroupsByTaxGroupCode( header.taxGroup )
-        def vendor, discount = [], currency = []
-        if (header.vendorPidm != null) {
+        def taxGroup, vendor, discount = [], currency = []
+        if (header.taxGroup) {
+            taxGroup = financeTaxGroupService.findTaxGroupsByTaxGroupCode( header.taxGroup )
+        }
+        if (header.vendorPidm) {
             vendor = financeVendorService.fetchFinanceVendor( [vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence] )
         }
         if (header.discount) {
