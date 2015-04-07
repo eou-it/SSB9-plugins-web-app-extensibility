@@ -41,47 +41,6 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
     }
 
     /**
-     * Test list requisitions With Draft Buckets
-     */
-    @Test
-    void listRequisitionsByDraftBucket() {
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def pagingParams = [max: 500, offset: 0]
-        def list = purchaseRequisitionCompositeService.listRequisitionsByBucket( [FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT], pagingParams )
-        assertTrue list[0].count > 0
-    }
-
-    /**
-     * Test list requisitions With All Buckets
-     */
-    @Test
-    void listRequisitionsByAllBuckets() {
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def pagingParams = [max: 500, offset: 0]
-        def list = purchaseRequisitionCompositeService.listRequisitionsByBucket( [], pagingParams )
-        assertTrue list[0].count > 0
-    }
-
-    /**
-     * Test list requisitions With Invalid User
-     */
-    @Test
-    void listRequisitionsByALlBucketInvalidUser() {
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
-        springSecurityService.getAuthentication().user.oracleUserName = null
-        try {
-            def pagingParams = [max: 500, offset: 0]
-            purchaseRequisitionCompositeService.listRequisitionsByBucket( [FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE], pagingParams )
-        } catch (ApplicationException ae) {
-            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
-        } finally {
-            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
-        }
-
-    }
-
-    /**
      * Test create
      */
     @Test

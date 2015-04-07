@@ -28,11 +28,9 @@ class PurchaseRequisitionCompositeService {
     def requisitionDetailService
     def financeSystemControlService
     def financeCommodityService
-    def requisitionInformationService
     def requisitionAccountingService
     def shipToCodeService
     def financeOrganizationCompositeService
-    def institutionalDescriptionService
     def currencyFormatService
     def chartOfAccountsService
     def financeTaxGroupService
@@ -299,70 +297,6 @@ class PurchaseRequisitionCompositeService {
     }
 
     /**
-     * Returns list of Requisitions in defined data structure
-     * @param buckets
-     * @param pagingParams
-     */
-    def listRequisitionsByBucket( buckets, pagingParams ) {
-        def user = springSecurityService.getAuthentication()?.user
-        if (user == null || user.oracleUserName == null) {
-            LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
-            throw new ApplicationException( PurchaseRequisitionCompositeService, new BusinessLogicValidationException(
-                    FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
-        }
-        if (buckets?.isEmpty()) {
-            buckets = [FinanceProcurementConstants.REQUISITION_LIST_BUCKET_ALL]
-        } else {
-            buckets = new ArrayList( buckets ).unique()
-        }
-        def wrapperList = [];
-        buckets.each() {bucket ->
-            processBucket wrapperList, bucket, pagingParams, user.oracleUserName
-        }
-        return wrapperList
-    }
-
-    /**
-     * Process each Bucket
-     *
-     * @param wrapperList
-     * @param bucket
-     * @param pagingParams
-     * @return
-     */
-    private def processBucket( wrapperList, bucket, pagingParams, user ) {
-        def draftStatus = [FinanceProcurementConstants.REQUISITION_LIST_STATUS_DRAFT, FinanceProcurementConstants.REQUISITION_LIST_STATUS_DISAPPROVED]
-
-        def completedStatus = [FinanceProcurementConstants.REQUISITION_LIST_STATUS_COMPLETED, FinanceProcurementConstants.REQUISITION_LIST_STATUS_BUYER_ASSIGNED,
-                               FinanceProcurementConstants.REQUISITION_LIST_STATUS_CONVERTED_TO_PO]
-
-        def pendingStatus = [FinanceProcurementConstants.REQUISITION_LIST_STATUS_PENDING]
-        switch (bucket) {
-            case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_ALL:
-                wrapperList.add( groupResult( FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT,
-                                              listRequisitions( user, pagingParams, draftStatus ) ) )
-                wrapperList.add( groupResult( FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING,
-                                              listRequisitions( user, pagingParams, pendingStatus ) ) )
-                wrapperList.add( groupResult( FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE,
-                                              listRequisitions( user, pagingParams, completedStatus ) ) )
-                break
-            case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT:
-                wrapperList.add( groupResult( bucket, listRequisitions( user, pagingParams, draftStatus ) ) )
-                break
-            case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING:
-                wrapperList.add( groupResult( bucket, listRequisitions( user, pagingParams, pendingStatus ) ) )
-                break
-            case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE:
-                wrapperList.add( groupResult( bucket, listRequisitions( user, pagingParams, completedStatus ) ) )
-                break
-            default:
-                LoggerUtility.error LOGGER, 'Group Type not valid'
-                throw new ApplicationException( PurchaseRequisitionCompositeService, new BusinessLogicValidationException(
-                        FinanceProcurementConstants.ERROR_MESSAGE_INVALID_BUCKET_TYPE, [bucket] ) )
-        }
-    }
-
-    /**
      * This method is used to set data for Create/Update requisition detail
      * @param requestCode Requisition Code.
      * @param requisitionDetailRequest Requisition details.
@@ -413,32 +347,5 @@ class PurchaseRequisitionCompositeService {
         catch (CurrencyNotFoundException cnf) {
             return FinanceCommonUtility.formatAmountForLocale( (amount).toBigDecimal() )
         }
-    }
-
-    /**
-     * Gets List of requisitions
-     * @param pagingParams
-     * @param status
-     * @return
-     */
-    public listRequisitions( oracleUserName, pagingParams, status ) {
-        def ret = requisitionInformationService.listRequisitionsByStatus( status, pagingParams, oracleUserName )
-        def baseCcy = institutionalDescriptionService.findByKey().baseCurrCode
-        ret.list = ret.list.collect() {
-            [id        : it.id, version: it.version, amount: deriveFormattedAmount( it.amount, it.currency, baseCcy ),
-             coasCode  : it.coasCode, requestDate: it.requestDate, requisitionCode: it.requisitionCode, status: it.status, transactionDate: it.transactionDate,
-             vendorName: it.vendorName]
-        }
-        return ret
-    }
-
-    /**
-     * Groups the records as per buckets
-     * @param groupType
-     * @param records
-     * @return
-     */
-    private def groupResult( groupType, records ) {
-        [category: groupType, count: records.count, list: records.list]
     }
 }
