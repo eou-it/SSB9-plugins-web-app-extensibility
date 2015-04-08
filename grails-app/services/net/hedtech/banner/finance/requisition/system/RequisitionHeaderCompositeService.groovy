@@ -12,7 +12,7 @@ import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
 
 /**
- * Class for Purchase Requisition Composite
+ * Class for Purchase Requisition Header Composite Service
  */
 class RequisitionHeaderCompositeService {
     private static final Logger LOGGER = Logger.getLogger( this.class )
@@ -21,7 +21,6 @@ class RequisitionHeaderCompositeService {
     def requisitionHeaderService
     def springSecurityService
     def financeSystemControlService
-
 
     /**
      * Create purchase requisition Header
