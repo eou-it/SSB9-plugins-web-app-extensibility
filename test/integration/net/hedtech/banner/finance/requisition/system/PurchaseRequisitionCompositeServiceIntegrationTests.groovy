@@ -18,7 +18,7 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
 
 
     def purchaseRequisitionCompositeService
-
+    def requisitionHeaderCompositeService
     def requisitionHeaderService
     def requisitionDetailService
     def requisitionAccountingService
@@ -40,17 +40,6 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
         super.tearDown()
     }
 
-    /**
-     * Test create
-     */
-    @Test
-    void createPurchaseRequisition() {
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def headerDomainModel = newRequisitionHeader()
-        def domainModelMap = [requisitionHeader: headerDomainModel]
-        def requestCode = purchaseRequisitionCompositeService.createPurchaseRequisitionHeader( domainModelMap )
-        assertTrue requestCode != FinanceProcurementConstants.DEFAULT_REQUEST_CODE
-    }
 
     /**
      * Test fetchPurchaseRequisition
@@ -58,121 +47,8 @@ class PurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegratio
     @Test
     void fetchPurchaseRequisition() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def code = purchaseRequisitionCompositeService.createPurchaseRequisitionHeader( [requisitionHeader: newRequisitionHeader()] )
+        def code = requisitionHeaderCompositeService.createPurchaseRequisitionHeader( [requisitionHeader: newRequisitionHeader()] )
         assertTrue purchaseRequisitionCompositeService.fetchPurchaseRequisition( code ).header.requestCode == code
-    }
-
-    /**
-     * Test create With Invalid user
-     */
-    @Test(expected = BadCredentialsException.class)
-    void createPurchaseRequisitionInvalidUser() {
-        login 'Invalid_user', 'invalid_password'
-        def headerDomainModel = newRequisitionHeader()
-        def domainModelMap = [requisitionHeader: headerDomainModel]
-        purchaseRequisitionCompositeService.createPurchaseRequisitionHeader( domainModelMap )
-    }
-
-    /**
-     * Test create With invalid Currency
-     */
-    @Test(expected = ApplicationException.class)
-    void createPurchaseRequisitionInvalidCcy() {
-        def headerDomainModel = newRequisitionHeader()
-        headerDomainModel.currency = 'ABC'
-        def domainModelMap = [requisitionHeader: headerDomainModel]
-        purchaseRequisitionCompositeService.createPurchaseRequisitionHeader( domainModelMap )
-    }
-
-    /**
-     * Test create to test the invalid user.
-     */
-    @Test
-    void createPurchaseRequisitionForInvalidUser() {
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
-        springSecurityService.getAuthentication().user.oracleUserName = ''
-        def headerDomainModel = newRequisitionHeader()
-        def domainModelMap = [requisitionHeader: headerDomainModel]
-        try {
-            purchaseRequisitionCompositeService.createPurchaseRequisitionHeader( domainModelMap )
-        } catch (ApplicationException ae) {
-            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
-        } finally {
-            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
-        }
-    }
-
-    /**
-     * Test delete
-     */
-    @Test
-    void deletePurchaseRequisition() {
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def headerDomainModel = newRequisitionHeader()
-        def domainModelMap = [requisitionHeader: headerDomainModel]
-        def requestCode = purchaseRequisitionCompositeService.createPurchaseRequisitionHeader( domainModelMap )
-        purchaseRequisitionCompositeService.deletePurchaseRequisition( requestCode )
-        try {
-            requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
-            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
-        }
-        catch (ApplicationException ae) {
-            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
-        }
-    }
-
-    /**
-     * Test update
-     */
-    @Test
-    void updatePurchaseRequisition() {
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def headerDomainModel = newRequisitionHeader()
-        headerDomainModel.requesterName = 'Modified'
-        def domainModelMap = [requisitionHeader: headerDomainModel]
-        def header = purchaseRequisitionCompositeService.updateRequisitionHeader( domainModelMap, 'R0000026' )
-        assertTrue header.requesterName == 'Modified'
-    }
-
-    /**
-     * Test update to test invalid user.
-     */
-    @Test
-    void updatePurchaseRequisitionInvalidUser() {
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
-        springSecurityService.getAuthentication().user.oracleUserName = ''
-        def headerDomainModel = newRequisitionHeader()
-        headerDomainModel.requesterName = 'Modified'
-        def domainModelMap = [requisitionHeader: headerDomainModel]
-        try {
-            purchaseRequisitionCompositeService.updateRequisitionHeader( domainModelMap, 'R0000026' )
-        } catch (ApplicationException ae) {
-            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
-        } finally {
-            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
-        }
-    }
-
-    /**
-     * Test update
-     */
-    @Test
-    void updatePurchaseRequisitionInvalidCode() {
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def headerDomainModel = newRequisitionHeader()
-        headerDomainModel.requesterName = 'Modified'
-        def domainModelMap = [requisitionHeader: headerDomainModel]
-        try {
-            purchaseRequisitionCompositeService.updateRequisitionHeader( domainModelMap, 'INVALID' )
-            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
-        }
-        catch (ApplicationException ae) {
-            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
-        }
     }
 
     /**
