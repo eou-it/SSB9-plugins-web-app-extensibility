@@ -29,10 +29,42 @@ class RequisitionInformationService extends ServiceBase {
         if (oracleUserName == null) {
             oracleUserName = getOracleUserNameForLoggedInUser()
         }
-        [
-                list : RequisitionInformation.listRequisitionsByStatus( oracleUserName, pagingParams, status ),
-                count: RequisitionInformation.fetchRequisitionsCountByStatus( oracleUserName, status )
-        ]
+        def requisitionList = RequisitionInformation.listRequisitionsByUser( oracleUserName )
+        def newInfoList = requisitionList.findAll {
+            it.getStatus() in status
+        }
+        [list: paginateList( newInfoList, pagingParams.max, pagingParams.offset ),
+         count: fetchRequisitionsCountByStatus( requisitionList, status, oracleUserName )]
+    }
+
+    /**
+     * The method is used to paginate the list.
+     * @param list requisition list.
+     * @param max the maximum data should be shown at a time.
+     * @param offset starting point.
+     * @return will return the paginated list.
+     */
+    private def paginateList( list, max, offset ) {
+        list.subList( offset, Math.min( offset + max, list.size() ))
+    }
+
+    /**
+     * Fetch Requisition Count
+     * @param status
+     * @param oracleUserName
+     * @return
+     */
+    def fetchRequisitionsCountByStatus( requisitionList, status, oracleUserName ) {
+        if (oracleUserName == null) {
+            oracleUserName = getOracleUserNameForLoggedInUser()
+        }
+        def count = 0
+        requisitionList.each {info ->
+            if (info.getStatus() in status) {
+                count++
+            }
+        }
+        count
     }
 
     /**

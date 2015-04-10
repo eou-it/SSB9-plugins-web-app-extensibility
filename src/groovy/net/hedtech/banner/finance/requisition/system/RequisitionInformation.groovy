@@ -19,10 +19,7 @@ import javax.persistence.*
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_FINDER_BY_STATUS,
                 query = """FROM RequisitionInformation reqInfo
                             WHERE reqInfo.lastModifiedBy = :userId
-                            order by reqInfo.activityDate desc """),
-        @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_COUNT_FINDER_BY_STATUS,
-                query = """FROM RequisitionInformation reqInfo
-                            WHERE reqInfo.lastModifiedBy = :userId """)
+                            order by reqInfo.activityDate desc """)
 
 ])
 @Entity
@@ -134,39 +131,15 @@ class RequisitionInformation implements Serializable {
      * @param status
      * @return list
      */
-    static def listRequisitionsByStatus( userId, paginationParams, status ) {
-        def list = RequisitionInformation.withSession {session ->
+    static def listRequisitionsByUser( userId ) {
+        def infoList = RequisitionInformation.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_FINDER_BY_STATUS )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
-                    .setMaxResults( paginationParams.max )
-                    .setFirstResult( paginationParams.offset )
+//                    .setMaxResults( paginationParams.max )
+//                    .setFirstResult( paginationParams.offset )
                     .list()
         }
-        def newInfoList = list.findAll {
-            it.getStatus() in status
-        }
-        newInfoList
-    }
-
-    /**
-     * List number of all requisitions by user and specified status
-     * @param userId
-     * @param status
-     * @return count
-     */
-    static def fetchRequisitionsCountByStatus( userId, status ) {
-        def requisitionsCount = RequisitionInformation.withSession {session ->
-            session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_COUNT_FINDER_BY_STATUS )
-                    .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
-                    .list()
-        }
-        def count = 0
-        requisitionsCount.each {info ->
-            if (info.status in status) {
-                count++
-            }
-        }
-        count
+        return infoList
     }
 
 }

@@ -33,7 +33,7 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void listRequisitionsByStatus() {
         def pagingParams = [max: 500, offset: 0]
-        def requisitions = RequisitionInformation.listRequisitionsByStatus( FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, pagingParams )
+        def requisitions = RequisitionInformation.listRequisitionsByUser( FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, pagingParams )
         assertNotNull requisitions
         assert requisitions.size() > 0
     }
@@ -44,7 +44,7 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void listRequisitionsByStatusWithInvalidUser() {
         def pagingParams = [max: 500, offset: 0]
-        def requisitions = RequisitionInformation.listRequisitionsByStatus( 'INVALID_USER', pagingParams )
+        def requisitions = RequisitionInformation.listRequisitionsByUser( 'INVALID_USER', pagingParams )
         assert requisitions.size() == 0
     }
 
@@ -54,7 +54,7 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void listRequisitionsByStatusWithInvalidStatus() {
         def pagingParams = [max: 500, offset: 0]
-        def requisitions = RequisitionInformation.listRequisitionsByStatus( FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, pagingParams )
+        def requisitions = RequisitionInformation.listRequisitionsByUser( FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, pagingParams )
         assert requisitions.size() > 0
     }
 
@@ -63,7 +63,7 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void listRequisitionsCountByStatus() {
-        def requisitions = RequisitionInformation.fetchRequisitionsCountByStatus( FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+        def requisitions = RequisitionInformation.fetchRequisitionsCountByUser( FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                                                                                   [FinanceProcurementConstants.REQUISITION_LIST_STATUS_DRAFT] )
         assert requisitions > 0
     }
@@ -73,7 +73,7 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void listRequisitionsCountByInvalidStatus() {
-        def requisitions = RequisitionInformation.fetchRequisitionsCountByStatus( FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, ['draft_invalid'] )
+        def requisitions = RequisitionInformation.fetchRequisitionsCountByUser( FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, ['draft_invalid'] )
         assert requisitions == 0
     }
 
