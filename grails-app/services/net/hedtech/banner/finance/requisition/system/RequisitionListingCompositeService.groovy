@@ -9,6 +9,7 @@ import net.hedtech.banner.exceptions.CurrencyNotFoundException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.FinanceCommonUtility
 import net.hedtech.banner.finance.util.LoggerUtility
+import net.hedtech.banner.i18n.MessageHelper
 import org.apache.log4j.Logger
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -77,14 +78,14 @@ class RequisitionListingCompositeService {
      * @return
      */
     private def processBucket( wrapperList, bucket, pagingParams, user ) {
-        def draftStatus = [FinanceProcurementConstants.REQUISITION_LIST_STATUS_DRAFT,
-                           FinanceProcurementConstants.REQUISITION_LIST_STATUS_DISAPPROVED]
+        def draftStatus = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT,
+                           FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
 
-        def completedStatus = [FinanceProcurementConstants.REQUISITION_LIST_STATUS_COMPLETED,
-                               FinanceProcurementConstants.REQUISITION_LIST_STATUS_BUYER_ASSIGNED,
-                               FinanceProcurementConstants.REQUISITION_LIST_STATUS_CONVERTED_TO_PO]
+        def completedStatus = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_COMPLETED,
+                               FinanceProcurementConstants.REQUISITION_INFO_STATUS_ASSIGNED_TO_BUYER,
+                               FinanceProcurementConstants.REQUISITION_INFO_STATUS_CONVERTED_TO_PO]
 
-        def pendingStatus = [FinanceProcurementConstants.REQUISITION_LIST_STATUS_PENDING]
+        def pendingStatus = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_PENDING]
         switch (bucket) {
             case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_ALL:
                 wrapperList.add( groupResult( FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT,
@@ -121,9 +122,10 @@ class RequisitionListingCompositeService {
         def baseCcy = institutionalDescriptionService.findByKey().baseCurrCode
         ret.list = ret.list.collect() {
             [id             : it.id, version: it.version, amount: deriveFormattedAmount( it.amount, it.currency, baseCcy ),
-             coasCode       : it.coasCode, requestDate: it.requestDate, requisitionCode: it.requisitionCode, status: it.status,
+             coasCode       : it.coasCode, requestDate: it.requestDate, requisitionCode: it.requisitionCode,
              transactionDate: it.transactionDate,
-             vendorName     : it.vendorName]
+             vendorName     : it.vendorName,
+             status         : MessageHelper.message( it.getStatus() )]
         }
         return ret
     }

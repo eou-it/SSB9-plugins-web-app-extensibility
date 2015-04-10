@@ -13,6 +13,9 @@ class FinanceProcurementConstants {
     static final String DEFAULT_ACTION='dashboard'
     static final String INSTITUTION_BASE_CCY='institutionBaseCcy'
 
+    static final String DEFAULT_INDICATOR_YES = 'Y'
+    static final String DEFAULT_INDICATOR_NO = 'N'
+
     /* Constant for Requisition Header Domain*/
 
     public static final String REQUISITION_HEADER_FINDER_BY_REQUEST_CODE = 'RequisitionHeader.findByRequestCodeAndItem'
@@ -258,19 +261,24 @@ class FinanceProcurementConstants {
     static final String REQUISITION_INFO_FINDER_PARAM_STATUS = 'status'
     static final String REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID = 'userId'
     static final String REQUEST_PARAM_BUCKET_TYPES = 'bucketTypes'
+    static final String REQUISITION_INFO_FIELD_FPVREQINFO_FPBREQH_COMP_IND = 'FPVREQINFO_FPBREQH_COMP_IND'
+    static final String REQUISITION_INFO_FIELD_FPVREQINFO_FPBREQH_APPR_IND = 'FPVREQINFO_FPBREQH_APPR_IND'
+    static final String REQUISITION_INFO_FIELD_FPVREQINFO_FTVRQPO_REQD_CODE = 'FPVREQINFO_FTVRQPO_REQD_CODE'
+    static final String REQUISITION_INFO_FIELD_FPVREQINFO_FPRREQD_BUYR_CODE = 'FPVREQINFO_FPRREQD_BUYR_CODE'
+
+    /** Properties keys for Requisition Information status  **/
+    static final String REQUISITION_INFO_STATUS_DRAFT = 'purchaseRequisition.status.draft'
+    static final String REQUISITION_INFO_STATUS_DISAPPROVED = 'purchaseRequisition.status.disapproved'
+    static final String REQUISITION_INFO_STATUS_PENDING = 'purchaseRequisition.status.pending'
+    static final String REQUISITION_INFO_STATUS_COMPLETED = 'purchaseRequisition.status.completed'
+    static final String REQUISITION_INFO_STATUS_ASSIGNED_TO_BUYER = 'purchaseRequisition.status.assignedToBuyer'
+    static final String REQUISITION_INFO_STATUS_CONVERTED_TO_PO = 'purchaseRequisition.status.convertedToPo'
 
     /** Constants for listing and search Requisitions */
-
     static final String REQUISITION_LIST_BUCKET_DRAFT = 'draft'
     static final String REQUISITION_LIST_BUCKET_PENDING = 'pending'
     static final String REQUISITION_LIST_BUCKET_COMPLETE = 'completed'
     static final String REQUISITION_LIST_BUCKET_ALL = 'all'
-    static final String REQUISITION_LIST_STATUS_DRAFT = 'Draft'
-    static final String REQUISITION_LIST_STATUS_DISAPPROVED = 'Disapproved'
-    static final String REQUISITION_LIST_STATUS_PENDING = 'Pending'
-    static final String REQUISITION_LIST_STATUS_COMPLETED = 'Completed'
-    static final String REQUISITION_LIST_STATUS_BUYER_ASSIGNED = 'Assigned to Buyer'
-    static final String REQUISITION_LIST_STATUS_CONVERTED_TO_PO = 'Converted to PO'
     static final String REQUEST_PARAM_ACCOUNTING_ITEM = 'item'
     static final String REQUEST_PARAM_ACCOUNTING_SEQUENCE = 'sequence'
 }

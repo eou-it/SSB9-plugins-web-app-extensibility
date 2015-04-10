@@ -10,6 +10,9 @@ import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.service.ServiceBase
 import org.apache.log4j.Logger
 
+/**
+ * Service class for RequisitionInformation.
+ */
 class RequisitionInformationService extends ServiceBase {
     boolean transactional = true
     private static final def LOGGER = Logger.getLogger( this.getClass() )
@@ -19,27 +22,17 @@ class RequisitionInformationService extends ServiceBase {
      * List requisition information by status
      * @param status
      * @param pagingParams
-     * @return
+     * @return array which will have requisition list and count of the items in the requisition list.
      */
 
     def listRequisitionsByStatus( status, pagingParams, oracleUserName ) {
         if (oracleUserName == null) {
             oracleUserName = getOracleUserNameForLoggedInUser()
         }
-        [list: RequisitionInformation.listRequisitionsByStatus( oracleUserName, pagingParams, status ), count: fetchRequisitionsCountByStatus( status, oracleUserName )]
-    }
-
-    /**
-     * Fetch Requisition Count
-     * @param status
-     * @param oracleUserName
-     * @return
-     */
-    def fetchRequisitionsCountByStatus( status, oracleUserName ) {
-        if (oracleUserName == null) {
-            oracleUserName = getOracleUserNameForLoggedInUser()
-        }
-        RequisitionInformation.fetchRequisitionsCountByStatus( oracleUserName, status )
+        [
+                list : RequisitionInformation.listRequisitionsByStatus( oracleUserName, pagingParams, status ),
+                count: RequisitionInformation.fetchRequisitionsCountByStatus( oracleUserName, status )
+        ]
     }
 
     /**
@@ -50,7 +43,9 @@ class RequisitionInformationService extends ServiceBase {
         def user = springSecurityService.getAuthentication()?.user
         if (user == null || user.oracleUserName == null) {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
-            throw new ApplicationException( RequisitionInformationService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
+            throw new ApplicationException( RequisitionInformationService,
+                                            new BusinessLogicValidationException(
+                                                    FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
         user.oracleUserName
     }
