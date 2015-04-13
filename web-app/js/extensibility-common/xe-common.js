@@ -96,10 +96,12 @@ var xe = (function (xe) {
     // might want to assure it has a child section
     xe.getGroupSelector = function(element) {
         var res = element[0].tagName;
-        if (element[0].id)
-            res += '#'+element[0].id;
-        if (element[0].class)
-            res += '.'+element[0].class;
+        if (element[0].id) {
+            res += '#' + element[0].id;
+        }
+        if (element[0].className) {
+            res += '.' + element[0].className;
+        }
         return res;
     };
 
