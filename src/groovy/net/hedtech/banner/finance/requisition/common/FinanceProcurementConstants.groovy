@@ -267,12 +267,12 @@ class FinanceProcurementConstants {
     static final String REQUISITION_INFO_FIELD_FPVREQINFO_FPRREQD_BUYR_CODE = 'FPVREQINFO_FPRREQD_BUYR_CODE'
 
     /** Properties keys for Requisition Information status  **/
-    static final String REQUISITION_INFO_STATUS_DRAFT = 'purchaseRequisition.status.draft'
-    static final String REQUISITION_INFO_STATUS_DISAPPROVED = 'purchaseRequisition.status.disapproved'
-    static final String REQUISITION_INFO_STATUS_PENDING = 'purchaseRequisition.status.pending'
-    static final String REQUISITION_INFO_STATUS_COMPLETED = 'purchaseRequisition.status.completed'
-    static final String REQUISITION_INFO_STATUS_ASSIGNED_TO_BUYER = 'purchaseRequisition.status.assignedToBuyer'
-    static final String REQUISITION_INFO_STATUS_CONVERTED_TO_PO = 'purchaseRequisition.status.convertedToPo'
+    static final String REQUISITION_INFO_STATUS_DRAFT = 'draft'
+    static final String REQUISITION_INFO_STATUS_DISAPPROVED = 'disapproved'
+    static final String REQUISITION_INFO_STATUS_PENDING = 'pending'
+    static final String REQUISITION_INFO_STATUS_COMPLETED = 'completed'
+    static final String REQUISITION_INFO_STATUS_ASSIGNED_TO_BUYER = 'assignedToBuyer'
+    static final String REQUISITION_INFO_STATUS_CONVERTED_TO_PO = 'convertedToPo'
 
     /** Constants for listing and search Requisitions */
     static final String REQUISITION_LIST_BUCKET_DRAFT = 'draft'

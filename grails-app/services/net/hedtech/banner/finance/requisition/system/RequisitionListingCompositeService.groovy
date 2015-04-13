@@ -125,7 +125,7 @@ class RequisitionListingCompositeService {
              coasCode       : it.coasCode, requestDate: it.requestDate, requisitionCode: it.requisitionCode,
              transactionDate: it.transactionDate,
              vendorName     : it.vendorName,
-             status         : MessageHelper.message( it.getStatus() )]
+             status         : MessageHelper.message( 'purchaseRequisition.status.' + it.getStatus() )]
         }
         return ret
     }

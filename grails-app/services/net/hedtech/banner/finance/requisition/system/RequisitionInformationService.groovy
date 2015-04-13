@@ -10,9 +10,6 @@ import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.service.ServiceBase
 import org.apache.log4j.Logger
 
-/**
- * Service class for RequisitionInformation.
- */
 class RequisitionInformationService extends ServiceBase {
     boolean transactional = true
     private static final def LOGGER = Logger.getLogger( this.getClass() )
@@ -22,30 +19,14 @@ class RequisitionInformationService extends ServiceBase {
      * List requisition information by status
      * @param status
      * @param pagingParams
-     * @return array which will have requisition list and count of the items in the requisition list.
+     * @return
      */
 
     def listRequisitionsByStatus( status, pagingParams, oracleUserName ) {
         if (oracleUserName == null) {
             oracleUserName = getOracleUserNameForLoggedInUser()
         }
-        def requisitionList = RequisitionInformation.listRequisitionsByUser( oracleUserName )
-        def newInfoList = requisitionList.findAll {
-            it.getStatus() in status
-        }
-        [list: paginateList( newInfoList, pagingParams.max, pagingParams.offset ),
-         count: fetchRequisitionsCountByStatus( requisitionList, status, oracleUserName )]
-    }
-
-    /**
-     * The method is used to paginate the list.
-     * @param list requisition list.
-     * @param max the maximum data should be shown at a time.
-     * @param offset starting point.
-     * @return will return the paginated list.
-     */
-    private def paginateList( list, max, offset ) {
-        list.subList( offset, Math.min( offset + max, list.size() ))
+        [list: RequisitionInformation.listRequisitionsByStatus( oracleUserName, pagingParams, status ), count: fetchRequisitionsCountByStatus( status, oracleUserName )]
     }
 
     /**
@@ -54,17 +35,11 @@ class RequisitionInformationService extends ServiceBase {
      * @param oracleUserName
      * @return
      */
-    def fetchRequisitionsCountByStatus( requisitionList, status, oracleUserName ) {
+    def fetchRequisitionsCountByStatus( status, oracleUserName ) {
         if (oracleUserName == null) {
             oracleUserName = getOracleUserNameForLoggedInUser()
         }
-        def count = 0
-        requisitionList.each {info ->
-            if (info.getStatus() in status) {
-                count++
-            }
-        }
-        count
+        RequisitionInformation.fetchRequisitionsCountByStatus( oracleUserName, status )
     }
 
     /**
@@ -75,9 +50,7 @@ class RequisitionInformationService extends ServiceBase {
         def user = springSecurityService.getAuthentication()?.user
         if (user == null || user.oracleUserName == null) {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
-            throw new ApplicationException( RequisitionInformationService,
-                                            new BusinessLogicValidationException(
-                                                    FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
+            throw new ApplicationException( RequisitionInformationService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
         user.oracleUserName
     }

@@ -37,6 +37,24 @@ class RequisitionInformationServiceIntegrationTests extends BaseIntegrationTestC
     }
 
     /**
+     * test fetch count
+     */
+    @Test
+    void fetchRequisitionsCountByStatus() {
+        def count = requisitionInformationService.fetchRequisitionsCountByStatus( [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT], null )
+        assertTrue count > 0
+    }
+
+    /**
+     * test fetch count with invalid user
+     */
+    @Test
+    void fetchRequisitionsCountByStatusWithInvalidUser() {
+        def count = requisitionInformationService.fetchRequisitionsCountByStatus( [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT], 'Invalid' )
+        assertTrue count == 0
+    }
+
+    /**
      * test fetch requisitions
      */
     @Test
