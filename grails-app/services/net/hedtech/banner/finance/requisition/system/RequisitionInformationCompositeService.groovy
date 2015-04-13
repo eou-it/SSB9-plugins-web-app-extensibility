@@ -30,7 +30,7 @@ class RequisitionInformationCompositeService {
      * Fetches Requisition Information
      * @param requestCode
      */
-    def fetchPurchaseRequisition( requestCode ) {
+    def fetchPurchaseRequisition( requestCode, baseCcy ) {
         def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         LoggerUtility.debug( LOGGER, 'Header: ' + header )
         def shipTo = shipToCodeService.findShipToCodesByCode( header.ship )
@@ -54,6 +54,8 @@ class RequisitionInformationCompositeService {
         if (header.currency) {
             def currencyObj = financeCurrencyService.findCurrencyByCurrencyCode( header.currency )
             currency = [currencyCode: currencyObj.currencyCode, title: currencyObj.title]
+        } else {
+            currency = financeCurrencyService.getFilteredCurrencyDetail( baseCcy )
         }
         LoggerUtility.debug( LOGGER, 'taxGroup: ' + taxGroup )
         LoggerUtility.debug( LOGGER, 'discount: ' + discount )

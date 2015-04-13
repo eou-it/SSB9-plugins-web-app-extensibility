@@ -42,7 +42,7 @@ class RequisitionInformationCompositeServiceIntegrationTests extends BaseIntegra
     void fetchPurchaseRequisition() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def code = requisitionHeaderCompositeService.createPurchaseRequisitionHeader( [requisitionHeader: newRequisitionHeader()] )
-        assertTrue requisitionInformationCompositeService.fetchPurchaseRequisition( code ).header.requestCode == code
+        assertTrue requisitionInformationCompositeService.fetchPurchaseRequisition( code, 'USD' ).header.requestCode == code
     }
 
     /**
