@@ -110,10 +110,14 @@ var xe = (function (xe) {
         return res;
     };
 
-    xe.getPageName = function() {
-        // return location.pathname.substring(location.pathname.indexOf('/ssb/')+5);
-        return location.pathname.substring(location.pathname.lastIndexOf('/')+1);
+    xe.getPageName  = function() {
+        // capture the last URL component either after a slash
+        // or before a final slash
+        var rx = /.*\/([^\/]+)/;
+        var match = location.pathname.match(rx);
+        return match && match[1] || "noPageName";
     };
+
     xe.getApplication = function() {
         return location.pathname.substring(1,location.pathname.indexOf('/',1));
     };
@@ -804,7 +808,9 @@ var xe = (function (xe) {
                             xe.page.metadata=[$.extend(true,{},xe.extensions)];  //clone of extensions used for editor
                         }
                         xe.extensions.orderedSections = xe.reorderMetadata(xe.extensions.sections);
-                        xe.extendFunctions();
+                        if(xe.extendFunctions !== undefined) {
+                            xe.extendFunctions();
+                        }
                     }
             }
         });
