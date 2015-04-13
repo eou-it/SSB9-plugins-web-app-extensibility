@@ -1,0 +1,107 @@
+[{"sections": [
+		
+   {
+		"name": "heading",
+		"exclude": false
+   },
+   /** Section Reorder **/
+   {
+		"name": "popList",
+		"nextSibling": "templates"
+   },
+   
+   /** Serach input **/
+   {
+		"name": "searchForm",
+        "fields": [
+            {
+                 "name": "searchTerm",
+				 "exclude": false
+		    }
+		]
+   },
+   
+   /** Field hide, reorde **/
+   {
+		"name": "overview",
+		"exclude": false,
+        "fields": [
+            {
+                 "name": "organizationDescription",
+				  "attributes": {
+		            "label": "Replace Label For:"
+				  },
+				 "nextSibling": "organizationName"
+		    }
+		]
+   },
+   
+   /*** Accordion ***/
+   {
+		"name": "emailSetting",
+		"exclude": false,		
+   },
+   {
+		"name": "accountSettings",
+		"nextSibling": "serverSettings"		
+   },
+   
+   /*** Tab ***/
+    {
+		"name": "dataFieldList",
+		"exclude": false,
+		"nextSibling": "templateList"		
+    },
+   
+   
+   {
+        "name": "normalSection",
+        "exclude": true
+   },
+   {
+        "name": "acc2",
+        "exclude": true,
+        "nextSibling": "acc1"
+       
+   },
+   {
+        "name": "emailAccountSection",
+        "nextSibling": "emailServerSection"   
+   },
+   {
+        "name": "templateListSection",
+        "exclude": false
+   },
+   {
+        "name": "searchFormSection",
+        "exclude": false
+   },
+    {
+        "name": "selectTestSection",
+        "fields": [
+            {
+                 "name": "dataFieldFolder",
+                 "exclude": false,
+                 "attributes": {
+		            "label": "Replace Label For:",
+                    "title": "select...",
+                    "placeholder": "Please select the date..."
+                 }
+            }
+        ]
+    },
+     
+     {
+        "name": "testSection",
+        "fields": [
+            {
+                 "name": "testField",
+                 "exclude": false,
+                  "attributes": {
+                    "label": "Replace Label For:"
+                 }
+            }
+        ]
+    }
+
+]}]
