@@ -89,4 +89,23 @@ class RequisitionDetailService extends ServiceBase {
         }
         return requisitionDetail
     }
+
+    /**
+     * This method is used to find RequisitionDetail list by requisition code.
+     * @param requisitionCode Requisition code.
+     * @return List of requisition code.
+     */
+    def findByRequestCode( requisitionCode ) {
+        LoggerUtility.debug( LOGGER, 'Input parameter for findByRequestCode :' + requisitionCode )
+        def inputMap = [requisitionCode: requisitionCode]
+        def requisitionDetails = RequisitionDetail.fetchByRequestCode( inputMap.requisitionCode ).list
+        if (requisitionDetails.isEmpty()) {
+            LoggerUtility.error( LOGGER, 'Requisition Commodity Details are empty for requestCode=' + requisitionCode )
+            throw new ApplicationException(
+                    RequisitionDetailService,
+                    new BusinessLogicValidationException(
+                            FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL, [] ) )
+        }
+        return requisitionDetails
+    }
 }

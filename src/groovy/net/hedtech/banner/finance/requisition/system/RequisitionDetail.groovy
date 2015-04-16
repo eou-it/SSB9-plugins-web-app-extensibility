@@ -26,7 +26,10 @@ import javax.persistence.*
         @NamedQuery(name = FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_USER,
                 query = """FROM RequisitionDetail requisitionDetail
                             WHERE requisitionDetail.userId = :userId
-                            ORDER BY requisitionDetail.requestCode""")
+                            ORDER BY requisitionDetail.requestCode"""),
+        @NamedQuery(name = FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE,
+                query = """FROM RequisitionDetail requisitionDetail
+                            WHERE requisitionDetail.requestCode = :requestCode""")
 ])
 @Entity
 @Table(name = FinanceProcurementConstants.FPVREQD)
@@ -403,12 +406,26 @@ class RequisitionDetail implements Serializable {
      * @param paginationParams pagination parameters.
      * @return List of requisition details.
      */
-     static def fetchByUserId( userId, paginationParams ) {
+    static def fetchByUserId( userId, paginationParams ) {
         def requestDetailList = RequisitionDetail.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_USER )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_USER_ID, userId )
                     .setMaxResults( paginationParams.max )
                     .setFirstResult( paginationParams.offset )
+                    .list()
+        }
+        return [list: requestDetailList]
+    }
+
+    /**
+     * This method is used to fetch requisition detail by requisition code.
+     * @param requestCode Requisition code.
+     * @return list of requisition.
+     */
+    static def fetchByRequestCode( requestCode ) {
+        def requestDetailList = RequisitionDetail.withSession {session ->
+            session.getNamedQuery( FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE )
+                    .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
                     .list()
         }
         return [list: requestDetailList]
