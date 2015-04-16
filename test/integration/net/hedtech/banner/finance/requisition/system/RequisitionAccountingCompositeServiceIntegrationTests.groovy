@@ -95,8 +95,8 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                     FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def accountingDomainModel = getRequestAccounting()
-        accountingDomainModel.item = '0'
-        accountingDomainModel.sequenceNumber = '1'
+        accountingDomainModel.item = Integer.parseInt( '0' )
+        accountingDomainModel.sequenceNumber = Integer.parseInt( '1' )
         accountingDomainModel.requestCode = 'R0001397'
         def domainModelMap = [requisitionAccounting: accountingDomainModel]
         def accounting = requisitionAccountingCompositeService.updateRequisitionAccounting( domainModelMap )
@@ -131,8 +131,8 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                     FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def accountingDomainModel = getRequestAccounting()
-        accountingDomainModel.item = '98999'
-        accountingDomainModel.sequenceNumber = '10221'
+        accountingDomainModel.item = Integer.parseInt( '98999' )
+        accountingDomainModel.sequenceNumber = Integer.parseInt( '10221' )
         accountingDomainModel.requestCode = 'R0001397'
         def domainModelMap = [requisitionAccounting: accountingDomainModel]
         try {
@@ -153,8 +153,8 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
         springSecurityService.getAuthentication().user.oracleUserName = ''
         def accountingDomainModel = getRequestAccounting()
-        accountingDomainModel.item = '0'
-        accountingDomainModel.sequenceNumber = '1'
+        accountingDomainModel.item = Integer.parseInt( '0' )
+        accountingDomainModel.sequenceNumber = Integer.parseInt( '1' )
         accountingDomainModel.requestCode = 'R0001397'
         def domainModelMap = [requisitionAccounting: accountingDomainModel]
         try {

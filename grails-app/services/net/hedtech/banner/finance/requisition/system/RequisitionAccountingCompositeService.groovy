@@ -67,14 +67,24 @@ class RequisitionAccountingCompositeService {
      */
     def updateRequisitionAccounting( accountingDomainModel ) {
         // Null or empty check for item number and sequence number.
-        if (!accountingDomainModel.requisitionAccounting.item || !accountingDomainModel.requisitionAccounting.sequenceNumber) {
+        if (accountingDomainModel.requisitionAccounting.item == null || accountingDomainModel.requisitionAccounting.sequenceNumber == null) {
             LoggerUtility.error LOGGER, 'Item and Sequence number are required to update the Requisition Accounting information.'
             throw new ApplicationException( RequisitionAccountingCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_ITEM_SEQUENCE_REQUIRED, [] ) )
         }
-        Integer item = Integer.parseInt( accountingDomainModel.requisitionAccounting.item )
-        Integer sequenceNumber = Integer.parseInt( accountingDomainModel.requisitionAccounting.sequenceNumber )
+        Integer item = 0
+        if (!accountingDomainModel.requisitionAccounting.item instanceof Integer) {
+            item = Integer.parseInt( accountingDomainModel.requisitionAccounting.item )
+        } else {
+            item = accountingDomainModel.requisitionAccounting.item
+        }
+        Integer sequenceNumber = 0
+        if (!accountingDomainModel.requisitionAccounting.sequenceNumber instanceof Integer) {
+            sequenceNumber = Integer.parseInt( accountingDomainModel.requisitionAccounting.sequenceNumber )
+        } else {
+            sequenceNumber = accountingDomainModel.requisitionAccounting.sequenceNumber
+        }
         def requestCode = accountingDomainModel.requisitionAccounting.requestCode
 
         RequisitionAccounting existingAccountingInfo = requisitionAccountingService.findByRequestCodeItemAndSeq( requestCode, item, sequenceNumber )
