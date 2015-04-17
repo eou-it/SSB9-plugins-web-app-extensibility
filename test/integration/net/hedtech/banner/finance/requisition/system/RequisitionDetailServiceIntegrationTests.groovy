@@ -159,6 +159,27 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
     /**
+     * Test findByRequestCode with valid code
+     */
+    @Test
+    public void findByRequestCode() {
+        def detail = requisitionDetailService.findByRequestCode( 'R0000561' )
+        assertTrue 'R0000561' == detail[0].requestCode
+    }
+
+    /**
+     * Test findByRequestCode With InvalidCode
+     */
+    @Test
+    public void findByRequestCodeWithInvalidCode() {
+        try {
+            requisitionDetailService.findByRequestCode( 'INVALID' )
+        } catch (ApplicationException ae) {
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL )
+        }
+    }
+
+    /**
      * The method is used to get the RequisitionDetail object with all required values to insert/update.
      * @return RequisitionDetail.
      */

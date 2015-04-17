@@ -73,6 +73,15 @@ class RequisitionDetailIntegrationTests extends BaseIntegrationTestCase {
     }
 
     /**
+     * Test fetchByRequestCode with Valid code
+     */
+    @Test
+    void fetchByRequestCode() {
+        def details = RequisitionDetail.fetchByRequestCode( 'R0000561' )
+        assertTrue details.list.size() > 0
+    }
+
+    /**
      * The method is used to get the RequisitionDetail object with all required values to insert/update.
      * @return RequisitionDetail.
      */
