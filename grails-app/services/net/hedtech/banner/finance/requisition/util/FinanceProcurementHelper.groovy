@@ -18,14 +18,10 @@ class FinanceProcurementHelper {
     static def getHeaderDomainModel( requisitionHeaderJSON ) {
         return [
                 requestCode              : FinanceProcurementConstants.DEFAULT_REQUEST_CODE,
-                item                     : requisitionHeaderJSON.item ? requisitionHeaderJSON.item : null,
                 requestDate              : requisitionHeaderJSON.requestDate ? new Date( requisitionHeaderJSON.requestDate ) : new Date(),
                 transactionDate          : new Date( requisitionHeaderJSON.transactionDate ),
                 requesterName            : requisitionHeaderJSON.requesterName,
                 ship                     : requisitionHeaderJSON.ship,
-                requesterPhoneNumber     : requisitionHeaderJSON.requesterPhoneNumber,
-                requesterPhoneArea       : requisitionHeaderJSON.requesterPhoneArea,
-                requesterPhoneExtension  : requisitionHeaderJSON.requesterPhoneExtension,
                 vendorPidm               : requisitionHeaderJSON.vendorPidm,
                 vendorAddressType        : requisitionHeaderJSON.vendorAddressType,
                 vendorAddressTypeSequence: requisitionHeaderJSON.vendorAddressTypeSequence,
@@ -33,19 +29,12 @@ class FinanceProcurementHelper {
                 organization             : requisitionHeaderJSON.organization,
                 attentionTo              : requisitionHeaderJSON.attentionTo,
                 isDocumentLevelAccounting: requisitionHeaderJSON.isDocumentLevelAccounting,
-                requestTypeIndicator     : 'P',
-                matchRequired            : requisitionHeaderJSON.matchRequired,
-                requesterFaxArea         : requisitionHeaderJSON.requesterFaxArea,
-                requesterFaxNumber       : requisitionHeaderJSON.requesterFaxNumber,
-                requesterFaxExtension    : requisitionHeaderJSON.requesterFaxExtension,
-                requesterFaxCountry      : requisitionHeaderJSON.requesterFaxCountry,
-                requesterEmailAddress    : requisitionHeaderJSON.requesterEmailAddress,
                 deliveryComment          : requisitionHeaderJSON.deliveryComment,
                 taxGroup                 : requisitionHeaderJSON.taxGroup,
                 discount                 : requisitionHeaderJSON.discount,
                 currency                 : requisitionHeaderJSON.currency,
-                vendorContact            : requisitionHeaderJSON.vendorContact,
-                vendorEmailAddress       : requisitionHeaderJSON.vendorEmailAddress,
+                matchRequired            : 'N',
+                requestTypeIndicator     : FinanceProcurementConstants.DEFAULT_REQUISITION_TYPE_IND,
                 requisitionOrigination   : FinanceProcurementConstants.DEFAULT_REQUISITION_ORIGIN
         ]
     }
@@ -58,18 +47,16 @@ class FinanceProcurementHelper {
     static def getDetailDomainModel( requisitionDetailJSON ) {
         return [
                 requestCode           : requisitionDetailJSON.requestCode,
-                item                  : requisitionDetailJSON.item,
                 commodity             : requisitionDetailJSON.commodity,
                 commodityDescription  : requisitionDetailJSON.commodityDescription,
                 quantity              : requisitionDetailJSON.quantity,
                 unitOfMeasure         : requisitionDetailJSON.unitOfMeasure,
                 unitPrice             : requisitionDetailJSON.unitPrice,
-                suspenseIndicator     : true,
-                textUsageIndicator    : FinanceProcurementConstants.DEFAULT_FPBREQD_TEXT_USAGE,
                 discountAmount        : requisitionDetailJSON.discountAmount,
                 taxAmount             : requisitionDetailJSON.taxAmount,
                 additionalChargeAmount: requisitionDetailJSON.additionalChargeAmount,
                 taxGroup              : requisitionDetailJSON.taxGroup,
+                textUsageIndicator    : FinanceProcurementConstants.DEFAULT_FPBREQD_TEXT_USAGE,
                 dataOrigin            : FinanceProcurementConstants.DEFAULT_REQUISITION_ORIGIN
         ]
     }
