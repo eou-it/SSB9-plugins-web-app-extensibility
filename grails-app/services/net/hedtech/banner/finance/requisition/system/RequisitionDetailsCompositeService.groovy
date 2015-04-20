@@ -7,6 +7,7 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import net.hedtech.banner.finance.system.FinanceCommodityService
 import net.hedtech.banner.finance.system.FinanceSystemControl
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.commons.lang3.StringUtils
@@ -24,7 +25,6 @@ class RequisitionDetailsCompositeService {
     def requisitionDetailService
     def financeSystemControlService
     def financeCommodityService
-
 
     /**
      * Create purchase requisition detail
@@ -134,5 +134,26 @@ class RequisitionDetailsCompositeService {
             requisitionDetailRequest.discountAmount = null
         }
         return requisitionDetailRequest
+    }
+
+    /**
+     * This method is used to find RequisitionDetail list by requisition code.
+     * @param requisitionCode Requisition code.
+     * @return List of requisition code.
+     */
+    def findByRequestCode( requisitionCode ) {
+        def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
+        def commodityCodes = requisitionDetails.collect() {
+            it.commodity
+        }
+        def commodityList = financeCommodityService.findCommodityByCodeList( commodityCodes )
+        Map commodityCodeDescMap = commodityList.collectEntries {[it.commodityCode, it.description]}
+        def getDescription = {commodity ->
+            commodityCodeDescMap.get( commodity )
+        }
+        requisitionDetails.each() {
+            it.commodityDescription = getDescription( it.commodity )
+        }
+        requisitionDetails
     }
 }

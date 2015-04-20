@@ -122,6 +122,30 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     }
 
     /**
+     * findByRequestCode
+     */
+    @Test
+    void findByRequestCode() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        assert requisitionDetailsCompositeService.findByRequestCode( 'R0000561' ).commodityDescription != null
+    }
+
+    /**
+     * Test findByRequestCode InvalidCode
+     */
+    @Test
+    void findByRequestCodeInvalidCode() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        try {
+            requisitionDetailsCompositeService.findByRequestCode( 'INVALID' )
+            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_ITEM_IS_REQUIRED
+        } catch (ApplicationException e) {
+            assertApplicationException e, FinanceProcurementConstants.ERROR_MESSAGE_ITEM_IS_REQUIRED
+        }
+    }
+    /**
      * Test update to test invalid user.
      */
     @Test
