@@ -13,7 +13,7 @@ var xe = (function (xe) {
     xe.typePrefix = 'xe-';                                                       //prefix for xe specific html attributes
     xe.type = {field: 'field',section: 'section'};                               //logical type names
     xe.attr = {field: xe.typePrefix+'field', section: xe.typePrefix+'section', labelledBy: 'aria-labelledby', describedBy: 'aria-describedby'};   //html attribute names
-    xe.replaceAttr = ['placeholder', 'title', 'label', 'buttonText', 'tabLabel', 'html'];
+    xe.replaceAttr = ['placeholder', 'title', 'label', 'buttonText', 'tabLabel', 'html', 'component'];
     xe.attrInh = {section: xe.typePrefix+'section-inh'};                         //html attribute name for section inherited
     xe.forAttribute = 'xe-for';
     xe.errors = [];
@@ -395,18 +395,25 @@ var xe = (function (xe) {
         /*******************************************************************************************************
         Replace the HTML of a field
         *******************************************************************************************************/
-        function replaceHTML( fieldExtension ) {
+        function replaceHTML( fieldElement, fieldExtension ) {
 
-            var newHTML;
-            var fieldElement = $( xe.selectorToRemove(xe.type.field, fieldExtension.name) );
-            if (fieldExtension.component) {
-                newHTML = xe.renderComponent(fieldExtension.component);
-            } else {
-                newHTML = fieldExtension.attributes.html || xe.generateField(fieldExtension);
-            }
-            fieldElement.html(newHTML);
-            fieldElement.addClass("xe-replaced");
+            var newHTML = fieldExtension.attributes.html;
+
+            $(fieldElement).html(newHTML);
+            $(fieldElement).addClass("xe-replaced");
         }
+
+        /*******************************************************************************************************
+         Replace Component
+         *******************************************************************************************************/
+        function replaceComponent( fieldElement, fieldExtension ) {
+
+            var newHTML = xe.renderComponent(fieldExtension.attributes.component);
+
+            $(fieldElement).html(newHTML);
+            $(fieldElement).addClass("xe-replaced");
+        }
+
 
         /*******************************************************************************************************
         Replace the label text on a button item
@@ -454,11 +461,19 @@ var xe = (function (xe) {
             }
         }
 
-
         /*******************************************************************************************************
         Extend field attributes
         *******************************************************************************************************/
         function extendFieldAttributes( fieldElement, fieldExtension ) {
+
+            // determine if attributes are to be modified for xe-field or xe-data
+            var element;
+            var dataElement = $("[xe-data]", fieldElement);
+            if (dataElement.length > 0) {
+                element = dataElement;
+            } else {
+                element = fieldElement;
+            }
 
             // Replace any attributes where new value provided
             _.each(xe.replaceAttr,function(attributeName) {
@@ -467,16 +482,19 @@ var xe = (function (xe) {
 
                     switch(attributeName) {
                         case "html":
-                            replaceHTML(fieldExtension);
+                            replaceHTML(element, fieldExtension);
+                            break;
+                        case "component":
+                            replaceComponent(fieldElement, fieldExtension); // fieldElement regardless of existence of xe-data for now
                             break;
                         case "label":
-                            replaceLabel(fieldElement, fieldExtension);
+                            replaceLabel(element, fieldExtension);
                             break;
                         case "buttonText":
-                            replaceButtonText(fieldElement, fieldExtension);
+                            replaceButtonText(element, fieldExtension);
                             break;
                         default:
-                            replaceAttribute(fieldElement,attributeName,fieldExtension.attributes[attributeName]);
+                            replaceAttribute(element,attributeName,fieldExtension.attributes[attributeName]);
                     }
                 }
             });
@@ -497,7 +515,6 @@ var xe = (function (xe) {
                         var placeholder = $('<div xe-field="' + fieldExtension.name + '"></div>')[0];
                         fieldElement = anchor.parentNode.insertBefore(placeholder, null);
                     }
-
                 }
 
                 if ( fieldElement ) {
@@ -514,8 +531,6 @@ var xe = (function (xe) {
                         ) {
                         orderSiblings( xe.type.field, fieldElement, extensions.orderedFields );
                     }
-
-                    // add new field - not yet implemented?
 
                     // extend field attributes
                     if ( fieldExtension.attributes ) {
@@ -547,8 +562,8 @@ var xe = (function (xe) {
                     return;
                 }
 
-                // reposition section   //Added for Angular: only move children of the rootElement
-                if ( section !==rootElement[0] && _.has(extensions, "nextSibling") &&
+                // reposition section
+                if ( _.has(extensions, "nextSibling") &&
                      !sections.filter(xe.selector(xe.type.section, sectionName )).hasClass("xe-moved")
                     ) {
                     orderSiblings(xe.type.section, section, xe.extensions.orderedSections);
@@ -561,12 +576,15 @@ var xe = (function (xe) {
 
                 // apply any defined extensions to the fields of this section
                 extendSectionFields( section, extensions );
+
+                $(section).addClass("xe-extended");
             }
         }
 
         // determine list of sections to be processed
-        sections = $(xe.selector(xe.type.section), rootElement);
-        if ( $(rootElement[0]).is(xe.selector(xe.type.section))) {
+        sections = $(xe.selector(xe.type.section), rootElement).not(".xe-extended");
+
+        if ( $(rootElement[0]).is(xe.selector(xe.type.section)) && !$(rootElement).hasClass("xe-extended") ) {
             sections = sections.add( rootElement[0] );
         }
 
