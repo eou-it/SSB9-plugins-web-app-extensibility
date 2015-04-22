@@ -13,7 +13,7 @@ var xe = (function (xe) {
     xe.typePrefix = 'xe-';                                                       //prefix for xe specific html attributes
     xe.type = {field: 'field',section: 'section'};                               //logical type names
     xe.attr = {field: xe.typePrefix+'field', section: xe.typePrefix+'section', labelledBy: 'aria-labelledby', describedBy: 'aria-describedby'};   //html attribute names
-    xe.replaceAttr = ['placeholder', 'title', 'label', 'buttonText', 'tabLabel', 'html', 'component'];
+    xe.replaceAttr = ['placeholder', 'title', 'label', 'buttonText', 'tabLabel', 'html', 'component', 'href'];
     xe.attrInh = {section: xe.typePrefix+'section-inh'};                         //html attribute name for section inherited
     xe.forAttribute = 'xe-for';
     xe.errors = [];
@@ -470,7 +470,7 @@ var xe = (function (xe) {
             var element;
             var dataElement = $("[xe-data]", fieldElement);
             if (dataElement.length > 0) {
-                element = dataElement;
+                element = dataElement[0];
             } else {
                 element = fieldElement;
             }
