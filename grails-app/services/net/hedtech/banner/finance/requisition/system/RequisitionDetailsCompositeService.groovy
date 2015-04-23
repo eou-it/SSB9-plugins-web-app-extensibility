@@ -11,6 +11,7 @@ import net.hedtech.banner.finance.system.FinanceSystemControl
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.commons.lang3.StringUtils
 import org.apache.log4j.Logger
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * Class for Purchase Requisition Details Composite Service
@@ -140,6 +141,7 @@ class RequisitionDetailsCompositeService {
      * @param requisitionCode Requisition code.
      * @return List of requisition code.
      */
+    @Transactional(readOnly = true)
     def findByRequestCode( requisitionCode ) {
         def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
         def commodityCodes = requisitionDetails.collect() {
@@ -153,6 +155,5 @@ class RequisitionDetailsCompositeService {
         requisitionDetails.each() {
             it.commodityDescription = getDescription( it.commodity )
         }
-        requisitionDetails
     }
 }
