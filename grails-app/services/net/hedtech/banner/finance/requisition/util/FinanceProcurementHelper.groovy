@@ -18,7 +18,7 @@ class FinanceProcurementHelper {
     static def getHeaderDomainModel( requisitionHeaderJSON ) {
         return [
                 requestCode              : FinanceProcurementConstants.DEFAULT_REQUEST_CODE,
-                requestDate              : requisitionHeaderJSON.requestDate ? new Date( requisitionHeaderJSON.requestDate ) : new Date(),
+                requestDate              : new Date( requisitionHeaderJSON.transactionDate ),
                 transactionDate          : new Date( requisitionHeaderJSON.transactionDate ),
                 requesterName            : requisitionHeaderJSON.requesterName,
                 ship                     : requisitionHeaderJSON.ship,
