@@ -8,10 +8,10 @@ package net.hedtech.banner.finance.requisition.common
  */
 class FinanceProcurementConstants {
 
-    static final String USER_PROFILE_KEY='userProfile'
-    static final String DASHBOARD_PAGE='financeDashboard'
-    static final String DEFAULT_ACTION='dashboard'
-    static final String INSTITUTION_BASE_CCY='institutionBaseCcy'
+    static final String USER_PROFILE_KEY = 'userProfile'
+    static final String DASHBOARD_PAGE = 'financeDashboard'
+    static final String DEFAULT_ACTION = 'dashboard'
+    static final String INSTITUTION_BASE_CCY = 'institutionBaseCcy'
 
     static final String DEFAULT_INDICATOR_YES = 'Y'
     static final String DEFAULT_INDICATOR_NO = 'N'
@@ -159,7 +159,7 @@ class FinanceProcurementConstants {
     String NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE_AND_ITEM = 'RequestDetail.fetchByrequestCodeAndCommodityCode'
     static final String ERROR_MESSAGE_MISSING_REQUISITION_DETAIL = 'missing.requisition.detail'
     static final
-        String NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE = 'RequestDetail.fetchByrequestCode'
+    String NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE = 'RequestDetail.fetchByrequestCode'
 
     static final
     String SUCCESS_MESSAGE_CREATE_REQUISITION_DETAIL = 'net.hedtech.banner.finance.requisition.create.requisition.detail.success'

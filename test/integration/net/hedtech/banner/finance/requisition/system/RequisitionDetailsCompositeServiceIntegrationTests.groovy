@@ -186,6 +186,17 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     }
 
     /**
+     * The test case is to test find requisition by code with all required information.
+     */
+    @Test
+    void testFindByRequestCodeAndItem() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def reqDetailInfo = requisitionDetailsCompositeService.findByRequestCodeAndItem( 'R0000124', 1 )
+        assertTrue( reqDetailInfo.requisitionDetail.requestCode == 'R0000124' )
+    }
+
+    /**
      * The method is used to get the RequisitionDetail object with all required values to insert/update.
      * @return RequisitionDetail.
      */
