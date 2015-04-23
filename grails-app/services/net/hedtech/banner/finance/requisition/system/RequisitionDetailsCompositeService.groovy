@@ -141,7 +141,6 @@ class RequisitionDetailsCompositeService {
      * @param requisitionCode Requisition code.
      * @return List of requisition code.
      */
-    @Transactional(readOnly = true)
     def findByRequestCode( requisitionCode ) {
         def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
         def commodityCodes = requisitionDetails.collect() {
