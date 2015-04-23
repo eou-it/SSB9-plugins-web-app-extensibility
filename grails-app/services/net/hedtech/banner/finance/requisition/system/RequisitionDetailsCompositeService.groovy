@@ -25,6 +25,8 @@ class RequisitionDetailsCompositeService {
     def requisitionDetailService
     def financeSystemControlService
     def financeCommodityService
+    def financeUnitOfMeasureService
+    def financeTaxCompositeService
 
     /**
      * Create purchase requisition detail
@@ -155,5 +157,29 @@ class RequisitionDetailsCompositeService {
         requisitionDetails.each() {
             it.commodityDescription = getDescription( it.commodity )
         }
+    }
+
+    /**
+     * The method to find requisition code by item with all required data list taxGroup, commodity and unitOfMeasure.
+     * @param requestCode requisition code.
+     * @param item requisition item number.
+     * @return map with all required data.
+     */
+    def findByRequestCodeAndItem( requestCode, Integer item ) {
+        def taxGroup, unitOfMeasure, commodity = []
+        def requisitionDetail = requisitionDetailService.findByRequestCodeAndItem( requestCode, item )
+        if (requisitionDetail.unitOfMeasure) {
+            unitOfMeasure = financeUnitOfMeasureService.findUnitOfMeasureByCode( requisitionDetail.unitOfMeasure )
+        }
+        if (requisitionDetail.taxGroup) {
+            taxGroup = financeTaxCompositeService.getTaxGroupByCode( requisitionDetail.taxGroup )
+        }
+        if (requisitionDetail.commodity) {
+            commodity = financeCommodityService.findCommodityByCode( requisitionDetail.commodity )
+        }
+        return [requisitionDetail: requisitionDetail,
+                taxGroup: taxGroup,
+                unitOfMeasure: unitOfMeasure,
+                commodity: commodity]
     }
 }
