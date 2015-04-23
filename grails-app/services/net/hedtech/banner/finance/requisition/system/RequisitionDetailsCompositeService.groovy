@@ -152,8 +152,11 @@ class RequisitionDetailsCompositeService {
         def getDescription = {commodity ->
             commodityCodeDescMap.get( commodity )
         }
-        requisitionDetails.each() {
-            it.commodityDescription = getDescription( it.commodity )
+        requisitionDetails.collect() {
+            [id                             : it.id, version: it.version, requestCode: it.requestCode, item: it.item, commodity: it.commodity, commodityDescription: getDescription( it.commodity ),
+             quantity                       : it.quantity, unitOfMeasure: it.unitOfMeasure, unitPrice: it.unitPrice, currency: it.currency, discountAmount: it.discountAmount, taxAmount: it.taxAmount,
+             additionalChargeAmount         : it.additionalChargeAmount, convertedDiscountAmount: it.convertedDiscountAmount, convertedTaxAmount: it.convertedTaxAmount,
+             convertedAdditionalChargeAmount: it.convertedAdditionalChargeAmount, taxGroup: it.taxGroup, amt: it.amt]
         }
     }
 }
