@@ -39,7 +39,7 @@
    /*** Accordion ***/
    {
 		"name": "emailSetting",
-		"exclude": false,		
+		"exclude": false		
    },
    {
 		"name": "accountSettings",
