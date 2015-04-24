@@ -46,4 +46,18 @@ class RequisitionHeaderService extends ServiceBase {
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
     }
+
+    /**
+     * Completes the purchase requisition
+     * @param requestCode
+     */
+    def completeRequisition( requestCode ) {
+        LoggerUtility.debug( LOGGER, 'Input parameters for completeRequisition :' + requestCode )
+        def retRequisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode )
+        if (retRequisitionHeader == null) {
+            throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
+        }
+        retRequisitionHeader.completeIndicator = Boolean.TRUE
+        update( [domainModel: retRequisitionHeader] )
+    }
 }
