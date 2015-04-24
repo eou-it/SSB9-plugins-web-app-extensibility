@@ -50,11 +50,6 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
     /**
      * Test complete Requisition
      */
-    @Test
-    void completeRequisition() {
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        requisitionHeaderService.completeRequisition( 'R0001433' )
-    }
 
     /**
      * test Listing headers with now list
