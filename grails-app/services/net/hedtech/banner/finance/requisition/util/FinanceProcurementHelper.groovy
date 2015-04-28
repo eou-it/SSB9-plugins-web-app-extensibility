@@ -47,7 +47,7 @@ class FinanceProcurementHelper {
     static def getDetailDomainModel( requisitionDetailJSON ) {
         return [
                 requestCode           : requisitionDetailJSON.requestCode,
-                item                  : requisitionDetailJSON.item,
+                item                  : Integer.parseInt(requisitionDetailJSON.item),
                 commodity             : requisitionDetailJSON.commodity,
                 commodityDescription  : requisitionDetailJSON.commodityDescription,
                 quantity              : requisitionDetailJSON.quantity,
