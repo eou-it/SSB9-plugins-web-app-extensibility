@@ -48,10 +48,6 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
     /**
-     * Test complete Requisition
-     */
-
-    /**
      * test Listing headers with now list
      */
     @Test
