@@ -23,7 +23,7 @@ class RequisitionHeaderService extends ServiceBase {
         LoggerUtility.debug( LOGGER, 'Input parameters for findRequisitionHeaderByRequestCode :' + requestCode )
         def retRequisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode )
 
-        if (retRequisitionHeader == null) {
+        if (!retRequisitionHeader) {
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }
         return retRequisitionHeader;
@@ -54,7 +54,7 @@ class RequisitionHeaderService extends ServiceBase {
     def completeRequisition( requestCode ) {
         LoggerUtility.debug( LOGGER, 'Input parameters for completeRequisition :' + requestCode )
         def retRequisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode )
-        if (retRequisitionHeader == null) {
+        if (!retRequisitionHeader) {
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }
         retRequisitionHeader.completeIndicator = Boolean.TRUE
