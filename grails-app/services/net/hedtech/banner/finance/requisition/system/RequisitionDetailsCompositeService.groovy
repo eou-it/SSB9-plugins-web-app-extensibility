@@ -156,6 +156,7 @@ class RequisitionDetailsCompositeService {
         }
         def retDetailList = requisitionDetails.collect() {
             [id                    : it.id,
+             requestCode           : it.requestCode,
              version               : it.version,
              additionalChargeAmount: it.additionalChargeAmount, amt: it.amt,
              commodity             : it.commodity, commodityDescription: it.commodityDescription,
