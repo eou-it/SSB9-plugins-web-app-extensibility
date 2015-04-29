@@ -154,7 +154,17 @@ class RequisitionDetailsCompositeService {
         def getDescription = {commodity ->
             commodityCodeDescMap.get( commodity )
         }
-        requisitionDetails.each() {
+        def retDetailList = requisitionDetails.collect() {
+            [id                    : it.id,
+             version               : it.version,
+             additionalChargeAmount: it.additionalChargeAmount, amt: it.amt,
+             commodity             : it.commodity, commodityDescription: it.commodityDescription,
+             currency              : it.currency, discountAmount: it.discountAmount,
+             item                  : it.item, quantity: it.quantity,
+             taxAmount             : it.taxAmount, taxGroup: it.taxGroup,
+             unitOfMeasure         : it.unitOfMeasure, unitPrice: it.unitPrice]
+        }
+        retDetailList.each() {
             it.commodityDescription = getDescription( it.commodity )
         }
     }
@@ -178,8 +188,8 @@ class RequisitionDetailsCompositeService {
             commodity = financeCommodityService.findCommodityByCode( requisitionDetail.commodity )
         }
         return [requisitionDetail: requisitionDetail,
-                taxGroup: taxGroup,
-                unitOfMeasure: unitOfMeasure,
-                commodity: commodity]
+                taxGroup         : taxGroup,
+                unitOfMeasure    : unitOfMeasure,
+                commodity        : commodity]
     }
 }
