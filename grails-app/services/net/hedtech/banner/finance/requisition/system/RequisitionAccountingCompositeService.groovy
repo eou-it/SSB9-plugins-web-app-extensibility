@@ -94,26 +94,24 @@ class RequisitionAccountingCompositeService {
         }
 
         RequisitionAccounting existingAccountingInfo = requisitionAccountingService.findByRequestCodeItemAndSeq( requestCode, item, sequenceNumber )
-        if (accountingDomainModel?.requisitionAccounting) {
-            RequisitionAccounting requisitionAccountingRequest = accountingDomainModel.requisitionAccounting
-            requisitionAccountingRequest.id = existingAccountingInfo.id
-            requisitionAccountingRequest.version = existingAccountingInfo.version
-            requisitionAccountingRequest.requestCode = existingAccountingInfo.requestCode
-            def user = springSecurityService.getAuthentication()?.user
-            if (user.oracleUserName) {
-                requisitionAccountingRequest.lastModified = new Date()
-                requisitionAccountingRequest.item = existingAccountingInfo.item
-                requisitionAccountingRequest.sequenceNumber = existingAccountingInfo.sequenceNumber
-                requisitionAccountingRequest.userId = user.oracleUserName
-                def requisitionAccounting = requisitionAccountingService.update( [domainModel: requisitionAccountingRequest] )
-                LoggerUtility.debug LOGGER, "Requisition Accounting information updated " + requisitionAccounting
-                return requisitionAccounting
-            } else {
-                LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
-                throw new ApplicationException( RequisitionAccountingCompositeService,
-                                                new BusinessLogicValidationException(
-                                                        FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
-            }
+        RequisitionAccounting requisitionAccountingRequest = accountingDomainModel.requisitionAccounting
+        requisitionAccountingRequest.id = existingAccountingInfo.id
+        requisitionAccountingRequest.version = existingAccountingInfo.version
+        requisitionAccountingRequest.requestCode = existingAccountingInfo.requestCode
+        def user = springSecurityService.getAuthentication()?.user
+        if (user.oracleUserName) {
+            requisitionAccountingRequest.lastModified = new Date()
+            requisitionAccountingRequest.item = existingAccountingInfo.item
+            requisitionAccountingRequest.sequenceNumber = existingAccountingInfo.sequenceNumber
+            requisitionAccountingRequest.userId = user.oracleUserName
+            def requisitionAccounting = requisitionAccountingService.update( [domainModel: requisitionAccountingRequest] )
+            LoggerUtility.debug LOGGER, "Requisition Accounting information updated " + requisitionAccounting
+            return requisitionAccounting
+        } else {
+            LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
+            throw new ApplicationException( RequisitionAccountingCompositeService,
+                                            new BusinessLogicValidationException(
+                                                    FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
     }
 }

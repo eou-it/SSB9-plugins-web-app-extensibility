@@ -38,12 +38,10 @@ class RequisitionDetailsCompositeService {
         RequisitionDetail requisitionDetailRequest = map.requisitionDetail
         def user = springSecurityService.getAuthentication()?.user
         if (user.oracleUserName) {
-            def oracleUserName = user?.oracleUserName
             def requestCode = requisitionDetailRequest.requestCode
             FinanceProcurementHelper.checkCompleteRequisition( requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ) )
-            def lastItem = requisitionDetailService.getLastItem( requestCode )
-            requisitionDetailRequest.userId = oracleUserName
-            requisitionDetailRequest.item = lastItem.next()
+            requisitionDetailRequest.userId = user?.oracleUserName
+            requisitionDetailRequest.item = requisitionDetailService.getLastItem( requestCode ).next()
             // Set all data with business logic.
             requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
             RequisitionDetail requisitionDetail = requisitionDetailService.create( [domainModel: requisitionDetailRequest] )
@@ -85,26 +83,24 @@ class RequisitionDetailsCompositeService {
                                                     FinanceProcurementConstants.ERROR_MESSAGE_ITEM_IS_REQUIRED, [] ) )
         }
         def existingDetail = requisitionDetailService.findByRequestCodeAndItem( requestCode, item )
-        if (detailDomainModel?.requisitionDetail) {
-            RequisitionDetail requisitionDetailRequest = detailDomainModel.requisitionDetail
-            requisitionDetailRequest.id = existingDetail.id
-            requisitionDetailRequest.version = existingDetail.version
-            requisitionDetailRequest.requestCode = existingDetail.requestCode
-            def user = springSecurityService.getAuthentication()?.user
-            if (user.oracleUserName) {
-                requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
-                requisitionDetailRequest.lastModified = new Date()
-                requisitionDetailRequest.item = existingDetail.item
-                requisitionDetailRequest.userId = user.oracleUserName
-                def requisitionDetail = requisitionDetailService.update( [domainModel: requisitionDetailRequest] )
-                LoggerUtility.debug LOGGER, "Requisition Detail updated " + requisitionDetail
-                return requisitionDetail
-            } else {
-                LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
-                throw new ApplicationException( RequisitionDetailsCompositeService,
-                                                new BusinessLogicValidationException(
-                                                        FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
-            }
+        RequisitionDetail requisitionDetailRequest = detailDomainModel.requisitionDetail
+        requisitionDetailRequest.id = existingDetail.id
+        requisitionDetailRequest.version = existingDetail.version
+        requisitionDetailRequest.requestCode = existingDetail.requestCode
+        def user = springSecurityService.getAuthentication()?.user
+        if (user.oracleUserName) {
+            requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
+            requisitionDetailRequest.lastModified = new Date()
+            requisitionDetailRequest.item = existingDetail.item
+            requisitionDetailRequest.userId = user.oracleUserName
+            def requisitionDetail = requisitionDetailService.update( [domainModel: requisitionDetailRequest] )
+            LoggerUtility.debug LOGGER, "Requisition Detail updated " + requisitionDetail
+            return requisitionDetail
+        } else {
+            LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
+            throw new ApplicationException( RequisitionDetailsCompositeService,
+                                            new BusinessLogicValidationException(
+                                                    FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
     }
 
@@ -123,18 +119,12 @@ class RequisitionDetailsCompositeService {
         requisitionDetailRequest.deliveryDate = requisitionHeader.deliveryDate
         // start check tax amount.
         FinanceSystemControl financeSystemControl = financeSystemControlService.findActiveFinanceSystemControl()
-        if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_NO) {
-            requisitionDetailRequest.taxGroup = null
-        } else if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_YES
-                && StringUtils.isBlank( requisitionDetailRequest.taxGroup )) {
+        if (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_NO || (financeSystemControl.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_YES
+                && StringUtils.isBlank( requisitionDetailRequest.taxGroup ))) {
             requisitionDetailRequest.taxGroup = null
         }
-        // end check tax amount.
         // Check for Commodity
-        if (requisitionDetailRequest.commodity) {
-            def commodity = financeCommodityService.findCommodityByCode( requisitionDetailRequest.commodity )
-            requisitionDetailRequest.commodityDescription = commodity.description
-        }
+        requisitionDetailRequest.commodityDescription = requisitionDetailRequest.commodity ? financeCommodityService.findCommodityByCode( requisitionDetailRequest.commodity ).description : null
         // If header have discount code setup then remove the discountAmount value from details
         if (requisitionHeader.discount != null) {
             requisitionDetailRequest.discountAmount = null
@@ -153,8 +143,9 @@ class RequisitionDetailsCompositeService {
         def commodityCodes = requisitionDetails.collect() {
             it.commodity
         }
-        def commodityList = financeCommodityService.findCommodityByCodeList( commodityCodes )
-        Map commodityCodeDescMap = commodityList.collectEntries {[it.commodityCode, it.description]}
+        Map commodityCodeDescMap = financeCommodityService.findCommodityByCodeList( commodityCodes ).collectEntries {
+            [it.commodityCode, it.description]
+        }
         def getDescription = {commodity ->
             commodityCodeDescMap.get( commodity )
         }

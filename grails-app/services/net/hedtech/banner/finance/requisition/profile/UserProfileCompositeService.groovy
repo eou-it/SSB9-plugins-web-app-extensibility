@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional
  */
 class UserProfileCompositeService {
     boolean transactional =false
-    def springSecurityService
     def financeUserProfileService
     def shipToCodeService
     def chartOfAccountsService

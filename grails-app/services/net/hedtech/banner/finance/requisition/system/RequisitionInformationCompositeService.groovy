@@ -14,7 +14,6 @@ class RequisitionInformationCompositeService {
     boolean transactional = true
 
     def requisitionHeaderService
-    def springSecurityService
     def shipToCodeService
     def financeOrganizationCompositeService
     def chartOfAccountsService

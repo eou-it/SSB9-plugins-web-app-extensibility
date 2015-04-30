@@ -36,8 +36,7 @@ class RequisitionHeaderCompositeService {
             def oracleUserName = user?.oracleUserName
             requisitionHeaderRequest.userId = oracleUserName
             // Check for tax group
-            FinanceSystemControl financeSystemControl = financeSystemControlService.findActiveFinanceSystemControl()
-            if (financeSystemControl?.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_NO) {
+            if (financeSystemControlService.findActiveFinanceSystemControl()?.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_NO) {
                 requisitionHeaderRequest.taxGroup = null
             }
             def requisitionHeader = requisitionHeaderService.create( [domainModel: requisitionHeaderRequest] )
@@ -72,7 +71,8 @@ class RequisitionHeaderCompositeService {
         // Update header
         def existingHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         FinanceProcurementHelper.checkCompleteRequisition( existingHeader )
-        if (map?.requisitionHeader) {
+        def user = springSecurityService.getAuthentication()?.user
+        if (map?.requisitionHeader && user?.oracleUserName) {
             RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
             requisitionHeaderRequest.id = existingHeader.id
             requisitionHeaderRequest.version = existingHeader.version
@@ -86,19 +86,15 @@ class RequisitionHeaderCompositeService {
                 }
             }
             requisitionHeaderRequest.requestDate = existingHeader.requestDate
-            def user = springSecurityService.getAuthentication()?.user
-            if (user.oracleUserName) {
-                def oracleUserName = user?.oracleUserName
-                requisitionHeaderRequest.userId = oracleUserName
-                def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
-                LoggerUtility.debug LOGGER, "Requisition Header updated " + requisitionHeader
-                return requisitionHeader
-            } else {
-                LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
-                throw new ApplicationException( RequisitionHeaderCompositeService,
-                                                new BusinessLogicValidationException(
-                                                        FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
-            }
+            requisitionHeaderRequest.userId = user?.oracleUserName
+            def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
+            LoggerUtility.debug LOGGER, "Requisition Header updated " + requisitionHeader
+            return requisitionHeader
+        } else {
+            LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
+            throw new ApplicationException( RequisitionHeaderCompositeService,
+                                            new BusinessLogicValidationException(
+                                                    FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
     }
 }

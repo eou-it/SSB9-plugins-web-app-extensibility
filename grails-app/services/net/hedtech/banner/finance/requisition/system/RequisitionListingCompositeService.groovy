@@ -119,9 +119,9 @@ class RequisitionListingCompositeService {
      */
     private listRequisitions( oracleUserName, pagingParams, status ) {
         def ret = requisitionInformationService.listRequisitionsByStatus( status, pagingParams, oracleUserName )
-        def baseCcy = institutionalDescriptionService.findByKey().baseCurrCode
         ret.list = ret.list.collect() {
-            [id             : it.id, version: it.version, amount: deriveFormattedAmount( it.amount, it.currency, baseCcy ),
+            [id             : it.id, version: it.version,
+             amount         : deriveFormattedAmount( it.amount, it.currency, institutionalDescriptionService.findByKey().baseCurrCode ),
              coasCode       : it.coasCode, requestDate: it.requestDate, requisitionCode: it.requisitionCode,
              transactionDate: it.transactionDate,
              vendorName     : it.vendorName,
