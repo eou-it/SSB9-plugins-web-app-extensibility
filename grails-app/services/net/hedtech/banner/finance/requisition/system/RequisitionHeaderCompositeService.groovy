@@ -7,6 +7,7 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
 import net.hedtech.banner.finance.system.FinanceSystemControl
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
@@ -19,6 +20,7 @@ class RequisitionHeaderCompositeService {
     boolean transactional = true
 
     def requisitionHeaderService
+    def requisitionDetailService
     def springSecurityService
     def financeSystemControlService
 
@@ -56,6 +58,7 @@ class RequisitionHeaderCompositeService {
      */
     def deletePurchaseRequisition( requestCode ) {
         def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
+        FinanceProcurementHelper.checkCompleteRequisition( requisitionHeader )
         requisitionHeaderService.delete( [domainModel: requisitionHeader] )
     }
 
@@ -68,11 +71,20 @@ class RequisitionHeaderCompositeService {
     def updateRequisitionHeader( map, requestCode ) {
         // Update header
         def existingHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
+        FinanceProcurementHelper.checkCompleteRequisition( existingHeader )
         if (map?.requisitionHeader) {
             RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
             requisitionHeaderRequest.id = existingHeader.id
             requisitionHeaderRequest.version = existingHeader.version
             requisitionHeaderRequest.requestCode = existingHeader.requestCode
+            if (requisitionHeaderRequest.isDocumentLevelAccounting != existingHeader.isDocumentLevelAccounting) {
+                try {
+                    requisitionDetailService.findByRequestCode( existingHeader.requestCode )
+                    requisitionHeaderRequest.isDocumentLevelAccounting = existingHeader.isDocumentLevelAccounting
+                } catch (ApplicationException e) {
+                    LoggerUtility.debug LOGGER, 'Safe modification for isDocumentLevelAccounting'
+                }
+            }
             requisitionHeaderRequest.requestDate = existingHeader.requestDate
             def user = springSecurityService.getAuthentication()?.user
             if (user.oracleUserName) {

@@ -6,6 +6,7 @@ package net.hedtech.banner.finance.requisition.system
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
 
@@ -32,7 +33,9 @@ class RequisitionAccountingCompositeService {
         if (user?.oracleUserName) {
             requisitionAccountingRequest.userId = user.oracleUserName
             requisitionAccountingRequest.sequenceNumber = requisitionAccountingService.getLastSequenceNumberByRequestCode( requisitionAccountingRequest.requestCode ).next()
-            if (requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionAccountingRequest.requestCode ).isDocumentLevelAccounting) {
+            def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionAccountingRequest.requestCode )
+            FinanceProcurementHelper.checkCompleteRequisition( header )
+            if (header?.isDocumentLevelAccounting) {
                 requisitionAccountingRequest.item = 0
             } else {
                 requisitionAccountingRequest.item = requisitionAccountingService.getLastItemNumberByRequestCode( requisitionAccountingRequest.requestCode ).next()
@@ -56,6 +59,7 @@ class RequisitionAccountingCompositeService {
      * @param sequenceNumber Sequence number.
      */
     def deletePurchaseRequisitionAccountingInformation( requestCode, Integer item, Integer sequenceNumber ) {
+        FinanceProcurementHelper.checkCompleteRequisition( requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ) )
         def requisitionAccounting = requisitionAccountingService.findByRequestCodeItemAndSeq( requestCode, item, sequenceNumber )
         requisitionAccountingService.delete( [domainModel: requisitionAccounting] )
     }
@@ -67,6 +71,9 @@ class RequisitionAccountingCompositeService {
      */
     def updateRequisitionAccounting( accountingDomainModel ) {
         // Null or empty check for item number and sequence number.
+        def requestCode = accountingDomainModel.requisitionAccounting.requestCode
+        FinanceProcurementHelper.checkCompleteRequisition( requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ) )
+
         if (accountingDomainModel.requisitionAccounting.item == null || accountingDomainModel.requisitionAccounting.sequenceNumber == null) {
             LoggerUtility.error LOGGER, 'Item and Sequence number are required to update the Requisition Accounting information.'
             throw new ApplicationException( RequisitionAccountingCompositeService,
@@ -85,7 +92,6 @@ class RequisitionAccountingCompositeService {
         } else {
             sequenceNumber = accountingDomainModel.requisitionAccounting.sequenceNumber
         }
-        def requestCode = accountingDomainModel.requisitionAccounting.requestCode
 
         RequisitionAccounting existingAccountingInfo = requisitionAccountingService.findByRequestCodeItemAndSeq( requestCode, item, sequenceNumber )
         if (accountingDomainModel?.requisitionAccounting) {

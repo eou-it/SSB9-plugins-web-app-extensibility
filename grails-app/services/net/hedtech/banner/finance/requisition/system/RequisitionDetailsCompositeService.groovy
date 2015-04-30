@@ -7,6 +7,7 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
 import net.hedtech.banner.finance.system.FinanceSystemControl
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.commons.lang3.StringUtils
@@ -39,6 +40,7 @@ class RequisitionDetailsCompositeService {
         if (user.oracleUserName) {
             def oracleUserName = user?.oracleUserName
             def requestCode = requisitionDetailRequest.requestCode
+            FinanceProcurementHelper.checkCompleteRequisition( requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ) )
             def lastItem = requisitionDetailService.getLastItem( requestCode )
             requisitionDetailRequest.userId = oracleUserName
             requisitionDetailRequest.item = lastItem.next()
@@ -61,6 +63,7 @@ class RequisitionDetailsCompositeService {
      * @param item Item.
      */
     def deletePurchaseRequisitionDetail( requestCode, Integer item ) {
+        FinanceProcurementHelper.checkCompleteRequisition( requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ) )
         def requisitionDetail = requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( requestCode, item )
         requisitionDetailService.delete( [domainModel: requisitionDetail] )
     }
@@ -72,6 +75,7 @@ class RequisitionDetailsCompositeService {
      */
     def updateRequisitionDetail( detailDomainModel ) {
         def requestCode = detailDomainModel.requisitionDetail.requestCode
+        FinanceProcurementHelper.checkCompleteRequisition( requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ) )
         Integer item = detailDomainModel.requisitionDetail.item
         // Null or empty check for item.
         if (!item) {

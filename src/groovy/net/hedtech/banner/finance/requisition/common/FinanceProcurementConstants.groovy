@@ -89,6 +89,7 @@ class FinanceProcurementConstants {
     public static final String DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD = 'u_pick_it'
 
     public static final String ERROR_MESSAGE_USER_NOT_VALID = 'user.not.valid'
+    public static final String ERROR_MESSAGE_REQUISITION_ALREADY_COMPLETED = 'requisition.already.completed'
 
     public static final String ERROR_MESSAGE_MISSING_REQUISITION_HEADER = 'missing.requisition.header'
     public static final

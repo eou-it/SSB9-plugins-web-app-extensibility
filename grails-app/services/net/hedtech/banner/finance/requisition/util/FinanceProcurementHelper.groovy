@@ -3,6 +3,8 @@
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.util
 
+import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 
 /**
@@ -82,7 +84,7 @@ class FinanceProcurementHelper {
                 additionalChargeAmountPct         : requisitionAccountingJSON.additionalChargeAmountPct,
                 requisitionAmount                 : requisitionAccountingJSON.requisitionAmount,
                 ruleClass                         : requisitionAccountingJSON.ruleClass,
-                chartOfAccount                   : requisitionAccountingJSON.chartOfAccounts,
+                chartOfAccount                    : requisitionAccountingJSON.chartOfAccounts,
                 accountIndex                      : requisitionAccountingJSON.accountIndex,
                 fund                              : requisitionAccountingJSON.fund,
                 organization                      : requisitionAccountingJSON.organization,
@@ -108,6 +110,18 @@ class FinanceProcurementHelper {
             return [requisitionDetail: getDetailDomainModel( inputJSON.detail )]
         } else if (inputJSON.accounting) {
             return [requisitionAccounting: getAccountingDomainModel( inputJSON.accounting )]
+        }
+    }
+
+    /**
+     * Checks if requisition is already complete
+     * @param requisitionHeader
+     */
+    static def checkCompleteRequisition( requisitionHeader ) {
+        if (true == requisitionHeader?.completeIndicator) {
+            throw new ApplicationException(
+                    FinanceProcurementHelper,
+                    new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_REQUISITION_ALREADY_COMPLETED, [requisitionHeader.requestCode] ) )
         }
     }
 }
