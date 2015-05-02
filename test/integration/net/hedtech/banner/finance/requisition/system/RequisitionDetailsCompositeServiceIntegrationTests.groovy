@@ -97,9 +97,9 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void testDeletePurchaseRequisitionDetail() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        requisitionDetailsCompositeService.deletePurchaseRequisitionDetail( 'R0000561', 1 )
+        requisitionDetailsCompositeService.deletePurchaseRequisitionDetail( 'R0000138', 1 )
         try {
-            requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'R0000561', 1 )
+            requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'R0000138', 1 )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL
         }
         catch (ApplicationException ae) {

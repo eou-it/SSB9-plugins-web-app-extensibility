@@ -113,13 +113,31 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
      * Test update
      */
     @Test
+    void updateAlreadyCompletedPurchaseRequisition() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def headerDomainModel = newRequisitionHeader()
+        headerDomainModel.requesterName = 'Modified'
+        headerDomainModel.requestCode = 'R0000026'
+        def domainModelMap = [requisitionHeader: headerDomainModel]
+        try {
+            requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap )
+        }
+        catch (ApplicationException ae) {
+            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_REQUISITION_ALREADY_COMPLETED
+        }
+    }
+
+    /**
+     * Test update
+     */
+    @Test
     void updatePurchaseRequisition() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def headerDomainModel = newRequisitionHeader()
         headerDomainModel.requesterName = 'Modified'
+        headerDomainModel.requestCode = 'R0000802'
         def domainModelMap = [requisitionHeader: headerDomainModel]
-        def header = requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'R0000026' )
-        assertTrue header.requesterName == 'Modified'
+        assert 'Modified' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap ).requesterName
     }
 
     /**
@@ -133,9 +151,10 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         springSecurityService.getAuthentication().user.oracleUserName = ''
         def headerDomainModel = newRequisitionHeader()
         headerDomainModel.requesterName = 'Modified'
+        headerDomainModel.requestCode = 'R0000802'
         def domainModelMap = [requisitionHeader: headerDomainModel]
         try {
-            requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'R0000026' )
+            requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap )
         } catch (ApplicationException ae) {
             assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
         } finally {
@@ -151,9 +170,10 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def headerDomainModel = newRequisitionHeader()
         headerDomainModel.requesterName = 'Modified'
+        headerDomainModel.requestCode = 'INVALID'
         def domainModelMap = [requisitionHeader: headerDomainModel]
         try {
-            requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'INVALID' )
+            requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
         }
         catch (ApplicationException ae) {

@@ -65,11 +65,10 @@ class RequisitionHeaderCompositeService {
      * Update Purchase requisition
      *
      * @param map the requisition map
-     * @param requestCode
      */
-    def updateRequisitionHeader( map, requestCode ) {
+    def updateRequisitionHeader( map ) {
         // Update header
-        def existingHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
+        def existingHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( map?.requisitionHeader?.requestCode )
         FinanceProcurementHelper.checkCompleteRequisition( existingHeader )
         def user = springSecurityService.getAuthentication()?.user
         if (map?.requisitionHeader && user?.oracleUserName) {
