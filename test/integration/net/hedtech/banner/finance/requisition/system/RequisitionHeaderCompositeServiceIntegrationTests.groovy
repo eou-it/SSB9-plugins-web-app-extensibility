@@ -110,6 +110,34 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     }
 
     /**
+     * Test Delete Completed Requisition Header for a specified request code
+     */
+    @Test
+    void testCompleteRequisition() {
+        try {
+            requisitionHeaderService.completeRequisition( 'INVALID' )
+            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
+        }
+        catch (ApplicationException ae) {
+            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
+        }
+    }
+
+    /**
+     * Test Delete Completed Requisition Header for a specified request code
+     */
+    @Test
+    void testCompleteAlreadyCompletedRequisition() {
+        try {
+            requisitionHeaderService.completeRequisition( 'R0000001' )
+            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_REQUISITION_ALREADY_COMPLETED
+        }
+        catch (ApplicationException ae) {
+            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_REQUISITION_ALREADY_COMPLETED
+        }
+    }
+
+    /**
      * Test update
      */
     @Test

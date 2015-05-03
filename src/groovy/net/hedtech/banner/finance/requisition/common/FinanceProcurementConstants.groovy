@@ -95,6 +95,8 @@ class FinanceProcurementConstants {
     public static final
     String SUCCESS_MESSAGE_CREATE_REQUISITION_HEADER = 'net.hedtech.banner.finance.requisition.create.requisition.header.success'
     public static final
+        String SUCCESS_MESSAGE_COMPLETE_REQUISITION_HEADER = 'net.hedtech.banner.finance.requisition.complete.requisition.header.success'
+    public static final
     String SUCCESS_MESSAGE_UPDATE_REQUISITION_HEADER = 'net.hedtech.banner.finance.requisition.update.requisition.header.success'
     public static final
     String SUCCESS_MESSAGE_DELETE_REQUISITION_HEADER = 'net.hedtech.banner.finance.requisition.delete.requisition.header.success'

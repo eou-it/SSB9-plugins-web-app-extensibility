@@ -6,6 +6,7 @@ package net.hedtech.banner.finance.requisition.system
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
 import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.service.ServiceBase
 import org.apache.log4j.Logger
@@ -53,11 +54,12 @@ class RequisitionHeaderService extends ServiceBase {
      */
     def completeRequisition( requestCode ) {
         LoggerUtility.debug( LOGGER, 'Input parameters for completeRequisition :' + requestCode )
-        def retRequisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode )
-        if (!retRequisitionHeader) {
+        def requisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode )
+        if (!requisitionHeader) {
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }
-        retRequisitionHeader.completeIndicator = Boolean.TRUE
-        update( [domainModel: retRequisitionHeader] )
+        FinanceProcurementHelper.checkCompleteRequisition( requisitionHeader )
+        requisitionHeader.completeIndicator = Boolean.TRUE
+        update( [domainModel: requisitionHeader] )
     }
 }
