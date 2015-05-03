@@ -124,7 +124,7 @@ class RequisitionDetailsCompositeService {
             requisitionDetailRequest.taxGroup = null
         }
         // Check for Commodity
-        requisitionDetailRequest.commodityDescription = requisitionDetailRequest.commodity ? financeCommodityService.findCommodityByCode( requisitionDetailRequest.commodity ).description : null
+        requisitionDetailRequest.commodityDescription = requisitionDetailRequest.commodity ? financeCommodityService.findCommodityByCode( requisitionDetailRequest.commodity ).description : requisitionDetailRequest.commodityDescription
         // If header have discount code setup then remove the discountAmount value from details
         if (requisitionHeader.discount != null) {
             requisitionDetailRequest.discountAmount = null
