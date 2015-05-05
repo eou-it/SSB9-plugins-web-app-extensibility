@@ -24,6 +24,8 @@ var xe = (function (xe) {
     if ( window.location.search.indexOf("xeLogging=verbose")!=-1 )
         xe.logging.level=xe.logging.verbose;
 
+    $.fn.editable.defaults = '';
+
     xe.log = function () {
         if (xe.logging.level>xe.logging.none) {
             //probably can implement this more elegantly...
