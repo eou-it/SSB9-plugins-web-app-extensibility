@@ -67,9 +67,10 @@ class ExtensionService {
                 log.error "Error reading extensions json file ${file.path}: " + ioe.stackTrace
             }
             if (jsonStr) {
-                JSON.use("deep")
                 try {
-                    result = JSON.parse(jsonStr)
+                    JSON.use("deep") {
+                        result = JSON.parse(jsonStr)
+                    }
                 }
                 catch (ConverterException ce) {
                     log.error "Error parsing extensions json from ${file.path}: " + ce.stackTrace
