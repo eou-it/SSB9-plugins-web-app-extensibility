@@ -170,6 +170,35 @@ class RequisitionDetailsCompositeService {
         }
     }
 
+    /**Lists Commodity and accounting for specified requisition Code. If provided requisition is of document level accounting, it will first
+     * list all commodities for requisition and then all accounting. If provided requisition is of commodity level accounting, it will first
+     * list one commodity and its corresponding list of accounting.
+     *
+     * @param requisitionCode
+     * @return
+     */
+    @Transactional(readOnly = true)
+    def listCommodityWithAccounting( requisitionCode ) {
+        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionCode )
+        def list = [:]
+        if (header.isDocumentLevelAccounting == FinanceProcurementConstants.TRUE) {
+            list = listCommodityWithDocumentLevelAccounting( requisitionCode )
+        } else {
+            list = listCommodityWithCommodityLevelAccounting( requisitionCode )
+        }
+        list
+    }
+
+
+    def listCommodityWithDocumentLevelAccounting( requisitionCode ) {
+
+    }
+
+
+    def listCommodityWithCommodityLevelAccounting( requisitionCode ) {
+
+    }
+
     /**
      * The method to find requisition code by item with all required data list taxGroup, commodity and unitOfMeasure.
      * @param requestCode requisition code.

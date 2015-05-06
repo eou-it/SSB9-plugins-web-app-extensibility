@@ -85,7 +85,7 @@ class RequisitionAccountingService extends ServiceBase {
     }
 
     /**
-     *
+     * List accounting for specified request Code
      * @param requestCode
      * @return
      */
