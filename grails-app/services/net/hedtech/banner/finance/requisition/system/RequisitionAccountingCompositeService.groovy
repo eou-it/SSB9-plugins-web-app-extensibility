@@ -37,8 +37,6 @@ class RequisitionAccountingCompositeService {
             FinanceProcurementHelper.checkCompleteRequisition( header )
             if (header?.isDocumentLevelAccounting) {
                 requisitionAccountingRequest.item = 0
-            } else {
-                requisitionAccountingRequest.item = requisitionAccountingService.getLastItemNumberByRequestCode( requisitionAccountingRequest.requestCode ).next()
             }
             RequisitionAccounting requisitionAccounting = requisitionAccountingService.create( [domainModel: requisitionAccountingRequest] )
             LoggerUtility.debug LOGGER, 'Requisition Accounting created ' + requisitionAccounting

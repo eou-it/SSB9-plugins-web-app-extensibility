@@ -27,7 +27,11 @@ import javax.persistence.*
         @NamedQuery(name = FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_BY_USER,
                 query = """FROM RequisitionAccounting requisitionAccounting
                     WHERE requisitionAccounting.userId = :userId
-                    ORDER BY requisitionAccounting.requestCode""")
+                    ORDER BY requisitionAccounting.requestCode"""),
+        @NamedQuery(name = FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_BY_REQUEST_CODE,
+                query = """FROM RequisitionAccounting requisitionAccounting
+                            WHERE requisitionAccounting.requestCode = :requestCode
+                            ORDER BY requisitionAccounting.item, requisitionAccounting.sequenceNumber """)
 ])
 /**
  *  Request Accounting Table
@@ -405,6 +409,19 @@ class RequisitionAccounting implements Serializable {
                     .list()
         }
         return lastItemNumber
+    }
+
+    /**
+     * List accounting by Request Code
+     * @param requestCode
+     * @return
+     */
+    static def findAccountingByRequestCode( requestCode ) {
+        RequisitionAccounting.withSession {session ->
+            session.getNamedQuery( FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_BY_REQUEST_CODE )
+                    .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
+                    .list()
+        }
     }
 
     /**

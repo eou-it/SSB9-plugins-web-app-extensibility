@@ -86,6 +86,15 @@ class RequisitionAccountingIntegrationTests extends BaseIntegrationTestCase {
     }
 
     /**
+     * Test case to fetch last item number by the request code in the RequisitionAccounting.
+     */
+    @Test
+    void findAccountingByRequestCode() {
+        def accountingList = RequisitionAccounting.findAccountingByRequestCode( 'R0001474' )
+        assertTrue( accountingList.size() > 0 )
+    }
+
+    /**
      * Test Fetch Request Accounting by user.
      */
     @Test

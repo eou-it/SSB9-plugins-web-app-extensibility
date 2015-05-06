@@ -11,6 +11,8 @@ import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
 import net.hedtech.banner.finance.system.FinanceSystemControl
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
+import org.springframework.transaction.annotation.Propagation
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * Class for Purchase Requisition Header Composite Service
@@ -20,7 +22,7 @@ class RequisitionHeaderCompositeService {
     boolean transactional = true
 
     def requisitionHeaderService
-    def requisitionDetailService
+    def requisitionAccountingService
     def springSecurityService
     def financeSystemControlService
 
@@ -67,6 +69,7 @@ class RequisitionHeaderCompositeService {
      * @param map the requisition map
      * @param requestCode
      */
+    @Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
     def updateRequisitionHeader( map, requestCode ) {
         // Update header
         def existingHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
@@ -77,14 +80,16 @@ class RequisitionHeaderCompositeService {
             requisitionHeaderRequest.id = existingHeader.id
             requisitionHeaderRequest.version = existingHeader.version
             requisitionHeaderRequest.requestCode = existingHeader.requestCode
-           /* if (requisitionHeaderRequest.isDocumentLevelAccounting != existingHeader.isDocumentLevelAccounting) {
-                try {
-                    requisitionDetailService.findByRequestCode( existingHeader.requestCode )
-                    requisitionHeaderRequest.isDocumentLevelAccounting = existingHeader.isDocumentLevelAccounting
-                } catch (ApplicationException e) {
-                    LoggerUtility.debug LOGGER, 'Safe modification for isDocumentLevelAccounting'
+            if (requisitionHeaderRequest.isDocumentLevelAccounting != existingHeader.isDocumentLevelAccounting) {
+
+                if (requisitionAccountingService.findAccountingByRequestCode( existingHeader.requestCode )?.size() > 0) {
+                    LoggerUtility.error LOGGER, 'Document type cannot be modified once accounting associated with this'
+                    throw new ApplicationException( RequisitionHeaderCompositeService,
+                                                    new BusinessLogicValidationException(
+                                                            FinanceProcurementConstants.ERROR_MESSAGE_DOCUMENT_CHANGE, [] ) )
                 }
-            }*/
+                requisitionHeaderRequest.isDocumentLevelAccounting = existingHeader.isDocumentLevelAccounting
+            }
             requisitionHeaderRequest.requestDate = existingHeader.requestDate
             requisitionHeaderRequest.userId = user?.oracleUserName
             def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )

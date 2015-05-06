@@ -83,4 +83,13 @@ class RequisitionAccountingService extends ServiceBase {
         def lastItem = RequisitionAccounting.fetchLastItemNumberByRequestCode( requestCode ).getAt( 0 )
         return lastItem ? lastItem : 0
     }
+
+    /**
+     *
+     * @param requestCode
+     * @return
+     */
+    def findAccountingByRequestCode( requestCode ) {
+        RequisitionAccounting.findAccountingByRequestCode( requestCode )
+    }
 }

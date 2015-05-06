@@ -142,6 +142,13 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
         assertTrue( lastItem == 0 || lastItem > 0 )
     }
 
+    @Test
+    public void accountingExists() {
+        def lastItem = requisitionAccountingService.accountingExists( 'R0001397' )
+        assertTrue( lastItem == 0 || lastItem > 0 )
+    }
+
+
     /**
      * Test case method to create requisition accounting level.
      */
