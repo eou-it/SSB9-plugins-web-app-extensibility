@@ -77,14 +77,14 @@ class RequisitionHeaderCompositeService {
             requisitionHeaderRequest.id = existingHeader.id
             requisitionHeaderRequest.version = existingHeader.version
             requisitionHeaderRequest.requestCode = existingHeader.requestCode
-            if (requisitionHeaderRequest.isDocumentLevelAccounting != existingHeader.isDocumentLevelAccounting) {
+           /* if (requisitionHeaderRequest.isDocumentLevelAccounting != existingHeader.isDocumentLevelAccounting) {
                 try {
                     requisitionDetailService.findByRequestCode( existingHeader.requestCode )
                     requisitionHeaderRequest.isDocumentLevelAccounting = existingHeader.isDocumentLevelAccounting
                 } catch (ApplicationException e) {
                     LoggerUtility.debug LOGGER, 'Safe modification for isDocumentLevelAccounting'
                 }
-            }
+            }*/
             requisitionHeaderRequest.requestDate = existingHeader.requestDate
             requisitionHeaderRequest.userId = user?.oracleUserName
             def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
