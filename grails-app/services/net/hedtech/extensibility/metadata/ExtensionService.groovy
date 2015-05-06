@@ -55,10 +55,6 @@ class ExtensionService {
         def result = []
         def file = new File("${extensionsPath}/${application}/${page}.json")
         def jsonStr = null
-        if (!file?.exists() && Environment.getCurrent() != Environment.PRODUCTION) {
-            // read the development test file
-            file = new File("plugins/web-app-extensibility.git/test/data/extensions/${ page }.json")
-        }
         if (file?.exists()) {
             try {
                 jsonStr = file.text
