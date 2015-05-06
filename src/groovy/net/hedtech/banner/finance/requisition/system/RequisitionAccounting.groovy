@@ -20,7 +20,8 @@ import javax.persistence.*
                             AND a.sequenceNumber  = :sequenceNumber"""),
         @NamedQuery(name = FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_GET_LAST_SEQ,
                 query = """SELECT MAX(requisitionAccounting.sequenceNumber) FROM RequisitionAccounting requisitionAccounting
-                            WHERE requisitionAccounting.requestCode = :requestCode"""),
+                            WHERE requisitionAccounting.requestCode = :requestCode
+                            and requisitionAccounting.item = :item"""),
         @NamedQuery(name = FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_GET_LAST_ITEM,
                 query = """SELECT MAX(requisitionAccounting.item) FROM RequisitionAccounting requisitionAccounting
                                     WHERE requisitionAccounting.requestCode = :requestCode"""),
@@ -389,10 +390,11 @@ class RequisitionAccounting implements Serializable {
      * This method is used to called named query for get last sequence number generated in requisition accounting.
      * @return last generated sequence number.
      */
-    static def fetchLastSequenceNumberByRequestCode( requestCode ) {
+    static def fetchLastSequenceNumberByRequestCode( requestCode, int item ) {
         def lastSequenceNumber = RequisitionAccounting.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_GET_LAST_SEQ )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
+                    .setInteger( FinanceProcurementConstants.QUERY_PARAM_REQUISITION_DETAIL_ITEM, item )
                     .list()
         }
         return lastSequenceNumber

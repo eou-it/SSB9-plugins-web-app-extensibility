@@ -72,7 +72,7 @@ class RequisitionAccountingIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testFetchLastSequenceNumberByRequestCode() {
-        Integer lastGeneratedSequence = RequisitionAccounting.fetchLastSequenceNumberByRequestCode( requestCode ).getAt( 0 )
+        Integer lastGeneratedSequence = RequisitionAccounting.fetchLastSequenceNumberByRequestCode( requestCode, 0 ).getAt( 0 )
         assertTrue( lastGeneratedSequence != null )
     }
 
@@ -110,7 +110,7 @@ class RequisitionAccountingIntegrationTests extends BaseIntegrationTestCase {
      * @return RequisitionAccounting.
      */
     public RequisitionAccounting getRequestAccounting() {
-        def lastSeq = RequisitionAccounting.fetchLastSequenceNumberByRequestCode( requestCode ).getAt( 0 )
+        def lastSeq = RequisitionAccounting.fetchLastSequenceNumberByRequestCode( requestCode, 0 ).getAt( 0 )
         def requestAccounting = new RequisitionAccounting(
                 requestCode: requestCode,
                 item: item,

@@ -67,10 +67,11 @@ class RequisitionAccountingService extends ServiceBase {
     /**
      * This method is used get last inserted sequence number from RequisitionAccounting.
      * @param requestCode Requisition Code.
+     * @param item
      * @return last sequence number.
      */
-    def getLastSequenceNumberByRequestCode( requestCode ) {
-        def lastSequence = RequisitionAccounting.fetchLastSequenceNumberByRequestCode( requestCode ).getAt( 0 )
+    def getLastSequenceNumberByRequestCode( requestCode, item ) {
+        def lastSequence = RequisitionAccounting.fetchLastSequenceNumberByRequestCode( requestCode, item ).getAt( 0 )
         return lastSequence ? lastSequence : 0
     }
 

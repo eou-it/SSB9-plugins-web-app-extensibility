@@ -32,12 +32,12 @@ class RequisitionAccountingCompositeService {
         def user = springSecurityService.getAuthentication()?.user
         if (user?.oracleUserName) {
             requisitionAccountingRequest.userId = user.oracleUserName
-            requisitionAccountingRequest.sequenceNumber = requisitionAccountingService.getLastSequenceNumberByRequestCode( requisitionAccountingRequest.requestCode ).next()
             def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionAccountingRequest.requestCode )
             FinanceProcurementHelper.checkCompleteRequisition( header )
             if (header?.isDocumentLevelAccounting) {
                 requisitionAccountingRequest.item = 0
             }
+            requisitionAccountingRequest.sequenceNumber = requisitionAccountingService.getLastSequenceNumberByRequestCode( requisitionAccountingRequest.requestCode, requisitionAccountingRequest.item ).next()
             RequisitionAccounting requisitionAccounting = requisitionAccountingService.create( [domainModel: requisitionAccountingRequest] )
             LoggerUtility.debug LOGGER, 'Requisition Accounting created ' + requisitionAccounting
             return [requestCode: requisitionAccounting.requestCode,

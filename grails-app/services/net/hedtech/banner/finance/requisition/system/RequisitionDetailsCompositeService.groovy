@@ -24,6 +24,7 @@ class RequisitionDetailsCompositeService {
     def requisitionHeaderService
     def springSecurityService
     def requisitionDetailService
+    def requisitionAccountingService
     def financeSystemControlService
     def financeCommodityService
     def financeUnitOfMeasureService
@@ -189,14 +190,131 @@ class RequisitionDetailsCompositeService {
         list
     }
 
-
+    /**
+     *
+     * @param requisitionCode
+     * @return
+     */
     def listCommodityWithDocumentLevelAccounting( requisitionCode ) {
-
+        def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
+        def commodityCodes = requisitionDetails.collect() {
+            it.commodity
+        }
+        Map commodityCodeDescMap = financeCommodityService.findCommodityByCodeList( commodityCodes ).collectEntries {
+            [it.commodityCode, it.description]
+        }
+        def getDescription = {commodity ->
+            commodityCodeDescMap.get( commodity )
+        }
+        [commodities: requisitionDetails.collect() {
+            [id                    : it.id,
+             requestCode           : it.requestCode,
+             version               : it.version,
+             additionalChargeAmount: it.additionalChargeAmount,
+             amt                   : it.amt,
+             commodity             : it.commodity,
+             commodityDescription  : it.commodityDescription,
+             currency              : it.currency,
+             discountAmount        : it.discountAmount,
+             item                  : it.item,
+             quantity              : it.quantity,
+             taxAmount             : it.taxAmount,
+             taxGroup              : it.taxGroup,
+             unitOfMeasure         : it.unitOfMeasure,
+             unitPrice             : it.unitPrice]
+        }.each() {
+            it.commodityDescription = getDescription( it.commodity )
+        },
+         accounting : requisitionAccountingService.findAccountingByRequestCode( requisitionCode ).collect() {
+             [requestCode              : it.requestCode,
+              item                     : it.item,
+              sequenceNumber           : it.sequenceNumber,
+              percentage               : it.percentage,
+              requisitionAmount        : it.requisitionAmount,
+              chartOfAccount           : it.chartOfAccount,
+              accountIndex             : it.accountIndex,
+              fund                     : it.fund,
+              organization             : it.organization,
+              account                  : it.account,
+              program                  : it.program,
+              activity                 : it.activity,
+              location                 : it.location,
+              project                  : it.project,
+              discountAmount           : it.discountAmount,
+              taxAmount                : it.taxAmount,
+              additionalChargeAmount   : it.additionalChargeAmount,
+              discountAmountPercent    : it.discountAmountPercent,
+              additionalChargeAmountPct: it.additionalChargeAmountPct,
+              taxAmountPercent         : it.taxAmountPercent]
+         }]
     }
 
-
+    /**
+     *
+     * @param requisitionCode
+     */
     def listCommodityWithCommodityLevelAccounting( requisitionCode ) {
+        def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
+        def commodityCodes = requisitionDetails.collect() {
+            it.commodity
+        }
+        Map commodityCodeDescMap = financeCommodityService.findCommodityByCodeList( commodityCodes ).collectEntries {
+            [it.commodityCode, it.description]
+        }
+        Map accountingMap = requisitionAccountingService.findAccountingByRequestCode( requisitionCode ).collectEntries {
+            [it.item + FinanceValidationConstants.COLON + it.sequenceNumber, [requestCode              : it.requestCode,
+                                                                              item                     : it.item,
+                                                                              sequenceNumber           : it.sequenceNumber,
+                                                                              percentage               : it.percentage,
+                                                                              requisitionAmount        : it.requisitionAmount,
+                                                                              chartOfAccount           : it.chartOfAccount,
+                                                                              accountIndex             : it.accountIndex,
+                                                                              fund                     : it.fund,
+                                                                              organization             : it.organization,
+                                                                              account                  : it.account,
+                                                                              program                  : it.program,
+                                                                              activity                 : it.activity,
+                                                                              location                 : it.location,
+                                                                              project                  : it.project,
+                                                                              discountAmount           : it.discountAmount,
+                                                                              taxAmount                : it.taxAmount,
+                                                                              additionalChargeAmount   : it.additionalChargeAmount,
+                                                                              discountAmountPercent    : it.discountAmountPercent,
+                                                                              additionalChargeAmountPct: it.additionalChargeAmountPct,
+                                                                              taxAmountPercent         : it.taxAmountPercent]]
+        }
 
+        def getDescription = {commodity ->
+            commodityCodeDescMap.get( commodity )
+        }
+
+        def getAccountingForCommodityItem = {commodityItem ->
+            accountingMap.findAll() {
+                it.key.tokenize( FinanceValidationConstants.COLON )[0] == commodityItem.toString()
+            }.collect() {it -> it.value}
+        }
+        [commodities: requisitionDetails.collect() {
+            [id                    : it.id,
+             requestCode           : it.requestCode,
+             version               : it.version,
+             additionalChargeAmount: it.additionalChargeAmount,
+             amt                   : it.amt,
+             commodity             : it.commodity,
+             commodityDescription  : it.commodityDescription,
+             currency              : it.currency,
+             discountAmount        : it.discountAmount,
+             item                  : it.item,
+             quantity              : it.quantity,
+             taxAmount             : it.taxAmount,
+             taxGroup              : it.taxGroup,
+             unitOfMeasure         : it.unitOfMeasure,
+             unitPrice             : it.unitPrice,
+             accounting            : []
+            ]
+        }.each() {
+            it.commodityDescription = getDescription( it.commodity )
+            it.accounting = getAccountingForCommodityItem( it.item )
+        }]
     }
 
     /**

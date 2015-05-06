@@ -129,7 +129,7 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
      */
     @Test
     public void testGetLastSequenceNumberByRequestCode() {
-        def lastSequence = requisitionAccountingService.getLastSequenceNumberByRequestCode( 'R0001397' )
+        def lastSequence = requisitionAccountingService.getLastSequenceNumberByRequestCode( 'R0001397', 0 )
         assertTrue( lastSequence == 0 || lastSequence > 0 )
     }
 
@@ -170,7 +170,7 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
      */
     public RequisitionAccounting getRequestAccounting() {
         def requestCode = 'R0001397'
-        def lastSeq = requisitionAccountingService.getLastSequenceNumberByRequestCode( requestCode )
+        def lastSeq = requisitionAccountingService.getLastSequenceNumberByRequestCode( requestCode, 0 )
         def item = 0
         def sequenceNumber = lastSeq.next()
         def amount = 100.00
