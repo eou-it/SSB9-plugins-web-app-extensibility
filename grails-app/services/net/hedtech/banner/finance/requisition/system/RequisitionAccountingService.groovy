@@ -75,6 +75,12 @@ class RequisitionAccountingService extends ServiceBase {
         return lastSequence ? lastSequence : 0
     }
 
+
+    def getSplittingPercentage( requestCode, item ) {
+        def percentage = RequisitionAccounting.getSplittingPercentage( requestCode, item ).getAt( 0 )
+        return percentage ? percentage : 0
+    }
+
     /**
      * This method is used get last inserted item number from RequisitionAccounting.
      * @param requestCode Requisition Code.
@@ -83,6 +89,15 @@ class RequisitionAccountingService extends ServiceBase {
     def getLastItemNumberByRequestCode( requestCode ) {
         def lastItem = RequisitionAccounting.fetchLastItemNumberByRequestCode( requestCode ).getAt( 0 )
         return lastItem ? lastItem : 0
+    }
+
+    /**
+     * List size of  accounting for specified request Code
+     * @param requestCode
+     * @return
+     */
+    def findAccountingSizeByRequestCode( requestCode ) {
+        RequisitionAccounting.findAccountingByRequestCode( requestCode )?.size()
     }
 
     /**

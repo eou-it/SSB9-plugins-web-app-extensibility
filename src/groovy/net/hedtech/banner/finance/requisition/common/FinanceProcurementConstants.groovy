@@ -89,6 +89,7 @@ class FinanceProcurementConstants {
     public static final String DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD = 'u_pick_it'
 
     public static final String ERROR_MESSAGE_USER_NOT_VALID = 'user.not.valid'
+    public static final String ERROR_MESSAGE_NO_MORE_ACCOUNTING = 'no.more.new.accounting'
     public static final String ERROR_MESSAGE_DOCUMENT_CHANGE = 'document.type.cannot.modified'
 
     public static final String ERROR_MESSAGE_REQUISITION_ALREADY_COMPLETED = 'requisition.already.completed'
@@ -159,6 +160,8 @@ class FinanceProcurementConstants {
     static final String QUERY_PARAM_USER_ID = 'userId'
     static final String NAMED_QUERY_REQUEST_DETAIL_GET_LAST_ITEM = 'RequestDetail.getLastItem'
     static final String NAMED_QUERY_REQUEST_DETAIL_BY_CODE = 'RequestDetail.fetchByrequestCode'
+    static final String REQ_ACC_NAMED_QUERY_GET_SUM_PERCENTAGE = 'RequestDetail.getSumOfDistributionPercentage'
+
     static final String NAMED_QUERY_REQUEST_DETAIL_BY_USER = 'RequestDetail.fetchByUser'
     static final
     String NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE_AND_ITEM = 'RequestDetail.fetchByrequestCodeAndCommodityCode'

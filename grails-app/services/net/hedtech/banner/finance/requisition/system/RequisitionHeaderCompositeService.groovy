@@ -8,7 +8,6 @@ import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
-import net.hedtech.banner.finance.system.FinanceSystemControl
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
 import org.springframework.transaction.annotation.Propagation
@@ -82,7 +81,7 @@ class RequisitionHeaderCompositeService {
             requisitionHeaderRequest.requestCode = existingHeader.requestCode
             if (requisitionHeaderRequest.isDocumentLevelAccounting != existingHeader.isDocumentLevelAccounting) {
 
-                if (requisitionAccountingService.findAccountingByRequestCode( existingHeader.requestCode )?.size() > 0) {
+                if (requisitionAccountingService.findAccountingSizeByRequestCode( existingHeader.requestCode ) > 0) {
                     LoggerUtility.error LOGGER, 'Document type cannot be modified once accounting associated with this'
                     throw new ApplicationException( RequisitionHeaderCompositeService,
                                                     new BusinessLogicValidationException(

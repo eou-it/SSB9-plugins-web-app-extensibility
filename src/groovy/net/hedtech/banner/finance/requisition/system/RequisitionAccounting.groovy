@@ -21,7 +21,7 @@ import javax.persistence.*
         @NamedQuery(name = FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_GET_LAST_SEQ,
                 query = """SELECT MAX(requisitionAccounting.sequenceNumber) FROM RequisitionAccounting requisitionAccounting
                             WHERE requisitionAccounting.requestCode = :requestCode
-                            and requisitionAccounting.item = :item"""),
+                            AND requisitionAccounting.item = :item"""),
         @NamedQuery(name = FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_GET_LAST_ITEM,
                 query = """SELECT MAX(requisitionAccounting.item) FROM RequisitionAccounting requisitionAccounting
                                     WHERE requisitionAccounting.requestCode = :requestCode"""),
@@ -32,7 +32,13 @@ import javax.persistence.*
         @NamedQuery(name = FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_BY_REQUEST_CODE,
                 query = """FROM RequisitionAccounting requisitionAccounting
                             WHERE requisitionAccounting.requestCode = :requestCode
-                            ORDER BY requisitionAccounting.item, requisitionAccounting.sequenceNumber """)
+                            ORDER BY requisitionAccounting.item, requisitionAccounting.sequenceNumber """),
+
+        @NamedQuery(name = FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_GET_SUM_PERCENTAGE,
+                query = """SELECT sum(requisitionAccounting.percentage) FROM RequisitionAccounting requisitionAccounting
+                                    WHERE requisitionAccounting.requestCode = :requestCode
+                                    AND requisitionAccounting.item = :item""")
+
 ])
 /**
  *  Request Accounting Table
@@ -393,6 +399,22 @@ class RequisitionAccounting implements Serializable {
     static def fetchLastSequenceNumberByRequestCode( requestCode, int item ) {
         def lastSequenceNumber = RequisitionAccounting.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_GET_LAST_SEQ )
+                    .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
+                    .setInteger( FinanceProcurementConstants.QUERY_PARAM_REQUISITION_DETAIL_ITEM, item )
+                    .list()
+        }
+        return lastSequenceNumber
+    }
+
+    /**
+     *
+     * @param requestCode
+     * @param item
+     * @return
+     */
+    static def getSplittingPercentage( requestCode, int item ) {
+        def lastSequenceNumber = RequisitionAccounting.withSession {session ->
+            session.getNamedQuery( FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_GET_SUM_PERCENTAGE )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
                     .setInteger( FinanceProcurementConstants.QUERY_PARAM_REQUISITION_DETAIL_ITEM, item )
                     .list()

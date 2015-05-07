@@ -145,8 +145,8 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
 
     @Test
     public void accountingExists() {
-        def accountingList = requisitionAccountingService.findAccountingByRequestCode( 'R0001397' )
-        assertTrue( accountingList.size() == 0 || accountingList.size() > 0 )
+        def count = requisitionAccountingService.findAccountingSizeByRequestCode( 'R0001397' )
+        assertTrue( count >= 0 )
     }
 
     /**
