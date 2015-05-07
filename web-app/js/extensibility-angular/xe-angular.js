@@ -54,7 +54,7 @@ xe.ng.groupCompile = function(prio, context) {
                 // check if parent has attribute xeSectionInh
                 if (element[0].parentNode && element[0].parentNode.attributes) {
                     var section = element[0].parentNode.attributes[xe.attrInh.section];
-                    if (section) {
+                    if (xe.extensionsFound && section) {
                         attributes.xeSection = section.value;
                         xe.log('Compile ', context, prio, attributes, xe.logging.level == xe.logging.verbose ? element[0].innerHTML : element);
                         xe.log('Extending inherited section ' + attributes.xeSection);
@@ -73,7 +73,9 @@ xe.ng.groupProcessing = function(prio, context) {
             priority: prio,  //AngularJS ngInclude directive has 400
             link: function ($scope, element, attributes) {
                 xe.log('Link ', context, prio, $scope.src||attributes.src||'', '\n', xe.logging.level==xe.logging.verbose?element[0].innerHTML:element);
+                if(xe.extensionsFound){
                 xe.extendPagePart(element, attributes);
+                }
             }
         }
     }
@@ -121,7 +123,7 @@ angular.module('extensibility', [])
                     ;// Section processing to happen in a child of this tag
                 } else {
                     xe.log('Compile Section', attributes.xeSection);
-                    if (xe.extensions.sections[attributes.xeSection]) {
+                    if (xe.extensionsFound && xe.extensions.sections[attributes.xeSection]) {
                         xe.log('Extending section ' + attributes.xeSection);
                         xe.extend(element, attributes);
                     }
