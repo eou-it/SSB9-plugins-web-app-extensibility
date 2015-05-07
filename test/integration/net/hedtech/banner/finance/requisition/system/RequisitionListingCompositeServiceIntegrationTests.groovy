@@ -76,4 +76,40 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
         }
 
     }
+
+    /**
+     * Test list requisitions With Pending Buckets
+     */
+    @Test
+    void listRequisitionsByPendingBucket() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def pagingParams = [max: 500, offset: 0]
+        def list = requisitionListingCompositeService.listRequisitionsByBucket( [FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING], pagingParams )
+        assertTrue list[0].count != null
+    }
+
+    /**
+     * Test list requisitions With Complete Buckets
+     */
+    @Test
+    void listRequisitionsByCompleteBucket() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def pagingParams = [max: 500, offset: 0]
+        def list = requisitionListingCompositeService.listRequisitionsByBucket( [FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE], pagingParams )
+        assertTrue list[0].count != null
+    }
+
+    /**
+     * Test list requisitions With Complete Buckets
+     */
+    @Test
+    void listRequisitionsByInvalidBucket() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def pagingParams = [max: 500, offset: 0]
+        try {
+            requisitionListingCompositeService.listRequisitionsByBucket( ['INVALID'], pagingParams )
+        } catch (ApplicationException e) {
+            assertApplicationException( e, FinanceProcurementConstants.ERROR_MESSAGE_INVALID_BUCKET_TYPE )
+        }
+    }
 }

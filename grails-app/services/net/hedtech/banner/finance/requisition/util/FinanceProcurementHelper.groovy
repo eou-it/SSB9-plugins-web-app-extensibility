@@ -17,7 +17,7 @@ class FinanceProcurementHelper {
      * @param requisitionHeaderJSON Requisition Header info from the request.
      * @return RequisitionHeader domain.
      */
-    static def getHeaderDomainModel( requisitionHeaderJSON ) {
+    private static def getHeaderDomainModel( requisitionHeaderJSON ) {
         return [
                 requestCode              : FinanceProcurementConstants.DEFAULT_REQUEST_CODE,
                 requestDate              : new Date( requisitionHeaderJSON.transactionDate ),
@@ -46,7 +46,7 @@ class FinanceProcurementHelper {
      * @param requisitionHeaderJSON Requisition Detail info from the request.
      * @return RequisitionDetail domain.
      */
-    static def getDetailDomainModel( requisitionDetailJSON ) {
+    private static def getDetailDomainModel( requisitionDetailJSON ) {
         return [
                 requestCode           : requisitionDetailJSON.requestCode,
                 item                  : requisitionDetailJSON.item,
@@ -69,7 +69,7 @@ class FinanceProcurementHelper {
      * @param requisitionHeaderJSON Requisition Accounting info from the request.
      * @return RequisitionAccounting domain.
      */
-    static def getAccountingDomainModel( requisitionAccountingJSON ) {
+    private static def getAccountingDomainModel( requisitionAccountingJSON ) {
         return [
                 requestCode                       : requisitionAccountingJSON.requestCode,
                 item                              : requisitionAccountingJSON.item,

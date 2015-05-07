@@ -197,6 +197,26 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     }
 
     /**
+     * The test case to list commodity with accounting.
+     */
+    @Test
+    void testListCommodityWithAccounting() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def listCommoityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting( 'R0000124' )
+        assertTrue(listCommoityWithAccounting.size(  ) > 0)
+    }
+
+    /**
+     * The test case to list commodity with document level accounting.
+     */
+    @Test
+    void testListCommodityWithDocumentLevelAccounting() {
+        def list = requisitionDetailsCompositeService.listCommodityWithDocumentLevelAccounting( 'R0000124' )
+        assertTrue(list.size(  ) > 0)
+    }
+
+    /**
      * The method is used to get the RequisitionDetail object with all required values to insert/update.
      * @return RequisitionDetail.
      */
