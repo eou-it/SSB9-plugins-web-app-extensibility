@@ -29,6 +29,9 @@ class RequisitionDetailsCompositeService {
     def financeCommodityService
     def financeUnitOfMeasureService
     def financeTaxCompositeService
+    def financeCommodityRepeatService
+    def chartOfAccountsService
+    def financeAccountCompositeService
 
     /**
      * Create purchase requisition detail
@@ -212,8 +215,8 @@ class RequisitionDetailsCompositeService {
              version               : it.version,
              additionalChargeAmount: it.additionalChargeAmount,
              amt                   : it.amt,
-             commodity             : it.commodity,
-             commodityDescription  : it.commodityDescription,
+             commodity             : [commodity           : it.commodity,
+                                      commodityDescription: it.commodityDescription],
              currency              : it.currency,
              discountAmount        : it.discountAmount,
              item                  : it.item,
@@ -223,7 +226,7 @@ class RequisitionDetailsCompositeService {
              unitOfMeasure         : it.unitOfMeasure,
              unitPrice             : it.unitPrice]
         }.each() {
-            it.commodityDescription = getDescription( it.commodity )
+            it.commodity.commodityDescription = getDescription( it.commodity.commodity )
         },
          accounting : requisitionAccountingService.findAccountingByRequestCode( requisitionCode ).collect() {
              [requestCode              : it.requestCode,
@@ -293,14 +296,33 @@ class RequisitionDetailsCompositeService {
                 it.key.tokenize( FinanceValidationConstants.COLON )[0] == commodityItem.toString()
             }.collect() {it -> it.value}
         }
+        def commodityRepeatMap = financeCommodityRepeatService.findCommodityRepeatByEffectiveDate( null )?.collectEntries() {
+            [it.commodityCode, it]
+        }
+        def getCOACode = {
+            commodityRepeatMap?.get( it )?.coaCode
+        }
+        def getAccountCode = {
+            commodityRepeatMap?.get( it )?.accountCode
+        }
         [commodities: requisitionDetails.collect() {
             [id                    : it.id,
              requestCode           : it.requestCode,
              version               : it.version,
              additionalChargeAmount: it.additionalChargeAmount,
              amt                   : it.amt,
-             commodity             : it.commodity,
-             commodityDescription  : it.commodityDescription,
+             commodity             : [commodity           : it.commodity,
+                                      commodityDescription: it.commodityDescription,
+                                      coaCode             : getCOACode( it.commodity ),
+                                      coaDescription      : !getCOACode( it.commodity ) ? null :
+                                              chartOfAccountsService.getChartOfAccountByCode( getCOACode( it.commodity ) )?.title,
+                                      accountCode         : getAccountCode( it.commodity ),
+                                      accountDescription  : !getAccountCode( it.commodity ) ? null :
+                                              financeAccountCompositeService.getListByAccountOrChartOfAccAndEffectiveDate(
+                                                      [searchParam  : getAccountCode( it.commodity ),
+                                                       coaCode      : getCOACode( it.commodity ),
+                                                       effectiveDate: null,], [max: 1, offset: 0] )?.get( 0 )?.title
+             ],
              currency              : it.currency,
              discountAmount        : it.discountAmount,
              item                  : it.item,
@@ -312,7 +334,7 @@ class RequisitionDetailsCompositeService {
              accounting            : []
             ]
         }.each() {
-            it.commodityDescription = getDescription( it.commodity )
+            it.commodity.commodityDescription = getDescription( it.commodity.commodity )
             it.accounting = getAccountingForCommodityItem( it.item )
         }]
     }
