@@ -37,11 +37,12 @@ class RequisitionAccountingCompositeService {
             if (header?.isDocumentLevelAccounting) {
                 requisitionAccountingRequest.item = 0
             }
-            if (100 <= requisitionAccountingService.getSplittingPercentage( requisitionAccountingRequest.requestCode, requisitionAccountingRequest.item )) {
+            // TODO need to restrict additional accounting creation
+            /*if (100 <= requisitionAccountingService.getSplittingPercentage( requisitionAccountingRequest.requestCode, requisitionAccountingRequest.item )) {
                 throw new ApplicationException(
                         RequisitionAccountingCompositeService,
                         new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_NO_MORE_ACCOUNTING, [] ) )
-            }
+            }*/
             requisitionAccountingRequest.sequenceNumber = requisitionAccountingService.getLastSequenceNumberByRequestCode( requisitionAccountingRequest.requestCode, requisitionAccountingRequest.item ).next()
             RequisitionAccounting requisitionAccounting = requisitionAccountingService.create( [domainModel: requisitionAccountingRequest] )
             LoggerUtility.debug LOGGER, 'Requisition Accounting created ' + requisitionAccounting
