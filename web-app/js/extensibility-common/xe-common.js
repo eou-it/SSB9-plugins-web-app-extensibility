@@ -24,7 +24,7 @@ var xe = (function (xe) {
     if ( window.location.search.indexOf("xeLogging=verbose")!=-1 )
         xe.logging.level=xe.logging.verbose;
 
-    $.fn.editable.defaults = '';
+    $.fn.editable.defaults.placeholder = '';
 
     xe.log = function () {
         if (xe.logging.level>xe.logging.none) {
