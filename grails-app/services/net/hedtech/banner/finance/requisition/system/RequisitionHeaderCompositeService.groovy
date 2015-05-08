@@ -87,7 +87,6 @@ class RequisitionHeaderCompositeService {
                                                     new BusinessLogicValidationException(
                                                             FinanceProcurementConstants.ERROR_MESSAGE_DOCUMENT_CHANGE, [] ) )
                 }
-                requisitionHeaderRequest.isDocumentLevelAccounting = existingHeader.isDocumentLevelAccounting
             }
             requisitionHeaderRequest.requestDate = existingHeader.requestDate
             requisitionHeaderRequest.userId = user?.oracleUserName
