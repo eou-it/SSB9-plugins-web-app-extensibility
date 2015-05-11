@@ -33,7 +33,7 @@ class RequisitionListingCompositeService {
      */
     def listRequisitionsByBucket( buckets, pagingParams ) {
         def user = springSecurityService.getAuthentication()?.user
-        if (user == null || user.oracleUserName == null) {
+        if (!user.oracleUserName) {
             LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
             throw new ApplicationException( RequisitionListingCompositeService, new BusinessLogicValidationException(
                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
