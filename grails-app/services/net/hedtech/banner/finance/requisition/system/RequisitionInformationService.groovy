@@ -48,7 +48,7 @@ class RequisitionInformationService extends ServiceBase {
      */
     def private getOracleUserNameForLoggedInUser() {
         def user = springSecurityService.getAuthentication()?.user
-        if (user == null || user.oracleUserName == null) {
+        if (user.oracleUserName) {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
             throw new ApplicationException( RequisitionInformationService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }

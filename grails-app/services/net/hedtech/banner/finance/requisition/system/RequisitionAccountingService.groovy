@@ -76,10 +76,10 @@ class RequisitionAccountingService extends ServiceBase {
     }
 
 
-    def getSplittingPercentage( requestCode, item ) {
+    /*def getSplittingPercentage( requestCode, item ) {
         def percentage = RequisitionAccounting.getSplittingPercentage( requestCode, item ).getAt( 0 )
         return percentage ? percentage : 0
-    }
+    }*/
 
     /**
      * This method is used get last inserted item number from RequisitionAccounting.

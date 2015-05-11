@@ -41,8 +41,23 @@ class RequisitionInformationCompositeServiceIntegrationTests extends BaseIntegra
     @Test
     void fetchPurchaseRequisition() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def code = requisitionHeaderCompositeService.createPurchaseRequisitionHeader( [requisitionHeader: newRequisitionHeader()] )
-        assertTrue requisitionInformationCompositeService.fetchPurchaseRequisition( code, 'USD' ).header.requestCode == code
+        def code = requisitionHeaderCompositeService.createPurchaseRequisitionHeader([requisitionHeader: newRequisitionHeader()])
+        assertTrue requisitionInformationCompositeService.fetchPurchaseRequisition(code, 'USD').header.requestCode == code
+    }
+
+    /**
+     * Test fetchPurchaseRequisition
+     */
+    @Test
+    void fetchPurchaseRequisitionHeaderCurrCheck() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def header = newRequisitionHeader()
+        header.currency = null
+        header.vendorAddressType = null
+        header.vendorPidm = null
+        header.taxGroup = null
+        def code = requisitionHeaderCompositeService.createPurchaseRequisitionHeader([requisitionHeader: header])
+        assertTrue requisitionInformationCompositeService.fetchPurchaseRequisition(code, 'USD').header.requestCode == code
     }
 
     /**
@@ -52,8 +67,8 @@ class RequisitionInformationCompositeServiceIntegrationTests extends BaseIntegra
     private RequisitionHeader newRequisitionHeader() {
         return [
                 'requestCode'              : FinanceProcurementConstants.DEFAULT_REQUEST_CODE,
-                'requestDate'              : new Date( '18-Feb-2015' ),
-                'transactionDate'          : new Date( '19-Feb-2015' ),
+                'requestDate'              : new Date('18-Feb-2015'),
+                'transactionDate'          : new Date('19-Feb-2015'),
                 'requesterName'            : 'Caliper College_u1',
                 'ship'                     : 'EAST',
                 'requesterPhoneNumber'     : '242037662',
@@ -80,7 +95,7 @@ class RequisitionInformationCompositeServiceIntegrationTests extends BaseIntegra
                 'vendorContact'            : 'Bangalore',
                 'vendorEmailAddress'       : 'vendor@vendorgroup.com',
                 'requisitionOrigination'   : FinanceProcurementConstants.DEFAULT_REQUISITION_ORIGIN,
-                'deliveryDate'             : new Date( '20-Feb-2015' )
+                'deliveryDate'             : new Date('20-Feb-2015')
         ]
     }
 }
