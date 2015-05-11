@@ -24,6 +24,7 @@ class RequisitionHeaderCompositeService {
     def requisitionAccountingService
     def springSecurityService
     def financeSystemControlService
+    def institutionalDescriptionService
 
     /**
      * Create purchase requisition Header
@@ -99,5 +100,18 @@ class RequisitionHeaderCompositeService {
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
+    }
+
+    /**
+     * Get Filtered CCY information
+     * @param ccyCode
+     * @return
+     */
+    def getCurrencyDetailByReqReqCode( requestCode ) {
+        def currencyCode = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ).currency
+        if (!currencyCode) {
+            currencyCode = institutionalDescriptionService.findByKey().baseCurrCode
+        }
+        return currencyCode
     }
 }

@@ -314,14 +314,16 @@ class RequisitionDetailsCompositeService {
              commodity             : [commodity           : it.commodity,
                                       commodityDescription: it.commodityDescription,
                                       coaCode             : getCOACode( it.commodity ),
-                                      coaDescription      : !getCOACode( it.commodity ) ? null :
-                                              chartOfAccountsService.getChartOfAccountByCode( getCOACode( it.commodity ) )?.title,
+                                      coaDescription      : getCOACode( it.commodity )
+                                              ? chartOfAccountsService.getChartOfAccountByCode( getCOACode( it.commodity ) )?.title
+                                              : null,
                                       accountCode         : getAccountCode( it.commodity ),
-                                      accountDescription  : !getAccountCode( it.commodity ) ? null :
-                                              financeAccountCompositeService.getListByAccountOrChartOfAccAndEffectiveDate(
-                                                      [searchParam  : getAccountCode( it.commodity ),
-                                                       coaCode      : getCOACode( it.commodity ),
-                                                       effectiveDate: null,], [max: 1, offset: 0] )?.get( 0 )?.title
+                                      accountDescription  : getAccountCode( it.commodity )
+                                              ? financeAccountCompositeService.getListByAccountOrChartOfAccAndEffectiveDate(
+                                                  [searchParam  : getAccountCode( it.commodity ),
+                                                   coaCode      : getCOACode( it.commodity ),
+                                                   effectiveDate: null,], [max: 1, offset: 0] )?.get( 0 )?.title
+                                              : null
              ],
              currency              : it.currency,
              discountAmount        : it.discountAmount,
