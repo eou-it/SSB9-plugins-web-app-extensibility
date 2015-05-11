@@ -107,7 +107,7 @@ class RequisitionHeaderCompositeService {
      * @param ccyCode
      * @return
      */
-    def getCurrencyDetailByReqReqCode( requestCode ) {
+    def getCurrencyDetailByReqCode( requestCode ) {
         def currencyCode = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ).currency
         if (!currencyCode) {
             currencyCode = institutionalDescriptionService.findByKey().baseCurrCode
