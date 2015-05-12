@@ -135,7 +135,14 @@ class RequisitionDetailsCompositeService {
         }
     }
 
-
+    /**
+     * Re-balance the accounting
+     *
+     * @param requestCode
+     * @param item
+     * @param isDocumentLevelAccounting
+     * @return
+     */
     private reBalanceRequisitionAccounting( requestCode, item, isDocumentLevelAccounting = null ) {
         def processAccounting = {accounting ->
             accounting.requisitionAmount = null
