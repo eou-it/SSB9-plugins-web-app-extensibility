@@ -71,8 +71,8 @@ class RequisitionDetailsCompositeService {
         def requisitionDetail = requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( requestCode, item )
         /** Delete last accounting if present */
         deleteAccountingForLastCommodity( requestCode )
-        requisitionDetailService.delete( [domainModel: requisitionDetail] )
         reBalanceRequisitionAccounting requestCode, item
+        requisitionDetailService.delete( [domainModel: requisitionDetail] )
     }
 
     /**
