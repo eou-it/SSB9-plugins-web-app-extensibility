@@ -50,6 +50,8 @@ class RequisitionDetailsCompositeService {
             requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
             RequisitionDetail requisitionDetail = requisitionDetailService.create( [domainModel: requisitionDetailRequest] )
             LoggerUtility.debug LOGGER, "Requisition Detail created " + requisitionDetail
+            /** Re-balance associated accounting information*/
+            reBalanceRequisitionAccounting requestCode, requisitionDetail.item, null
             return [requestCode: requisitionDetail.requestCode, item: requisitionDetail.item]
         } else {
             LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
@@ -67,7 +69,10 @@ class RequisitionDetailsCompositeService {
     def deletePurchaseRequisitionDetail( requestCode, Integer item ) {
         FinanceProcurementHelper.checkCompleteRequisition( requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ) )
         def requisitionDetail = requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( requestCode, item )
+        /** Delete last accounting if present */
+        deleteAccountingForLastCommodity( requestCode )
         requisitionDetailService.delete( [domainModel: requisitionDetail] )
+        reBalanceRequisitionAccounting requestCode, item
     }
 
     /**
@@ -99,12 +104,53 @@ class RequisitionDetailsCompositeService {
             requisitionDetailRequest.userId = user.oracleUserName
             def requisitionDetail = requisitionDetailService.update( [domainModel: requisitionDetailRequest] )
             LoggerUtility.debug LOGGER, "Requisition Detail updated " + requisitionDetail
+            /** Re-balance associated accounting information*/
+            reBalanceRequisitionAccounting requestCode, requisitionDetail.item
             return requisitionDetail
         } else {
             LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
             throw new ApplicationException( RequisitionDetailsCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
+        }
+    }
+
+    /**
+     * Delete Accounting for Document level accounting for last commodity detail
+     * @param requestCode
+     * @return
+     */
+    private def deleteAccountingForLastCommodity( requestCode ) {
+        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
+        if (header.isDocumentLevelAccounting == FinanceProcurementConstants.TRUE && requisitionDetailService.findByRequestCode( requestCode )?.size() == 1) {
+            requisitionAccountingService.findAccountingByRequestCode( requestCode )?.each() {
+                requisitionAccountingService.delete( [domainModel: it] )
+            }
+        }
+    }
+
+
+    private reBalanceRequisitionAccounting( requestCode, item, isDocumentLevelAccounting = null ) {
+        def processAccounting = {accounting ->
+            accounting.requisitionAmount = null
+            accounting.discountAmount = null
+            accounting.taxAmount = null
+            accounting.additionalChargeAmount = null
+            requisitionAccountingService.update( [domainModel: accounting] )
+        }
+        if (!isDocumentLevelAccounting) {
+            def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
+            isDocumentLevelAccounting = header.isDocumentLevelAccounting
+        }
+        def accountingList = requisitionAccountingService.findAccountingByRequestCode( requestCode )
+        if (isDocumentLevelAccounting == FinanceProcurementConstants.TRUE) {
+            accountingList.each() {
+                processAccounting( it )
+            }
+        } else {
+            accountingList.findAll() {it.item == item}.each() {
+                processAccounting( it )
+            }
         }
     }
 
