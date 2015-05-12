@@ -70,9 +70,9 @@ class RequisitionDetailsCompositeService {
         FinanceProcurementHelper.checkCompleteRequisition( requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ) )
         def requisitionDetail = requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( requestCode, item )
         /** Delete last accounting if present */
-        deleteAccountingForLastCommodity( requestCode )
-        reBalanceRequisitionAccounting requestCode, item
+        deleteAccountingForCommodity requestCode, requisitionDetail.item
         requisitionDetailService.delete( [domainModel: requisitionDetail] )
+        reBalanceRequisitionAccounting requestCode, item
     }
 
     /**
@@ -116,14 +116,20 @@ class RequisitionDetailsCompositeService {
     }
 
     /**
-     * Delete Accounting for Document level accounting for last commodity detail
+     * Delete Accounting for Document level accounting for commodity detail
      * @param requestCode
      * @return
      */
-    private def deleteAccountingForLastCommodity( requestCode ) {
+    private def deleteAccountingForCommodity( requestCode, item ) {
         def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         if (header.isDocumentLevelAccounting == FinanceProcurementConstants.TRUE && requisitionDetailService.findByRequestCode( requestCode )?.size() == 1) {
             requisitionAccountingService.findAccountingByRequestCode( requestCode )?.each() {
+                requisitionAccountingService.delete( [domainModel: it] )
+            }
+        } else if (header.isDocumentLevelAccounting == FinanceProcurementConstants.FALSE) {
+            requisitionAccountingService.findAccountingByRequestCode( requestCode ).findAll() {
+                it.item == item
+            }?.each() {
                 requisitionAccountingService.delete( [domainModel: it] )
             }
         }
@@ -145,10 +151,6 @@ class RequisitionDetailsCompositeService {
         def accountingList = requisitionAccountingService.findAccountingByRequestCode( requestCode )
         if (isDocumentLevelAccounting == FinanceProcurementConstants.TRUE) {
             accountingList.each() {
-                processAccounting( it )
-            }
-        } else {
-            accountingList.findAll() {it.item == item}.each() {
                 processAccounting( it )
             }
         }
