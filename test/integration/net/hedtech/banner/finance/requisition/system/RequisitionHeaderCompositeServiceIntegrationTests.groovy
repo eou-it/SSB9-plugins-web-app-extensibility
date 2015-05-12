@@ -49,6 +49,38 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     }
 
     /**
+     * Test create with tax null
+     */
+    @Test
+    void createPurchaseRequisitionWithNoTax() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def financeSystemControlServiceMeta = requisitionHeaderCompositeService.financeSystemControlService.metaClass
+        def requisitionHeaderServiceMeta = requisitionHeaderCompositeService.requisitionHeaderService.metaClass
+        def requisitionHeaderMeta = RequisitionHeader.metaClass
+        try {
+            def headerDomainModel = newRequisitionHeader()
+            requisitionHeaderCompositeService.financeSystemControlService.metaClass.findActiveFinanceSystemControl = {
+                def map = [taxProcessingIndicator: FinanceValidationConstants.REQUISITION_INDICATOR_NO]
+                return map
+            }
+            requisitionHeaderCompositeService.requisitionHeaderService.metaClass.create = {
+                return [id: 1]
+            }
+            RequisitionHeader.metaClass.read {
+                return [requestCode: headerDomainModel.requestCode]
+            }
+            def domainModelMap = [requisitionHeader: headerDomainModel]
+            def requestCode = requisitionHeaderCompositeService.createPurchaseRequisitionHeader(domainModelMap)
+            assertTrue requestCode != FinanceProcurementConstants.DEFAULT_REQUEST_CODE
+        } finally {
+            requisitionHeaderCompositeService.financeSystemControlService.metaClass = financeSystemControlServiceMeta
+            requisitionHeaderCompositeService.requisitionHeaderService.metaClass = requisitionHeaderServiceMeta
+            RequisitionHeader.metaClass = requisitionHeaderMeta
+        }
+    }
+
+    /**
      * Test create With Invalid user
      */
     @Test(expected = BadCredentialsException.class)

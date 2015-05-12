@@ -116,7 +116,7 @@ class RequisitionDetailsCompositeService {
     }
 
     /**
-     * Delete Accounting for Document level accounting for commodity detail
+     * Delete Accounting for Document level accounting for last commodity detail
      * @param requestCode
      * @return
      */
