@@ -30,6 +30,8 @@ var xe = (function (xe) {
         xe.logging.level = xe.logging.verbose;
     }
 
+    $.fn.editable.defaults.placeholder = '';
+
     xe.log = function () {
         if (xe.logging.level>xe.logging.none) {
             var args = Array.prototype.slice.call( arguments, 0 ); // convert arguments to an array

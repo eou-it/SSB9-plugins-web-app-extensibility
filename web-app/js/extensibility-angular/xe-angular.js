@@ -58,7 +58,7 @@ xe.ng.groupCompile = function(prio, context) {
                 // check if parent has attribute xeSectionInh
                 if (!attributes.xeSection && element[0].parentNode && element[0].parentNode.attributes) {
                     var section = element[0].parentNode.attributes[xe.attrInh.section];
-                    if (section) {
+                    if (xe.extensionsFound && section) {
                         attributes.xeSection = section.value;
                         xe.log('Compile ', context, prio, attributes, xe.logging.level === xe.logging.verbose ? element[0].innerHTML : element);
                         xe.log('-->Extending inherited section ' + attributes.xeSection);
@@ -86,6 +86,7 @@ xe.ng.groupProcessing = function(prio, context) {
                 xe.log('Link ', context, prio, $scope.src||attributes.src||'', '\n', xe.logging.level===xe.logging.verbose?element[0].innerHTML:element);
                 //xe.extendPagePart(element, attributes);
                 xe.extend(element);
+
             }
         };
     };

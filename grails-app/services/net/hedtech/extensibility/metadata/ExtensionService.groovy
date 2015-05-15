@@ -55,10 +55,6 @@ class ExtensionService {
         def result = []
         def file = new File("${extensionsPath}/${application}/${page}.json")
         def jsonStr = null
-        if (!file?.exists() && Environment.getCurrent() != Environment.PRODUCTION) {
-            // read the development test file
-            file = new File("plugins/web-app-extensibility.git/test/data/extensions/${ page }.json")
-        }
         if (file?.exists()) {
             try {
                 jsonStr = file.text
@@ -67,9 +63,10 @@ class ExtensionService {
                 log.error "Error reading extensions json file ${file.path}: " + ioe.stackTrace
             }
             if (jsonStr) {
-                JSON.use("deep")
                 try {
-                    result = JSON.parse(jsonStr)
+                    JSON.use("deep") {
+                        result = JSON.parse(jsonStr)
+                    }
                 }
                 catch (ConverterException ce) {
                     log.error "Error parsing extensions json from ${file.path}: " + ce.stackTrace
