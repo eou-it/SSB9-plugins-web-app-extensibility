@@ -24,6 +24,8 @@ var xe = (function (xe) {
     if ( window.location.search.indexOf("xeLogging=verbose")!=-1 )
         xe.logging.level=xe.logging.verbose;
 
+    $.fn.editable.defaults.placeholder = '';
+
     xe.log = function () {
         if (xe.logging.level>xe.logging.none) {
             //probably can implement this more elegantly...
@@ -96,10 +98,12 @@ var xe = (function (xe) {
     // might want to assure it has a child section
     xe.getGroupSelector = function(element) {
         var res = element[0].tagName;
-        if (element[0].id)
-            res += '#'+element[0].id;
-        if (element[0].class)
-            res += '.'+element[0].class;
+        if (element[0].id) {
+            res += '#' + element[0].id;
+        }
+        if (element[0].className) {
+            res += '.' + element[0].className;
+        }
         return res;
     };
 

@@ -60,11 +60,15 @@ class ResourceService {
     }
 
     def mergeJsonStr = { result, jsonStr ->
-        JSON.use("deep")
         if (!result) {
-            result = JSON.parse(jsonStr)
+            JSON.use("deep") {
+                result = JSON.parse(jsonStr)
+            }
         } else {
-            def map = JSON.parse(jsonStr)
+            def map
+            JSON.use("deep") {
+                map = JSON.parse(jsonStr)
+            }
             map.each { k,v ->
                 result[k] = v
             }
