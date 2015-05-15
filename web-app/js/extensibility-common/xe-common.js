@@ -82,7 +82,7 @@ var xe = (function (xe) {
     };
 
     xe.selectorFor = function( name ) {
-      return '[' + xe.forAttribute + (name ? '=' + name: '') + ']';
+        return '[' + xe.forAttribute + (name ? '=' + name: '') + ']';
     };
 
     // Create a selector for removing an element and its associated labels, etc.
@@ -227,9 +227,9 @@ var xe = (function (xe) {
 
 
     /*******************************************************************************************************
-    Element positioning information relies on the correct order of repositioning due to dependencies
-    This routine reorders positioning meta data accordingly
-    *******************************************************************************************************/
+     Element positioning information relies on the correct order of repositioning due to dependencies
+     This routine reorders positioning meta data accordingly
+     *******************************************************************************************************/
     xe.reorderMetadata = function( extensions ) {
 
         function getDependency ( extension, extensions ){
@@ -255,7 +255,7 @@ var xe = (function (xe) {
         }
 
         function findUnProcessedExtension(extensions) {
-           return  _.find( extensions, function(n){ return n.processed === false; });
+            return  _.find( extensions, function(n){ return n.processed === false; });
         }
         var orderedMoves = [];
         var allExtensionsApplied = false;
@@ -289,12 +289,17 @@ var xe = (function (xe) {
 
 
     /*******************************************************************************************************
-    Apply extensions to all sections within rootElement
-    Note that rootElement may itself be a section
-    *******************************************************************************************************/
-    xe.extend = function ( rootElement ) {
+     Apply extensions to all sections within rootElement
+     Note that rootElement may itself be a section
+     *******************************************************************************************************/
+    xe.extend = function ( $rootElement ) {
+        if ( $rootElement[0].hasAttribute( "xe-dynamic" ) ) {
+            extendDynamicContent();
+        } else {
+            extendStaticContent();
+        }
 
-        var sections;
+        return;
 
         /*******************************************************************************************************
          Replace the label text on a tab
@@ -305,8 +310,8 @@ var xe = (function (xe) {
 
 
         /*******************************************************************************************************
-        Determine any associated elements of the given element
-        *******************************************************************************************************/
+         Determine any associated elements of the given element
+         *******************************************************************************************************/
         function findAriaLinkedElements(ariaType, elementList) {
             var linkedElements = $();
             elementList.each(function() {
@@ -320,8 +325,8 @@ var xe = (function (xe) {
 
 
         /*******************************************************************************************************
-        Remove a section or field from the page
-        *******************************************************************************************************/
+         Remove a section or field from the page
+         *******************************************************************************************************/
         function removeElement( type, element ) {
             var elementsToRemove = $(element).add( $(xe.selectorFor(element.attributes[xe.typePrefix + type].value) ) );
             xe.log('Removing element '+type);
@@ -334,7 +339,7 @@ var xe = (function (xe) {
 
 
         /*******************************************************************************************************
-        Reposition a section or field
+         Reposition a section or field
          *******************************************************************************************************/
         function moveElement( elementType, extension, parent ) {
             var to;
@@ -364,14 +369,14 @@ var xe = (function (xe) {
 
 
         /*******************************************************************************************************
-        Ensures siblings (sections or fields) are correctly ordered on the page as specified by any
-        extensions.
+         Ensures siblings (sections or fields) are correctly ordered on the page as specified by any
+         extensions.
 
-        This routine:
-        - determines an elements siblings which are of the same type as the element itself (section or field)
-        - retrieves ordered extensibility information for element type
-        - reorders the siblings according to this metadata
-        *******************************************************************************************************/
+         This routine:
+         - determines an elements siblings which are of the same type as the element itself (section or field)
+         - retrieves ordered extensibility information for element type
+         - reorders the siblings according to this metadata
+         *******************************************************************************************************/
         function orderSiblings( elementType, element, orderedExtensions ) {
 
             var siblings = $(element).add( $(element).siblings(xe.selector(elementType)) );
@@ -386,17 +391,17 @@ var xe = (function (xe) {
         }
 
 
-		/*******************************************************************************************************
-        Replace an attribute on a field
-        *******************************************************************************************************/
+        /*******************************************************************************************************
+         Replace an attribute on a field
+         *******************************************************************************************************/
         function replaceAttribute(fieldElement,attributeName,attributeValue) {
             $(fieldElement).attr(attributeName,xe.i18n(attributeValue));
         }
 
 
         /*******************************************************************************************************
-        Replace the HTML of a field
-        *******************************************************************************************************/
+         Replace the HTML of a field
+         *******************************************************************************************************/
         function replaceHTML( fieldElement, fieldExtension ) {
 
             var newHTML = fieldExtension.attributes.html;
@@ -418,8 +423,8 @@ var xe = (function (xe) {
 
 
         /*******************************************************************************************************
-        Replace the label text on a button item
-        *******************************************************************************************************/
+         Replace the label text on a button item
+         *******************************************************************************************************/
         function replaceButtonText( fieldElement, fieldExtension ) {
 
             if ( $(fieldElement).is("input") ) {
@@ -431,8 +436,8 @@ var xe = (function (xe) {
 
 
         /*******************************************************************************************************
-        Replace any labels associated with a field
-        *******************************************************************************************************/
+         Replace any labels associated with a field
+         *******************************************************************************************************/
         function replaceLabel( fieldElement, fieldExtension ) {
 
             var labelElement;
@@ -464,8 +469,8 @@ var xe = (function (xe) {
         }
 
         /*******************************************************************************************************
-        Extend field attributes
-        *******************************************************************************************************/
+         Extend field attributes
+         *******************************************************************************************************/
         function extendFieldAttributes( fieldElement, fieldExtension ) {
 
             // determine if attributes are to be modified for xe-field or xe-data
@@ -490,7 +495,7 @@ var xe = (function (xe) {
                             replaceComponent(fieldElement, fieldExtension); // fieldElement regardless of existence of xe-data for now
                             break;
                         case "label":
-                            replaceLabel(element, fieldExtension);
+                            replaceLabel(fieldElement, fieldExtension);
                             break;
                         case "buttonText":
                             replaceButtonText(element, fieldExtension);
@@ -504,8 +509,8 @@ var xe = (function (xe) {
 
 
         /*******************************************************************************************************
-        Apply any extensions to each section field in turn
-        *******************************************************************************************************/
+         Apply any extensions to each section field in turn
+         *******************************************************************************************************/
         function extendSectionFields( section, extensions ) {
 
             _.each( extensions.fields, function( fieldExtension ) {
@@ -546,15 +551,17 @@ var xe = (function (xe) {
 
 
         /*******************************************************************************************************
-        Retrieve the metadata for a section and apply the extensions
-        *******************************************************************************************************/
-        function extendSection( section ) {
-            var sectionName = section.attributes[xe.typePrefix + xe.type.section].value;
+         Retrieve the metadata for a section and apply the extensions
+         *******************************************************************************************************/
+        function extendSection( section, sections ) {
+            var sectionName = section.attributes[xe.attr.section].value;
 
             // retrieve section metadata
             var extensions = _.find(xe.extensions.sections, function( sectionExtension ) {
                 return sectionName === sectionExtension.name;
             });
+
+            xe.log("Extending section", section);
 
             if ( extensions ) {
 
@@ -566,8 +573,7 @@ var xe = (function (xe) {
 
                 // reposition section
                 if ( _.has(extensions, "nextSibling") &&
-                     !sections.filter(xe.selector(xe.type.section, sectionName )).hasClass("xe-moved")
-                    ) {
+                    !sections.filter(xe.selector(xe.type.section, sectionName )).hasClass( "xe-moved" )) {
                     orderSiblings(xe.type.section, section, xe.extensions.orderedSections);
                 }
 
@@ -583,18 +589,82 @@ var xe = (function (xe) {
             }
         }
 
-        // determine list of sections to be processed
-        sections = $(xe.selector(xe.type.section), rootElement).not(".xe-extended");
 
-        if ( $(rootElement[0]).is(xe.selector(xe.type.section)) && !$(rootElement).hasClass("xe-extended") ) {
-            sections = sections.add( rootElement[0] );
+        function extendSections( extendRootElement ) {
+            var sections = $( xe.selector( xe.type.section ), $rootElement );
+            if ( extendRootElement ) {
+                sections = sections.add( $rootElement[0] );
+            }
+            _.each( sections, function( section ) {
+                extendSection( section, sections );
+            });
         }
 
-        // apply extensions to each section
-        _.each( sections, function(section) {
-            extendSection( section );
-        });
 
+        /**
+         * dynamic content always has xe-dynamic attribute
+         * this attribute is always on container for dynamically loaded content
+         *
+         * is xe-section
+         *   therefore no content outside this section that needs higher section information
+         *   just extend this section - which extends contained sections
+         * OR
+         * is not xe-section
+         *
+         *   is contained in xe-section (inherited section)
+         *     extend contained sections
+         *     extend standalone xe-fields
+         *   OR
+         *   is not contained in xe-section
+         *     extend contained sections
+         *     standalone xe-fields illegal
+         */
+        function extendDynamicContent() {
+            var inheritedSectionName,
+                extensions;
+
+            xe.log("Extending dynamic content: ", $rootElement);
+
+            if ( $($rootElement[0]).is( xe.selector( xe.type.section ) ) ) {
+                xe.log("Dynamic content is a section");
+
+                extendSections( true );  // extend rootElement
+
+            } else {
+                xe.log("Dynamic content is not a section");
+
+                inheritedSectionName = $rootElement.closest( ('[' + xe.attr.section + ']') )
+                    .attr( xe.attr.section );
+                if ( inheritedSectionName ) {
+                    xe.log("Dynamic content is within a section");
+
+                    extendSections( false );  // do not extend rootElement
+
+                    // extend any xe-fields that have a containing xe-section outside this dynamic content
+                    extensions = _.find( xe.extensions.sections, function( sectionExtension ) {
+                        return inheritedSectionName === sectionExtension.name;
+                    });
+                    if ( extensions ) {
+                        extendSectionFields( $rootElement, extensions );
+                    }
+                } else {
+                    xe.log("Dynamic content is not within a section");
+
+                    extendSections( false );  // do not extend rootElement
+                }
+            }
+        }
+
+
+        function extendStaticContent() {
+            xe.log("Extending static content: ", $rootElement);
+
+            if ( $($rootElement[0]).is( xe.selector( xe.type.section ) ) ) {
+                extendSections( true );  // extend rootElement
+            } else {
+                extendSections( false ); // do not extend rootElement
+            }
+        }
     };  // end xe.extend
 
 
@@ -619,11 +689,11 @@ var xe = (function (xe) {
                     var sectionName = section.attributes[xe.typePrefix+xeType].value;
                     //Todo re-implement section reordering
                     /*
-                    var actions = xe.extensions.groups.sections[sectionName];
-                    if (actions) {
-                        xe.extend(element, attributes, actions);
-                    }
-                    */
+                     var actions = xe.extensions.groups.sections[sectionName];
+                     if (actions) {
+                     xe.extend(element, attributes, actions);
+                     }
+                     */
                     xe.log('extendPagePart sections:', sections );
                 });
             }
@@ -755,9 +825,9 @@ var xe = (function (xe) {
             });
 
             popup.load(extensibilityPluginPath+'/templates/extedit.html',
-                       function(){
-                           $('#extensions-edit-input',popup).text(JSON.stringify(xe.page.metadata,null,2));
-                       }
+                function(){
+                    $('#extensions-edit-input',popup).text(JSON.stringify(xe.page.metadata,null,2));
+                }
             );
         }
         popup.dialog("open");
@@ -824,18 +894,18 @@ var xe = (function (xe) {
             data: {application: xe.page.application,page: xe.page.name,hash:location.hash},
             async: false,
             success: function(json){
-                    xe.log('data loaded');
-                    xe.extensions=json[0]; //data used for extending page
-                    if ((xe.extensions !== undefined)) {
-                        xe.extensionsFound = true;
-                        if (xe.devMode()){
-                            xe.page.metadata=[$.extend(true,{},xe.extensions)];  //clone of extensions used for editor
-                        }
-                        xe.extensions.orderedSections = xe.reorderMetadata(xe.extensions.sections);
-                        if(xe.extendFunctions !== undefined) {
-                            xe.extendFunctions();
-                        }
+                xe.log('data loaded');
+                xe.extensions=json[0]; //data used for extending page
+                if ((xe.extensions !== undefined)) {
+                    xe.extensionsFound = true;
+                    if (xe.devMode()){
+                        xe.page.metadata=[$.extend(true,{},xe.extensions)];  //clone of extensions used for editor
                     }
+                    xe.extensions.orderedSections = xe.reorderMetadata(xe.extensions.sections);
+                    if(xe.extendFunctions !== undefined) {
+                        xe.extendFunctions();
+                    }
+                }
             }
         });
         if (xe.extensionsFound) {
