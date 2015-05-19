@@ -160,6 +160,10 @@ class RequisitionDetailsCompositeService {
             accountingList.each() {
                 processAccounting( it )
             }
+        } else {
+            accountingList.findAll() {it.item == item}?.each() {
+                processAccounting( it )
+            }
         }
     }
 
