@@ -1,6 +1,70 @@
 [
     {
         "sections": [
+            //some of the main accordion members have been duplicated in an extensible way
+            {
+                "name": "payInformationEx",
+                "fields": [
+                    {
+                        "name": "lastPaidDate"
+                    ,"nextSibling": null
+                    }
+                ]
+            },
+            {
+                "name": "earningsInformationEx", "nextSibling": "payInformationEx"
+            },
+            {
+                "name": "employeeSummaryEx", "exclude": true
+            },
+            //
+            {
+                "name": "employeeSummary",
+                "fields": [
+                    {
+                        "name": "firstWorkDate",
+                        "attributes": {"label": "*First Work Date*"}
+                        //,"exclude": true
+                    ,"nextSibling": "seniorityDate"
+                        //,"nextSibling": null
+                    },
+                    {
+                        "name": "division", "exclude": true
+                    }
+                ]
+            },
+            {
+                "name": "taxInformation", "exclude": true
+
+            },
+            {
+                "name": "leaveBalanceMain",
+                "nextSibling": "employeeProfileLinks"
+            },
+            {
+                "name": "leaveBalanceSummary",
+                "fields": [
+                    {
+                        "name": "availableInput",
+                        "nextSibling": null,
+                        "attributes":{
+                            "component": {
+                                "tagName": "P",
+                                "attributes" : {"id": "div1", "class": "class1 class2", "xe-field":"availableInput"},
+                                "childNodes": [
+                                    {
+                                        "tagName": "INPUT",
+                                        "attributes": {"type": "ng-number", "max": "100", "ng-model": "leaveBalance.available"}
+                                    },
+                                    {
+                                        "textContent" : "Enter"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
         ]
     }
 ]
