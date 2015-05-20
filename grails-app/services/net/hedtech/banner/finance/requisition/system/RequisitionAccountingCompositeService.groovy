@@ -106,7 +106,7 @@ class RequisitionAccountingCompositeService {
             sequenceNumber = accountingDomainModel.requisitionAccounting.sequenceNumber
         }
 
-        RequisitionAccounting existingAccountingInfo = requisitionAccountingService.findByRequestCodeItemAndSeq( requestCode, item, sequenceNumber )
+        def existingAccountingInfo = requisitionAccountingService.findByRequestCodeItemAndSeq( requestCode, item, sequenceNumber )
         RequisitionAccounting requisitionAccountingRequest = accountingDomainModel.requisitionAccounting
         requisitionAccountingRequest.id = existingAccountingInfo.id
         requisitionAccountingRequest.version = existingAccountingInfo.version
