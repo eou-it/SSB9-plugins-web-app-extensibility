@@ -293,7 +293,7 @@ var xe = (function (xe) {
      Note that rootElement may itself be a section
      *******************************************************************************************************/
     xe.extend = function ( $rootElement ) {
-        if ( $rootElement[0].hasAttribute( "xe-dynamic" ) ) {
+        if ( $($rootElement)[0].hasAttribute( "xe-dynamic" ) ) {
             extendDynamicContent();
         } else {
             extendStaticContent();
