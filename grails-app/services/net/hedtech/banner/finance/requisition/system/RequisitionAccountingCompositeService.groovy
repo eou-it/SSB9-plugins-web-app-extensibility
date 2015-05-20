@@ -20,6 +20,15 @@ class RequisitionAccountingCompositeService {
     def requisitionHeaderService
     def springSecurityService
     def requisitionAccountingService
+    def chartOfAccountsService
+    def accountIndexService
+    def financeFundService
+    def financeOrganizationCompositeService
+    def financeAccountCompositeService
+    def programService
+    def activityService
+    def locationService
+    def financeProjectCompositeService
 
     /**
      * Creates Requisition Accounting level.
@@ -117,5 +126,30 @@ class RequisitionAccountingCompositeService {
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
+    }
+
+    /**
+     * This method is used to find RequisitionAccounting and related details by requisition code, item number and sequence number.
+     * @param requisitionCode Requisition code.
+     * @param item Item number.
+     * @param sequenceNumber Sequence number.
+     * @return RequisitionAccounting information.
+     */
+    def findByRequestCodeItemAndSeq( requisitionCode, Integer item, Integer sequenceNumber ) {
+        LoggerUtility.debug( LOGGER, String.format( 'Input parameter for findByRequestCodeItemAndSeq :%1s , %2d ,%3d', requisitionCode, item, sequenceNumber ) )
+        def dummyPaginationParam = [max: 1, offset: 0]
+        def requisitionAccounting = requisitionAccountingService.findByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber )
+        [accounting: requisitionAccounting, cifoapalp: [
+                chartOfAccount: [code: requisitionAccounting.chartOfAccount, title: requisitionAccounting.chartOfAccount ? chartOfAccountsService.getChartOfAccountByCode( requisitionAccounting.chartOfAccount )?.title : null],
+                index         : [code: requisitionAccounting.accountIndex, title: requisitionAccounting.accountIndex ? accountIndexService.getListByIndexTitleAndEffectiveDate( [coaCode: requisitionAccounting.chartOfAccount, indexCodeTitle: requisitionAccounting.accountIndex], dummyPaginationParam )?.get( 0 )?.title : null],
+                fund          : [code: requisitionAccounting.fund, title: requisitionAccounting.fund ? financeFundService.findFundByEffectiveDateAndFundCode( null, requisitionAccounting.fund, requisitionAccounting.chartOfAccount, dummyPaginationParam )?.get( 0 )?.fundTitle : null],
+                organization  : [code: requisitionAccounting.organization, title: requisitionAccounting.organization ? financeOrganizationCompositeService.
+                        findOrganizationListByEffectiveDateAndSearchParam( [searchParam: requisitionAccounting.organization, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )?.orgnTitle : null],
+                account       : [code: requisitionAccounting.account, title: requisitionAccounting.account ? financeAccountCompositeService.getListByAccountOrChartOfAccAndEffectiveDate(
+                        [searchParam: requisitionAccounting.account, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )?.title : null],
+                program       : [code: requisitionAccounting.program, title: requisitionAccounting.program ? programService.findByCoaProgramAndEffectiveDate( [coa: requisitionAccounting.chartOfAccount, programCodeDesc: requisitionAccounting.program], dummyPaginationParam )?.get( 0 )?.title : null],
+                activity      : [code: requisitionAccounting.activity, title: requisitionAccounting.activity ? activityService.getListByActivityCodeTitleAndEffectiveDate( [activityCodeTitle: requisitionAccounting.activity, coaCode: requisitionAccounting.chartOfAccount], null, dummyPaginationParam )?.get( 0 )?.title : null],
+                location      : [code: requisitionAccounting.location, title: requisitionAccounting.location ? locationService.getLocationByCodeTitleAndEffectiveDate( [codeTitle: requisitionAccounting.location, coaCode: requisitionAccounting.chartOfAccount], null, dummyPaginationParam )?.get( 0 )?.title : null],
+                project       : [code: requisitionAccounting.project, title: requisitionAccounting.project ? financeProjectCompositeService.getListByProjectAndEffectiveDate( [projectCodeDesc: requisitionAccounting.project, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )?.longDescription : null]]]
     }
 }

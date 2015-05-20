@@ -168,6 +168,16 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
     }
 
     /**
+     * Test case method to find Requisition Accounting by request code, item and sequence number.
+     */
+    @Test
+    public void testFindByRequestCodeItemAndSeq() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        assertTrue( requisitionAccountingCompositeService.findByRequestCodeItemAndSeq( 'R0001397', 0, 2 ).accounting.requestCode == 'R0001397' )
+    }
+
+    /**
      * The method is used to get the RequisitionAccounting object with all required values to insert/update.
      * @return RequisitionAccounting.
      */

@@ -36,7 +36,29 @@ class RequisitionAccountingService extends ServiceBase {
                     new BusinessLogicValidationException(
                             FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_ACCOUNTING, [] ) )
         }
-        return requisitionAccounting.getAt( 0 )
+        return requisitionAccounting.collect() {
+            [id                    : it.id,
+             version               : it.version,
+             requestCode           : it.requestCode,
+             item                  : it.item,
+             sequenceNumber        : sequenceNumber,
+             chartOfAccount        : it.chartOfAccount,
+             accountIndex          : it.accountIndex,
+             fund                  : it.fund,
+             organization          : it.organization,
+             account               : it.account,
+             program               : it.program,
+             activity              : it.activity,
+             location              : it.location,
+             project               : it.project,
+             percentage            : it.percentage,
+             requisitionAmount     : it.requisitionAmount,
+             additionalChargeAmount: it.additionalChargeAmount,
+             discountAmount        : it.discountAmount,
+             taxAmount             : it.taxAmount,
+             userId                : it.userId
+            ]
+        }.getAt( 0 )
     }
 
     /**
@@ -74,7 +96,6 @@ class RequisitionAccountingService extends ServiceBase {
         def lastSequence = RequisitionAccounting.fetchLastSequenceNumberByRequestCode( requestCode, item ).getAt( 0 )
         return lastSequence ? lastSequence : 0
     }
-
 
     /*def getSplittingPercentage( requestCode, item ) {
         def percentage = RequisitionAccounting.getSplittingPercentage( requestCode, item ).getAt( 0 )
