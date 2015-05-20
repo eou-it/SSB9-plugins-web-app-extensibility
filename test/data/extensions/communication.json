@@ -1,107 +1,70 @@
-[{"sections": [
-		
-   {
-		"name": "heading",
-		"exclude": false
-   },
-   /** Section Reorder **/
-   {
-		"name": "popList",
-		"nextSibling": "templates"
-   },
-   
-   /** Serach input **/
-   {
-		"name": "searchForm",
-        "fields": [
-            {
-                 "name": "searchTerm",
-				 "exclude": false
-		    }
-		]
-   },
-   
-   /** Field hide, reorde **/
-   {
-		"name": "overview",
-		"exclude": false,
-        "fields": [
-            {
-                 "name": "organizationDescription",
-				  "attributes": {
-		            "label": "Replace Label For:"
-				  },
-				 "nextSibling": "organizationName"
-		    }
-		]
-   },
-   
-   /*** Accordion ***/
-   {
-		"name": "emailSetting",
-		"exclude": false		
-   },
-   {
-		"name": "accountSettings",
-		"nextSibling": "serverSettings"		
-   },
-   
-   /*** Tab ***/
-    {
-		"name": "dataFieldList",
-		"exclude": false,
-		"nextSibling": "templateList"		
-    },
-   
-   
-   {
-        "name": "normalSection",
+[
+  {
+    "sections": [
+      {
+        "name": "heading",
+        "exclude": false,
+        "nextSibling": "templateListContainer"
+      },
+      {
+        "name": "landingPageContainer",
+        "exclude": false
+      },
+      {
+        "name": "templateOverviewContainer",
         "exclude": true
-   },
-   {
-        "name": "acc2",
-        "exclude": true,
-        "nextSibling": "acc1"
-       
-   },
-   {
+      },
+      // Section reorder
+      {
+        "name": "popList",
+        "nextSibling": "templates"
+      },
+      // Serachinput
+      {
+        "name": "searchForm",
+        "fields": [
+          {
+            "name": "searchTerm",
+            "exclude": false
+          }
+        ]
+      },
+      // Field hide,reorder
+      {
+        "name": "overview",
+        "exclude": false,
+        "fields": [
+          {
+            "name": "organizationDescription",
+            "attributes": {
+              "label": "Replace Label For:"
+            },
+            "nextSibling": "organizationName"
+          }
+        ]
+      },
+      // Accordion
+      {
+        "name": "emailSetting",
+        "exclude": false
+      },
+      {
+        "name": "accountSettings",
+        "nextSibling": "serverSettings"
+      },
+
+      {
         "name": "emailAccountSection",
-        "nextSibling": "emailServerSection"   
-   },
-   {
+        "nextSibling": "emailServerSection"
+      },
+      {
         "name": "templateListSection",
         "exclude": false
-   },
-   {
+      },
+      {
         "name": "searchFormSection",
         "exclude": false
-   },
-    {
-        "name": "selectTestSection",
-        "fields": [
-            {
-                 "name": "dataFieldFolder",
-                 "exclude": false,
-                 "attributes": {
-		            "label": "Replace Label For:",
-                    "title": "select...",
-                    "placeholder": "Please select the date..."
-                 }
-            }
-        ]
-    },
-     
-     {
-        "name": "testSection",
-        "fields": [
-            {
-                 "name": "testField",
-                 "exclude": false,
-                  "attributes": {
-                    "label": "Replace Label For:"
-                 }
-            }
-        ]
-    }
-
-]}]
+      }
+    ]
+  }
+]
