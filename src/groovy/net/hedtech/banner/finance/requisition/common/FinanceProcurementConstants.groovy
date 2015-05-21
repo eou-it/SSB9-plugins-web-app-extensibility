@@ -291,7 +291,7 @@ class FinanceProcurementConstants {
     static final String REQUEST_PARAM_ACCOUNTING_SEQUENCE = 'sequence'
 
     /** Constants for Requisition Summary */
-    static final String REQUISITION_SUMMARY_VIEW = 'FPV_REQ_SUMMARY'
+    static final String REQUISITION_SUMMARY_VIEW = 'FVQ_REQ_SUMMARY'
     static final String REQUISITION_SUMMARY_FIELD_FPBREQH_VERSION = 'FPBREQH_VERSION'
     static final String REQUISITION_SUMMARY_FIELD_FPRREQA_ITEM = 'FPRREQA_ITEM'
     static final String REQUISITION_SUMMARY_FIELD_FPRREQA_SEQ_NUM = 'FPRREQA_SEQ_NUM'
