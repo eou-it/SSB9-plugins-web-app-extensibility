@@ -5,10 +5,12 @@
 /* global _  */
 /* global extensibilityPluginPath */
 /* global ToolsMenu */
+/* global notifications */
 
 // xe namespace is for providing eXtensible Environment functionality.
 // this will likely be provided as a service and injected
 var xe = (function (xe) {
+    'use strict';
     //Attributes
     xe.typePrefix = 'xe-';                                                       //prefix for xe specific html attributes
     xe.type = {field: 'field',section: 'section'};                               //logical type names
@@ -56,7 +58,6 @@ var xe = (function (xe) {
     };
 
     // item is a string or an object with a key attribute
-    // for now we don't support args
     xe.i18n = function (item, args) {
         return (typeof item === 'string')?item: $.i18n.prop(item.key, args);
     };
@@ -88,19 +89,6 @@ var xe = (function (xe) {
     // Create a selector for removing an element and its associated labels, etc.
     xe.selectorToRemove = function( elementType, name ) {
         return xe.selector( elementType, name) + ', ' + xe.selectorFor( name ); //['+xe.typePrefix+'="' + name + '"]';
-    };
-
-    // get a simple selector for the group (well, nothing specific for a group so far)
-    // might want to assure it has a child section
-    xe.getGroupSelector = function(element) {
-        var res = element[0].tagName;
-        if (element[0].id) {
-            res += '#' + element[0].id;
-        }
-        if (element[0].className) {
-            res += '.' + element[0].className;
-        }
-        return res;
     };
 
     xe.getFields = function(section) {
@@ -138,92 +126,12 @@ var xe = (function (xe) {
         return {
             description: description,
             application: xe.getApplication(),
-            name: xe.getPageName(),
-            groups:[],
-            addGroup: function (group,sections) {
-                var xeType=xe.type.section;
-                var res=[];
-                $.each(sections, function(i,section ){
-                    res.push({name:section.attributes[xe.typePrefix+xeType].value, fields:xe.getFields(section)});
-                });
-                this.groups.push({name: xe.getGroupSelector(group), sections: res});
-            },
-            // Refactoring page structure parsing for Angular
-            // Leaving Groups in case it is used for JQuery pages
-            //elements:[], //sections and fields are added here
-            dom:{children:[]},
-            level: 0,
-            count: 0,
-            addNode: function (node,element){
-                function equ(left,right) {
-                    return (left.section && left.section === right.section) || (left.field && left.field === right.field);
-                }
-                var found=false;
-                var i;
-                this.level++;
-                this.count++;
-                if (this.level>50 || this.count>100000) {
-                    throw ('Recursion / endless loop error ' + this.level + '/' + this.count );
-                }
-                if (equ(element.parent,node)) {
-                    if (!node.children) {
-                        node.children = [];
-                    }
-                    node.children.push(element);
-
-                    xe.log('Added Element',element.section || element.field, 'To child of ',node.section || node.field);
-                    found = true;
-                }
-                //If not found, recurse children
-                for (i = 0; !found && node.children && i < node.children.length; i++) {
-                    found = this.addNode(node.children[i], element);
-                }
-                this.level--;
-                return found;
-            },
-            addElement: function (element) {
-                //this.elements.push(element);
-                if (element.parent === null) {
-                    this.dom.children.push(element);
-                } else {
-                    this.addNode(this.dom, element);
-                }
-            }
+            name: xe.getPageName()
         };
     };
 
     //metadata for baseline page
     xe.page = new xe.Page('Baseline Page');
-    //metadata for  page after extension - just do Baseline for now
-    // xe.extendedPage = new xe.Page('Extended Page');
-
-    // xe.extensions = {} // load extensions for each page from server-side config
-
-    // templates define how to create each type of widget
-
-    xe.templates = {
-
-        // should probably convert these to a string templating mechanism, ...${field.name}..., etc.
-        'static': function( field ) {
-            return '<div data-xe-for="' + field.name + '"><label>' + (field.label||'Empty Label') + '</label><span title="title text" title="title text" data-xe-field="' + field.name + '">{{' + field.name + '}}</span></div>';
-        },
-        'literal': function( field ) {
-            return '<div data-xe-for="' + field.name + '"><label>' + (field.label||'Empty Label') + '</label><span title="title text" title="title text" data-xe-field="' + field.name + '">' + field.value + '</span></div>';
-        },
-        'input': function( field ) {
-            return '<div data-xe-for="' + field.name + '"><label>' + (field.label||'Empty Label') + '</label><input title="title text" data-xe-field="' + field.name + '" ng-model="' + field.name + '"></input></div>';
-        },
-        'text': function( field ) {
-            return '<div data-xe-for="' + field.name + '"><label>' + (field.label||'Empty Label') + '</label><text title="title text" data-xe-field="' + field.name + '" ng-model="' + field.name + '"></text></div>';
-        }
-    };
-
-    // utility function to generate the HTML for a specific field
-    xe.generateField = function(field) {
-        var template = xe.templates[field.template] || xe.templates['static'];
-        xe.log( 'using template ' + field.template + '=' + template);
-        return template( field );
-    };
 
 
     /*******************************************************************************************************
@@ -299,7 +207,7 @@ var xe = (function (xe) {
             extendStaticContent();
         }
 
-        return;
+        // return; //this return is not needed and is causing a JSHint warning
 
         /*******************************************************************************************************
          Replace the label text on a tab
@@ -668,39 +576,6 @@ var xe = (function (xe) {
     };  // end xe.extend
 
 
-    //This function searches element children for sections
-    //TODO check if used in Angular
-    xe.parseGroups = function(element,attributes){
-        var sections = element.children(xe.selector(xe.type.section));
-        if ( sections.length > 0) {
-            xe.page.addGroup( element, sections);
-            xe.log("Parsed group: ",xe.page);
-        }
-    };
-
-    //This function does high level changes (hide sections, reorder sections) on a page or part of a page (ng-include, ui-view or a handlebars template)
-    //It looks like jquery extensibility has been reprogrammed to work without using this on handlebars templates
-    xe.extendPagePart = function(element, attributes){
-        var xeType = xe.type.section;
-        var sections = $(xe.selector(xeType),element);
-        if ( sections.length > 0) {
-            if (xe.enableExtensions() ) {
-                $.each(sections, function(i,section ){
-                    var sectionName = section.attributes[xe.typePrefix+xeType].value;
-                    //Todo re-implement section reordering
-                    /*
-                     var actions = xe.extensions.groups.sections[sectionName];
-                     if (actions) {
-                     xe.extend(element, attributes, actions);
-                     }
-                     */
-                    xe.log('extendPagePart sections:', sections );
-                });
-            }
-        }
-    };
-
-
     //HTML rendering support
     xe.isVoidElement = function(tag) {
         //xe.voidElements is a map to specify the html element types that are 'void' (have no content)
@@ -744,58 +619,11 @@ var xe = (function (xe) {
         return result;
     };
 
-
-    // Page Editor - well, just show for now just show a simple node hierarchy
-    xe.renderPageStructure = function(page){
-        var count = 0;
-        function renderNode(node, html) {
-            count++;
-            if (count>10000) {
-                throw ('Recursion error');
-            }
-            if (node.section) {
-                html += "<li>Section: " + node.section + "</li>\n";
-            }
-            else if (node.field) {
-                html += "<li>Field: " + node.field + "</li>\n";
-            }
-            if (node.children) {
-                html+="<ul>";
-                for (var i = 0; i < node.children.length; i++) {
-                    html  = renderNode(node.children[i], html);
-                }
-                html+="</ul>";
-            }
-            return html;
-        }
-
-        var result = "Page Structure "+page.description+" "+page.application+"/"+page.name;
-        result = renderNode(page.dom, result);
-        return result;
-    };
-
     xe.popups = [null,null,null];
-
-
-    xe.showPageStructure = function (page, popup){
-        if (!popup) {
-            popup = $('<div id="pageStructure'+page.description+'" ></div>');
-            popup.dialog({appendTo: "#content", width: 600, height:"auto"});
-            popup.append(xe.renderPageStructure(page));
-        }
-        popup.dialog("open");
-        return popup;
-    };
-
-    xe.stats = {};
 
     xe.showStats = function (page, popup) {
         xe.renderStats = function(page){
             var res = $.i18n.prop("xe.page.status", [page.name]);
-            var key;
-            for (key in xe.stats) {
-                res += '<li>'+key+'='+xe.stats[key];
-            }
             if (xe.errors && xe.errors.length) {
                 res += '<br>' + $.i18n.prop("xe.page.errors") + '<br>' + xe.errors;
             }
@@ -852,6 +680,14 @@ var xe = (function (xe) {
                     flash: true
                 }));
                 xe.log('Data Saved',data);
+            },
+            error: function (request, status, error) {
+                var errorMessage = JSON.parse(request.responseText).errors[0].errorMessage||error;
+                notifications.addNotification( new Notification({
+                    message: errorMessage,
+                    type: "error",
+                    flash: false
+                }));
             }
         });
     };

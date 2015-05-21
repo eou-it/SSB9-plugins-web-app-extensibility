@@ -41,6 +41,9 @@ class ExtensionService {
     }
 
     private def saveToFile(application, page, metadata){
+        if ( !extensionsPath ) {
+            throw new Exception(localizerService(code: "extension.service.save.missing.extensionsPath"))
+        }
         def json = new JSON(metadata)
         def jsonStr = json.toString(true)
         def file = new File("${extensionsPath}/${application}")
@@ -53,7 +56,7 @@ class ExtensionService {
 
     private def loadFromFile(application,page){
         def result = []
-        def file = new File("${extensionsPath}/${application}/${page}.json")
+        def file = extensionsPath?new File("${extensionsPath}/${application}/${page}.json"):null
         def jsonStr = null
         if (file?.exists()) {
             try {
