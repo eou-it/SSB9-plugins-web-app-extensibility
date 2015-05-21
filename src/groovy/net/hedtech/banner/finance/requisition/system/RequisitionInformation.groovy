@@ -28,7 +28,7 @@ import javax.persistence.*
 
 ])
 @Entity
-@Table(name = FinanceProcurementConstants.VIEW_FPVREQINFO)
+@Table(name = FinanceProcurementConstants.VIEW_FVQ_REQ_DASHBOARD_INFO)
 @EqualsAndHashCode(includeFields = true)
 @ToString(includeNames = true, ignoreNulls = true)
 @DatabaseModifiesState
@@ -38,56 +38,56 @@ class RequisitionInformation implements Serializable {
      * Surrogate ID for FPVREQINFO
      */
     @Id
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQINFO_SURROGATE_ID)
+    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_SURROGATE_ID)
     Long id
 
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQINFO_FPBREQH_FPBREQH_CODE)
+    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPBREQH_FPBREQH_CODE)
     String requisitionCode
 
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQINFO_FPBREQH_TRANS_DATE)
+    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPBREQH_TRANS_DATE)
     Date transactionDate
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQINFO_REQUEST_DATE)
+    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_REQUEST_DATE)
     Date requestDate
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQINFO_DELIVERY_DATE)
+    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_DELIVERY_DATE)
     Date deliveryDate
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQINFO_FPBREQH_ACTIVITY_DATE)
+    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPBREQH_ACTIVITY_DATE)
     Date activityDate
 
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQINFO_FPBREQH_USER_ID)
+    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPBREQH_USER_ID)
     String lastModifiedBy
 
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQINFO_FPBREQH_ORIGIN_CODE)
+    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPBREQH_ORIGIN_CODE)
     String origin
 
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQINFO_FPBREQH_CURR_CODE)
+    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPBREQH_CURR_CODE)
     String currency
 
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQINFO_AMOUNT)
+    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_AMOUNT)
     String amount
 
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQINFO_REQUESTOR_NAME)
+    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_REQUESTOR_NAME)
     String requesterName
 
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQINFO_FPBREQH_VEND_PIDM)
+    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPBREQH_VEND_PIDM)
     String vendorPidm
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQINFO_VENDOR_NAME)
+    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_VENDOR_NAME)
     String vendorName
 
 
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQINFO_FPBREQH_ORGN_CODE)
+    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPBREQH_ORGN_CODE)
     String organizationCode
 
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQINFO_ORG_TITLE)
+    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_ORG_TITLE)
     String organizationTitle
 
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQINFO_FPBREQH_COAS_CODE)
+    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPBREQH_COAS_CODE)
     String coasCode
 
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQINFO_STATUS)
+    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_STATUS)
     String status
 
     @Version
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPVREQINFO_VERSION)
+    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_VERSION)
     Long version
 
     /**

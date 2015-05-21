@@ -44,7 +44,7 @@ import javax.persistence.*
  *  Request Accounting Table
  */
 @Entity
-@Table(name = FinanceProcurementConstants.REQ_ACC_ENTITY_FPVREQA)
+@Table(name = FinanceProcurementConstants.REQ_ACC_ENTITY_FV_REQ_ACCOUNTING)
 @EqualsAndHashCode(includeFields = true)
 @ToString(includeNames = true, ignoreNulls = true)
 @DatabaseModifiesState

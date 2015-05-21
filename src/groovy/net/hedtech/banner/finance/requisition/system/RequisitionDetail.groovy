@@ -32,7 +32,7 @@ import javax.persistence.*
                             WHERE requisitionDetail.requestCode = :requestCode""")
 ])
 @Entity
-@Table(name = FinanceProcurementConstants.FPVREQD)
+@Table(name = FinanceProcurementConstants.FPVREQD_VIEW)
 @EqualsAndHashCode(includeFields = true)
 @ToString(includeNames = true, ignoreNulls = true)
 @DatabaseModifiesState

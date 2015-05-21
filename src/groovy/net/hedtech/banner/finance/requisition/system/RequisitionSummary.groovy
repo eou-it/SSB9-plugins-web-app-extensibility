@@ -13,7 +13,7 @@ import org.hibernate.annotations.Type
 import javax.persistence.*
 
 /**
- *  Persistence class for Requisition Summary (FPV_REQ_SUMMARY).
+ *  Persistence class for Requisition Summary (FVQ_REQ_SUMMARY).
  */
 @NamedQueries(value = [
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE,
