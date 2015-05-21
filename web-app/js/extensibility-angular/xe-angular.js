@@ -8,19 +8,18 @@
 
     xe.ng = xe.ng || {};
 
-    xe.ng.applyExtensions = function() {
+    xe.ng.applyExtensions = function( restriction ) {
         return function() {
             return {
-                restrict: 'EA',
+                restrict: restriction,
                 compile: function(element) {
                     xe.extend(element);
                 }
-        };
-    };
-};
+            };
+        };};
 
-angular.module('extensibility', [])
-    .directive( 'body', xe.ng.applyExtensions() )
-    .directive( 'xeDynamic', xe.ng.applyExtensions());
+    angular.module('extensibility', [])
+        .directive( 'body', xe.ng.applyExtensions('E') )
+        .directive( 'xeDynamic', xe.ng.applyExtensions('A'));
 })();
 
