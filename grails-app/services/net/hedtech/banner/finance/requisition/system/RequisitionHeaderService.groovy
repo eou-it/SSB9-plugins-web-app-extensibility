@@ -10,7 +10,10 @@ import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
 import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.service.ServiceBase
 import org.apache.log4j.Logger
-
+/**
+ * Service class for RequisitionHeader.
+ *
+ */
 class RequisitionHeaderService extends ServiceBase {
     boolean transactional = true
     private static final def LOGGER = Logger.getLogger( this.getClass() )
