@@ -56,7 +56,8 @@ class RequisitionAccountingService extends ServiceBase {
              additionalChargeAmount: it.additionalChargeAmount,
              discountAmount        : it.discountAmount,
              taxAmount             : it.taxAmount,
-             userId                : it.userId
+             userId                : it.userId,
+             accountTotal                 : it.requisitionAmount + it.additionalChargeAmount + it.taxAmount - it.discountAmount
             ]
         }.getAt( 0 )
     }
