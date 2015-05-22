@@ -5,6 +5,7 @@ package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
+import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.service.ServiceBase
@@ -27,7 +28,7 @@ class RequisitionSummaryService extends ServiceBase {
         LoggerUtility.debug( LOGGER, 'Input parameters for fetchRequisitionSummaryForRequestCode :' + requestCode )
         def requisitionSummary = RequisitionSummary.fetchRequisitionSummaryForRequestCode( requestCode )
         if (!requisitionSummary) {
-            throw new ApplicationException( RequisitionSummaryService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
+            throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }
         processSummaryInformation requisitionSummary;
     }
@@ -36,7 +37,7 @@ class RequisitionSummaryService extends ServiceBase {
      * Process and topologies Requisition Summary
      */
     private def processSummaryInformation( requisitionSummary ) {
-        def ret = [:]
+        def retJSON = [:]
         requisitionSummary.collectEntries() {
             [it.requestCode, [
                     version                  : it.version,
@@ -49,12 +50,102 @@ class RequisitionSummaryService extends ServiceBase {
                     vendorAddressLine1       : it.vendorAddressLine1,
                     vendorAddressZipCode     : it.vendorAddressZipCode,
                     vendorAddressStateCode   : it.vendorAddressStateCode,
-                    vendorAddressCity        : it.vendorAddressCity]]
+                    vendorAddressCity        : it.vendorAddressCity,
+                    commodityItem            : it.commodityItem,
+                    accountingItem           : it.accountingItem]]
         }.each() {
             key, value ->
-                ret['header'] = value
+                retJSON['header'] = value
         }
-        //TODO Need to topologies Commodity and accounting information
-        ret
+        if (retJSON['header'].commodityItem) {
+            def accountingList = []
+            def accountingMap = [:]
+            def commodityList = []
+            if (retJSON['header'].accountingItem >= 0) {
+                accountingMap = requisitionSummary.collectEntries() {
+                    [it.accountingItem + ':' + it.accountingSequenceNumber, [
+                            accountingItem                  : it.accountingItem,
+                            accountingSequenceNumber        : it.accountingSequenceNumber,
+                            accountingPercentage            : it.accountingPercentage,
+                            accountingAmount                : it.accountingAmount,
+                            accountingCoaCode               : it.accountingCoaCode,
+                            accountingIndexCode             : it.accountingIndexCode,
+                            accountingFundCode              : it.accountingFundCode,
+                            accountingOrgCode               : it.accountingOrgCode,
+                            accountingAccountCode           : it.accountingAccountCode,
+                            accountingActivityCode          : it.accountingActivityCode,
+                            accountingProjectCode           : it.accountingProjectCode,
+                            accountingProgramCode           : it.accountingProgramCode,
+                            accountingDiscountAmount        : it.accountingDiscountAmount,
+                            accountingAdditionalChargeAmount: it.accountingAdditionalChargeAmount,
+                            accountingTaxAmount             : it.accountingTaxAmount,
+                            accountingTotal                 : it.accountingAmount + it.accountingAdditionalChargeAmount + it.accountingTaxAmount
+                                    - it.accountingDiscountAmount]]
+                }.each() {
+                    key, value ->
+                        accountingList.add( value )
+                }
+            }
+
+            /** closure to get accounting for item*/
+            def getAccountingForCommodityItem = {commodityItem ->
+                accountingMap.findAll() {
+                    it.key.tokenize( FinanceValidationConstants.COLON )[0] == commodityItem.toString()
+                }.collect() {it -> it.value}
+            }
+
+            /** closure to get distribution percentage*/
+            def getAccountingDistributionPercentage = {list ->
+                def sum = 0;
+                list.each() {
+                    sum += it.accountingPercentage
+                }
+                sum
+            }
+
+            /** closure to check if all items are balanced*/
+            def checkIfAllItemBalanced = {list, isLastItemBalanced ->
+                list.each() {
+                    isLastItemBalanced = isLastItemBalanced && it.itemBalanced
+                }
+                isLastItemBalanced
+            }
+
+            requisitionSummary.collectEntries() {
+                [it.commodityItem, [
+                        commodityItem                  : it.commodityItem,
+                        commodityCode                  : it.commodityCode,
+                        commodityDescription           : it.commodityDescription,
+                        commodityCodeDesc              : it.commodityCodeDesc,
+                        commodityQuantity              : it.commodityQuantity,
+                        commodityDiscountAmount        : it.commodityDiscountAmount,
+                        commodityAdditionalChargeAmount: it.commodityAdditionalChargeAmount,
+                        commodityTaxAmount             : it.commodityTaxAmount,
+                        commodityUnitPrice             : it.commodityUnitPrice,
+                        commodityTotal                 : (it.commodityUnitPrice * it.commodityQuantity) + it.commodityTaxAmount + it.commodityAdditionalChargeAmount
+                                - it.commodityDiscountAmount,
+                        accounting                     : !retJSON['header'].isDocumentLevelAccounting ? getAccountingForCommodityItem( it.commodityItem ) : null,
+                        distributionPercentage         : !retJSON['header'].isDocumentLevelAccounting ? getAccountingDistributionPercentage( getAccountingForCommodityItem( it.commodityItem ) ) : null,
+                        itemBalanced                   : !retJSON['header'].isDocumentLevelAccounting ? getAccountingDistributionPercentage( getAccountingForCommodityItem( it.commodityItem ) ) == FinanceValidationConstants.HUNDRED : null]]
+
+            }.each() {
+                key, value ->
+                    commodityList.add( value )
+            }
+            retJSON['commodity'] = commodityList
+            if (retJSON['header'].isDocumentLevelAccounting) {
+                retJSON['accounting'] = accountingList
+                retJSON['distributionPercentage'] = getAccountingDistributionPercentage( accountingList )
+                retJSON['balanced'] = retJSON['distributionPercentage'] == FinanceValidationConstants.HUNDRED
+                retJSON['commodity'].each {
+                    it.remove( 'accounting' )
+                    it.remove( 'distributionPercentage' )
+                    it.remove( 'itemBalanced' )
+                }
+            } else {
+                retJSON['balanced'] = checkIfAllItemBalanced( commodityList, accountingList.size() > 0 )
+            }
+        }
+        retJSON
     }
 }

@@ -152,8 +152,7 @@ class RequisitionDetailsCompositeService {
             requisitionAccountingService.update( [domainModel: accounting] )
         }
         if (!isDocumentLevelAccounting) {
-            def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
-            isDocumentLevelAccounting = header.isDocumentLevelAccounting
+            isDocumentLevelAccounting = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ).isDocumentLevelAccounting
         }
         def accountingList = requisitionAccountingService.findAccountingByRequestCode( requestCode )
         if (isDocumentLevelAccounting == FinanceProcurementConstants.TRUE) {
