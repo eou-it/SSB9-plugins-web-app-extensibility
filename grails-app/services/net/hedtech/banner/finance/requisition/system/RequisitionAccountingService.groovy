@@ -36,28 +36,70 @@ class RequisitionAccountingService extends ServiceBase {
                     new BusinessLogicValidationException(
                             FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_ACCOUNTING, [] ) )
         }
+        def allAccounting = findAccountingByRequestCode( requisitionCode )
+        allAccounting = allAccounting.findAll() {
+            it.item == item
+        }
+        def allAccountingAmount = 0
+        def totalPercentage = 0
+        allAccounting.each() {
+            allAccountingAmount += it.requisitionAmount + it.additionalChargeAmount + it.taxAmount - it.discountAmount
+            totalPercentage += it.percentage
+        }
+
+        //TODO need to pull this code out of this place
+        def reqDetail = RequisitionDetail.fetchByRequestCode( requisitionCode ).list
+        def commodityTotalExtendedAmount = 0
+        def commodityTotalCommodityTaxAmount = 0
+        def commodityTotalAdditionalChargeAmount = 0
+        def commodityTotalDiscountAmount = 0
+
+        if (item == 0) {
+            reqDetail.each {
+                commodityTotalExtendedAmount += it.unitPrice * it.quantity
+                commodityTotalCommodityTaxAmount += it.taxAmount
+                commodityTotalAdditionalChargeAmount += it.additionalChargeAmount
+                commodityTotalDiscountAmount += it.discountAmount
+
+
+            }
+        } else {
+            reqDetail.findAll() {it.item == item}.each {
+                commodityTotalExtendedAmount += it.unitPrice * it.quantity
+                commodityTotalCommodityTaxAmount += it.taxAmount
+                commodityTotalAdditionalChargeAmount += it.additionalChargeAmount
+                commodityTotalDiscountAmount += it.convertedDiscountAmount
+            }
+        }
+
         return requisitionAccounting.collect() {
-            [id                    : it.id,
-             version               : it.version,
-             requestCode           : it.requestCode,
-             item                  : it.item,
-             sequenceNumber        : sequenceNumber,
-             chartOfAccount        : it.chartOfAccount,
-             accountIndex          : it.accountIndex,
-             fund                  : it.fund,
-             organization          : it.organization,
-             account               : it.account,
-             program               : it.program,
-             activity              : it.activity,
-             location              : it.location,
-             project               : it.project,
-             percentage            : it.percentage,
-             requisitionAmount     : it.requisitionAmount,
-             additionalChargeAmount: it.additionalChargeAmount,
-             discountAmount        : it.discountAmount,
-             taxAmount             : it.taxAmount,
-             userId                : it.userId,
-             accountTotal                 : it.requisitionAmount + it.additionalChargeAmount + it.taxAmount - it.discountAmount
+            [id                                  : it.id,
+             version                             : it.version,
+             requestCode                         : it.requestCode,
+             item                                : it.item,
+             sequenceNumber                      : sequenceNumber,
+             chartOfAccount                      : it.chartOfAccount,
+             accountIndex                        : it.accountIndex,
+             fund                                : it.fund,
+             organization                        : it.organization,
+             account                             : it.account,
+             program                             : it.program,
+             activity                            : it.activity,
+             location                            : it.location,
+             project                             : it.project,
+             percentage                          : it.percentage,
+             requisitionAmount                   : it.requisitionAmount,
+             additionalChargeAmount              : it.additionalChargeAmount,
+             discountAmount                      : it.discountAmount,
+             taxAmount                           : it.taxAmount,
+             userId                              : it.userId,
+             accountTotal                        : it.requisitionAmount + it.additionalChargeAmount + it.taxAmount - it.discountAmount,
+             renamingAmount                      : (commodityTotalExtendedAmount + commodityTotalCommodityTaxAmount + commodityTotalAdditionalChargeAmount - commodityTotalDiscountAmount) - allAccountingAmount,
+             remaingingPercentage                : 100 - totalPercentage,
+             commodityTotalExtendedAmount        : commodityTotalExtendedAmount,
+             commodityTotalCommodityTaxAmount    : commodityTotalCommodityTaxAmount,
+             commodityTotalAdditionalChargeAmount: commodityTotalAdditionalChargeAmount,
+             commodityTotalDiscountAmount         : commodityTotalDiscountAmount,
             ]
         }.getAt( 0 )
     }
