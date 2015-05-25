@@ -654,7 +654,7 @@ var xe = (function (xe) {
 
             popup.load(extensibilityPluginPath+'/templates/extedit.html',
                 function(){
-                    $('#extensions-edit-input',popup).text(JSON.stringify(xe.page.metadata,null,2));
+                    $('#extensions-edit-input',popup).val(JSON.stringify(xe.page.metadata,null,2));
                 }
             );
         }
