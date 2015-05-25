@@ -68,7 +68,7 @@ class RequisitionAccountingService extends ServiceBase {
                 commodityTotalExtendedAmount += it.unitPrice * it.quantity
                 commodityTotalCommodityTaxAmount += it.taxAmount
                 commodityTotalAdditionalChargeAmount += it.additionalChargeAmount
-                commodityTotalDiscountAmount += it.convertedDiscountAmount
+                commodityTotalDiscountAmount += it.discountAmount
             }
         }
 
@@ -99,7 +99,7 @@ class RequisitionAccountingService extends ServiceBase {
              commodityTotalExtendedAmount        : commodityTotalExtendedAmount,
              commodityTotalCommodityTaxAmount    : commodityTotalCommodityTaxAmount,
              commodityTotalAdditionalChargeAmount: commodityTotalAdditionalChargeAmount,
-             commodityTotalDiscountAmount         : commodityTotalDiscountAmount,
+             commodityTotalDiscountAmount        : commodityTotalDiscountAmount,
             ]
         }.getAt( 0 )
     }
