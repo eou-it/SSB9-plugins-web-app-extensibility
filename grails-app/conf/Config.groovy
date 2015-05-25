@@ -34,7 +34,7 @@ grails.config.locations.each {
 }
 
 grails.plugins.springsecurity.useRequestMapDomainClass = false
-grails.plugins.springsecurity.providerNames = ['casBannerAuthenticationProvider', 'selfServiceBannerAuthenticationProvider', 'bannerAuthenticationProvider']
+//grails.plugins.springsecurity.providerNames = ['casBannerAuthenticationProvider', 'selfServiceBannerAuthenticationProvider', 'bannerAuthenticationProvider']
 //grails.plugins.springsecurity.rejectIfNoRule = true
 
 grails.plugins.springsecurity.filterChain.chainMap = [
