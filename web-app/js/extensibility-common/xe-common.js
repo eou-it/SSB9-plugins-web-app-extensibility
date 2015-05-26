@@ -143,6 +143,7 @@ var xe = (function (xe) {
         function getDependency ( extension, extensions ){
             var complete = false;
             var dependency;
+            var x = 0;
 
             function findUnprocessedNextSibling(extensions, extension) {
                 return _.find(extensions,  function(n) {
@@ -151,6 +152,11 @@ var xe = (function (xe) {
             }
 
             while ( !complete ) {
+                x++;
+                if ( x > 10000 ) {
+                    xe.log("Circular dependency detected in metadata");
+                    break;
+                }
                 dependency = findUnprocessedNextSibling(extensions, extension);
 
                 if (!dependency) {
