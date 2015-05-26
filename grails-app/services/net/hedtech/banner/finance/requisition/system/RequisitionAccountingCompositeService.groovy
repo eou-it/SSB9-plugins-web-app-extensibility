@@ -84,8 +84,8 @@ class RequisitionAccountingCompositeService {
      */
     def updateRequisitionAccounting( accountingDomainModel ) {
         // Null or empty check for item number and sequence number.
-        def requestCode = accountingDomainModel.requisitionAccounting.requestCode
-        FinanceProcurementHelper.checkCompleteRequisition( requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ) )
+        FinanceProcurementHelper.checkCompleteRequisition(
+                requisitionHeaderService.findRequisitionHeaderByRequestCode( accountingDomainModel.requisitionAccounting.requestCode ) )
 
         if (accountingDomainModel.requisitionAccounting.item == null || accountingDomainModel.requisitionAccounting.sequenceNumber == null) {
             LoggerUtility.error LOGGER, 'Item and Sequence number are required to update the Requisition Accounting information.'
@@ -106,7 +106,7 @@ class RequisitionAccountingCompositeService {
             sequenceNumber = accountingDomainModel.requisitionAccounting.sequenceNumber
         }
 
-        def existingAccountingInfo = requisitionAccountingService.findByRequestCodeItemAndSeq( requestCode, item, sequenceNumber )
+        def existingAccountingInfo = requisitionAccountingService.findByRequestCodeItemAndSeq( accountingDomainModel.requisitionAccounting.requestCode, item, sequenceNumber )
         RequisitionAccounting requisitionAccountingRequest = accountingDomainModel.requisitionAccounting
         requisitionAccountingRequest.id = existingAccountingInfo.id
         requisitionAccountingRequest.version = existingAccountingInfo.version

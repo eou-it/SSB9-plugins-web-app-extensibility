@@ -54,24 +54,21 @@ class RequisitionAccountingService extends ServiceBase {
         def commodityTotalAdditionalChargeAmount = 0
         def commodityTotalDiscountAmount = 0
 
+        def processAmount = {it ->
+            commodityTotalExtendedAmount += it.unitPrice * it.quantity
+            commodityTotalCommodityTaxAmount += it.taxAmount ? it.taxAmount : 0
+            commodityTotalAdditionalChargeAmount += it.additionalChargeAmount ? it.additionalChargeAmount : 0
+            commodityTotalDiscountAmount += it.discountAmount ? it.discountAmount : 0
+        }
         if (item == 0) {
             reqDetail.each {
-                commodityTotalExtendedAmount += it.unitPrice * it.quantity
-                commodityTotalCommodityTaxAmount += it.taxAmount
-                commodityTotalAdditionalChargeAmount += it.additionalChargeAmount
-                commodityTotalDiscountAmount += it.discountAmount
-
-
+                processAmount( it )
             }
         } else {
             reqDetail.findAll() {it.item == item}.each {
-                commodityTotalExtendedAmount += it.unitPrice * it.quantity
-                commodityTotalCommodityTaxAmount += it.taxAmount
-                commodityTotalAdditionalChargeAmount += it.additionalChargeAmount
-                commodityTotalDiscountAmount += it.discountAmount
+                processAmount( it )
             }
         }
-
         return requisitionAccounting.collect() {
             [id                                  : it.id,
              version                             : it.version,

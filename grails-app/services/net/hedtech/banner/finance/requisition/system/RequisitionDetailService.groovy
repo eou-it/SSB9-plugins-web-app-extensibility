@@ -46,8 +46,7 @@ class RequisitionDetailService extends ServiceBase {
     def fetchRequisitionDetailListByUser( paginationParam ) {
         def loggedInUser = springSecurityService.getAuthentication()?.user
         if (loggedInUser?.oracleUserName) {
-            def oracleUserName = loggedInUser.oracleUserName
-            def requisitionDetailList = RequisitionDetail.fetchByUserId( oracleUserName, paginationParam ).list
+            def requisitionDetailList = RequisitionDetail.fetchByUserId( loggedInUser.oracleUserName, paginationParam ).list
             if (requisitionDetailList?.isEmpty()) {
                 throw new ApplicationException(
                         RequisitionDetailService,
@@ -97,7 +96,7 @@ class RequisitionDetailService extends ServiceBase {
      */
     def findByRequestCode( requisitionCode ) {
         LoggerUtility.debug( LOGGER, 'Input parameter for findByRequestCode :' + requisitionCode )
-        def requisitionDetails = RequisitionDetail.fetchByRequestCode( requisitionCode).list
+        def requisitionDetails = RequisitionDetail.fetchByRequestCode( requisitionCode ).list
         if (requisitionDetails.isEmpty()) {
             LoggerUtility.error( LOGGER, 'Requisition Commodity Details are empty for requestCode=' + requisitionCode )
             throw new ApplicationException(

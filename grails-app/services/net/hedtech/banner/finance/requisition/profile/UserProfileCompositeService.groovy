@@ -4,6 +4,7 @@
 package net.hedtech.banner.finance.requisition.profile
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.FinanceCommonUtility
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
@@ -14,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional
  * Class for User Profile Composite Service
  */
 class UserProfileCompositeService {
-    boolean transactional =false
+    boolean transactional = false
     def financeUserProfileService
     def shipToCodeService
     def chartOfAccountsService
@@ -44,7 +45,8 @@ class UserProfileCompositeService {
         if (userProfile.requesterOrgCode) {
             try {
                 def organization = financeOrganizationCompositeService.
-                        findOrganizationListByEffectiveDateAndSearchParam( [searchParam: userProfile.requesterOrgCode, coaCode: userProfile.requesterCaosCode], [offset: 0, max: 1] )
+                        findOrganizationListByEffectiveDateAndSearchParam( [searchParam: userProfile.requesterOrgCode, coaCode: userProfile.requesterCaosCode],
+                                                                           [offset: FinanceProcurementConstants.ZERO, max: FinanceProcurementConstants.ONE] )
                 org = [coaCode: organization[0].coaCode, orgnCode: organization[0].orgnCode, orgnTitle: organization[0].orgnTitle]
             } catch (ApplicationException ae) {
                 LoggerUtility.error LOGGER, FinanceCommonUtility.maskErrorMessage( ae )

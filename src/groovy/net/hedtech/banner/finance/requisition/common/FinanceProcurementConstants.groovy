@@ -15,6 +15,8 @@ class FinanceProcurementConstants {
 
     static final String DEFAULT_INDICATOR_YES = 'Y'
     static final String DEFAULT_INDICATOR_NO = 'N'
+    static final int ZERO = 0
+    static final int ONE = 1
 
     /* Constant for Requisition Header Domain*/
 
