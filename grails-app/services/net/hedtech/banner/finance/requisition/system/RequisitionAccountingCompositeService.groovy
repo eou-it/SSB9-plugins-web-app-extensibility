@@ -30,6 +30,8 @@ class RequisitionAccountingCompositeService {
     def activityService
     def locationService
     def financeProjectCompositeService
+    def financeAccountIndexService
+    def financeFundCompositeService
 
     /**
      * Creates Requisition Accounting level.
@@ -140,12 +142,64 @@ class RequisitionAccountingCompositeService {
         LoggerUtility.debug( LOGGER, String.format( 'Input parameter for findByRequestCodeItemAndSeq :%1s , %2d ,%3d', requisitionCode, item, sequenceNumber ) )
         def dummyPaginationParam = [max: 1, offset: 0]
         def requisitionAccounting = findCompleteAccountingByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber )
+        def financeAccountIndex = financeAccountIndexService.listByIndexCodeOrTitleAndEffectiveDate( [coaCode: requisitionAccounting.chartOfAccount, indexCodeTitle: requisitionAccounting.accountIndex], dummyPaginationParam )?.get( 0 )
+        def financeFund = financeFundCompositeService.findFundListByEffectiveDateAndFundCode( [effectiveDate: null, codeTitle: requisitionAccounting.fund, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )
+        def financeOrganization = financeOrganizationCompositeService.findOrganizationListByEffectiveDateAndSearchParam( [searchParam: requisitionAccounting.organization, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )
+
         [accounting: requisitionAccounting, cifoapalp: [
                 chartOfAccount: [code: requisitionAccounting.chartOfAccount, title: requisitionAccounting.chartOfAccount ? chartOfAccountsService.getChartOfAccountByCode( requisitionAccounting.chartOfAccount )?.title : null],
-                index         : [code: requisitionAccounting.accountIndex, title: requisitionAccounting.accountIndex ? accountIndexService.getListByIndexTitleAndEffectiveDate( [coaCode: requisitionAccounting.chartOfAccount, indexCodeTitle: requisitionAccounting.accountIndex], dummyPaginationParam )?.get( 0 )?.title : null],
-                fund          : [code: requisitionAccounting.fund, title: requisitionAccounting.fund ? financeFundService.findFundByEffectiveDateAndFundCode( null, requisitionAccounting.fund, requisitionAccounting.chartOfAccount, dummyPaginationParam )?.get( 0 )?.fundTitle : null],
-                organization  : [code: requisitionAccounting.organization, title: requisitionAccounting.organization ? financeOrganizationCompositeService.
-                        findOrganizationListByEffectiveDateAndSearchParam( [searchParam: requisitionAccounting.organization, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )?.orgnTitle : null],
+                index         : [
+                        code                       : requisitionAccounting.accountIndex,
+                        title                      : requisitionAccounting.accountIndex ? financeAccountIndex?.title : null,
+                        accountIndexCode           : financeAccountIndex?.accountIndexCode,
+                        defaultFundOverride        : financeAccountIndex?.defaultFundOverride,
+                        defaultOrganizationOverride: financeAccountIndex?.defaultOrganizationOverride,
+                        defaultAccountOverride     : financeAccountIndex?.defaultAccountOverride,
+                        defaultProgramOverride     : financeAccountIndex?.defaultProgramOverride,
+                        defaultActivityOverride    : financeAccountIndex?.defaultActivityOverride,
+                        defaultLocationOverride    : financeAccountIndex?.defaultLocationOverride,
+                        defaultFundCode            : financeAccountIndex?.defaultFundCode,
+                        defaultFundTitle           : financeAccountIndex?.defaultFundTitle,
+                        defaultOrganizationCode    : financeAccountIndex?.defaultOrganizationCode,
+                        defaultOrganizationTitle   : financeAccountIndex?.defaultOrganizationTitle,
+                        defaultAccountCode         : financeAccountIndex?.defaultAccountCode,
+                        defaultAccountTitle        : financeAccountIndex?.defaultAccountTitle,
+                        defaultProgramCode         : financeAccountIndex?.defaultProgramCode,
+                        defaultProgramTitle        : financeAccountIndex?.defaultProgramTitle,
+                        defaultActivityCode        : financeAccountIndex?.defaultActivityCode,
+                        defaultActivityTitle       : financeAccountIndex?.defaultActivityTitle,
+                        defaultLocationCode        : financeAccountIndex?.defaultLocationCode,
+                        defaultLocationTitle       : financeAccountIndex?.defaultLocationTitle
+                ],
+                fund          : [
+                        code                            : requisitionAccounting.fund,
+                        title                           : requisitionAccounting.fund ? financeFund?.fundTitle : null,
+                        fundCode                        : financeFund?.fundCode,
+                        fundTitle                       : financeFund?.fundTitle,
+                        defaultOrgnCode                 : financeFund?.defaultOrgnCode,
+                        defaultOrgnTitle                : financeFund?.defaultOrgnTitle,
+                        defaultProgCode                 : financeFund?.defaultProgCode,
+                        defaultProgTitle                : financeFund?.defaultProgTitle,
+                        defaultActiveCode               : financeFund?.defaultActiveCode,
+                        defaultActiveTitle              : financeFund?.defaultActiveTitle,
+                        defaultLocationCode             : financeFund?.defaultLocationCode,
+                        defaultLocationTitle            : financeFund?.defaultLocationTitle,
+                        fundTypeDefaultOverrideIndicator: financeFund?.fundTypeDefaultOverrideIndicator
+                ],
+                organization  : [
+                        code                : requisitionAccounting.organization,
+                        title               : requisitionAccounting.organization ? financeOrganization?.orgnTitle : null,
+                        orgnCode            : financeOrganization?.orgnCode,
+                        orgnTitle           : financeOrganization?.orgnTitle,
+                        defaultFundCode     : financeOrganization?.defaultFundCode,
+                        defaultFundTitle    : financeOrganization?.defaultFundTitle,
+                        defaultProgramCode  : financeOrganization?.defaultProgramCode,
+                        defaultProgramTitle : financeOrganization?.defaultProgramTitle,
+                        defaultActivityCode : financeOrganization?.defaultActivityCode,
+                        defaultActivityTitle: financeOrganization?.defaultActivityTitle,
+                        defaultLocationCode : financeOrganization?.defaultLocationCode,
+                        defaultLocationTitle: financeOrganization?.defaultLocationTitle
+                ],
                 account       : [code: requisitionAccounting.account, title: requisitionAccounting.account ? financeAccountCompositeService.getListByAccountOrChartOfAccAndEffectiveDate(
                         [searchParam: requisitionAccounting.account, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )?.title : null],
                 program       : [code: requisitionAccounting.program, title: requisitionAccounting.program ? programService.findByCoaProgramAndEffectiveDate( [coa: requisitionAccounting.chartOfAccount, programCodeDesc: requisitionAccounting.program], dummyPaginationParam )?.get( 0 )?.title : null],
