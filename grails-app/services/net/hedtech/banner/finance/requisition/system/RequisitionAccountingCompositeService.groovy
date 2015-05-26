@@ -20,6 +20,7 @@ class RequisitionAccountingCompositeService {
     def requisitionHeaderService
     def springSecurityService
     def requisitionAccountingService
+    def requisitionDetailService
     def chartOfAccountsService
     def accountIndexService
     def financeFundService
@@ -138,7 +139,7 @@ class RequisitionAccountingCompositeService {
     def findByRequestCodeItemAndSeq( requisitionCode, Integer item, Integer sequenceNumber ) {
         LoggerUtility.debug( LOGGER, String.format( 'Input parameter for findByRequestCodeItemAndSeq :%1s , %2d ,%3d', requisitionCode, item, sequenceNumber ) )
         def dummyPaginationParam = [max: 1, offset: 0]
-        def requisitionAccounting = requisitionAccountingService.findByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber )
+        def requisitionAccounting = findCompleteAccountingByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber )
         [accounting: requisitionAccounting, cifoapalp: [
                 chartOfAccount: [code: requisitionAccounting.chartOfAccount, title: requisitionAccounting.chartOfAccount ? chartOfAccountsService.getChartOfAccountByCode( requisitionAccounting.chartOfAccount )?.title : null],
                 index         : [code: requisitionAccounting.accountIndex, title: requisitionAccounting.accountIndex ? accountIndexService.getListByIndexTitleAndEffectiveDate( [coaCode: requisitionAccounting.chartOfAccount, indexCodeTitle: requisitionAccounting.accountIndex], dummyPaginationParam )?.get( 0 )?.title : null],
@@ -151,5 +152,87 @@ class RequisitionAccountingCompositeService {
                 activity      : [code: requisitionAccounting.activity, title: requisitionAccounting.activity ? activityService.getListByActivityCodeTitleAndEffectiveDate( [activityCodeTitle: requisitionAccounting.activity, coaCode: requisitionAccounting.chartOfAccount], null, dummyPaginationParam )?.get( 0 )?.title : null],
                 location      : [code: requisitionAccounting.location, title: requisitionAccounting.location ? locationService.getLocationByCodeTitleAndEffectiveDate( [codeTitle: requisitionAccounting.location, coaCode: requisitionAccounting.chartOfAccount], null, dummyPaginationParam )?.get( 0 )?.title : null],
                 project       : [code: requisitionAccounting.project, title: requisitionAccounting.project ? financeProjectCompositeService.getListByProjectAndEffectiveDate( [projectCodeDesc: requisitionAccounting.project, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )?.longDescription : null]]]
+    }
+
+    /**
+     * Find the requisition Accounting information
+     * @param requisitionCode
+     * @param item
+     * @param sequenceNumber
+     * @return
+     */
+    private def findCompleteAccountingByRequestCodeItemAndSeq( requisitionCode, Integer item, Integer sequenceNumber ) {
+        LoggerUtility.debug( LOGGER, 'Input parameter for findCompleteAccountingByRequestCodeItemAndSeq :' + requisitionCode )
+        def requisitionAccounting = requisitionAccountingService.findBasicAccountingByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber )
+        if (requisitionAccounting.isEmpty()) {
+            LoggerUtility.error( LOGGER, 'Requisition Accounting Information are empty for requestCode='
+                    + requisitionCode + ', Item: ' + item + ' and Sequence: ' + sequenceNumber )
+            throw new ApplicationException(
+                    RequisitionAccountingService,
+                    new BusinessLogicValidationException(
+                            FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_ACCOUNTING, [] ) )
+        }
+        def allAccounting = requisitionAccountingService.findAccountingByRequestCode( requisitionCode )
+        allAccounting = allAccounting.findAll() {
+            it.item == item
+        }
+        def allAccountingAmount = 0
+        def totalPercentage = 0
+        allAccounting.each() {
+            allAccountingAmount += it.requisitionAmount + it.additionalChargeAmount + it.taxAmount - it.discountAmount
+            totalPercentage += it.percentage
+        }
+
+        def reqDetail = requisitionDetailService.findByRequestCode( requisitionCode )
+        def commodityTotalExtendedAmount = 0
+        def commodityTotalCommodityTaxAmount = 0
+        def commodityTotalAdditionalChargeAmount = 0
+        def commodityTotalDiscountAmount = 0
+
+        def processAmount = {it ->
+            commodityTotalExtendedAmount += it.unitPrice * it.quantity
+            commodityTotalCommodityTaxAmount += it.taxAmount ? it.taxAmount : 0
+            commodityTotalAdditionalChargeAmount += it.additionalChargeAmount ? it.additionalChargeAmount : 0
+            commodityTotalDiscountAmount += it.discountAmount ? it.discountAmount : 0
+        }
+        if (item == 0) {
+            reqDetail.each {
+                processAmount( it )
+            }
+        } else {
+            reqDetail.findAll() {it.item == item}.each {
+                processAmount( it )
+            }
+        }
+        return requisitionAccounting.collect() {
+            [id                                  : it.id,
+             version                             : it.version,
+             requestCode                         : it.requestCode,
+             item                                : it.item,
+             sequenceNumber                      : sequenceNumber,
+             chartOfAccount                      : it.chartOfAccount,
+             accountIndex                        : it.accountIndex,
+             fund                                : it.fund,
+             organization                        : it.organization,
+             account                             : it.account,
+             program                             : it.program,
+             activity                            : it.activity,
+             location                            : it.location,
+             project                             : it.project,
+             percentage                          : it.percentage,
+             requisitionAmount                   : it.requisitionAmount,
+             additionalChargeAmount              : it.additionalChargeAmount,
+             discountAmount                      : it.discountAmount,
+             taxAmount                           : it.taxAmount,
+             userId                              : it.userId,
+             accountTotal                        : it.requisitionAmount + it.additionalChargeAmount + it.taxAmount - it.discountAmount,
+             renamingAmount                      : (commodityTotalExtendedAmount + commodityTotalCommodityTaxAmount + commodityTotalAdditionalChargeAmount - commodityTotalDiscountAmount) - allAccountingAmount,
+             remaingingPercentage                : 100 - totalPercentage,
+             commodityTotalExtendedAmount        : commodityTotalExtendedAmount,
+             commodityTotalCommodityTaxAmount    : commodityTotalCommodityTaxAmount,
+             commodityTotalAdditionalChargeAmount: commodityTotalAdditionalChargeAmount,
+             commodityTotalDiscountAmount        : commodityTotalDiscountAmount,
+            ]
+        }.getAt( 0 )
     }
 }
