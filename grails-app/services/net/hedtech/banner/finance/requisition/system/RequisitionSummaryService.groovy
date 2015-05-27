@@ -30,7 +30,7 @@ class RequisitionSummaryService extends ServiceBase {
         if (!requisitionSummary) {
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }
-        processSummaryInformation requisitionSummary;
+        processSummaryInformation( requisitionSummary );
     }
 
     /**
@@ -44,6 +44,7 @@ class RequisitionSummaryService extends ServiceBase {
                     isDocumentLevelAccounting: it.isDocumentLevelAccounting,
                     requestCode              : it.requestCode,
                     vendorPidm               : it.vendorPidm,
+                    vendorCode               : it.vendorCode,
                     vendorAddressTypeSequence: it.vendorAddressTypeSequence,
                     vendorAddressTypeCode    : it.vendorAddressTypeCode,
                     vendorLastName           : it.vendorLastName,
