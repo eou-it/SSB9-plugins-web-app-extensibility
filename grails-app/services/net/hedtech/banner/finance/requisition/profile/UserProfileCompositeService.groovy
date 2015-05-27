@@ -39,7 +39,7 @@ class UserProfileCompositeService {
                 shipToCode = [zipCode     : shipTo.zipCode, state: shipTo.state, city: shipTo.city, shipCode: shipTo.shipCode, addressLine1: shipTo.addressLine1,
                               addressLine2: shipTo.addressLine2, addressLine3: shipTo.addressLine3, contact: shipTo.contact]
             } catch (ApplicationException ae) {
-                LoggerUtility.error LOGGER, FinanceCommonUtility.maskErrorMessage( ae )
+                LoggerUtility.error( LOGGER, FinanceCommonUtility.maskErrorMessage( ae ) )
             }
         }
         if (userProfile.requesterOrgCode) {
@@ -49,7 +49,7 @@ class UserProfileCompositeService {
                                                                            [offset: FinanceProcurementConstants.ZERO, max: FinanceProcurementConstants.ONE] )
                 org = [coaCode: organization[0].coaCode, orgnCode: organization[0].orgnCode, orgnTitle: organization[0].orgnTitle]
             } catch (ApplicationException ae) {
-                LoggerUtility.error LOGGER, FinanceCommonUtility.maskErrorMessage( ae )
+                LoggerUtility.error( LOGGER, FinanceCommonUtility.maskErrorMessage( ae ) )
             }
         }
         if (userProfile.requesterCaosCode) {
@@ -57,7 +57,7 @@ class UserProfileCompositeService {
                 def coaObj = chartOfAccountsService.getChartOfAccountByCode( userProfile.requesterCaosCode )
                 coa = [title: coaObj.title, chartOfAccountsCode: coaObj.chartOfAccountsCode]
             } catch (ApplicationException ae) {
-                LoggerUtility.error LOGGER, FinanceCommonUtility.maskErrorMessage( ae )
+                LoggerUtility.error( LOGGER, FinanceCommonUtility.maskErrorMessage( ae ) )
             }
         }
         return [baseUserProfile: userProfile, shipTo: shipToCode, organization: org, coa: coa];

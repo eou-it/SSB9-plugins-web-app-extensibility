@@ -61,7 +61,7 @@ class RequisitionAccountingCompositeService {
             return [requestCode: requisitionAccounting.requestCode,
                     item       : requisitionAccounting.item, sequenceNumber: requisitionAccounting.sequenceNumber]
         } else {
-            LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
+            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid')
             throw new ApplicationException(
                     RequisitionAccountingCompositeService,
                     new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -91,7 +91,7 @@ class RequisitionAccountingCompositeService {
                 requisitionHeaderService.findRequisitionHeaderByRequestCode( accountingDomainModel.requisitionAccounting.requestCode ) )
 
         if (accountingDomainModel.requisitionAccounting.item == null || accountingDomainModel.requisitionAccounting.sequenceNumber == null) {
-            LoggerUtility.error LOGGER, 'Item and Sequence number are required to update the Requisition Accounting information.'
+            LoggerUtility.error (LOGGER, 'Item and Sequence number are required to update the Requisition Accounting information.')
             throw new ApplicationException( RequisitionAccountingCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_ITEM_SEQUENCE_REQUIRED, [] ) )
@@ -124,7 +124,7 @@ class RequisitionAccountingCompositeService {
             LoggerUtility.debug LOGGER, "Requisition Accounting information updated " + requisitionAccounting
             return requisitionAccounting
         } else {
-            LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
+            LoggerUtility.error (LOGGER, 'User' + user + ' is not valid')
             throw new ApplicationException( RequisitionAccountingCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )

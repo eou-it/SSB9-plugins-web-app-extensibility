@@ -34,7 +34,7 @@ class RequisitionListingCompositeService {
     def listRequisitionsByBucket( buckets, pagingParams ) {
         def user = springSecurityService.getAuthentication()?.user
         if (!user.oracleUserName) {
-            LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
+            LoggerUtility.error (LOGGER, 'User' + user + ' is not valid')
             throw new ApplicationException( RequisitionListingCompositeService, new BusinessLogicValidationException(
                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
@@ -45,7 +45,7 @@ class RequisitionListingCompositeService {
         }
         def wrapperList = [];
         buckets.each() {bucket ->
-            processBucket wrapperList, bucket, pagingParams, user.oracleUserName
+            processBucket (wrapperList, bucket, pagingParams, user.oracleUserName)
         }
         return wrapperList
     }
@@ -105,7 +105,7 @@ class RequisitionListingCompositeService {
                 wrapperList.add( groupResult( bucket, listRequisitions( user, pagingParams, completedStatus ) ) )
                 break
             default:
-                LoggerUtility.error LOGGER, 'Group Type not valid'
+                LoggerUtility.error (LOGGER, 'Group Type not valid')
                 throw new ApplicationException( RequisitionListingCompositeService, new BusinessLogicValidationException(
                         FinanceProcurementConstants.ERROR_MESSAGE_INVALID_BUCKET_TYPE, [bucket] ) )
         }

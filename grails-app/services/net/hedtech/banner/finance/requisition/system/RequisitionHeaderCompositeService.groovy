@@ -46,7 +46,7 @@ class RequisitionHeaderCompositeService {
             def header = RequisitionHeader.read( requisitionHeader.id )
             return header.requestCode
         } else {
-            LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
+            LoggerUtility.error (LOGGER, 'User' + user + ' is not valid')
             throw new ApplicationException(
                     RequisitionHeaderCompositeService,
                     new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -83,7 +83,7 @@ class RequisitionHeaderCompositeService {
             if (requisitionHeaderRequest.isDocumentLevelAccounting != existingHeader.isDocumentLevelAccounting) {
 
                 if (requisitionAccountingService.findAccountingSizeByRequestCode( existingHeader.requestCode ) > 0) {
-                    LoggerUtility.error LOGGER, 'Document type cannot be modified once accounting associated with this'
+                    LoggerUtility.error (LOGGER, 'Document type cannot be modified once accounting associated with this')
                     throw new ApplicationException( RequisitionHeaderCompositeService,
                                                     new BusinessLogicValidationException(
                                                             FinanceProcurementConstants.ERROR_MESSAGE_DOCUMENT_CHANGE, [] ) )
@@ -95,7 +95,7 @@ class RequisitionHeaderCompositeService {
             LoggerUtility.debug LOGGER, "Requisition Header updated " + requisitionHeader
             return requisitionHeader
         } else {
-            LoggerUtility.error LOGGER, 'User' + user + ' is not valid'
+            LoggerUtility.error (LOGGER, 'User' + user + ' is not valid')
             throw new ApplicationException( RequisitionHeaderCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
