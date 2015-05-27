@@ -44,17 +44,11 @@ var xe = (function (xe) {
     //I18N - we use extensibility specific resource loading. We should investigate if we can
     //extend the baseline properties loading as done for ZK pages
     xe.loadResources = function(){
-        //load resources synchronously to make sure they are available when needed.
-        $.ajax({
-            url: '/'+xe.page.application+'/internal/resources',
-            dataType: 'json',
-            data: {application: xe.page.application,page: xe.page.name,hash:location.hash},
-            async: false,
-            success: function(json){
-                xe.log('resources loaded');
-                _.extend( $.i18n.map, json[0] );  //data used for extending page
-            }
-        });
+        if (typeof extensibilityResourcesJSON !== 'undefined' ) {
+            xe.log('resources loaded');
+            _.extend( $.i18n.map, extensibilityResourcesJSON ); //data used for extending page
+        }
+
     };
 
     // item is a string or an object with a key attribute
@@ -207,10 +201,12 @@ var xe = (function (xe) {
      Note that rootElement may itself be a section
      *******************************************************************************************************/
     xe.extend = function ( $rootElement ) {
-        if ( $($rootElement)[0].hasAttribute( "xe-dynamic" ) ) {
-            extendDynamicContent();
-        } else {
-            extendStaticContent();
+        if (xe.extensionsFound) {
+            if ( $($rootElement)[0].hasAttribute( "xe-dynamic" ) ) {
+                extendDynamicContent();
+            } else {
+                extendStaticContent();
+            }
         }
 
         // return; //this return is not needed and is causing a JSHint warning
@@ -729,27 +725,38 @@ var xe = (function (xe) {
 
 
         xe.log('Startup - fetching metadata...');
-        //load meta-data synchronously to make sure it is available before compile needs it.
-        $.ajax({
-            url: '/'+xe.page.application+'/internal/extensions',
-            dataType: 'json',
-            data: {application: xe.page.application,page: xe.page.name,hash:location.hash},
-            async: false,
-            success: function(json){
-                xe.log('data loaded');
-                xe.extensions=json[0]; //data used for extending page
-                if ((xe.extensions !== undefined)) {
-                    xe.extensionsFound = true;
-                    if (xe.devMode()){
-                        xe.page.metadata=[$.extend(true,{},xe.extensions)];  //clone of extensions used for editor
-                    }
-                    xe.extensions.orderedSections = xe.reorderMetadata(xe.extensions.sections);
-                    if(xe.extendFunctions !== undefined) {
-                        xe.extendFunctions();
-                    }
+        if (typeof extensibilityJSON !== 'undefined') {
+            //handle compatibility with older version where extensions were defined in an array
+            if (extensibilityJSON instanceof Array) {
+                if (extensibilityJSON.length) {
+                    xe.extensions = extensibilityJSON[0];
                 }
             }
-        });
+            else {
+                if (!_.isEmpty(extensibilityJSON)){
+                    xe.extensions = extensibilityJSON;
+                }
+            }
+            xe.log('data loaded');
+        }
+        if ((xe.extensions !== undefined)) {
+            xe.extensionsFound = true;
+            if (xe.extensions.hasOwnProperty("jsonParseError")) {
+                notifications.addNotification( new Notification({
+                    message: xe.extensions.jsonParseError,
+                    type: "error",
+                    flash: false
+                }));
+                xe.extensionsFound = false;
+            }
+            if (xe.devMode()){
+                xe.page.metadata=$.extend(true,{},xe.extensions);  //clone of extensions used for editor
+            }
+            xe.extensions.orderedSections = xe.reorderMetadata(xe.extensions.sections);
+            if(xe.extendFunctions !== undefined) {
+                xe.extendFunctions();
+            }
+        }
         if (xe.extensionsFound) {
             xe.log(xe.extensions);
             xe.loadResources();

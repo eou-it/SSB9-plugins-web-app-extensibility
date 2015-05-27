@@ -8,7 +8,9 @@ import grails.converters.JSON
 import grails.util.Environment
 import net.hedtech.banner.i18n.MessageHelper
 import org.apache.log4j.Logger
+import org.codehaus.groovy.grails.web.converters.exceptions.ConverterException
 import org.springframework.web.context.request.RequestContextHolder
+import net.hedtech.extensibility.ExtensionUtility
 
 
 class ResourceService {
@@ -20,22 +22,6 @@ class ResourceService {
 
     def grailsApplication
     def static resourcePath = grails.util.Holders.getConfig().webAppExtensibility.locations.resources
-
-    //Pages don't have a unique id, have to query by application and page name
-    def list(params) {
-        def result =[] //list must return array, should really be using get
-        if (params.application && params.page) {
-            def md = loadFromFile(params.application,params.page)
-            if (md) {
-                result << md
-            }
-        }
-        return result
-    }
-
-    def count(params) {
-        return 1
-    }
 
     def create(Map content, params) {
         def result = content.metadata
@@ -59,15 +45,27 @@ class ResourceService {
         file.text=jsonStr
     }
 
-    def mergeJsonStr = { result, jsonStr ->
+    static def mergeJSONResult (result, jsonStr) {
         if (!result) {
-            JSON.use("deep") {
-                result = JSON.parse(jsonStr)
+            try {
+                JSON.use("deep") {
+                    result = JSON.parse(jsonStr)
+                }
+            }
+            catch (ConverterException ce) {
+                log.error "Error parsing resources json string"
+                result = "{}"
             }
         } else {
             def map
-            JSON.use("deep") {
-                map = JSON.parse(jsonStr)
+            try {
+                JSON.use("deep") {
+                    map = JSON.parse(jsonStr)
+                }
+            }
+            catch (ConverterException ce) {
+                log.error "Error parsing resources json string"
+                map = "{}"
             }
             map.each { k,v ->
                 result[k] = v
@@ -76,7 +74,7 @@ class ResourceService {
         result
     }
 
-    private def loadFromFile(application,page){
+    private static def loadJSONFromFile(application,page){
         def request = RequestContextHolder.currentRequestAttributes().request
         def result = null
         //Should really be making use of properties loading mechanisms
@@ -91,16 +89,17 @@ class ResourceService {
         postfixes.each { postfix ->
             def file = new File("${resourcePath}/${application}/${page}${postfix}.json")
             if (file?.exists()) {
-                result = mergeJsonStr(result, file.text)
+                result = mergeJSONResult(result, file.text)
             }
         }
-
-        if ( (!result) && Environment.getCurrent() != Environment.PRODUCTION ){
-            def file = new File("plugins/web-app-extensibility.git/test/data/i18n/${page}.json")
-            if (file?.exists()) {
-                result = JSON.parse(file.text)
-            }
-        }
-        result
+        return result.toString()
     }
+
+    static def loadResourcesJSON(requestUri) {
+        String pageUrl = requestUri.toString()
+        String applicationName = ExtensionUtility.deriveApplicationName(pageUrl)
+        String pageName = ExtensionUtility.derivePageName(pageUrl)
+        return loadJSONFromFile(applicationName,pageName)
+    }
+
 }
