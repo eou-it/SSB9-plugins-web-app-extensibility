@@ -30,7 +30,7 @@ class RequisitionSummaryService extends ServiceBase {
         if (!requisitionSummary) {
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }
-        processSummaryInformation( requisitionSummary );
+        processSummaryInformation( requisitionSummary )
     }
 
     /**
@@ -111,7 +111,7 @@ class RequisitionSummaryService extends ServiceBase {
                 }
                 isLastItemBalanced
             }
-
+            boolean isCommodityLevelAccounting = !retJSON['header'].isDocumentLevelAccounting
             requisitionSummary.collectEntries() {
                 [it.commodityItem, [
                         commodityItem                  : it.commodityItem,
@@ -125,9 +125,9 @@ class RequisitionSummaryService extends ServiceBase {
                         commodityUnitPrice             : it.commodityUnitPrice,
                         commodityTotal                 : (it.commodityUnitPrice * it.commodityQuantity) + it.commodityTaxAmount + it.commodityAdditionalChargeAmount
                                 - it.commodityDiscountAmount,
-                        accounting                     : !retJSON['header'].isDocumentLevelAccounting ? getAccountingForCommodityItem( it.commodityItem ) : null,
-                        distributionPercentage         : !retJSON['header'].isDocumentLevelAccounting ? getAccountingDistributionPercentage( getAccountingForCommodityItem( it.commodityItem ) ) : null,
-                        itemBalanced                   : !retJSON['header'].isDocumentLevelAccounting ? getAccountingDistributionPercentage( getAccountingForCommodityItem( it.commodityItem ) ) == FinanceValidationConstants.HUNDRED : null]]
+                        accounting                     : isCommodityLevelAccounting ? getAccountingForCommodityItem( it.commodityItem ) : null,
+                        distributionPercentage         : isCommodityLevelAccounting ? getAccountingDistributionPercentage( getAccountingForCommodityItem( it.commodityItem ) ) : null,
+                        itemBalanced                   : isCommodityLevelAccounting ? getAccountingDistributionPercentage( getAccountingForCommodityItem( it.commodityItem ) ) == FinanceValidationConstants.HUNDRED : null]]
 
             }.each() {
                 key, value ->
@@ -138,7 +138,7 @@ class RequisitionSummaryService extends ServiceBase {
                 retJSON['accounting'] = accountingList
                 retJSON['distributionPercentage'] = getAccountingDistributionPercentage( accountingList )
                 retJSON['balanced'] = retJSON['distributionPercentage'] == FinanceValidationConstants.HUNDRED
-                retJSON['commodity'].each {
+                retJSON['commodity'].each { // Clean unnecessary keys for commodity
                     it.remove( 'accounting' )
                     it.remove( 'distributionPercentage' )
                     it.remove( 'itemBalanced' )
@@ -146,6 +146,9 @@ class RequisitionSummaryService extends ServiceBase {
             } else {
                 retJSON['balanced'] = checkIfAllItemBalanced( commodityList, accountingList.size() > 0 )
             }
+            // Clean unnecessary keys for header
+            retJSON['header'].remove( 'commodityItem' )
+            retJSON['header'].remove( 'accountingItem' )
         }
         retJSON
     }
