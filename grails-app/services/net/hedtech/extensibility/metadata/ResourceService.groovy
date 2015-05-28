@@ -87,7 +87,7 @@ class ResourceService {
             }
         }
         postfixes.each { postfix ->
-            def file = new File("${resourcePath}/${application}/${page}${postfix}.json")
+            def file = resourcePath?new File("${resourcePath}/${application}/${page}${postfix}.json"):null
             if (file?.exists()) {
                 result = mergeJSONResult(result, file.text)
             }
