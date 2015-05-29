@@ -649,8 +649,8 @@ var xe = (function (xe) {
                 title: $.i18n.prop("xe.extension.editor.window.title"),
                 appendTo: "#content", width: 600, height: "auto",
                 buttons: [
-                    {class: 'btn btn-primary', text: $.i18n.prop("xe.btn.label.cancel"), click: function() {$( this ).dialog( "close" );} },
-                    {class: 'btn btn-secondary', text: $.i18n.prop("xe.btn.label.save"), click: function(){ xe.saveExtensions();} }
+                    {class: 'btn btn-secondary', text: $.i18n.prop("xe.btn.label.close"), click: function() {$( this ).dialog( "close" );} },
+                    {class: 'btn btn-primary', text: $.i18n.prop("xe.btn.label.submit"), click: function(){ xe.saveExtensions(); $( this ).dialog( "close" );} }
                 ]
             });
 
