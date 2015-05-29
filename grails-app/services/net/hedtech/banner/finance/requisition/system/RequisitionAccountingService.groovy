@@ -141,4 +141,13 @@ class RequisitionAccountingService extends ServiceBase {
     def findAccountingByRequestCode( requestCode ) {
         RequisitionAccounting.findAccountingByRequestCode( requestCode )
     }
+
+    /**
+     * List accounting for specified request Code and Item
+     * @param requestCode
+     * @return
+     */
+    def findAccountingByRequestCodeAndItem( requestCode, item ) {
+        RequisitionAccounting.findAccountingByRequestCodeAndItem( requestCode, item )
+    }
 }

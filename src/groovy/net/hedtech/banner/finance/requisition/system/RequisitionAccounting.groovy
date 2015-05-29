@@ -14,10 +14,10 @@ import javax.persistence.*
 
 @NamedQueries(value = [
         @NamedQuery(name = FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_BY_CODE,
-                query = """FROM RequisitionAccounting a
-                            WHERE a.requestCode = :requestCode
-                            AND a.item = :item
-                            AND a.sequenceNumber  = :sequenceNumber"""),
+                query = """FROM RequisitionAccounting requisitionAccounting
+                            WHERE requisitionAccounting.requestCode = :requestCode
+                            AND requisitionAccounting.item = :item
+                            AND requisitionAccounting.sequenceNumber  = :sequenceNumber"""),
         @NamedQuery(name = FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_GET_LAST_SEQ,
                 query = """SELECT MAX(requisitionAccounting.sequenceNumber) FROM RequisitionAccounting requisitionAccounting
                             WHERE requisitionAccounting.requestCode = :requestCode
@@ -25,6 +25,13 @@ import javax.persistence.*
         @NamedQuery(name = FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_GET_LAST_ITEM,
                 query = """SELECT MAX(requisitionAccounting.item) FROM RequisitionAccounting requisitionAccounting
                                     WHERE requisitionAccounting.requestCode = :requestCode"""),
+
+        @NamedQuery(name = FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_BY_REQUEST_CODE_AND_ITEM,
+                query = """FROM RequisitionAccounting requisitionAccounting
+                              WHERE requisitionAccounting.requestCode = :requestCode
+                               AND requisitionAccounting.item = :item
+                               order by requisitionAccounting.sequenceNumber"""),
+
         @NamedQuery(name = FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_BY_USER,
                 query = """FROM RequisitionAccounting requisitionAccounting
                     WHERE requisitionAccounting.userId = :userId
@@ -465,4 +472,18 @@ class RequisitionAccounting implements Serializable {
         return [list: requestAccountingList]
     }
 
+    /**
+     * List accounting by Request Code and Item
+     * @param requestCode
+     * @param item
+     * @return
+     */
+    static def findAccountingByRequestCodeAndItem( requestCode, item ) {
+        RequisitionAccounting.withSession {session ->
+            session.getNamedQuery( FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_BY_REQUEST_CODE_AND_ITEM )
+                    .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
+                    .setInteger( FinanceProcurementConstants.QUERY_PARAM_REQUISITION_DETAIL_ITEM, item )
+                    .list()
+        }
+    }
 }

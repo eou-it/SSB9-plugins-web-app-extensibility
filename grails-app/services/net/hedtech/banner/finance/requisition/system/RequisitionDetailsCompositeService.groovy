@@ -54,7 +54,7 @@ class RequisitionDetailsCompositeService {
             reBalanceRequisitionAccounting requestCode, requisitionDetail.item, null
             return [requestCode: requisitionDetail.requestCode, item: requisitionDetail.item]
         } else {
-            LoggerUtility.error (LOGGER, 'User' + user + ' is not valid')
+            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
             throw new ApplicationException(
                     RequisitionDetailsCompositeService,
                     new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -86,7 +86,7 @@ class RequisitionDetailsCompositeService {
         Integer item = detailDomainModel.requisitionDetail.item
         // Null or empty check for item.
         if (!item) {
-            LoggerUtility.error (LOGGER, 'Item is required to update the detail.')
+            LoggerUtility.error( LOGGER, 'Item is required to update the detail.' )
             throw new ApplicationException( RequisitionDetailsCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_ITEM_IS_REQUIRED, [] ) )
@@ -108,7 +108,7 @@ class RequisitionDetailsCompositeService {
             reBalanceRequisitionAccounting requestCode, requisitionDetail.item
             return requisitionDetail
         } else {
-            LoggerUtility.error (LOGGER, 'User' + user + ' is not valid')
+            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
             throw new ApplicationException( RequisitionDetailsCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -269,10 +269,12 @@ class RequisitionDetailsCompositeService {
         if (requisitionDetail.commodity) {
             commodity = financeCommodityService.findCommodityByCode( requisitionDetail.commodity )
         }
+        boolean isCommodityLevelAccounting = !requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ).isDocumentLevelAccounting
         return [requisitionDetail: requisitionDetail,
                 taxGroup         : taxGroup,
                 unitOfMeasure    : unitOfMeasure,
-                commodity        : commodity]
+                commodity        : commodity,
+                hasAccount       : isCommodityLevelAccounting ? requisitionAccountingService.findAccountingByRequestCodeAndItem( requestCode, item ).size() > 0 : requisitionAccountingService.findAccountingByRequestCodeAndItem( requestCode, 0 ).size() > 0]
     }
 
     /**

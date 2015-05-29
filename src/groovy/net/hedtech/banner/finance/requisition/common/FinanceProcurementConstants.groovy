@@ -185,6 +185,7 @@ class FinanceProcurementConstants {
     static final String REQ_ACC_NAMED_QUERY_BY_CODE = 'RequestAccounting.fetchByRequestCodeItemAndSeq'
     static final String REQ_ACC_NAMED_QUERY_BY_USER = 'RequestAccounting.fetchByUser'
     static final String REQ_ACC_NAMED_QUERY_BY_REQUEST_CODE = 'RequestAccounting.fetchAccountingByRequestCode'
+    static final String REQ_ACC_NAMED_QUERY_BY_REQUEST_CODE_AND_ITEM = 'RequestAccounting.fetchAccountingByRequestCodeAndItem'
     static final String QUERY_PARAM_REQUISITION_ACCOUNTING_ITEM = 'item'
     static final String QUERY_PARAM_REQUISITION_ACCOUNTING_SEQ_NUM = 'sequenceNumber'
     static final String REQ_ACC_ENTITY_FV_REQ_ACCOUNTING = 'FV_REQ_ACCOUNTING'
