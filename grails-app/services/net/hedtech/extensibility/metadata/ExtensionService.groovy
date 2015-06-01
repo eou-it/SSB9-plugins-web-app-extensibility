@@ -104,7 +104,7 @@ class ExtensionService {
                 }
                 catch (ConverterException ce) {
                     log.error "Error parsing extensions json from ${file.path}: " + ce.stackTrace
-                    jsonStr = '{"jsonParseError": "' + localizerService("xe.extensions.json.error") + '"}'
+                    throw new Exception(localizerService(code: "xe.extensions.json.error"))
                 }
                 return jsonStr
             } else {

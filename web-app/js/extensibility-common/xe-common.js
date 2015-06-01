@@ -741,14 +741,6 @@ var xe = (function (xe) {
         }
         if ((xe.extensions !== undefined)) {
             xe.extensionsFound = true;
-            if (xe.extensions.hasOwnProperty("jsonParseError")) {
-                notifications.addNotification( new Notification({
-                    message: xe.extensions.jsonParseError,
-                    type: "error",
-                    flash: false
-                }));
-                xe.extensionsFound = false;
-            }
             if (xe.devMode()){
                 xe.page.metadata=$.extend(true,{},xe.extensions);  //clone of extensions used for editor
             }
