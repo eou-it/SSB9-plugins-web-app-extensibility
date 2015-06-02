@@ -2,6 +2,9 @@
 /*******************************************************************************
  Copyright 2015 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
+
+/* global xe */
+/* global angular */
 ( function() {
 
     'use strict';
@@ -13,7 +16,9 @@
             return {
                 restrict: restriction,
                 compile: function(element) {
-                    xe.extend(element);
+                    if (xe.enableExtensions()) {
+                        xe.extend(element);
+                    }
                 }
             };
         };};

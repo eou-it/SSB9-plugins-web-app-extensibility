@@ -6,6 +6,9 @@
 /* global extensibilityPluginPath */
 /* global ToolsMenu */
 /* global notifications */
+/* global extensibilityJSON */
+/* global extensibilityResourcesJSON */
+/* global log */
 
 // xe namespace is for providing eXtensible Environment functionality.
 // this will likely be provided as a service and injected
@@ -19,25 +22,14 @@ var xe = (function (xe) {
     xe.attrInh = {section: xe.typePrefix+'section-inh'};                         //html attribute name for section inherited
     xe.forAttribute = 'xe-for';
     xe.errors = [];
-    //xe.sections = null; make local variable
     xe.extensionsFound = false;
-
-    //Logging
-    xe.logging = {none: 0, debug: 1, verbose: 2};
-    xe.logging.level = xe.logging.none;
-    if ( window.location.search.indexOf("xeLogging=debug")!==-1 ) {
-        xe.logging.level = xe.logging.debug;
-    }
-    if ( window.location.search.indexOf("xeLogging=verbose")!==-1 ) {
-        xe.logging.level = xe.logging.verbose;
-    }
 
     $.fn.editable.defaults.placeholder = '';
 
     xe.log = function () {
-        if (xe.logging.level>xe.logging.none) {
-            var args = Array.prototype.slice.call( arguments, 0 ); // convert arguments to an array
-            console.log(args);
+        if (log.isDebugEnabled()) {
+            var args = Array.prototype.slice.call(arguments, 0); // convert arguments to an array
+            console.log((new Date()).toISOString(),args);
         }
     };
 
@@ -45,7 +37,7 @@ var xe = (function (xe) {
     //extend the baseline properties loading as done for ZK pages
     xe.loadResources = function(){
         if (typeof extensibilityResourcesJSON !== 'undefined' ) {
-            xe.log('resources loaded');
+            xe.log('Resources initialized');
             _.extend( $.i18n.map, extensibilityResourcesJSON ); //data used for extending page
         }
 
@@ -61,10 +53,9 @@ var xe = (function (xe) {
         return !!window.extensibilityAdmin;
     };
 
-    //This gets called several times, is it worth to refactor and eveluate URL parameters only once?
-    //Don't bother for now, we may remove this from release as it is not a userstory to have enable/disable extensions
+    //Allow to disable extensions when we have developer privileges
     xe.enableExtensions = function() {
-        return window.location.search.indexOf("baseline=y") === -1;
+        return window.location.search.indexOf("baseline=y") === -1 || !xe.devMode();
     };
 
 
@@ -239,7 +230,7 @@ var xe = (function (xe) {
          *******************************************************************************************************/
         function removeElement( type, element ) {
             var elementsToRemove = $(element).add( $(xe.selectorFor(element.attributes[xe.typePrefix + type].value) ) );
-            xe.log('Removing element '+type);
+            xe.log('Remove', type, element.attributes[xe.typePrefix + type].value,elementsToRemove);
             // include elements linked to this by aria-labelledby and aria-describedby ids
             $.merge(elementsToRemove,findAriaLinkedElements(xe.attr.labelledBy,elementsToRemove));
             $.merge(elementsToRemove,findAriaLinkedElements(xe.attr.describedBy,elementsToRemove));
@@ -421,13 +412,18 @@ var xe = (function (xe) {
         /*******************************************************************************************************
          Apply any extensions to each section field in turn
          *******************************************************************************************************/
-        function extendSectionFields( section, extensions ) {
-
-            _.each( extensions.fields, function( fieldExtension ) {
-                var fieldElement = $(xe.selector(xe.type.field, fieldExtension.name ), section)[0];
+        function extendSectionFields(section, extensions) {
+            var sectionFields = $(xe.selector(xe.type.field), section); //moved from _.each body - no need to search many times
+            _.each(extensions.fields, function (fieldExtension) {
+                var fieldElement = $(xe.selector(xe.type.field, fieldExtension.name), section)[0];
                 if (!fieldElement) {
                     //Must be a new field, add a placeholder
-                    var anchor = $(xe.selector(xe.type.field),section)[0];
+                    var anchor = null;
+                    if (fieldExtension.nextSibling) {
+                        anchor = $(xe.selector(xe.type.field, fieldExtension.nextSibling), section)[0];
+                    } else  { // not specified or null - take last field
+                        anchor = sectionFields.length ? sectionFields[sectionFields.length - 1] : sectionFields[0];
+                    }
                     if (anchor) {
                         var placeholder = $('<div xe-field="' + fieldExtension.name + '"></div>')[0];
                         fieldElement = anchor.parentNode.insertBefore(placeholder, null);
@@ -463,11 +459,11 @@ var xe = (function (xe) {
         /*******************************************************************************************************
          Retrieve the metadata for a section and apply the extensions
          *******************************************************************************************************/
-        function extendSection( section, sections ) {
+        function extendSection(section, sections) {
             var sectionName = section.attributes[xe.attr.section].value;
 
             // retrieve section metadata
-            var extensions = _.find(xe.extensions.sections, function( sectionExtension ) {
+            var extensions = _.find(xe.extensions.sections, function (sectionExtension) {
                 return sectionName === sectionExtension.name;
             });
 
@@ -599,10 +595,12 @@ var xe = (function (xe) {
         var result="";
         if (component.tagName) {
             result="<"+component.tagName;
-            Object.getOwnPropertyNames(component.attributes).forEach(function(val) {
-                    result+=' '+val+'="'+component.attributes[val]+'"';
-                }
-            );
+            if (component.attributes) {
+                Object.getOwnPropertyNames(component.attributes).forEach(function (val) {
+                        result += ' ' + val + '="' + component.attributes[val] + '"';
+                    }
+                );
+            }
             result += ">";
             //recursively add the child nodes
             if (component.childNodes && !xe.isVoidElement(component.tagName) ) {
@@ -721,10 +719,7 @@ var xe = (function (xe) {
         }
     };
 
-    xe.startup = function(){
-
-
-        xe.log('Startup - fetching metadata...');
+    xe.startup = function () {
         if (typeof extensibilityJSON !== 'undefined') {
             //handle compatibility with older version where extensions were defined in an array
             if (extensibilityJSON instanceof Array) {
@@ -737,7 +732,6 @@ var xe = (function (xe) {
                     xe.extensions = extensibilityJSON;
                 }
             }
-            xe.log('data loaded');
         }
         if ((xe.extensions !== undefined)) {
             xe.extensionsFound = true;
@@ -750,7 +744,7 @@ var xe = (function (xe) {
             }
         }
         if (xe.extensionsFound) {
-            xe.log(xe.extensions);
+            xe.log("Extensions",xe.extensions);
             xe.loadResources();
         } else {
             xe.log('No Extensibility definitions found!');
