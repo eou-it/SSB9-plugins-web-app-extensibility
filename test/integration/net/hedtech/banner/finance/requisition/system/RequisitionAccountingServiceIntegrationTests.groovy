@@ -169,7 +169,7 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
      * @return RequisitionAccounting.
      */
     public RequisitionAccounting getRequestAccounting() {
-        def requestCode = 'R0001397'
+        def requestCode = 'R0002497'
         def lastSeq = requisitionAccountingService.getLastSequenceNumberByRequestCode( requestCode, 0 )
         def item = 0
         def sequenceNumber = lastSeq.next()
