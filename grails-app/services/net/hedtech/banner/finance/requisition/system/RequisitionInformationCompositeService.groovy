@@ -21,6 +21,7 @@ class RequisitionInformationCompositeService {
     def financeVendorService
     def financeDiscountService
     def financeCurrencyService
+    def financeCurrencyCompositeService
 
     /**
      * Fetches Requisition Information
@@ -51,7 +52,7 @@ class RequisitionInformationCompositeService {
             def currencyObj = financeCurrencyService.findCurrencyByCurrencyCode( header.currency )
             currency = [currencyCode: currencyObj.currencyCode, title: currencyObj.title]
         } else {
-            currency = financeCurrencyService.getFilteredCurrencyDetail( baseCcy )
+            currency = financeCurrencyCompositeService.getFilteredCurrencyDetail( baseCcy )
         }
         LoggerUtility.debug( LOGGER, 'taxGroup: ' + taxGroup )
         LoggerUtility.debug( LOGGER, 'discount: ' + discount )
