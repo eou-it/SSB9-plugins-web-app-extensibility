@@ -98,10 +98,10 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
         def accountingDomainModel = getRequestAccounting()
         accountingDomainModel.item = 0
         accountingDomainModel.sequenceNumber = 1
-        accountingDomainModel.requestCode = 'R0001397'
+        accountingDomainModel.requestCode = 'R0002497'
         def domainModelMap = [requisitionAccounting: accountingDomainModel]
         def accounting = requisitionAccountingCompositeService.updateRequisitionAccounting( domainModelMap )
-        assertTrue( accounting.requestCode == 'R0001397' )
+        assertTrue( accounting.requestCode == 'R0002497' )
     }
 
     /**
