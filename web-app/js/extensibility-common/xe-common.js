@@ -649,8 +649,15 @@ var xe = (function (xe) {
                 title: $.i18n.prop("xe.extension.editor.window.title"),
                 appendTo: "#content", width: 600, height: "auto",
                 buttons: [
-                    {class: 'btn btn-secondary', text: $.i18n.prop("xe.btn.label.close"), click: function() {$( this ).dialog( "close" );} },
-                    {class: 'btn btn-primary', text: $.i18n.prop("xe.btn.label.submit"), click: function(){ xe.saveExtensions(); $( this ).dialog( "close" );} }
+                    {class: 'btn btn-secondary', text: $.i18n.prop("xe.btn.label.close"), click: function() {$(this).dialog( "close" );} },
+                    {class: 'btn btn-primary', text: $.i18n.prop("xe.btn.label.submit"), click: function(){
+                        var dialogWindow = this;
+                        if (xe.setExtensions($('#extensions-edit-input',popup).val())) {
+                            xe.saveExtensions().done(function(){
+                                $(dialogWindow).dialog( "close" );
+                            });
+                        }
+                    }}
                 ]
             });
 
@@ -660,6 +667,9 @@ var xe = (function (xe) {
                 }
             );
         }
+        else {
+            $('#extensions-edit-input',popup).val(JSON.stringify(xe.page.metadata,null,2));
+        }
         popup.dialog("open");
         return popup;
     };
@@ -668,7 +678,7 @@ var xe = (function (xe) {
     xe.saveExtensions=function(){
         //var md = JSON.parse(xe.page.metadata);
         var data={application: xe.page.application, page:xe.page.name, metadata: xe.page.metadata } ;
-        $.ajax({
+        return $.ajax({
             url: '/' + xe.page.application + '/webadmin/extensions',
             type:'POST',
             dataType: 'json',
@@ -696,7 +706,17 @@ var xe = (function (xe) {
 
     //Update the model with modifed extensions
     xe.setExtensions = function (value) {
-        xe.page.metadata = JSON.parse(value);
+        try {
+            xe.page.metadata = JSON.parse(value);
+            return true;
+        } catch(e) {
+            notifications.addNotification( new Notification({
+                message: $.i18n.prop("xe.extensions.json.editor.error", [e.message]),
+                type: "error",
+                flash: true
+            }));
+            return false;
+        }
     };
 
     //Add the tools menu item Extensibility if we are in developer mode
