@@ -5,7 +5,7 @@
 /* global xe */
 /* global _ */
 xe.jq = (function(xe) {
-
+    'use strict';
 	var jq = xe.jq || {};
 
     /***************************************************************************************************
@@ -48,6 +48,7 @@ xe.jq = (function(xe) {
 }(xe||{}));
 
 xe.extendFunctions = function () {
+    'use strict';
     //Reordering of Tabs
     $.fn.tabs = _.wrap($.fn.tabs, function expandTabs(org) {
         var sections = xe.extensions.orderedSections;

@@ -29,7 +29,7 @@ var xe = (function (xe) {
     xe.log = function () {
         if (log.isDebugEnabled()) {
             var args = Array.prototype.slice.call(arguments, 0); // convert arguments to an array
-            console.log((new Date()).toISOString(),args);
+            console.log((new Date()).toISOString(), args);
         }
     };
 
@@ -647,8 +647,8 @@ var xe = (function (xe) {
                 title: $.i18n.prop("xe.extension.editor.window.title"),
                 appendTo: "#content", width: 600, height: "auto",
                 buttons: [
-                    {class: 'btn btn-secondary', text: $.i18n.prop("xe.btn.label.close"), click: function() {$( this ).dialog( "close" );} },
-                    {class: 'btn btn-primary', text: $.i18n.prop("xe.btn.label.submit"), click: function(){ xe.saveExtensions(); $( this ).dialog( "close" );} }
+                    {'class': 'btn btn-secondary', text: $.i18n.prop("xe.btn.label.close"), click: function() {$( this ).dialog( "close" );} },
+                    {'class': 'btn btn-primary', text: $.i18n.prop("xe.btn.label.submit"), click: function(){ xe.saveExtensions(); $( this ).dialog( "close" );} }
                 ]
             });
 
