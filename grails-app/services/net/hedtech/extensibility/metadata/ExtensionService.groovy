@@ -97,6 +97,10 @@ class ExtensionService {
                 log.error "Error reading extensions json file ${file.path}: " + ioe.stackTrace
             }
             if (jsonStr) {
+                 //handle compatibility with older version where extensions were defined in an array
+                if (jsonStr[0].equals("[") && jsonStr[jsonStr.length()-1].equals("]")) {
+                    jsonStr = jsonStr.substring(1,jsonStr.length()-1)
+                }
                 try {
                     JSON.use("deep") {
                         result = JSON.parse(jsonStr)

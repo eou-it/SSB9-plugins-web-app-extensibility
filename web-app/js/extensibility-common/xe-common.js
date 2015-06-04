@@ -23,6 +23,7 @@ var xe = (function (xe) {
     xe.forAttribute = 'xe-for';
     xe.errors = [];
     xe.extensionsFound = false;
+    xe.extensionsParseErrorId = "extensionsParseError";
 
     $.fn.editable.defaults.placeholder = '';
 
@@ -639,6 +640,13 @@ var xe = (function (xe) {
         return popup;
     };
 
+    xe.removeExtensionsParseError = function() {
+        var parseNotificationError =  notifications.get(xe.extensionsParseErrorId);
+        if (parseNotificationError) {
+            notifications.remove(parseNotificationError);
+        }
+    };
+
     xe.extensionsEditor = function(page,popup) {
         if (!popup) {
             popup = $('<div id="extensionsEditor.' + page.name + '" ></div>');
@@ -647,8 +655,29 @@ var xe = (function (xe) {
                 title: $.i18n.prop("xe.extension.editor.window.title"),
                 appendTo: "#content", width: 600, height: "auto",
                 buttons: [
-                    {'class': 'btn btn-secondary', text: $.i18n.prop("xe.btn.label.close"), click: function() {$(this).dialog( "close" );} },
-                    {'class': 'btn btn-primary', text: $.i18n.prop("xe.btn.label.submit"), click: function(){
+                    {'class': 'btn btn-secondary', text: $.i18n.prop("xe.btn.label.close"),
+                      click: function() {
+                          var dialogWindow = this;
+                          var n = new Notification({
+                              message: $.i18n.prop("xe.js.notification.editextensions.close.warningMessage"),
+                              type: "warning"
+                          });
+
+                          n.addPromptAction($.i18n.prop("xe.js.notification.editextensions.close.cancel"), function () {
+                              notifications.remove(n);
+                          });
+
+                          n.addPromptAction($.i18n.prop("xe.js.notification.editextensions.close.ok"), function () {
+                              notifications.remove(n);
+                              xe.removeExtensionsParseError();
+                              $(dialogWindow).dialog( "close" );
+                          });
+
+                          notifications.addNotification(n);
+                     }
+                    },
+                    {'class': 'btn btn-primary', text: $.i18n.prop("xe.btn.label.submit"),
+                     click: function(){
                         var dialogWindow = this;
                         if (xe.setExtensions($('#extensions-edit-input',popup).val())) {
                             xe.saveExtensions().done(function(){
@@ -704,15 +733,13 @@ var xe = (function (xe) {
 
     //Update the model with modifed extensions
     xe.setExtensions = function (value) {
+        xe.removeExtensionsParseError();
         try {
-        xe.page.metadata = JSON.parse(value);
+            xe.page.metadata = JSON.parse(value);
             return true;
         } catch(e) {
-            notifications.addNotification( new Notification({
-                message: $.i18n.prop("xe.extensions.json.editor.error", [e.message]),
-                type: "error",
-                flash: true
-            }));
+            notifications.addNotification(new Notification({ message: $.i18n.prop("xe.extensions.json.editor.error", [e.message]),
+                                         type: "error", flash: false, id: xe.extensionsParseErrorId }));
             return false;
         }
     };
@@ -740,18 +767,8 @@ var xe = (function (xe) {
     };
 
     xe.startup = function () {
-        if (typeof extensibilityJSON !== 'undefined') {
-            //handle compatibility with older version where extensions were defined in an array
-            if (extensibilityJSON instanceof Array) {
-                if (extensibilityJSON.length) {
-                    xe.extensions = extensibilityJSON[0];
-                }
-            }
-            else {
-                if (!_.isEmpty(extensibilityJSON)){
-                    xe.extensions = extensibilityJSON;
-                }
-            }
+        if (typeof extensibilityJSON !== 'undefined' && !_.isEmpty(extensibilityJSON)) {
+            xe.extensions = extensibilityJSON;
         }
         if ((xe.extensions !== undefined)) {
             xe.extensionsFound = true;
