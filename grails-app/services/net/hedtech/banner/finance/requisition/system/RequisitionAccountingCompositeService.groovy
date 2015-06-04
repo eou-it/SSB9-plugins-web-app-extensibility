@@ -22,8 +22,6 @@ class RequisitionAccountingCompositeService {
     def requisitionAccountingService
     def requisitionDetailService
     def chartOfAccountsService
-    def accountIndexService
-    def financeFundService
     def financeOrganizationCompositeService
     def financeAccountCompositeService
     def programService
@@ -32,6 +30,7 @@ class RequisitionAccountingCompositeService {
     def financeProjectCompositeService
     def financeAccountIndexService
     def financeFundCompositeService
+    def financeUserProfileService
 
     /**
      * Creates Requisition Accounting level.
@@ -56,12 +55,13 @@ class RequisitionAccountingCompositeService {
                         new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_NO_MORE_ACCOUNTING, [] ) )
             }*/
             requisitionAccountingRequest.sequenceNumber = requisitionAccountingService.getLastSequenceNumberByRequestCode( requisitionAccountingRequest.requestCode, requisitionAccountingRequest.item ).next()
+            setNSFOverride( requisitionAccountingRequest, user.oracleUserName )
             RequisitionAccounting requisitionAccounting = requisitionAccountingService.create( [domainModel: requisitionAccountingRequest] )
-            LoggerUtility.debug LOGGER, 'Requisition Accounting created ' + requisitionAccounting
+            LoggerUtility.debug( LOGGER, 'Requisition Accounting created ' + requisitionAccounting )
             return [requestCode: requisitionAccounting.requestCode,
                     item       : requisitionAccounting.item, sequenceNumber: requisitionAccounting.sequenceNumber]
         } else {
-            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid')
+            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
             throw new ApplicationException(
                     RequisitionAccountingCompositeService,
                     new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -91,7 +91,7 @@ class RequisitionAccountingCompositeService {
                 requisitionHeaderService.findRequisitionHeaderByRequestCode( accountingDomainModel.requisitionAccounting.requestCode ) )
 
         if (accountingDomainModel.requisitionAccounting.item == null || accountingDomainModel.requisitionAccounting.sequenceNumber == null) {
-            LoggerUtility.error (LOGGER, 'Item and Sequence number are required to update the Requisition Accounting information.')
+            LoggerUtility.error( LOGGER, 'Item and Sequence number are required to update the Requisition Accounting information.' )
             throw new ApplicationException( RequisitionAccountingCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_ITEM_SEQUENCE_REQUIRED, [] ) )
@@ -120,11 +120,12 @@ class RequisitionAccountingCompositeService {
             requisitionAccountingRequest.item = existingAccountingInfo.item
             requisitionAccountingRequest.sequenceNumber = existingAccountingInfo.sequenceNumber
             requisitionAccountingRequest.userId = user.oracleUserName
+            setNSFOverride( requisitionAccountingRequest, user.oracleUserName )
             def requisitionAccounting = requisitionAccountingService.update( [domainModel: requisitionAccountingRequest] )
-            LoggerUtility.debug LOGGER, "Requisition Accounting information updated " + requisitionAccounting
+            LoggerUtility.debug( LOGGER, "Requisition Accounting information updated " + requisitionAccounting )
             return requisitionAccounting
         } else {
-            LoggerUtility.error (LOGGER, 'User' + user + ' is not valid')
+            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
             throw new ApplicationException( RequisitionAccountingCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -288,5 +289,17 @@ class RequisitionAccountingCompositeService {
              commodityTotalDiscountAmount        : commodityTotalDiscountAmount,
             ]
         }.getAt( 0 )
+    }
+
+    /**
+     * Set NSF Overrider to requisition accounting from user profile
+     *
+     * @param requisitionAccounting
+     * @param oracleUserName
+     * @return
+     */
+    private def setNSFOverride( requisitionAccounting, oracleUserName ) {
+        requisitionAccounting.insufficientFundsOverrideIndicator = financeUserProfileService.getUserProfileByUserId( oracleUserName )
+                .nsfOverrider
     }
 }

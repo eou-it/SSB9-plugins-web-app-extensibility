@@ -89,8 +89,7 @@ class FinanceProcurementHelper {
                 fund                              : requisitionAccountingJSON.fund,
                 organization                      : requisitionAccountingJSON.organization,
                 account                           : requisitionAccountingJSON.account,
-                program                           : requisitionAccountingJSON.program,
-                insufficientFundsOverrideIndicator: FinanceProcurementConstants.TRUE
+                program                           : requisitionAccountingJSON.program
         ]
     }
 
