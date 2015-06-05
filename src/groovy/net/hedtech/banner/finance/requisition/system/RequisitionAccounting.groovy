@@ -225,7 +225,7 @@ class RequisitionAccounting implements Serializable {
     Boolean insufficientFundsOverrideIndicator
 
     /**
-     * AVAILABLE BUDGET OVERRIDE:  This indicator is used to override the availablity  of funds checking process, if the user has the authority.
+     * AVAILABLE BUDGET OVERRIDE:  This indicator is used to override the availability  of funds checking process, if the user has the authority.
      */
     @Column(name = FinanceProcurementConstants.REQ_ACC_FIELD_FPRREQA_ABAL_IND)
     String availableBudgetOverride
