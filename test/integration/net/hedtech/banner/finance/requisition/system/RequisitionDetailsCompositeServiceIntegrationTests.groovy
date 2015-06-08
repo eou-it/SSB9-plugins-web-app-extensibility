@@ -45,6 +45,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     void testCreatePurchaseRequisitionDetail() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def reqDetailDomainModel = getRequisitionDetails()
+        reqDetailDomainModel.privateComment = 'Testing Private comment.'
         def domainModelMap = [requisitionDetail: reqDetailDomainModel]
         def requestCode = requisitionDetailsCompositeService.createPurchaseRequisitionDetail(domainModelMap)
         assertTrue requestCode?.requestCode == requestHeaderCode
@@ -63,6 +64,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
                 return [taxProcessingIndicator: FinanceValidationConstants.REQUISITION_INDICATOR_NO]
             }
             def reqDetailDomainModel = getRequisitionDetails()
+            reqDetailDomainModel.publicComment = 'Testing Public comment.'
             def domainModelMap = [requisitionDetail: reqDetailDomainModel]
             def requestCode = requisitionDetailsCompositeService.createPurchaseRequisitionDetail(domainModelMap)
             assertTrue requestCode?.requestCode == requestHeaderCode
@@ -78,6 +80,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     void testCreatePurchaseRequisitionDetailBadCredentials() {
         login 'Invalid_user', 'invalid_password'
         def reqDetailDomainModel = getRequisitionDetails()
+        reqDetailDomainModel.publicComment = 'Testing Public comment.'
         def domainModelMap = [requisitionDetail: reqDetailDomainModel]
         requisitionDetailsCompositeService.createPurchaseRequisitionDetail(domainModelMap)
     }
@@ -89,6 +92,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     void testCreatePurchaseRequisitionInvalidRequisitionCode() {
         def reqDetailDomainModel = getRequisitionDetails()
         reqDetailDomainModel.requestCode = 'R0000129182991'
+        reqDetailDomainModel.privateComment = 'Testing Private comment.'
         def domainModelMap = [requisitionDetail: reqDetailDomainModel]
         requisitionDetailsCompositeService.createPurchaseRequisitionDetail(domainModelMap)
     }
@@ -103,6 +107,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
         springSecurityService.getAuthentication().user.oracleUserName = ''
         def reqDetailDomainModel = getRequisitionDetails()
+        reqDetailDomainModel.privateComment = 'Testing Private comment.'
         def domainModelMap = [requisitionDetail: reqDetailDomainModel]
         try {
             requisitionDetailsCompositeService.createPurchaseRequisitionDetail(domainModelMap)
@@ -138,6 +143,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
                 FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def detailDomainModel = getRequisitionDetails()
         detailDomainModel.item = 1
+        detailDomainModel.privateComment = 'Testing Private comment.'
         def domainModelMap = [requisitionDetail: detailDomainModel]
         def detail = requisitionDetailsCompositeService.updateRequisitionDetail(domainModelMap)
         assertTrue(detail.requestCode == requestHeaderCode)
@@ -179,6 +185,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
         springSecurityService.getAuthentication().user.oracleUserName = ''
         def detailDomainModel = getRequisitionDetails()
         detailDomainModel.item = 1
+        detailDomainModel.publicComment = 'Testing Public comment.'
         def domainModelMap = [requisitionDetail: detailDomainModel]
         try {
             requisitionDetailsCompositeService.updateRequisitionDetail(domainModelMap)
@@ -198,6 +205,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
                 FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def detailDomainModel = getRequisitionDetails()
         detailDomainModel.item = 0
+        detailDomainModel.privateComment = 'Testing Private comment.'
         def domainModelMap = [requisitionDetail: detailDomainModel]
         try {
             requisitionDetailsCompositeService.updateRequisitionDetail(domainModelMap)
@@ -247,7 +255,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
      * The method is used to get the RequisitionDetail object with all required values to insert/update.
      * @return RequisitionDetail.
      */
-    private RequisitionDetail getRequisitionDetails() {
+    private def getRequisitionDetails() {
         def requisitionDetail = [
                 'requestCode'           : requestHeaderCode,
                 'userId'                : FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
