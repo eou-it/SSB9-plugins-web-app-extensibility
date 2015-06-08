@@ -25,7 +25,7 @@ class FinanceProcurementConstants {
 
     public static final String REQUISITION_HEADER_FINDER_BY_REQUEST_CODE_PARAM_REQUEST_CODE = 'requestCode'
     public static final String REQUISITION_HEADER_FINDER_BY_REQUEST_CODE_PARAM_USER_ID = 'userId'
-    public static final String REQUISITION_HEADER_VIEW = 'FV_REQ_HEADER'
+    public static final String REQUISITION_HEADER_VIEW = 'FV_FPBREQH'
     public static final String REQUISITION_HEADER_FIELD_FPBREQH_SURROGATE_ID = 'FPBREQH_SURROGATE_ID'
     public static final String REQUISITION_HEADER_SEQ_FPBREQH_SURROGATE_ID_SEQUENCE = 'FPBREQH_SURROGATE_ID_SEQUENCE'
     public static final String REQUISITION_HEADER_SEQ_GENERATOR = 'FPBREQH_SEQ_GEN'
@@ -107,7 +107,7 @@ class FinanceProcurementConstants {
     String SUCCESS_MESSAGE_DELETE_REQUISITION_HEADER = 'net.hedtech.banner.finance.requisition.delete.requisition.header.success'
 
     /** Constant variable for Purchase Requisition Detail Domain Property column name **/
-    static final String FPVREQD_VIEW = 'FV_REQ_DETAILS'
+    static final String FPVREQD_VIEW = 'FV_FPRREQD'
     static final String FIELD_FPRREQD_SURROGATE_ID = 'FPRREQD_SURROGATE_ID'
     static final String FIELD_FPRREQD_SEQ_GEN = 'FPRREQD_SEQ_GEN'
     static final String FIELD_FPRREQD_SURROGATE_ID_SEQUENCE = 'FPRREQD_SURROGATE_ID_SEQUENCE'
@@ -188,7 +188,7 @@ class FinanceProcurementConstants {
     static final String REQ_ACC_NAMED_QUERY_BY_REQUEST_CODE_AND_ITEM = 'RequestAccounting.fetchAccountingByRequestCodeAndItem'
     static final String QUERY_PARAM_REQUISITION_ACCOUNTING_ITEM = 'item'
     static final String QUERY_PARAM_REQUISITION_ACCOUNTING_SEQ_NUM = 'sequenceNumber'
-    static final String REQ_ACC_ENTITY_FV_REQ_ACCOUNTING = 'FV_REQ_ACCOUNTING'
+    static final String REQ_ACC_ENTITY_FV_REQ_ACCOUNTING = 'FV_FPRREQA'
     static final String REQ_ACC_FIELD_FPRREQA_SURROGATE_ID = 'FPRREQA_SURROGATE_ID'
     static final String REQ_ACC_GEN_FPRREQA_SEQ_GEN = 'FPRREQA_SEQ_GEN'
     static final String REQ_ACC_SEQ_FPRREQA_SURROGATE_ID_SEQUENCE = 'FPRREQA_SURROGATE_ID_SEQUENCE'
