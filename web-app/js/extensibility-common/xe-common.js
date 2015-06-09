@@ -647,6 +647,15 @@ var xe = (function (xe) {
         }
     };
 
+    xe.extensionsChanged = function(popup) {
+        var inputValue = $('#extensions-edit-input',popup).val();
+        if ((!_.isEmpty(inputValue) && xe.page.metadata === undefined) ||
+            (inputValue !== JSON.stringify(xe.page.metadata,null,2) && xe.page.metadata !== undefined)) {
+            return true
+        }
+        return false;
+    }
+
     xe.extensionsEditor = function(page,popup) {
         if (!popup) {
             popup = $('<div id="extensionsEditor.' + page.name + '" ></div>');
@@ -655,25 +664,30 @@ var xe = (function (xe) {
                 title: $.i18n.prop("xe.extension.editor.window.title"),
                 appendTo: "#content", width: 600, height: "auto",
                 buttons: [
-                    {'class': 'btn btn-secondary', text: $.i18n.prop("xe.btn.label.close"),
+                    {'class': 'btn btn-secondary', text: $.i18n.prop("xe.btn.label.cancel"),
                       click: function() {
                           var dialogWindow = this;
-                          var n = new Notification({
-                              message: $.i18n.prop("xe.js.notification.editextensions.close.warningMessage"),
-                              type: "warning"
-                          });
+                          if (xe.extensionsChanged(popup)) {
+                              var n = new Notification({
+                                  message: $.i18n.prop("xe.js.notification.editextensions.close.warningMessage"),
+                                  type: "warning"
+                              });
 
-                          n.addPromptAction($.i18n.prop("xe.js.notification.editextensions.close.cancel"), function () {
-                              notifications.remove(n);
-                          });
+                              n.addPromptAction($.i18n.prop("xe.js.notification.editextensions.close.cancel"), function () {
+                                  notifications.remove(n);
+                              });
 
-                          n.addPromptAction($.i18n.prop("xe.js.notification.editextensions.close.ok"), function () {
-                              notifications.remove(n);
-                              xe.removeExtensionsParseError();
+                              n.addPromptAction($.i18n.prop("xe.js.notification.editextensions.close.ok"), function () {
+                                  notifications.remove(n);
+                                  $(dialogWindow).dialog( "close" );
+                                  xe.removeExtensionsParseError();
+                              });
+
+                              notifications.addNotification(n);
+                          }
+                          else {
                               $(dialogWindow).dialog( "close" );
-                          });
-
-                          notifications.addNotification(n);
+                          }
                      }
                     },
                     {'class': 'btn btn-primary', text: $.i18n.prop("xe.btn.label.submit"),
