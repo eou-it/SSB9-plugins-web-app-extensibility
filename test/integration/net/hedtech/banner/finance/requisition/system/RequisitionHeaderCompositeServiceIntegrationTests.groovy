@@ -291,9 +291,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
                 'vendorContact'            : 'Bangalore',
                 'vendorEmailAddress'       : 'vendor@vendorgroup.com',
                 'requisitionOrigination'   : FinanceProcurementConstants.DEFAULT_REQUISITION_ORIGIN,
-                'deliveryDate'             : new Date('20-Feb-2015'),
-                'privateComment'           : 'This is test comment and this comment is header level private comment. There are two types of comment. The one is Header leve and second one is commodity level comment.',
-                'publicComment'            : 'This is test comment and this comment is header level public comment. There are two types of comment. The one is Header leve and second one is commodity level comment.'
+                'deliveryDate'             : new Date('20-Feb-2015')
         ]
     }
 }
