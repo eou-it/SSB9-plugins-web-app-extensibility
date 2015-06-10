@@ -335,4 +335,7 @@ class FinanceProcurementConstants {
     static final String REQUISITION_SUMMARY_FIELD_FPRREQD_SURROGATE_ID = 'FPRREQD_SURROGATE_ID'
     static final String REQUISITION_SUMMARY_FIELD_FPRREQA_SURROGATE_ID = 'FPRREQA_SURROGATE_ID'
     static final String REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE = 'RequisitionSummary.FetchRequisitionSummaryForRequestCode'
+
+    /** Copy requisition **/
+    static final String ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED = 'missing.requisition.complemented.requisition.required'
 }
