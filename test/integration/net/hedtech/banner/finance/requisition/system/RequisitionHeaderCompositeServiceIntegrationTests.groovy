@@ -260,7 +260,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
      * New object of Requisition Header
      * @return
      */
-    private RequisitionHeader newRequisitionHeader() {
+    private def newRequisitionHeader() {
         return [
                 'requestCode'              : FinanceProcurementConstants.DEFAULT_REQUEST_CODE,
                 'requestDate'              : new Date('18-Feb-2015'),
@@ -292,7 +292,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
                 'vendorEmailAddress'       : 'vendor@vendorgroup.com',
                 'requisitionOrigination'   : FinanceProcurementConstants.DEFAULT_REQUISITION_ORIGIN,
                 'deliveryDate'             : new Date('20-Feb-2015'),
-                'privateComment'           : 'This is test comment and this comment is header level prvate comment. There are two types of comment. The one is Header leve and second one is commodity level comment.',
+                'privateComment'           : 'This is test comment and this comment is header level private comment. There are two types of comment. The one is Header leve and second one is commodity level comment.',
                 'publicComment'            : 'This is test comment and this comment is header level public comment. There are two types of comment. The one is Header leve and second one is commodity level comment.'
         ]
     }
