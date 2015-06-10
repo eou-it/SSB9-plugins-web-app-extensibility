@@ -5,7 +5,7 @@
 /* global xe */
 /* global _ */
 xe.jq = (function(xe) {
-  //  'use strict';
+    'use strict';
 	var jq = xe.jq || {};
 
     /***************************************************************************************************
@@ -13,13 +13,15 @@ xe.jq = (function(xe) {
     ***************************************************************************************************/
     jq.extendTemplates = function(rootElement) {
 
-        if ( xe.enableExtensions() ) {
+        if ( xe.extensionsFound && xe.enableExtensions() ) {
             var templates = $('script[type="text/x-handlebars-template"]',rootElement);
-            templates.each(function (template){
-                var newRoot =  $('<div>'+template.text+'</div>');
-                $(newRoot[0].firstElementChild).addClass('xe-extended'); // prevent duplicate application
-                xe.extend( newRoot );
-                template.text=newRoot[0].innerHTML;
+            templates.each(function (i){
+                var newRoot =  $('<div xe-dynamic>'+templates[i].innerHTML+'</div>');
+                if (!$(newRoot[0].firstElementChild).hasClass('xe-extended')) {
+                    xe.extend($(newRoot[0].firstElementChild));
+                    $(newRoot[0].firstElementChild).addClass('xe-extended'); // prevent duplicate application
+                    templates[i].innerHTML = newRoot[0].innerHTML;
+                }
             });
         }
     };
@@ -31,17 +33,25 @@ xe.jq = (function(xe) {
     ***************************************************************************************************/
     jq.extend = function( rootElement ) {
 
-        if (xe.extensionsFound) {
-            if ( xe.enableExtensions() ) {
-                xe.extend( rootElement );
-                xe.jq.extendTemplates( rootElement );
-            }
+        if (xe.extensionsFound && xe.enableExtensions()) {
+            xe.extend( rootElement );
         }
     };
 
 
     $( function() {
         xe.jq.extend( $('body') );
+        /* Do not call extend templates - In next release see if it can make the calls like xe.jq.extend(this);
+           in sidePanel.js redundant.
+           Advantages template:
+            - do it once at startup
+            - no mods to application
+            - can change the unexpanded template (so can replace {{interpolate me}} expressions
+           Disadvantage:
+            - don't know where in dom the template comes, so cannot access fields when the xe-section is not in the template
+
+        xe.jq.extendTemplates(null);
+        */
     });
 
     return jq;

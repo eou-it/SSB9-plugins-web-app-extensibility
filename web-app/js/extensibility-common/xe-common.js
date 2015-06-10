@@ -28,7 +28,7 @@ var xe = (function (xe) {
     $.fn.editable.defaults.placeholder = '';
 
     xe.log = function () {
-        if (log.isDebugEnabled()) {
+        if (window.console && console.log && log.isDebugEnabled()) {
             var args = Array.prototype.slice.call(arguments, 0); // convert arguments to an array
             console.log((new Date()).toISOString(), args);
         }
