@@ -34,6 +34,7 @@ class RequisitionDetailsCompositeService {
     def chartOfAccountsService
     def financeAccountCompositeService
     def financeTextService
+    def financeTextCompositeService
 
     /**
      * Create purchase requisition detail
@@ -444,17 +445,24 @@ class RequisitionDetailsCompositeService {
         }]
     }
 
+    /**
+     * The method is used to save/update/delete header level text
+     * @param map requisition detail map.
+     * @param requisitionDetail requisition detail.
+     * @param user Oracle user.
+     * @param save save or update.
+     */
     private void saveCommodityLevelText(map, requisitionDetail, user, save) {
         if (map.requisitionDetail.privateComment) {
             saveFinanceText(requisitionDetail, [privateComment: map.requisitionDetail.privateComment], user.oracleUserName, save)
         } else {
-            def printOptionIndicator = FinanceValidationConstants.REQUISITION_INDICATOR_YES
+            def printOptionIndicator = FinanceValidationConstants.REQUISITION_INDICATOR_NO
             financeTextService.deleteText(map.requisitionDetail.requestCode, map.requisitionDetail.item, printOptionIndicator)
         }
         if (map.requisitionDetail.publicComment) {
             saveFinanceText(requisitionDetail, [publicComment: map.requisitionDetail.publicComment], user.oracleUserName, save)
         } else {
-            def printOptionIndicator = FinanceValidationConstants.REQUISITION_INDICATOR_NO
+            def printOptionIndicator = FinanceValidationConstants.REQUISITION_INDICATOR_YES
             financeTextService.deleteText(map.requisitionDetail.requestCode, map.requisitionDetail.item, printOptionIndicator)
         }
     }
@@ -473,8 +481,8 @@ class RequisitionDetailsCompositeService {
         financeText.text = map.publicComment ?
                 map.publicComment : map.privateComment
         financeText.printOptionIndicator = map.privateComment ?
-                FinanceValidationConstants.REQUISITION_INDICATOR_YES :
-                FinanceValidationConstants.REQUISITION_INDICATOR_NO
+                FinanceValidationConstants.REQUISITION_INDICATOR_NO :
+                FinanceValidationConstants.REQUISITION_INDICATOR_YES
         financeText.activityDate = details.lastModified
         financeText.changeSequenceNumber = null
         financeText.lastModifiedBy = user
@@ -482,11 +490,8 @@ class RequisitionDetailsCompositeService {
         financeText.documentTypeSequenceNumber = FinanceValidationConstants.FINANCE_TEXT_DOCUMENT_TYPE_SEQ_NUMBER_REQUISITION
         financeText.pidm = details.vendorPidm
         financeText.textItem = details.item
-        if (save) {
-            financeTextService.saveText(financeText)
-        } else {
-            financeTextService.updateText(financeText, details.item, financeText.printOptionIndicator)
-        }
+        map.privateComment ? financeTextCompositeService.saveNonPrintableCommodityText(financeText) :
+                financeTextCompositeService.savePrintableCommodityText(financeText)
         // Save/Update Text End.
     }
 }

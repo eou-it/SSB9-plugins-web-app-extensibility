@@ -27,6 +27,7 @@ class RequisitionHeaderCompositeService {
     def financeSystemControlService
     def institutionalDescriptionService
     def financeTextService
+    def financeTextCompositeService
 
     /**
      * Create purchase requisition Header
@@ -53,15 +54,6 @@ class RequisitionHeaderCompositeService {
             throw new ApplicationException(
                     RequisitionHeaderCompositeService,
                     new BusinessLogicValidationException(FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, []))
-        }
-    }
-
-    private void saveHeaderLevelText(map, requisitionHeader, user, save) {
-        if (map.requisitionHeader.privateComment) {
-            saveFinanceText(requisitionHeader, [privateComment: map.requisitionHeader.privateComment], user.oracleUserName, save)
-        }
-        if (map.requisitionHeader.publicComment) {
-            saveFinanceText(requisitionHeader, [publicComment: map.requisitionHeader.publicComment], user.oracleUserName, save)
         }
     }
 
@@ -129,6 +121,28 @@ class RequisitionHeaderCompositeService {
     }
 
     /**
+     * The method is used to save/update/delete header level text
+     * @param map requisition header map.
+     * @param requisitionHeader requisition header.
+     * @param user Oracle user.
+     * @param save save or update.
+     */
+    private void saveHeaderLevelText(map, requisitionHeader, user, save) {
+        if (map.requisitionHeader.privateComment) {
+            saveFinanceText(requisitionHeader, [privateComment: map.requisitionHeader.privateComment], user.oracleUserName, save)
+        } else {
+            def printOptionIndicator = FinanceValidationConstants.REQUISITION_INDICATOR_NO
+            financeTextService.deleteText(requisitionHeader.requestCode, null, printOptionIndicator)
+        }
+        if (map.requisitionHeader.publicComment) {
+            saveFinanceText(requisitionHeader, [publicComment: map.requisitionHeader.publicComment], user.oracleUserName, save)
+        } else {
+            def printOptionIndicator = FinanceValidationConstants.REQUISITION_INDICATOR_YES
+            financeTextService.deleteText(requisitionHeader.requestCode, null, printOptionIndicator)
+        }
+    }
+
+    /**
      * The private method used to save a Finance Text when Header Save or Update.
      * @param header Requisition Header.
      * @param map Map which contains raw information regarding header.
@@ -142,8 +156,8 @@ class RequisitionHeaderCompositeService {
         financeText.text = map.publicComment ?
                 map.publicComment : map.privateComment
         financeText.printOptionIndicator = map.privateComment ?
-                FinanceValidationConstants.REQUISITION_INDICATOR_YES :
-                FinanceValidationConstants.REQUISITION_INDICATOR_NO
+                FinanceValidationConstants.REQUISITION_INDICATOR_NO :
+                FinanceValidationConstants.REQUISITION_INDICATOR_YES
         financeText.activityDate = header.lastModified
         financeText.changeSequenceNumber = null
         financeText.lastModifiedBy = user
@@ -151,11 +165,8 @@ class RequisitionHeaderCompositeService {
         financeText.documentTypeSequenceNumber = FinanceValidationConstants.FINANCE_TEXT_DOCUMENT_TYPE_SEQ_NUMBER_REQUISITION
         financeText.pidm = header.vendorPidm
         financeText.textItem = null
-        if (save) {
-            financeTextService.saveText(financeText)
-        } else {
-            financeTextService.updateText(financeText, null, financeText.printOptionIndicator)
-        }
+        map.privateComment ? financeTextCompositeService.saveNonPrintableHeaderText(financeText) :
+                financeTextCompositeService.savePrintableHeaderText(financeText)
         // Save/Update Text End.
     }
 }
