@@ -145,7 +145,9 @@ class RequisitionAccountingCompositeService {
         def requisitionAccounting = findCompleteAccountingByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber )
         def financeAccountIndex = financeAccountIndexService.listByIndexCodeOrTitleAndEffectiveDate( [coaCode: requisitionAccounting.chartOfAccount, indexCodeTitle: requisitionAccounting.accountIndex], dummyPaginationParam )?.get( 0 )
         def financeFund = financeFundCompositeService.findFundListByEffectiveDateAndFundCode( [effectiveDate: null, codeTitle: requisitionAccounting.fund, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )
-        def financeOrganization = financeOrganizationCompositeService.findOrganizationListByEffectiveDateAndSearchParam( [searchParam: requisitionAccounting.organization, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )
+        def financeOrganization = financeOrganizationCompositeService.findOrganizationListByEffectiveDateAndSearchParam( [searchParam  : requisitionAccounting.organization,
+                                                                                                                          effectiveDate: requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionCode ).transactionDate,
+                                                                                                                          coaCode      : requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )
 
         [accounting: requisitionAccounting, cifoapalp: [
                 chartOfAccount: [code: requisitionAccounting.chartOfAccount, title: requisitionAccounting.chartOfAccount ? chartOfAccountsService.getChartOfAccountByCode( requisitionAccounting.chartOfAccount )?.title : null],

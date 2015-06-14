@@ -25,9 +25,10 @@ class UserProfileCompositeService {
     /**
      * Fetches User profile and associated information
      * @param user
+     * @param effectiveDate
      */
     @Transactional(propagation = Propagation.REQUIRED)
-    def getUserProfileDetail( user ) {
+    def getUserProfileDetail( user, effectiveDate ) {
         def coa = [:], shipToCode = [:], org = [:], userProfile = [:]
 
         def userProfileObj = financeUserProfileService.getUserProfileByUserId( user?.oracleUserName )
@@ -45,7 +46,7 @@ class UserProfileCompositeService {
         if (userProfile.requesterOrgCode) {
             try {
                 def organization = financeOrganizationCompositeService.
-                        findOrganizationListByEffectiveDateAndSearchParam( [searchParam: userProfile.requesterOrgCode, coaCode: userProfile.requesterCaosCode],
+                        findOrganizationListByEffectiveDateAndSearchParam( [searchParam: userProfile.requesterOrgCode, effectiveDate: effectiveDate, coaCode: userProfile.requesterCaosCode],
                                                                            [offset: FinanceProcurementConstants.ZERO, max: FinanceProcurementConstants.ONE] )
                 org = [coaCode: organization[0].coaCode, orgnCode: organization[0].orgnCode, orgnTitle: organization[0].orgnTitle]
             } catch (ApplicationException ae) {

@@ -35,7 +35,7 @@ class RequisitionInformationCompositeService {
         def shipTo = shipToCodeService.findShipToCodesByCode(header.ship)
         LoggerUtility.debug(LOGGER, 'shipTo: ' + shipTo)
         def organization = financeOrganizationCompositeService.
-                findOrganizationListByEffectiveDateAndSearchParam([searchParam: header.organization, coaCode: header.chartOfAccount], [offset: 0, max: 1])
+                findOrganizationListByEffectiveDateAndSearchParam([searchParam: header.organization, effectiveDate: header.transactionDate, coaCode: header.chartOfAccount], [offset: 0, max: 1])
         LoggerUtility.debug(LOGGER, 'organization: ' + organization)
         def coa = chartOfAccountsService.getChartOfAccountByCode(header.chartOfAccount)
         LoggerUtility.debug(LOGGER, 'coa: ' + coa)
