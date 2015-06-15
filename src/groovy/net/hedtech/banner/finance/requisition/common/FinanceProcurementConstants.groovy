@@ -338,4 +338,5 @@ class FinanceProcurementConstants {
 
     /** Copy requisition **/
     static final String ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED = 'missing.requisition.complemented.requisition.required'
+    static final String COPY_REQUISITION_HEADER_COPIED_FROM = 'COPIED FROM '
 }

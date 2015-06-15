@@ -79,6 +79,11 @@ class RequisitionDetailsCompositeService {
         deleteAccountingForCommodity requestCode, requisitionDetail.item
         requisitionDetailService.delete([domainModel: requisitionDetail])
         reBalanceRequisitionAccounting requestCode, item
+        def list = []
+        financeTextService.getFinanceTextByCodeAndSeqNumber(requestCode, item).each { financeText ->
+            list << financeText
+        }
+        financeTextService.delete(list)
     }
 
     /**
