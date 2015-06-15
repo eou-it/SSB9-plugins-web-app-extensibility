@@ -45,7 +45,7 @@ var xe = (function (xe) {
     xe.loadResources = function(){
         //load resources synchronously to make sure they are available when needed.
         $.ajax({
-            url: '/'+xe.page.application+'/internal/resources',
+            url: extensibilityInfo.url + 'internal/resources',
             dataType: 'json',
             data: {application: xe.page.application,page: xe.page.name,hash:location.hash},
             async: false,
@@ -117,11 +117,10 @@ var xe = (function (xe) {
     };
 
     xe.getPageName = function() {
-        // return location.pathname.substring(location.pathname.indexOf('/ssb/')+5);
-        return location.pathname.substring(location.pathname.lastIndexOf('/')+1);
+        return extensibilityInfo.page;
     };
     xe.getApplication = function() {
-        return location.pathname.substring(1,location.pathname.indexOf('/',1));
+        return extensibilityInfo.application;
     };
 
     // Metadata definition for page parsing - for now just for showing as a help for extension developers
@@ -728,7 +727,7 @@ var xe = (function (xe) {
         //var md = JSON.parse(xe.page.metadata);
         var data={application: xe.page.application, page:xe.page.name, metadata: xe.page.metadata } ;
         $.ajax({
-            url: '/' + xe.page.application + '/webadmin/extensions',
+            url: extensibilityInfo.url + 'webadmin/extensions',
             type:'POST',
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
@@ -779,7 +778,7 @@ var xe = (function (xe) {
         xe.log('Startup - fetching metadata...');
         //load meta-data synchronously to make sure it is available before compile needs it.
         $.ajax({
-            url: '/'+xe.page.application+'/internal/extensions',
+            url: extensibilityInfo.url + 'internal/extensions',
             dataType: 'json',
             data: {application: xe.page.application,page: xe.page.name,hash:location.hash},
             async: false,
