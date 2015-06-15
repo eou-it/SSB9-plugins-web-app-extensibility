@@ -55,7 +55,9 @@ class RequisitionDetailsCompositeService {
             LoggerUtility.debug LOGGER, "Requisition Detail created " + requisitionDetail
             /** Re-balance associated accounting information*/
             reBalanceRequisitionAccounting requestCode, requisitionDetail.item, null
-            saveCommodityLevelText(map, requisitionDetail, user, true)
+            financeTextCompositeService.saveTextForCommodity(requisitionDetail,
+                    [privateComment: map.requisitionDetail.privateComment, publicComment: map.requisitionDetail.publicComment],
+                    user.oracleUserName, requisitionDetail.item)
             return [requestCode: requisitionDetail.requestCode, item: requisitionDetail.item]
         } else {
             LoggerUtility.error(LOGGER, 'User' + user + ' is not valid')
@@ -106,11 +108,13 @@ class RequisitionDetailsCompositeService {
             requisitionDetailRequest.lastModified = new Date()
             requisitionDetailRequest.item = existingDetail.item
             requisitionDetailRequest.userId = user.oracleUserName
-            def requisitionDetail = requisitionDetailService.update([domainModel: requisitionDetailRequest])
+            RequisitionDetail requisitionDetail = requisitionDetailService.update([domainModel: requisitionDetailRequest])
             LoggerUtility.debug LOGGER, "Requisition Detail updated " + requisitionDetail
             /** Re-balance associated accounting information*/
             reBalanceRequisitionAccounting requestCode, requisitionDetail.item
-            saveCommodityLevelText(detailDomainModel, requisitionDetail, user, false)
+            financeTextCompositeService.saveTextForCommodity(requisitionDetail,
+                    [privateComment: detailDomainModel.requisitionDetail.privateComment, publicComment: detailDomainModel.requisitionDetail.publicComment],
+                    user.oracleUserName, requisitionDetail.item)
             return requisitionDetail
         } else {
             LoggerUtility.error(LOGGER, 'User' + user + ' is not valid')
@@ -279,13 +283,13 @@ class RequisitionDetailsCompositeService {
         def publicComment = ''
         financeTextService.getFinanceTextByCodeAndItemAndPrintOption(requisitionDetail.requestCode,
                 requisitionDetail.item,
-                FinanceValidationConstants.REQUISITION_INDICATOR_YES).each {
-            privateComment = privateComment + it.text
+                FinanceValidationConstants.REQUISITION_INDICATOR_NO).each {
+            privateComment = privateComment + (it.text ? it.text : '')
         }
         financeTextService.getFinanceTextByCodeAndItemAndPrintOption(requisitionDetail.requestCode,
                 requisitionDetail.item,
-                FinanceValidationConstants.REQUISITION_INDICATOR_NO).each {
-            publicComment = publicComment + it.text
+                FinanceValidationConstants.REQUISITION_INDICATOR_YES).each {
+            publicComment = publicComment + (it.text ? it.text : '')
         }
         return [requisitionDetail: requisitionDetail,
                 taxGroup         : taxGroup,
@@ -445,53 +449,4 @@ class RequisitionDetailsCompositeService {
         }]
     }
 
-    /**
-     * The method is used to save/update/delete header level text
-     * @param map requisition detail map.
-     * @param requisitionDetail requisition detail.
-     * @param user Oracle user.
-     * @param save save or update.
-     */
-    private void saveCommodityLevelText(map, requisitionDetail, user, save) {
-        if (map.requisitionDetail.privateComment) {
-            saveFinanceText(requisitionDetail, [privateComment: map.requisitionDetail.privateComment], user.oracleUserName, save)
-        } else {
-            def printOptionIndicator = FinanceValidationConstants.REQUISITION_INDICATOR_NO
-            financeTextService.deleteText(map.requisitionDetail.requestCode, map.requisitionDetail.item, printOptionIndicator)
-        }
-        if (map.requisitionDetail.publicComment) {
-            saveFinanceText(requisitionDetail, [publicComment: map.requisitionDetail.publicComment], user.oracleUserName, save)
-        } else {
-            def printOptionIndicator = FinanceValidationConstants.REQUISITION_INDICATOR_YES
-            financeTextService.deleteText(map.requisitionDetail.requestCode, map.requisitionDetail.item, printOptionIndicator)
-        }
-    }
-
-    /**
-     * The private method used to save a Finance Text when Commodity Save or Update.
-     * @param details Requisition Commodity.
-     * @param map Map which contains raw information regarding Commodity.
-     * @param user Logged in user.
-     * @param save Boolean flag whether Save or Update (true = Save).
-     */
-    private void saveFinanceText(details, map, user, save) {
-        // Save/Update Text Start.
-        FinanceText financeText = new FinanceText()
-        financeText.textCode = details.requestCode
-        financeText.text = map.publicComment ?
-                map.publicComment : map.privateComment
-        financeText.printOptionIndicator = map.privateComment ?
-                FinanceValidationConstants.REQUISITION_INDICATOR_NO :
-                FinanceValidationConstants.REQUISITION_INDICATOR_YES
-        financeText.activityDate = details.lastModified
-        financeText.changeSequenceNumber = null
-        financeText.lastModifiedBy = user
-        financeText.dataOrigin = details.dataOrigin
-        financeText.documentTypeSequenceNumber = FinanceValidationConstants.FINANCE_TEXT_DOCUMENT_TYPE_SEQ_NUMBER_REQUISITION
-        financeText.pidm = details.vendorPidm
-        financeText.textItem = details.item
-        map.privateComment ? financeTextCompositeService.saveNonPrintableCommodityText(financeText) :
-                financeTextCompositeService.savePrintableCommodityText(financeText)
-        // Save/Update Text End.
-    }
 }

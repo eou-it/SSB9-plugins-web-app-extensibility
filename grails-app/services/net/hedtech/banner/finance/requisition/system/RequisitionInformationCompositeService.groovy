@@ -58,11 +58,11 @@ class RequisitionInformationCompositeService {
         }
         def privateComment = ''
         def publicComment = ''
-        financeTextService.listHeaderLevelTextByCode(header.requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_YES).each {
-            privateComment = privateComment + it.text
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd(header.requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_NO).each {
+            privateComment = privateComment + (it.text ? it.text : '')
         }
-        financeTextService.listHeaderLevelTextByCode(header.requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_NO).each {
-            publicComment = publicComment + it.text
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd(header.requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_YES).each {
+            publicComment = publicComment + (it.text ? it.text : '')
         }
         LoggerUtility.debug(LOGGER, 'taxGroup: ' + taxGroup)
         LoggerUtility.debug(LOGGER, 'discount: ' + discount)
