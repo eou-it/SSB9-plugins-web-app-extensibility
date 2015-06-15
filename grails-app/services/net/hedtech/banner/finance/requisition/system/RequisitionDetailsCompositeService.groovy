@@ -9,7 +9,6 @@ import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
 import net.hedtech.banner.finance.system.FinanceSystemControl
-import net.hedtech.banner.finance.system.FinanceText
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.commons.lang3.StringUtils
 import org.apache.log4j.Logger
@@ -80,7 +79,7 @@ class RequisitionDetailsCompositeService {
         requisitionDetailService.delete([domainModel: requisitionDetail])
         reBalanceRequisitionAccounting requestCode, item
         def list = []
-        financeTextService.getFinanceTextByCodeAndSeqNumber(requestCode, item).each { financeText ->
+        financeTextService.getFinanceTextByCodeAndItemNumber(requestCode, item).each { financeText ->
             list << financeText
         }
         financeTextService.delete(list)
