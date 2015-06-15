@@ -8,7 +8,6 @@ import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
-import net.hedtech.banner.finance.system.FinanceText
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
 import org.springframework.transaction.annotation.Propagation
@@ -67,6 +66,11 @@ class RequisitionHeaderCompositeService {
         def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode(requestCode)
         FinanceProcurementHelper.checkCompleteRequisition(requisitionHeader)
         requisitionHeaderService.delete([domainModel: requisitionHeader])
+        def list = []
+        financeTextService.listAllFinanceTextByCode(requestCode).each { financeTax ->
+            list << financeTax
+        }
+        financeTextService.delete(list)
     }
 
     /**
