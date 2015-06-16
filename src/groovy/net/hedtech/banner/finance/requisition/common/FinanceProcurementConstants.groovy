@@ -339,4 +339,8 @@ class FinanceProcurementConstants {
     /** Copy requisition **/
     static final String ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED = 'missing.requisition.complemented.requisition.required'
     static final String COPY_REQUISITION_HEADER_COPIED_FROM = 'COPIED FROM '
+
+    /** Recall requisition **/
+    static final String ERROR_MESSAGE_RECALL_REQUISITION_PENDING_REQ_IS_REQUIRED = 'missing.requisition.recall.requisition.pendingReq.required'
+    static final String SUCCESS_MESSAGE_RECALL_REQUISITION = 'net.hedtech.banner.finance.requisition.recall.requisition.success'
 }
