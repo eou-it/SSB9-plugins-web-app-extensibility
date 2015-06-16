@@ -189,8 +189,7 @@ class FinanceProcurementConstants {
     static final String REQ_ACC_NAMED_QUERY_BY_CODE = 'RequestAccounting.fetchByRequestCodeItemAndSeq'
     static final String REQ_ACC_NAMED_QUERY_BY_USER = 'RequestAccounting.fetchByUser'
     static final String REQ_ACC_NAMED_QUERY_BY_REQUEST_CODE = 'RequestAccounting.fetchAccountingByRequestCode'
-    static
-    final String REQ_ACC_NAMED_QUERY_BY_REQUEST_CODE_AND_ITEM = 'RequestAccounting.fetchAccountingByRequestCodeAndItem'
+    static final String REQ_ACC_NAMED_QUERY_BY_REQUEST_CODE_AND_ITEM = 'RequestAccounting.fetchAccountingByRequestCodeAndItem'
     static final String QUERY_PARAM_REQUISITION_ACCOUNTING_ITEM = 'item'
     static final String QUERY_PARAM_REQUISITION_ACCOUNTING_SEQ_NUM = 'sequenceNumber'
     static final String REQ_ACC_ENTITY_FV_REQ_ACCOUNTING = 'FV_FPRREQA'
@@ -339,15 +338,17 @@ class FinanceProcurementConstants {
     static final String REQUISITION_SUMMARY_FIELD_FPBREQH_SURROGATE_ID = 'FPBREQH_SURROGATE_ID'
     static final String REQUISITION_SUMMARY_FIELD_FPRREQD_SURROGATE_ID = 'FPRREQD_SURROGATE_ID'
     static final String REQUISITION_SUMMARY_FIELD_FPRREQA_SURROGATE_ID = 'FPRREQA_SURROGATE_ID'
-    static
-    final String REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE = 'RequisitionSummary.FetchRequisitionSummaryForRequestCode'
+    static final String REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE = 'RequisitionSummary.FetchRequisitionSummaryForRequestCode'
 
     /** Copy requisition **/
-    static
-    final String ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED = 'missing.requisition.complemented.requisition.required'
+    static final String ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED = 'missing.requisition.complemented.requisition.required'
     static final String COPY_REQUISITION_HEADER_COPIED_FROM = 'COPIED FROM '
 
     /** Date format error **/
     static final String ERROR_MESSAGE_INVALID_DATE_FORMAT = '@@r1:default.invalidDate@@'
 
+
+    /** Recall requisition **/
+    static final String ERROR_MESSAGE_RECALL_REQUISITION_PENDING_REQ_IS_REQUIRED = 'missing.requisition.recall.requisition.pendingReq.required'
+    static final String SUCCESS_MESSAGE_RECALL_REQUISITION = 'net.hedtech.banner.finance.requisition.recall.requisition.success'
 }

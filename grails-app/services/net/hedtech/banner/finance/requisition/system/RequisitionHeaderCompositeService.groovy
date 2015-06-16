@@ -9,6 +9,7 @@ import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
 import net.hedtech.banner.finance.util.LoggerUtility
+import org.apache.commons.beanutils.BeanUtils
 import org.apache.log4j.Logger
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -126,6 +127,25 @@ class RequisitionHeaderCompositeService {
             currencyCode = institutionalDescriptionService.findByKey().baseCurrCode
         }
         return currencyCode
+    }
+
+    /**
+     * Service Method to recall a purchase requisition.
+     * @param requestCode request code.
+     */
+    def recallRequisition(requestCode) {
+        def requestHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode(requestCode)
+        if (requestHeader && requestHeader.completeIndicator && !requestHeader.approvalIndicator) {
+            requestHeader.completeIndicator = false
+            RequisitionHeader requestHeaderUpdated = requisitionHeaderService.update([domainModel: requestHeader])
+            return requestHeaderUpdated.requestCode
+        } else {
+            LoggerUtility.error(LOGGER, 'Only pending requisition can be recalled=' + requestCode)
+            throw new ApplicationException(
+                    RequisitionHeaderCompositeService,
+                    new BusinessLogicValidationException(
+                            FinanceProcurementConstants.ERROR_MESSAGE_RECALL_REQUISITION_PENDING_REQ_IS_REQUIRED, []))
+        }
     }
 
 }
