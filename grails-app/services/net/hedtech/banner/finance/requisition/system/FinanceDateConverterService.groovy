@@ -4,17 +4,17 @@
 package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.i18n.LocalizeUtil
 import org.apache.commons.lang.StringUtils
+import org.apache.log4j.Logger
 
 /**
- * FinanceDateConverterService.
- *
- * Date: 6/16/2015
- * Time: 5:46 PM
+ * FinanceDateConverterService. The service for Date conversion for localization
  */
 class FinanceDateConverterService {
-
+    private static final def LOGGER = Logger.getLogger( this.getClass() )
     def dateConverterService
 
     /**
@@ -27,7 +27,7 @@ class FinanceDateConverterService {
      */
     def convertToDate( strDate, boolean needDefaultDate ) {
         String inputDate = strDate
-        print 'Current date in local format' + LocalizeUtil.formatDate( new Date() )
+        LoggerUtility.info( LOGGER, 'Current date in local format : ' + LocalizeUtil.formatDate( new Date() ) )
         if (StringUtils.isBlank( inputDate ) && needDefaultDate) {
             inputDate = LocalizeUtil.formatDate( new Date() )
         }
@@ -35,7 +35,7 @@ class FinanceDateConverterService {
             return LocalizeUtil.parseDate( dateConverterService.parseDefaultCalendarToGregorian( inputDate ) )
         }
         catch (Exception e) {
-            throw new ApplicationException( "", "@@r1:default.invalidDate@@" )
+            throw new ApplicationException( "", FinanceProcurementConstants.ERROR_MESSAGE_INVALID_DATE_FORMAT )
         }
     }
 }
