@@ -48,12 +48,6 @@ class RequisitionAccountingCompositeService {
             if (header?.isDocumentLevelAccounting) {
                 requisitionAccountingRequest.item = 0
             }
-            // TODO need to restrict additional accounting creation
-            /*if (100 <= requisitionAccountingService.getSplittingPercentage( requisitionAccountingRequest.requestCode, requisitionAccountingRequest.item )) {
-                throw new ApplicationException(
-                        RequisitionAccountingCompositeService,
-                        new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_NO_MORE_ACCOUNTING, [] ) )
-            }*/
             requisitionAccountingRequest.sequenceNumber = requisitionAccountingService.getLastSequenceNumberByRequestCode( requisitionAccountingRequest.requestCode, requisitionAccountingRequest.item ).next()
             setNSFOverride( requisitionAccountingRequest, user.oracleUserName )
             adjustAccountPercentageAndAmount( requisitionAccountingRequest )
@@ -249,7 +243,7 @@ class RequisitionAccountingCompositeService {
         def commodityTotalDiscountAmount = 0
 
         def processAmount = {it ->
-            commodityTotalExtendedAmount += it.unitPrice * it.quantity
+            commodityTotalExtendedAmount += (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
             commodityTotalCommodityTaxAmount += it.taxAmount ? it.taxAmount : 0
             commodityTotalAdditionalChargeAmount += it.additionalChargeAmount ? it.additionalChargeAmount : 0
             commodityTotalDiscountAmount += it.discountAmount ? it.discountAmount : 0
@@ -286,7 +280,7 @@ class RequisitionAccountingCompositeService {
              userId                              : it.userId,
              accountTotal                        : it.requisitionAmount + it.additionalChargeAmount + it.taxAmount - it.discountAmount,
              renamingAmount                      : (commodityTotalExtendedAmount + commodityTotalCommodityTaxAmount + commodityTotalAdditionalChargeAmount - commodityTotalDiscountAmount) - allAccountingAmount,
-             remaingingPercentage                : 100 - totalPercentage,
+             remaingingPercentage                : FinanceProcurementConstants.HUNDRED - totalPercentage,
              commodityTotalExtendedAmount        : commodityTotalExtendedAmount,
              commodityTotalCommodityTaxAmount    : commodityTotalCommodityTaxAmount,
              commodityTotalAdditionalChargeAmount: commodityTotalAdditionalChargeAmount,
@@ -313,8 +307,6 @@ class RequisitionAccountingCompositeService {
      * @return
      */
     private def adjustAccountPercentageAndAmount( RequisitionAccounting requisitionAccountingRequest ) {
-        def DECIMAL_PRECISION = 2
-        def DECIMAL_PRECISION_UNIT_PRICE = 4
         def requisitionDetail
         if (requisitionAccountingRequest.item == FinanceProcurementConstants.ZERO) {//DLA
             requisitionDetail = requisitionDetailService.findByRequestCode( requisitionAccountingRequest.requestCode )
@@ -323,36 +315,48 @@ class RequisitionAccountingCompositeService {
         }
         def totalExtendedCommodity = 0.0, totalTax = 0.0, totalDiscount = 0.0, totalAdditionalCharge = 0.0
         requisitionDetail.each {
-            totalExtendedCommodity += (it.quantity * it.unitPrice).setScale( DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
-            totalTax += it.taxAmount.setScale( DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
+            totalExtendedCommodity += (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
+            totalTax += it.taxAmount.setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
             totalDiscount += it.discountAmount.setScale( DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
-            totalAdditionalCharge += it.additionalChargeAmount.setScale( DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
+            totalAdditionalCharge += it.additionalChargeAmount.setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
         }
 
 
         def orgPercentage = requisitionAccountingRequest.percentage
 
-        boolean isAdjustmentNeededForTax = totalTax != ((totalTax * orgPercentage / 100).setScale( DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + (totalTax * (100 - orgPercentage) / 100).setScale( DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ))
-        boolean isAdjustmentNeededForDiscount = totalDiscount != ((totalDiscount * orgPercentage / 100).setScale( DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + (totalDiscount * (100 - orgPercentage) / 100).setScale( DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ))
+        boolean isAdjustmentNeededForTax = totalTax != ((totalTax * orgPercentage / FinanceProcurementConstants.HUNDRED)
+                .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + (totalTax * (FinanceProcurementConstants.HUNDRED - orgPercentage) / FinanceProcurementConstants.HUNDRED)
+                .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ))
+        boolean isAdjustmentNeededForDiscount = totalDiscount != ((totalDiscount * orgPercentage / FinanceProcurementConstants.HUNDRED)
+                .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + (totalDiscount * (FinanceProcurementConstants.HUNDRED - orgPercentage) / FinanceProcurementConstants.HUNDRED)
+                .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ))
 
-        boolean isAdjustmentNeededForAdditionalCharge = totalAdditionalCharge != ((totalAdditionalCharge * orgPercentage / 100).setScale( DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + (totalAdditionalCharge * (100 - orgPercentage) / 100).setScale( DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ))
+        boolean isAdjustmentNeededForAdditionalCharge = totalAdditionalCharge != ((totalAdditionalCharge * orgPercentage / FinanceProcurementConstants.HUNDRED)
+                .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + (totalAdditionalCharge * (FinanceProcurementConstants.HUNDRED - orgPercentage) / FinanceProcurementConstants.HUNDRED)
+                .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ))
 
-        boolean isAdjustmentNeededForExtendedAmount = totalExtendedCommodity != ((totalDiscount * orgPercentage / 100).setScale( DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + (totalExtendedCommodity * (100 - orgPercentage) / 100).setScale( DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ))
+        boolean isAdjustmentNeededForExtendedAmount = totalExtendedCommodity != ((totalExtendedCommodity * orgPercentage / FinanceProcurementConstants.HUNDRED)
+                .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + (totalExtendedCommodity * (FinanceProcurementConstants.HUNDRED - orgPercentage) / FinanceProcurementConstants.HUNDRED)
+                .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ))
 
 
         def adjustedPercentage = orgPercentage;
 
         // Check If at least one of them is true, and also find out what the adjusted % value is going to be.
         if (isAdjustmentNeededForExtendedAmount) {
-            adjustedPercentage = (100 * (totalExtendedCommodity * orgPercentage / 100).setScale( DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )) / totalExtendedCommodity
+            adjustedPercentage = (FinanceProcurementConstants.HUNDRED * (totalExtendedCommodity * orgPercentage / FinanceProcurementConstants.HUNDRED)
+                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )) / totalExtendedCommodity
         } else if (isAdjustmentNeededForTax) {
-            adjustedPercentage = (100 * (totalTax * orgPercentage / 100).setScale( DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )) / totalTax
+            adjustedPercentage = (FinanceProcurementConstants.HUNDRED * (totalTax * orgPercentage / FinanceProcurementConstants.HUNDRED)
+                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )) / totalTax
         } else if (isAdjustmentNeededForDiscount) {
-            adjustedPercentage = (100 * (totalDiscount * orgPercentage / 100).setScale( DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )) / totalDiscount
+            adjustedPercentage = (FinanceProcurementConstants.HUNDRED * (totalDiscount * orgPercentage / FinanceProcurementConstants.HUNDRED)
+                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )) / totalDiscount
         } else if (isAdjustmentNeededForAdditionalCharge) {
-            adjustedPercentage = (100 * (totalAdditionalCharge * orgPercentage / 100).setScale( DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )) / totalAdditionalCharge
+            adjustedPercentage = (FinanceProcurementConstants.HUNDRED * (totalAdditionalCharge * orgPercentage / FinanceProcurementConstants.HUNDRED)
+                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )) / totalAdditionalCharge
         }
-        adjustedPercentage = adjustedPercentage.setScale( DECIMAL_PRECISION_UNIT_PRICE, BigDecimal.ROUND_HALF_UP )
+        adjustedPercentage = adjustedPercentage.setScale( FinanceProcurementConstants.DECIMAL_PRECISION_UNIT_PRICE, BigDecimal.ROUND_HALF_UP )
         requisitionAccountingRequest.percentage = adjustedPercentage
         requisitionAccountingRequest.discountAmountPercent = adjustedPercentage
         requisitionAccountingRequest.additionalChargeAmountPct = adjustedPercentage
