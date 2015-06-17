@@ -125,23 +125,4 @@ class RequisitionHeaderCompositeService {
         return currencyCode
     }
 
-    /**
-     * Service Method to recall a purchase requisition.
-     * @param requestCode request code.
-     */
-    def recallRequisition(requestCode) {
-        def requestHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode(requestCode)
-        if (requestHeader && requestHeader.completeIndicator && !requestHeader.approvalIndicator) {
-            requestHeader.completeIndicator = false
-            RequisitionHeader requestHeaderUpdated = requisitionHeaderService.update([domainModel: requestHeader])
-            return requestHeaderUpdated.requestCode
-        } else {
-            LoggerUtility.error(LOGGER, 'Only pending requisition can be recalled=' + requestCode)
-            throw new ApplicationException(
-                    RequisitionHeaderCompositeService,
-                    new BusinessLogicValidationException(
-                            FinanceProcurementConstants.ERROR_MESSAGE_RECALL_REQUISITION_PENDING_REQ_IS_REQUIRED, []))
-        }
-    }
-
 }

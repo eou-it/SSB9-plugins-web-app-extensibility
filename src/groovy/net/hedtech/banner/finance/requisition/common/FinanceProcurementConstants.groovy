@@ -189,7 +189,8 @@ class FinanceProcurementConstants {
     static final String REQ_ACC_NAMED_QUERY_BY_CODE = 'RequestAccounting.fetchByRequestCodeItemAndSeq'
     static final String REQ_ACC_NAMED_QUERY_BY_USER = 'RequestAccounting.fetchByUser'
     static final String REQ_ACC_NAMED_QUERY_BY_REQUEST_CODE = 'RequestAccounting.fetchAccountingByRequestCode'
-    static final String REQ_ACC_NAMED_QUERY_BY_REQUEST_CODE_AND_ITEM = 'RequestAccounting.fetchAccountingByRequestCodeAndItem'
+    static
+    final String REQ_ACC_NAMED_QUERY_BY_REQUEST_CODE_AND_ITEM = 'RequestAccounting.fetchAccountingByRequestCodeAndItem'
     static final String QUERY_PARAM_REQUISITION_ACCOUNTING_ITEM = 'item'
     static final String QUERY_PARAM_REQUISITION_ACCOUNTING_SEQ_NUM = 'sequenceNumber'
     static final String REQ_ACC_ENTITY_FV_REQ_ACCOUNTING = 'FV_FPRREQA'
@@ -338,17 +339,79 @@ class FinanceProcurementConstants {
     static final String REQUISITION_SUMMARY_FIELD_FPBREQH_SURROGATE_ID = 'FPBREQH_SURROGATE_ID'
     static final String REQUISITION_SUMMARY_FIELD_FPRREQD_SURROGATE_ID = 'FPRREQD_SURROGATE_ID'
     static final String REQUISITION_SUMMARY_FIELD_FPRREQA_SURROGATE_ID = 'FPRREQA_SURROGATE_ID'
-    static final String REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE = 'RequisitionSummary.FetchRequisitionSummaryForRequestCode'
+    static
+    final String REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE = 'RequisitionSummary.FetchRequisitionSummaryForRequestCode'
 
     /** Copy requisition **/
-    static final String ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED = 'missing.requisition.complemented.requisition.required'
+    static
+    final String ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED = 'missing.requisition.complemented.requisition.required'
     static final String COPY_REQUISITION_HEADER_COPIED_FROM = 'COPIED FROM '
 
     /** Date format error **/
     static final String ERROR_MESSAGE_INVALID_DATE_FORMAT = '@@r1:default.invalidDate@@'
 
-
     /** Recall requisition **/
-    static final String ERROR_MESSAGE_RECALL_REQUISITION_PENDING_REQ_IS_REQUIRED = 'missing.requisition.recall.requisition.pendingReq.required'
-    static final String SUCCESS_MESSAGE_RECALL_REQUISITION = 'net.hedtech.banner.finance.requisition.recall.requisition.success'
+    static
+    final String ERROR_MESSAGE_RECALL_REQUISITION_PENDING_REQ_IS_REQUIRED = 'missing.requisition.recall.requisition.pendingReq.required'
+    static
+    final String SUCCESS_MESSAGE_RECALL_REQUISITION = 'net.hedtech.banner.finance.requisition.recall.requisition.success'
+
+    /** Constant variable for Domain class for Unapproved Documents Table FOBUAPP **/
+    static final String FOBUAPP = 'FOBUAPP'
+    static final String FINANCE_UNAPPROVED_DOCUMENT_SEQ_GEN = 'FOBUAPP_SEQ_GEN'
+    static final String FINANCE_UNAPPROVED_DOCUMENT_SURROGATE_ID_SEQUENCE = 'FOBUAPP_SURROGATE_ID_SEQUENCE'
+    static final String FINANCE_UNAPPROVED_DOCUMENT_FOBUAPP_SURROGATE_ID = 'FOBUAPP_SURROGATE_ID'
+    static final String FINANCE_UNAPPROVED_DOCUMENT_FOBUAPP_DOC_CODE = 'FOBUAPP_DOC_CODE'
+    static final String FINANCE_UNAPPROVED_DOCUMENT_FOBUAPP_ACTIVITY_DATE = 'FOBUAPP_ACTIVITY_DATE'
+    static final String FINANCE_UNAPPROVED_DOCUMENT_FOBUAPP_CHG_SEQ_NUM = 'FOBUAPP_CHG_SEQ_NUM'
+    static final String FINANCE_UNAPPROVED_DOCUMENT_FOBUAPP_DATA_ORIGIN = 'FOBUAPP_DATA_ORIGIN'
+    static final String FINANCE_UNAPPROVED_DOCUMENT_FOBUAPP_DOC_AMT = 'FOBUAPP_DOC_AMT'
+    static final String FINANCE_UNAPPROVED_DOCUMENT_FOBUAPP_ORIG_USER = 'FOBUAPP_ORIG_USER'
+    static final String FINANCE_UNAPPROVED_DOCUMENT_FOBUAPP_STATUS_IND = 'FOBUAPP_STATUS_IND'
+    static final String FINANCE_UNAPPROVED_DOCUMENT_FOBUAPP_SUBMISSION_NUMBER = 'FOBUAPP_SUBMISSION_NUMBER'
+    static final String FINANCE_UNAPPROVED_DOCUMENT_FOBUAPP_USER_CODE = 'FOBUAPP_USER_CODE'
+    static final String FINANCE_UNAPPROVED_DOCUMENT_FOBUAPP_USER_ID = 'FOBUAPP_USER_ID'
+    static final String FINANCE_UNAPPROVED_DOCUMENT_FOBUAPP_VERSION = 'FOBUAPP_VERSION'
+    static final String FINANCE_UNAPPROVED_DOCUMENT_FOBUAPP_VPDI_CODE = 'FOBUAPP_VPDI_CODE'
+    static
+    final String FINANCE_UNAPPROVED_DOCUMENT_QUERY_NAME_FIND_BY_DOCUMENT_CODE = 'FinanceUnapprovedDocument.findByDocumentCode'
+    static final String FINANCE_QUERY_PARAM_DOCUMENT_CODE = 'documentCode'
+
+    /** Constant variable for Domain class for Unapproved Documents Table FOBAPPH **/
+    static final String FOBAPPH = 'FOBAPPH'
+    static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_SURROGATE_ID = 'FOBAPPH_SURROGATE_ID'
+    static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_ACTIVITY_DATE = 'FOBAPPH_ACTIVITY_DATE'
+    static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_CHG_SEQ_NUM = 'FOBAPPH_CHG_SEQ_NUM'
+    static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_DATA_ORIGIN = 'FOBAPPH_DATA_ORIGIN'
+    static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_DOC_CODE = 'FOBAPPH_DOC_CODE'
+    static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_QUEUE_ID = 'FOBAPPH_QUEUE_ID'
+    static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_QUEUE_LEVEL = 'FOBAPPH_QUEUE_LEVEL'
+    static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_SEQ_NUM = 'FOBAPPH_SEQ_NUM'
+    static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_SUBMISSION_NUMBER = 'FOBAPPH_SUBMISSION_NUMBER'
+    static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_USER_ID = 'FOBAPPH_USER_ID'
+    static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_VERSION = 'FOBAPPH_VERSION'
+    static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_VPDI_CODE = 'FOBAPPH_VPDI_CODE'
+    static
+    final String FINANCE_APPROVAL_HISTORY_QUERY_NAME_FIND_BY_DOCUMENT_CODE = 'FinanceApprovalHistory.findByDocumentCode'
+    static final String FINANCE_APPROVAL_HISTORY_QUERY_ID_DENY = 'DENY'
+    static final int FINANCE_APPROVAL_HISTORY_QUERY_LEVEL_ZERO = 0
+
+    /** Constant variable for Domain class for Unapproved Documents Table FOBAINP **/
+    static final String FOBAINP = 'FOBAINP'
+    static final String FINANCE_APPROVAL_IN_PROCESS_FOBAINP_SURROGATE_ID = 'FOBAINP_SURROGATE_ID'
+    static final String FINANCE_APPROVAL_IN_PROCESS_FOBAINP_ACTIVITY_DATE = 'FOBAINP_ACTIVITY_DATE'
+    static final String FINANCE_APPROVAL_IN_PROCESS_FOBAINP_APPROVAL_SEQUENCE = 'FOBAINP_APPROVAL_SEQUENCE'
+    static final String FINANCE_APPROVAL_IN_PROCESS_FOBAINP_CHG_SEQ_NUM = 'FOBAINP_CHG_SEQ_NUM'
+    static final String FINANCE_APPROVAL_IN_PROCESS_FOBAINP_DATA_ORIGIN = 'FOBAINP_DATA_ORIGIN'
+    static final String FINANCE_APPROVAL_IN_PROCESS_FOBAINP_DOC_NUM = 'FOBAINP_DOC_NUM'
+    static final String FINANCE_APPROVAL_IN_PROCESS_FOBAINP_DOC_TYPE = 'FOBAINP_DOC_TYPE'
+    static final String FINANCE_APPROVAL_IN_PROCESS_FOBAINP_LEVEL = 'FOBAINP_LEVEL'
+    static final String FINANCE_APPROVAL_IN_PROCESS_FOBAINP_QUEUE_ID = 'FOBAINP_QUEUE_ID'
+    static final String FINANCE_APPROVAL_IN_PROCESS_FOBAINP_SUBMISSION_NUM = 'FOBAINP_SUBMISSION_NUM'
+    static final String FINANCE_APPROVAL_IN_PROCESS_FOBAINP_USER_ID = 'FOBAINP_USER_ID'
+    static final String FINANCE_APPROVAL_IN_PROCESS_FOBAINP_VERSION = 'FOBAINP_VERSION'
+    static final String FINANCE_APPROVAL_IN_PROCESS_FOBAINP_VPDI_CODE = 'FOBAINP_VPDI_CODE'
+    static final String FINANCE_APPROVAL_IN_PROCESS_QUERY_NAME_FIND_BY_DOCUMENT_NUMBER = 'FinanceApprovalsInProcess.findByDocumentNumber'
+    static final String FINANCE_APPROVAL_IN_PROCESS_QUERY_PARAM_DOCUMENT_NUMBER = 'documentNumber'
+
 }
