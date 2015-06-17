@@ -3,11 +3,9 @@
  ******************************************************************************/
 
 /* global _  */
-/* global extensibilityPluginPath */
 /* global ToolsMenu */
 /* global notifications */
-/* global extensibilityJSON */
-/* global extensibilityResourcesJSON */
+/* global extensibilityInfo */
 /* global log */
 
 // xe namespace is for providing eXtensible Environment functionality.
@@ -37,9 +35,9 @@ var xe = (function (xe) {
     //I18N - we use extensibility specific resource loading. We should investigate if we can
     //extend the baseline properties loading as done for ZK pages
     xe.loadResources = function(){
-        if (typeof extensibilityResourcesJSON !== 'undefined' ) {
+        if (typeof extensibilityInfo.resources !== 'undefined' ) {
             xe.log('Resources initialized');
-            _.extend( $.i18n.map, extensibilityResourcesJSON ); //data used for extending page
+            _.extend( $.i18n.map, extensibilityInfo.resources ); //data used for extending page
         }
 
     };
@@ -51,7 +49,7 @@ var xe = (function (xe) {
 
     //Check if we are in developer mode
     xe.devMode = function() {
-        return !!window.extensibilityAdmin;
+        return !!window.extensibilityInfo.admin;
     };
 
     //Allow to disable extensions when we have developer privileges
@@ -87,15 +85,11 @@ var xe = (function (xe) {
     };
 
     xe.getPageName  = function() {
-        // capture the last URL component either after a slash
-        // or before a final slash
-        var rx = /.*\/([^\/]+)/;
-        var match = location.pathname.match(rx);
-        return match && match[1] || "noPageName";
+        return extensibilityInfo.page;
     };
 
     xe.getApplication = function() {
-        return location.pathname.substring(1,location.pathname.indexOf('/',1));
+        return extensibilityInfo.application;
     };
 
     // Metadata definition for page parsing - for now just for showing as a help for extension developers
@@ -651,10 +645,10 @@ var xe = (function (xe) {
         var inputValue = $('#extensions-edit-input',popup).val();
         if ((!_.isEmpty(inputValue) && xe.page.metadata === undefined) ||
             (inputValue !== JSON.stringify(xe.page.metadata,null,2) && xe.page.metadata !== undefined)) {
-            return true
+            return true;
         }
         return false;
-    }
+    };
 
     xe.extensionsEditor = function(page,popup) {
         if (!popup) {
@@ -702,7 +696,7 @@ var xe = (function (xe) {
                 ]
             });
 
-            popup.load(extensibilityPluginPath+'/templates/extedit.html',
+            popup.load(extensibilityInfo.pluginUrl+'templates/extedit.html',
                 function(){
                     $('#extensions-edit-input',popup).val(JSON.stringify(xe.page.metadata,null,2));
                 }
@@ -720,7 +714,7 @@ var xe = (function (xe) {
         //var md = JSON.parse(xe.page.metadata);
         var data={application: xe.page.application, page:xe.page.name, metadata: xe.page.metadata } ;
         return $.ajax({
-            url: '/' + xe.page.application + '/webadmin/extensions',
+            url: extensibilityInfo.url + 'webadmin/extensions',
             type:'POST',
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
@@ -781,8 +775,8 @@ var xe = (function (xe) {
     };
 
     xe.startup = function () {
-        if (typeof extensibilityJSON !== 'undefined' && !_.isEmpty(extensibilityJSON)) {
-            xe.extensions = extensibilityJSON;
+        if (typeof extensibilityInfo.extensions !== 'undefined' && !_.isEmpty(extensibilityInfo.extensions)) {
+            xe.extensions = extensibilityInfo.extensions;
         }
         if ((xe.extensions !== undefined)) {
             xe.extensionsFound = true;
