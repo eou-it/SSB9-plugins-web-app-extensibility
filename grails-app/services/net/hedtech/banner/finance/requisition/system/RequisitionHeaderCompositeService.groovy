@@ -67,11 +67,7 @@ class RequisitionHeaderCompositeService {
         def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode(requestCode)
         FinanceProcurementHelper.checkCompleteRequisition(requisitionHeader)
         requisitionHeaderService.delete([domainModel: requisitionHeader])
-        def list = []
-        financeTextService.listAllFinanceTextByCode(requestCode).each { financeTax ->
-            list << financeTax
-        }
-        financeTextService.delete(list)
+        financeTextService.delete(financeTextService.listAllFinanceTextByCode(requestCode))
     }
 
     /**
