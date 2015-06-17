@@ -22,5 +22,8 @@
         <mapping class="net.hedtech.banner.finance.requisition.system.RequisitionInformation"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.RequisitionAccounting"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.RequisitionSummary"/>
+        <mapping class="net.hedtech.banner.finance.requisition.system.FinanceApprovalHistory"/>
+        <mapping class="net.hedtech.banner.finance.requisition.system.FinanceApprovalsInProcess"/>
+        <mapping class="net.hedtech.banner.finance.requisition.system.FinanceUnapprovedDocument"/>
     </session-factory>
 </hibernate-configuration>

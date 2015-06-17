@@ -256,6 +256,8 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         assertNotNull(currency)
     }
 
+
+
     /**
      * New object of Requisition Header
      * @return
@@ -263,8 +265,8 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     private def newRequisitionHeader() {
         return [
                 'requestCode'              : FinanceProcurementConstants.DEFAULT_REQUEST_CODE,
-                'requestDate'              : new Date('18-Feb-2015'),
-                'transactionDate'          : new Date('19-Feb-2015'),
+                'requestDate'              : new Date('18-Jun-2015'),
+                'transactionDate'          : new Date('19-Jun-2015'),
                 'requesterName'            : 'Caliper College_u1',
                 'ship'                     : 'EAST',
                 'requesterPhoneNumber'     : '242037662',
@@ -291,7 +293,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
                 'vendorContact'            : 'Bangalore',
                 'vendorEmailAddress'       : 'vendor@vendorgroup.com',
                 'requisitionOrigination'   : FinanceProcurementConstants.DEFAULT_REQUISITION_ORIGIN,
-                'deliveryDate'             : new Date('20-Feb-2015')
+                'deliveryDate'             : new Date('20-Jun-2015')
         ]
     }
 }
