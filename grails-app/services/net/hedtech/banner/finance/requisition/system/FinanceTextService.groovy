@@ -4,16 +4,13 @@
 package net.hedtech.banner.finance.requisition.system
 
 import grails.transaction.Transactional
-
 import net.hedtech.banner.service.ServiceBase
-import org.apache.log4j.Logger
 
 /**
  * Service class for FinanceText.
  */
 class FinanceTextService extends ServiceBase {
     static transactional = true
-    private static final def LOGGER = Logger.getLogger(this.getClass())
 
     /**
      * Method is used to get FinanceText by text code and sequence number.

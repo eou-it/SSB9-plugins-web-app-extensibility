@@ -6,13 +6,10 @@ package net.hedtech.banner.finance.requisition.system
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 
-import org.apache.log4j.Logger
-
 /**
  * Composite service class for FinanceText.
  */
 class FinanceTextCompositeService {
-    private static final Logger LOGGER = Logger.getLogger(this.class)
     boolean transactional = true
 
     def financeTextService
