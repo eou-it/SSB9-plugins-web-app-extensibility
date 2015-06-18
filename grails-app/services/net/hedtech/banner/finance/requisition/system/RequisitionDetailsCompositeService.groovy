@@ -34,6 +34,7 @@ class RequisitionDetailsCompositeService {
     def financeAccountCompositeService
     def financeTextService
     def financeTextCompositeService
+    def requisitionDetailsAndAccountingCommonCompositeService
 
     /**
      * Create purchase requisition detail
@@ -153,25 +154,16 @@ class RequisitionDetailsCompositeService {
      * @return
      */
     private reBalanceRequisitionAccounting( requestCode, item, isDocumentLevelAccounting = null ) {
-        def processAccounting = {accounting ->
-            accounting.requisitionAmount = null
-            accounting.discountAmount = null
-            accounting.taxAmount = null
-            accounting.additionalChargeAmount = null
-            requisitionAccountingService.update( [domainModel: accounting] )
-        }
         if (!isDocumentLevelAccounting) {
             isDocumentLevelAccounting = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ).isDocumentLevelAccounting
         }
         def accountingList = requisitionAccountingService.findAccountingByRequestCode( requestCode )
         if (isDocumentLevelAccounting == FinanceProcurementConstants.TRUE) {
-            accountingList.each() {
-                processAccounting( it )
-            }
+            adjustPercentageAndProcessAccounting( accountingList )
+
         } else {
-            accountingList.findAll() {it.item == item}?.each() {
-                processAccounting( it )
-            }
+            accountingList = accountingList.findAll() {it.item == item}
+            adjustPercentageAndProcessAccounting( accountingList )
         }
     }
 
@@ -291,7 +283,7 @@ class RequisitionDetailsCompositeService {
                 taxGroup         : taxGroup,
                 unitOfMeasure    : unitOfMeasure,
                 commodity        : commodity,
-                hasAccount       : isCommodityLevelAccounting ? fetchSumOfAccountingTotalPercentage(requisitionAccountingService.findAccountingByRequestCodeAndItem( requestCode, item )) >=FinanceValidationConstants.HUNDRED : fetchSumOfAccountingTotalPercentage(requisitionAccountingService.findAccountingByRequestCodeAndItem( requestCode, 0 )) >=FinanceValidationConstants.HUNDRED,
+                hasAccount       : isCommodityLevelAccounting ? fetchSumOfAccountingTotalPercentage( requisitionAccountingService.findAccountingByRequestCodeAndItem( requestCode, item ) ) >= FinanceValidationConstants.HUNDRED : fetchSumOfAccountingTotalPercentage( requisitionAccountingService.findAccountingByRequestCodeAndItem( requestCode, 0 ) ) >= FinanceValidationConstants.HUNDRED,
                 privateComment   : privateComment,
                 publicComment    : publicComment
         ]
@@ -494,4 +486,33 @@ class RequisitionDetailsCompositeService {
         commodityCodeDescMap.get( commodity )
     }
 
+    /**
+     * Process accounting. Sets amount that is adjusted one
+     */
+    private def processAccounting = {accounting ->
+        accounting.requisitionAmount = null
+        accounting.discountAmount = null
+        accounting.taxAmount = null
+        accounting.additionalChargeAmount = null
+        requisitionDetailsAndAccountingCommonCompositeService.adjustAccountPercentageAndAmount( accounting )
+        requisitionAccountingService.update( [domainModel: accounting] )
+    }
+
+    /**
+     * Adjust accounting amount
+     */
+    private def adjustPercentageAndProcessAccounting = {accountingList ->
+        def percentageBeforeAdjustment = 0.0, percentageAfterAdjustment = 0.0, diff = 0.0
+        accountingList?.each() {
+            percentageBeforeAdjustment += it.percentage
+            processAccounting( it )
+            percentageAfterAdjustment += it.percentage
+        }
+        diff = percentageAfterAdjustment - percentageBeforeAdjustment
+        if (accountingList.size > 0 && diff != 0.0) {
+            def lastIndex = accountingList.size() - 1
+            accountingList[lastIndex].percentage = accountingList[lastIndex].percentage - diff
+            processAccounting( accountingList[lastIndex] )
+        }
+    }
 }
