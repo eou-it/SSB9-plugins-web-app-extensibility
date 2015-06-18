@@ -292,7 +292,7 @@ class RequisitionDetailsCompositeService {
                 taxGroup         : taxGroup,
                 unitOfMeasure    : unitOfMeasure,
                 commodity        : commodity,
-                hasAccount       : isCommodityLevelAccounting ? requisitionAccountingService.findAccountingByRequestCodeAndItem( requestCode, item ).size() > 0 : requisitionAccountingService.findAccountingByRequestCodeAndItem( requestCode, 0 ).size() > 0,
+                hasAccount       : isCommodityLevelAccounting ? fetchSumOfAccountingTotalPercentage(requisitionAccountingService.findAccountingByRequestCodeAndItem( requestCode, item )) >=FinanceValidationConstants.HUNDRED : fetchSumOfAccountingTotalPercentage(requisitionAccountingService.findAccountingByRequestCodeAndItem( requestCode, 0 )) >=FinanceValidationConstants.HUNDRED,
                 privateComment   : privateComment,
                 publicComment    : publicComment
         ]
