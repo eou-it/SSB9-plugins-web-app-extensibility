@@ -411,7 +411,48 @@ class FinanceProcurementConstants {
     static final String FINANCE_APPROVAL_IN_PROCESS_FOBAINP_USER_ID = 'FOBAINP_USER_ID'
     static final String FINANCE_APPROVAL_IN_PROCESS_FOBAINP_VERSION = 'FOBAINP_VERSION'
     static final String FINANCE_APPROVAL_IN_PROCESS_FOBAINP_VPDI_CODE = 'FOBAINP_VPDI_CODE'
-    static final String FINANCE_APPROVAL_IN_PROCESS_QUERY_NAME_FIND_BY_DOCUMENT_NUMBER = 'FinanceApprovalsInProcess.findByDocumentNumber'
+    static
+    final String FINANCE_APPROVAL_IN_PROCESS_QUERY_NAME_FIND_BY_DOCUMENT_NUMBER = 'FinanceApprovalsInProcess.findByDocumentNumber'
     static final String FINANCE_APPROVAL_IN_PROCESS_QUERY_PARAM_DOCUMENT_NUMBER = 'documentNumber'
 
+    /** FOBTEXT - FinanceText Domain constants **/
+    static final String FINANCE_TEXT_TABLE = 'FOBTEXT'
+    static final String FINANCE_TEXT_SEQ_GEN = 'FOBTEXT_SEQ_GEN'
+    static final String FINANCE_TEXT_SURROGATE_ID_SEQUENCE = 'FOBTEXT_SURROGATE_ID_SEQUENCE'
+
+    static final String FINANCE_TEXT_FIELD_FOBTEXT_SURROGATE_ID = 'FOBTEXT_SURROGATE_ID'
+    static final String FINANCE_TEXT_FIELD_FOBTEXT_ACTIVITY_DATE = 'FOBTEXT_ACTIVITY_DATE'
+    static final String FINANCE_TEXT_FIELD_FOBTEXT_CHG_SEQ_NUM = 'FOBTEXT_CHG_SEQ_NUM'
+    static final String FINANCE_TEXT_FIELD_FOBTEXT_CLA_NUM = 'FOBTEXT_CLA_NUM'
+    static final String FINANCE_TEXT_FIELD_FOBTEXT_CODE = 'FOBTEXT_CODE'
+    static final String FINANCE_TEXT_FIELD_FOBTEXT_DATA_ORIGIN = 'FOBTEXT_DATA_ORIGIN'
+    static final String FINANCE_TEXT_FIELD_FOBTEXT_DTYP_SEQ_NUM = 'FOBTEXT_DTYP_SEQ_NUM'
+    static final String FINANCE_TEXT_FIELD_FOBTEXT_ITEM = 'FOBTEXT_ITEM'
+    static final String FINANCE_TEXT_FIELD_FOBTEXT_PIDM = 'FOBTEXT_PIDM'
+    static final String FINANCE_TEXT_FIELD_FOBTEXT_PRT_IND = 'FOBTEXT_PRT_IND'
+    static final String FINANCE_TEXT_FIELD_FOBTEXT_SEQ_NUM = 'FOBTEXT_SEQ_NUM'
+    static final String FINANCE_TEXT_FIELD_FOBTEXT_TEXT = 'FOBTEXT_TEXT'
+    static final String FINANCE_TEXT_FIELD_FOBTEXT_USER_ID = 'FOBTEXT_USER_ID'
+    static final String FINANCE_TEXT_FIELD_FOBTEXT_VERSION = 'FOBTEXT_VERSION'
+    static final String FINANCE_TEXT_FIELD_FOBTEXT_VPDI_CODE = 'FOBTEXT_VPDI_CODE'
+
+    static
+    final String FINANCE_TEXT_NAMED_QUERY_GET_FINANCE_TEXT_BY_CODE_AND_SEQUENCE_NO = 'FinanceText.getFinanceTextByCodeAndItemNumber'
+    static final String FINANCE_TEXT_QUERY_PARAM_TEXT_CODE = 'textCode'
+    static final String FINANCE_TEXT_QUERY_PARAM_TEXT_ITEM = 'textItem'
+    static final String FINANCE_TEXT_QUERY_PARAM_PRINT_INDICATOR = 'printOptionIndicator'
+    static final String FINANCE_TEXT_NAMED_QUERY_LIST_ALL_FINANCE_TEXT_BY_CODE = 'FinanceText.listAllFinanceTextByCode'
+    static
+    final String FINANCE_TEXT_NAMED_QUERY_GET_FINANCE_TEXT_BY_CODE_AND_SEQUENCE_NO_AND_PRINT_IND = 'FinanceText.getFinanceTextByCodeAndSeqNumberAndPrintInd'
+    static final String FINANCE_TEXT_NAMED_QUERY_GET_LAST_SEQUENCE = 'FinanceText.getLastSequenceNumberForHeader'
+    static
+    final String FINANCE_TEXT_NAMED_QUERY_GET_LAST_SEQUENCE_FOR_COMMODITY = 'FinanceText.getLastSequenceNumberForCommodity'
+    static
+    final String FINANCE_TEXT_NAMED_QUERY_LIST_HEADER_LEVEL_TEXT_BY_CODE_AND_PRINT_OPTION_IND = 'FinanceText.listHeaderLevelTextByCodeAndPrintOptionInd'
+    static
+    final String FINANCE_TEXT_NAMED_QUERY_LIST_HEADER_LEVEL_TEXT_BY_CODE = 'FinanceText.listHeaderLevelTextByCode'
+
+    static final int FINANCE_TEXT_TEXT_LENGTH = 50
+    static final int FINANCE_TEXT_SEQUENCE_NUMBER_INCREMENT = 10
+    static final int FINANCE_TEXT_DOCUMENT_TYPE_SEQ_NUMBER_REQUISITION = 1
 }
