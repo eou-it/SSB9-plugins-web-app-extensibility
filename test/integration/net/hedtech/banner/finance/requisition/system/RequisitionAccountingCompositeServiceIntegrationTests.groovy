@@ -197,7 +197,7 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
         def activityCode = ''
         def location = ''
         def projectCode = ''
-        def percentage = ''
+        def percentage = '3'
         def discountAmount = ''
         def discountAmountPercent = ''
         def additionalChargeAmount = ''
