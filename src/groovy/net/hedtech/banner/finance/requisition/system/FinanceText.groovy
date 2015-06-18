@@ -136,7 +136,7 @@ class FinanceText implements Serializable {
      * @param printOptionIndicator Print option indicator.
      * @return list of finance text.
      */
-    static def getFinanceTextByCodeAndSeqNumberAndPrintInd( textCode, Integer item, printOptionIndicator ) {
+    static def getFinanceTextByCodeAndItemNumberAndPrintInd( textCode, Integer item, printOptionIndicator ) {
         def list = FinanceText.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.FINANCE_TEXT_NAMED_QUERY_GET_FINANCE_TEXT_BY_CODE_AND_SEQUENCE_NO_AND_PRINT_IND )
                     .setString( FinanceProcurementConstants.FINANCE_TEXT_QUERY_PARAM_TEXT_CODE, textCode )

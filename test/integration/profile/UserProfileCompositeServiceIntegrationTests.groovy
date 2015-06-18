@@ -39,7 +39,7 @@ class UserProfileCompositeServiceIntegrationTests extends BaseIntegrationTestCas
     @Test
     void getUserProfile() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def profile = userProfileCompositeService.getUserProfileDetail( springSecurityService.getAuthentication()?.user )
+        def profile = userProfileCompositeService.getUserProfileDetail( springSecurityService.getAuthentication()?.user, new Date() )
         assertTrue profile.baseUserProfile.userId == FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME
     }
 }
