@@ -23,7 +23,7 @@ class FinanceTextService extends ServiceBase {
      */
     @Transactional(readOnly = true)
     def getFinanceTextByCodeAndItemAndPrintOption(textCode, item, printOptionIndicator) {
-        return FinanceText.getFinanceTextByCodeAndSeqNumberAndPrintInd(textCode, item, printOptionIndicator)
+        return FinanceText.getFinanceTextByCodeAndItemNumberAndPrintInd(textCode, item, printOptionIndicator)
     }
 
     /**

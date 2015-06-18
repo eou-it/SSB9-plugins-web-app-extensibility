@@ -443,7 +443,7 @@ class FinanceProcurementConstants {
     static final String FINANCE_TEXT_QUERY_PARAM_PRINT_INDICATOR = 'printOptionIndicator'
     static final String FINANCE_TEXT_NAMED_QUERY_LIST_ALL_FINANCE_TEXT_BY_CODE = 'FinanceText.listAllFinanceTextByCode'
     static
-    final String FINANCE_TEXT_NAMED_QUERY_GET_FINANCE_TEXT_BY_CODE_AND_SEQUENCE_NO_AND_PRINT_IND = 'FinanceText.getFinanceTextByCodeAndSeqNumberAndPrintInd'
+    final String FINANCE_TEXT_NAMED_QUERY_GET_FINANCE_TEXT_BY_CODE_AND_SEQUENCE_NO_AND_PRINT_IND = 'FinanceText.getFinanceTextByCodeAndItemNumberAndPrintInd'
     static final String FINANCE_TEXT_NAMED_QUERY_GET_LAST_SEQUENCE = 'FinanceText.getLastSequenceNumberForHeader'
     static
     final String FINANCE_TEXT_NAMED_QUERY_GET_LAST_SEQUENCE_FOR_COMMODITY = 'FinanceText.getLastSequenceNumberForCommodity'

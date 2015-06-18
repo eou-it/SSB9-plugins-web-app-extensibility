@@ -3,7 +3,7 @@
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
-
+import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
@@ -36,16 +36,16 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      * Test case method to test list finance text by text code
      */
     @Test
-    public void testListFinanceTextByCodeByTextCode() {
-//        assert (financeTextService.listAllFinanceTextByCode('R0000002').size() > 0)
+    public void testListAllFinanceTextByCode() {
+        assert (financeTextService.listAllFinanceTextByCode('R0000002').size() > 0)
     }
 
     /**
      * Test case method to test get FinanceText by text code and sequence number.
      */
     @Test
-    public void testGetFinanceTextByCodeAndSeqNumber() {
-        //assertNotNull(financeTextService.getFinanceTextByCodeAndItemNumber('R0000002', 10))
+    public void testGetFinanceTextByCodeAndItemNumber() {
+        assertNotNull(financeTextService.getFinanceTextByCodeAndItemNumber('R0000002', 10))
     }
 
     /**
@@ -53,8 +53,8 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testSaveText() {
-        //def financeText = getFinanceText();
-        //assertTrue(financeTextService.saveText(financeText) == financeText.textCode)
+        def financeText = getFinanceText();
+        assertTrue(financeTextService.create([domainModel: financeText]).textCode == financeText.textCode)
     }
 
     /**
@@ -62,12 +62,10 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testUpdateText() {
-//        def financeText = getFinanceText();
-//        def savedFinanceTextCode = financeTextService.saveText(financeText)
-//        def financeTextToUpdate = getFinanceText()
-//        financeTextToUpdate.text = 'New Text For Update'
-//        financeTextService.updateText(financeTextToUpdate, financeTextToUpdate.textItem, financeTextToUpdate.printOptionIndicator)
-//        assertTrue(financeTextService.listAllFinanceTextByCode(savedFinanceTextCode).size() == 1)
+        FinanceText financeText = financeTextService.getFinanceTextByCodeAndItemNumber('R0000002', 1)[0];
+        financeText.text = 'New Text For Update'
+        def updated = financeTextService.update([domainModel: financeText])
+        assertTrue(financeTextService.listAllFinanceTextByCode(updated.textCode).size() == 1)
     }
 
     /**
@@ -75,11 +73,39 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testDeleteText() {
-//        def financeText = getFinanceText();
-//        def savedFinanceTextCode = financeTextService.saveText(financeText)
-//        FinanceText financeTextToDelete = financeTextService.getFinanceTextByCodeAndItemAndPrintOption(savedFinanceTextCode, financeText.textItem, financeText.printOptionIndicator)[0]
-//        financeTextService.deleteText(financeTextToDelete.textCode, null, financeTextToDelete.printOptionIndicator)
-//        assert (financeTextService.listAllFinanceTextByCode(savedFinanceTextCode).size() == 0)
+        def financeText = getFinanceText();
+        FinanceText financeTextToDelete = financeTextService.getFinanceTextByCodeAndItemNumber('R0000002', 1)[0];
+        financeTextService.delete([domainModel: financeTextToDelete])
+        assert (financeTextService.listAllFinanceTextByCode(financeText.textCode).size() == 0)
+    }
+
+    /**
+     * Test case to test get finance text by code, item and print option indicator.
+     */
+    @Test
+    public void testGetFinanceTextByCodeAndItemAndPrintOption() {
+        FinanceText financeText = financeTextService.getFinanceTextByCodeAndItemAndPrintOption('R0000002', 1,
+                FinanceProcurementConstants.DEFAULT_INDICATOR_YES)[0]
+        assertTrue(financeText.textCode == 'R0000002')
+    }
+
+    /**
+     * Test case to test listing header level text by text code and print option indicator.
+     */
+    @Test
+    public void testListHeaderLevelTextByCodeAndPrintOptionInd() {
+        def list = financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd('R0000072',
+                FinanceProcurementConstants.DEFAULT_INDICATOR_YES)
+        assertTrue(list.size() > 1)
+    }
+
+    /**
+     * Test case to test listing header level text by text code.
+     */
+    @Test
+    public void testListHeaderLevelTextByCode() {
+        def list = financeTextService.listHeaderLevelTextByCode('R0000072')
+        assertTrue(list.size() > 1)
     }
 
     /**
@@ -98,7 +124,7 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
                 pidm: 1001,
                 printOptionIndicator: 'Y',
                 sequenceNumber: 1,
-                text: 'Text from Domain Integration test Text from Domain Integration test',
+                text: 'Text for test',
                 lastModifiedBy: 'TEST_USER',
                 vpdiCode: 'TEST'
         )
