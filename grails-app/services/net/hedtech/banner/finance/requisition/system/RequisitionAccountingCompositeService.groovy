@@ -316,7 +316,8 @@ class RequisitionAccountingCompositeService {
         def totalExtendedCommodity = 0.0, totalTax = 0.0, totalDiscount = 0.0, totalAdditionalCharge = 0.0
         requisitionDetail.each {
             totalExtendedCommodity += (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
-            totalTax += it.taxAmount.setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
+            BigDecimal taxAmount = it.taxAmount ? it.taxAmount : new BigDecimal('0')
+            totalTax += taxAmount.setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
             totalDiscount += it.discountAmount.setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
             totalAdditionalCharge += it.additionalChargeAmount.setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
         }
