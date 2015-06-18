@@ -40,7 +40,7 @@ class CopyPurchaseRequisitionCompositeService {
             headerCopy.deliveryComment = FinanceProcurementConstants.COPY_REQUISITION_HEADER_COPIED_FROM + requestCode
             RequisitionHeader requisitionHeader = requisitionHeaderService.create([domainModel: headerCopy])
             LoggerUtility.debug LOGGER, "Requisition Header created " + requisitionHeader
-            RequisitionHeader copy = requisitionHeaderService.get(requisitionHeader.id)
+            RequisitionHeader copy = requisitionHeaderService.findRequisitionHeaderByRequestCode(requisitionHeader.requestCode)
             // Details.
             detailsList.each { detail ->
                 RequisitionDetail detailsCopy = new RequisitionDetail()
