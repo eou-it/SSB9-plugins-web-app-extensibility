@@ -117,7 +117,7 @@ class RequisitionAccountingCompositeService {
             requisitionAccountingRequest.sequenceNumber = existingAccountingInfo.sequenceNumber
             requisitionAccountingRequest.userId = user.oracleUserName
             setNSFOverride( requisitionAccountingRequest, user.oracleUserName )
-            adjustAccountPercentageAndAmount( requisitionAccountingRequest )
+            requisitionDetailsAndAccountingCommonCompositeService.adjustAccountPercentageAndAmount( requisitionAccountingRequest )
             def requisitionAccounting = requisitionAccountingService.update( [domainModel: requisitionAccountingRequest] )
             LoggerUtility.debug( LOGGER, "Requisition Accounting information updated " + requisitionAccounting )
             return requisitionAccounting
