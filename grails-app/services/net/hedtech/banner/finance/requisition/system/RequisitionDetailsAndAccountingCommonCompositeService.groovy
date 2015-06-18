@@ -21,6 +21,8 @@ class RequisitionDetailsAndAccountingCommonCompositeService {
      */
     public def adjustAccountPercentageAndAmount( RequisitionAccounting requisitionAccountingRequest ) {
         def requisitionDetail
+        def orgPercentage = requisitionAccountingRequest.percentage
+        def adjustedPercentage = orgPercentage;
         if (requisitionAccountingRequest.item == FinanceProcurementConstants.ZERO) {//DLA
             requisitionDetail = requisitionDetailService.findByRequestCode( requisitionAccountingRequest.requestCode )
         } else {
@@ -35,8 +37,6 @@ class RequisitionDetailsAndAccountingCommonCompositeService {
             totalAdditionalCharge += it.additionalChargeAmount.setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
         }
 
-
-        def orgPercentage = requisitionAccountingRequest.percentage
 
         boolean isAdjustmentNeededForTax = totalTax != ((totalTax * orgPercentage / FinanceProcurementConstants.HUNDRED)
                 .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + (totalTax * (FinanceProcurementConstants.HUNDRED - orgPercentage) / FinanceProcurementConstants.HUNDRED)
@@ -53,8 +53,6 @@ class RequisitionDetailsAndAccountingCommonCompositeService {
                 .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + (totalExtendedCommodity * (FinanceProcurementConstants.HUNDRED - orgPercentage) / FinanceProcurementConstants.HUNDRED)
                 .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ))
 
-
-        def adjustedPercentage = orgPercentage;
 
         // Check If at least one of them is true, and also find out what the adjusted % value is going to be.
         if (isAdjustmentNeededForExtendedAmount) {
