@@ -38,27 +38,26 @@ class CopyPurchaseRequisitionCompositeService {
             headerCopy.requestCode = FinanceProcurementConstants.DEFAULT_REQUEST_CODE
             headerCopy.documentCopiedFrom = requestCode
             headerCopy.deliveryComment = FinanceProcurementConstants.COPY_REQUISITION_HEADER_COPIED_FROM + requestCode
-            RequisitionHeader requisitionHeader = requisitionHeaderService.create([domainModel: headerCopy])
+            RequisitionHeader requisitionHeaderCopy = requisitionHeaderService.create([domainModel: headerCopy], true)
             LoggerUtility.debug LOGGER, "Requisition Header created " + requisitionHeader
-            RequisitionHeader copy = requisitionHeader
             // Details.
             detailsList.each { detail ->
                 RequisitionDetail detailsCopy = new RequisitionDetail()
                 FinanceCommonUtility.copyProperties(detail, detailsCopy)
-                detailsCopy.requestCode = copy.requestCode
+                detailsCopy.requestCode = requisitionHeaderCopy.requestCode
                 detailsCopy.id = null
                 detailsCopy.completeIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_NO
-                requisitionDetailService.create([domainModel: detailsCopy])
+                requisitionDetailService.create([domainModel: detailsCopy], true)
             }
             // Accounting.
             accountingList.each { accounting ->
                 RequisitionAccounting accountingCopy = new RequisitionAccounting()
                 FinanceCommonUtility.copyProperties(accounting, accountingCopy)
-                accountingCopy.requestCode = copy.requestCode
+                accountingCopy.requestCode = requisitionHeaderCopy.requestCode
                 accountingCopy.id = null
-                requisitionAccountingService.create([domainModel: accountingCopy])
+                requisitionAccountingService.create([domainModel: accountingCopy], true)
             }
-            return requisitionInformationCompositeService.fetchPurchaseRequisition(copy.requestCode, institutionBaseCcy)
+            return requisitionInformationCompositeService.fetchPurchaseRequisition(requisitionHeaderCopy.requestCode, institutionBaseCcy)
         } else {
             LoggerUtility.error(LOGGER, 'Only completed requisition can be copied=' + header.requestCode)
             throw new ApplicationException(

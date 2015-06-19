@@ -79,15 +79,13 @@ class RequisitionHeaderService extends ServiceBase {
         if (requestHeader && requestHeader.completeIndicator && !requestHeader.approvalIndicator) {
             requestHeader.completeIndicator = false
             RequisitionHeader requestHeaderUpdated = update([domainModel: requestHeader])
-            // Update FOBAPPH Approval History table with queueId = DENY and queueLevel = 0.
-            financeApprovalHistoryService.findByDocumentCode(requestHeaderUpdated.requestCode).each {
-                FinanceApprovalHistory financeApprovalHistory ->
-                    financeApprovalHistory.queueId = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_ID_DENY
-                    financeApprovalHistory.queueLevel = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_LEVEL_ZERO
-                    financeApprovalHistory.lastModifiedBy = user
-                    financeApprovalHistory.activityDate = new Date()
-                    financeApprovalHistoryService.update([domailModel: financeApprovalHistory])
-            }
+            // Insert FOBAPPH Approval History table with queueId = DENY and queueLevel = 0.
+            FinanceApprovalHistory financeApprovalHistory = new FinanceApprovalHistory()
+            financeApprovalHistory.queueId = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_ID_DENY
+            financeApprovalHistory.queueLevel = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_LEVEL_ZERO
+            financeApprovalHistory.lastModifiedBy = user
+            financeApprovalHistory.activityDate = new Date()
+            financeApprovalHistoryService.create([domailModel: financeApprovalHistory])
             // Removing the row relating to this requisition in FOBUAPP FinanceUnapprovedDocument.
             financeUnapprovedDocumentService.findByDocumentCode(requestHeaderUpdated.requestCode).each {
                 FinanceUnapprovedDocument financeUnapprovedDocument ->
