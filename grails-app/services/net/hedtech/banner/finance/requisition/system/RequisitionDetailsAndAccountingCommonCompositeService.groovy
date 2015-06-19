@@ -4,7 +4,6 @@
 package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
-import org.apache.log4j.Logger
 
 /**
  * Class for Purchase Requisition Details and Accounting Composite Service
@@ -18,56 +17,55 @@ class RequisitionDetailsAndAccountingCommonCompositeService {
      * @param requisitionAccountingRequest
      * @return
      */
-    public def adjustAccountPercentageAndAmount( RequisitionAccounting requisitionAccountingRequest ) {
+    public def adjustAccountPercentageAndAmount(RequisitionAccounting requisitionAccountingRequest) {
         def requisitionDetail
         def orgPercentage = requisitionAccountingRequest.percentage
         def adjustedPercentage = orgPercentage;
         if (requisitionAccountingRequest.item == FinanceProcurementConstants.ZERO) {//DLA
-            requisitionDetail = requisitionDetailService.findByRequestCode( requisitionAccountingRequest.requestCode )
+            requisitionDetail = requisitionDetailService.findByRequestCode(requisitionAccountingRequest.requestCode)
         } else {
-            requisitionDetail = requisitionDetailService.findByRequestCodeAndItem( requisitionAccountingRequest.requestCode, requisitionAccountingRequest.item )
+            requisitionDetail = requisitionDetailService.findByRequestCodeAndItem(requisitionAccountingRequest.requestCode, requisitionAccountingRequest.item)
         }
         def totalExtendedCommodity = 0.0, totalTax = 0.0, totalDiscount = 0.0, totalAdditionalCharge = 0.0
         requisitionDetail.each {
-            totalExtendedCommodity += (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
-            BigDecimal taxAmount = it.taxAmount ? it.taxAmount : new BigDecimal( FinanceProcurementConstants.ZERO )
-            totalTax += taxAmount.setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
-            totalDiscount += it.discountAmount.setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
-            totalAdditionalCharge += it.additionalChargeAmount.setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
+            totalExtendedCommodity += (it.quantity * it.unitPrice).setScale(FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP)
+            BigDecimal taxAmount = it.taxAmount ? it.taxAmount : new BigDecimal(FinanceProcurementConstants.ZERO)
+            totalTax += taxAmount.setScale(FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP)
+            totalDiscount += it.discountAmount.setScale(FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP)
+            totalAdditionalCharge += it.additionalChargeAmount.setScale(FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP)
         }
 
 
         boolean isAdjustmentNeededForTax = totalTax != ((totalTax * orgPercentage / FinanceProcurementConstants.HUNDRED)
-                .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + (totalTax * (FinanceProcurementConstants.HUNDRED - orgPercentage) / FinanceProcurementConstants.HUNDRED)
-                .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ))
+                .setScale(FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP) + (totalTax * (FinanceProcurementConstants.HUNDRED - orgPercentage) / FinanceProcurementConstants.HUNDRED)
+                .setScale(FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP))
         boolean isAdjustmentNeededForDiscount = totalDiscount != ((totalDiscount * orgPercentage / FinanceProcurementConstants.HUNDRED)
-                .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + (totalDiscount * (FinanceProcurementConstants.HUNDRED - orgPercentage) / FinanceProcurementConstants.HUNDRED)
-                .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ))
+                .setScale(FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP) + (totalDiscount * (FinanceProcurementConstants.HUNDRED - orgPercentage) / FinanceProcurementConstants.HUNDRED)
+                .setScale(FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP))
 
         boolean isAdjustmentNeededForAdditionalCharge = totalAdditionalCharge != ((totalAdditionalCharge * orgPercentage / FinanceProcurementConstants.HUNDRED)
-                .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + (totalAdditionalCharge * (FinanceProcurementConstants.HUNDRED - orgPercentage) / FinanceProcurementConstants.HUNDRED)
-                .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ))
+                .setScale(FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP) + (totalAdditionalCharge * (FinanceProcurementConstants.HUNDRED - orgPercentage) / FinanceProcurementConstants.HUNDRED)
+                .setScale(FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP))
 
         boolean isAdjustmentNeededForExtendedAmount = totalExtendedCommodity != ((totalExtendedCommodity * orgPercentage / FinanceProcurementConstants.HUNDRED)
-                .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + (totalExtendedCommodity * (FinanceProcurementConstants.HUNDRED - orgPercentage) / FinanceProcurementConstants.HUNDRED)
-                .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ))
-
+                .setScale(FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP) + (totalExtendedCommodity * (FinanceProcurementConstants.HUNDRED - orgPercentage) / FinanceProcurementConstants.HUNDRED)
+                .setScale(FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP))
 
         // Check If at least one of them is true, and also find out what the adjusted % value is going to be.
         if (isAdjustmentNeededForExtendedAmount) {
             adjustedPercentage = (FinanceProcurementConstants.HUNDRED * (totalExtendedCommodity * orgPercentage / FinanceProcurementConstants.HUNDRED)
-                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )) / totalExtendedCommodity
+                    .setScale(FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP)) / totalExtendedCommodity
         } else if (isAdjustmentNeededForTax) {
             adjustedPercentage = (FinanceProcurementConstants.HUNDRED * (totalTax * orgPercentage / FinanceProcurementConstants.HUNDRED)
-                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )) / totalTax
+                    .setScale(FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP)) / totalTax
         } else if (isAdjustmentNeededForDiscount) {
             adjustedPercentage = (FinanceProcurementConstants.HUNDRED * (totalDiscount * orgPercentage / FinanceProcurementConstants.HUNDRED)
-                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )) / totalDiscount
+                    .setScale(FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP)) / totalDiscount
         } else if (isAdjustmentNeededForAdditionalCharge) {
             adjustedPercentage = (FinanceProcurementConstants.HUNDRED * (totalAdditionalCharge * orgPercentage / FinanceProcurementConstants.HUNDRED)
-                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )) / totalAdditionalCharge
+                    .setScale(FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP)) / totalAdditionalCharge
         }
-        adjustedPercentage = adjustedPercentage.setScale( FinanceProcurementConstants.DECIMAL_PRECISION_UNIT_PRICE, BigDecimal.ROUND_HALF_UP )
+        adjustedPercentage = adjustedPercentage.setScale(FinanceProcurementConstants.DECIMAL_PRECISION_UNIT_PRICE, BigDecimal.ROUND_HALF_UP)
         requisitionAccountingRequest.percentage = adjustedPercentage
         requisitionAccountingRequest.discountAmountPercent = adjustedPercentage
         requisitionAccountingRequest.additionalChargeAmountPct = adjustedPercentage
