@@ -17,7 +17,6 @@ class CopyPurchaseRequisitionCompositeService {
     private static final def LOGGER = Logger.getLogger(this.getClass())
     boolean transactional = true
 
-    def springSecurityService
     def requisitionHeaderService
     def requisitionDetailService
     def requisitionAccountingService

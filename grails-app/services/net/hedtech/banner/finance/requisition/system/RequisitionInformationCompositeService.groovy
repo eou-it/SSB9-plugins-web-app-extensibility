@@ -12,7 +12,7 @@ import org.apache.log4j.Logger
  * Class for Purchase Requisition Information Composite
  */
 class RequisitionInformationCompositeService {
-    private static final Logger LOGGER = Logger.getLogger(this.class)
+    private static final Logger LOGGER = Logger.getLogger( this.class )
     boolean transactional = true
 
     def requisitionHeaderService
@@ -30,44 +30,45 @@ class RequisitionInformationCompositeService {
      * Fetches Requisition Information
      * @param requestCode
      */
-    def fetchPurchaseRequisition(requestCode, baseCcy) {
-        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode(requestCode)
-        LoggerUtility.debug(LOGGER, 'Header: ' + header)
-        def shipTo = shipToCodeService.findShipToCodesByCode(header.ship)
-        LoggerUtility.debug(LOGGER, 'shipTo: ' + shipTo)
+    def fetchPurchaseRequisition( requestCode, baseCcy ) {
+        def privateComment, publicComment
+        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
+        LoggerUtility.debug( LOGGER, 'Header: ' + header )
+        def shipTo = shipToCodeService.findShipToCodesByCode( header.ship )
+        LoggerUtility.debug( LOGGER, 'shipTo: ' + shipTo )
         def organization = financeOrganizationCompositeService.
-                findOrganizationListByEffectiveDateAndSearchParam([searchParam: header.organization, effectiveDate: header.transactionDate, coaCode: header.chartOfAccount], [offset: 0, max: 1])
-        LoggerUtility.debug(LOGGER, 'organization: ' + organization)
-        def coa = chartOfAccountsService.getChartOfAccountByCode(header.chartOfAccount)
-        LoggerUtility.debug(LOGGER, 'coa: ' + coa)
+                findOrganizationListByEffectiveDateAndSearchParam( [searchParam: header.organization, effectiveDate: header.transactionDate, coaCode: header.chartOfAccount], [offset: 0, max: 1] )
+        LoggerUtility.debug( LOGGER, 'organization: ' + organization )
+        def coa = chartOfAccountsService.getChartOfAccountByCode( header.chartOfAccount )
+        LoggerUtility.debug( LOGGER, 'coa: ' + coa )
         def taxGroup, vendor, discount = [], currency = []
         if (header.taxGroup) {
-            taxGroup = financeTaxGroupService.findTaxGroupsByTaxGroupCode(header.taxGroup)
+            taxGroup = financeTaxGroupService.findTaxGroupsByTaxGroupCode( header.taxGroup )
         }
         if (header.vendorPidm) {
-            vendor = financeVendorService.fetchFinanceVendor([vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence])
+            vendor = financeVendorService.fetchFinanceVendor( [vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence] )
         }
         if (header.discount) {
-            def discountObj = financeDiscountService.findDiscountByDiscountCode(header.discount)
+            def discountObj = financeDiscountService.findDiscountByDiscountCode( header.discount )
             discount = [discountCode: discountObj.discountCode, discountDescription: discountObj.discountDescription]
         }
         if (header.currency) {
-            def currencyObj = financeCurrencyService.findCurrencyByCurrencyCode(header.currency)
+            def currencyObj = financeCurrencyService.findCurrencyByCurrencyCode( header.currency )
             currency = [currencyCode: currencyObj.currencyCode, title: currencyObj.title]
         } else {
-            currency = financeCurrencyCompositeService.getFilteredCurrencyDetail(baseCcy)
+            currency = financeCurrencyCompositeService.getFilteredCurrencyDetail( baseCcy )
         }
-        def privateComment = FinanceProcurementConstants.EMPTY_STRING
-        def publicComment = FinanceProcurementConstants.EMPTY_STRING
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd(header.requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_NO).each {
+        privateComment = FinanceProcurementConstants.EMPTY_STRING
+        publicComment = FinanceProcurementConstants.EMPTY_STRING
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( header.requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
             privateComment = privateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd(header.requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_YES).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( header.requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
             publicComment = publicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
-        LoggerUtility.debug(LOGGER, 'taxGroup: ' + taxGroup)
-        LoggerUtility.debug(LOGGER, 'discount: ' + discount)
-        LoggerUtility.debug(LOGGER, 'currency: ' + currency)
+        LoggerUtility.debug( LOGGER, 'taxGroup: ' + taxGroup )
+        LoggerUtility.debug( LOGGER, 'discount: ' + discount )
+        LoggerUtility.debug( LOGGER, 'currency: ' + currency )
         return [header              : header,
                 shipTo              : [zipCode     : shipTo.zipCode, state: shipTo.state, city: shipTo.city,
                                        shipCode    : shipTo.shipCode, addressLine1: shipTo.addressLine1,
