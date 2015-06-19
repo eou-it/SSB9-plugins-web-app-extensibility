@@ -188,6 +188,24 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     }
 
     /**
+     * Test update for changing document level to commodity level.
+     */
+    @Test
+    void updateAlreadyCompletedPurchaseRequisitionForCommodityLvlAcc() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def headerDomainModel = newRequisitionHeader()
+        headerDomainModel.isDocumentLevelAccounting = false
+        headerDomainModel.requesterName = 'Modified'
+        def domainModelMap = [requisitionHeader: headerDomainModel]
+        try {
+            requisitionHeaderCompositeService.updateRequisitionHeader(domainModelMap, 'R0000026')
+        }
+        catch (ApplicationException ae) {
+            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_REQUISITION_ALREADY_COMPLETED
+        }
+    }
+
+    /**
      * Test update
      */
     @Test
@@ -255,8 +273,6 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         def currency = requisitionHeaderCompositeService.getCurrencyDetailByReqCode('R0000114');
         assertNotNull(currency)
     }
-
-
 
     /**
      * New object of Requisition Header

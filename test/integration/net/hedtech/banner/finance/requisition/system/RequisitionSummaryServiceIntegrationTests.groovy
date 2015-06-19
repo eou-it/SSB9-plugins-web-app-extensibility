@@ -42,7 +42,16 @@ class RequisitionSummaryServiceIntegrationTests extends BaseIntegrationTestCase 
      */
     @Test
     void testFetchRequisitionSummaryForRequestCode() {
-        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'R0000124' )
+        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode('R0000124')
+        assertTrue headers.size() > 0
+    }
+
+    /**
+     * test Listing Summary
+     */
+    @Test
+    void testFetchRequisitionSummaryForRequestCodeForCommodityLevelAccounting() {
+        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode('R0001033')
         assertTrue headers.size() > 0
     }
 
@@ -52,7 +61,7 @@ class RequisitionSummaryServiceIntegrationTests extends BaseIntegrationTestCase 
     @Test
     void testFetchRequisitionSummaryForRequestCodeInvalidCode() {
         try {
-            requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'INVALID' )
+            requisitionSummaryService.fetchRequisitionSummaryForRequestCode('INVALID')
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
         }
         catch (ApplicationException ae) {

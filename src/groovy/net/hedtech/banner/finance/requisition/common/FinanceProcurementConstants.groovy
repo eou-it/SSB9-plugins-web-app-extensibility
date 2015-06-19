@@ -18,6 +18,7 @@ class FinanceProcurementConstants {
     static final int ZERO = 0
     static final int HUNDRED = 100
     static final int ONE = 1
+    static final String EMPTY_STRING = ''
 
     static final int DECIMAL_PRECISION = 2
     static final int DECIMAL_PRECISION_PERCENTAGE = 8
@@ -379,6 +380,8 @@ class FinanceProcurementConstants {
 
     /** Constant variable for Domain class for Unapproved Documents Table FOBAPPH **/
     static final String FOBAPPH = 'FOBAPPH'
+    static final String FINANCE_APPROVAL_HISTORY_SEQ_GEN = 'FOBAPPH_SEQ_GEN'
+    static final String FINANCE_APPROVAL_HISTORY_SURROGATE_ID_SEQUENCE = 'FOBAPPH_SURROGATE_ID_SEQUENCE'
     static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_SURROGATE_ID = 'FOBAPPH_SURROGATE_ID'
     static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_ACTIVITY_DATE = 'FOBAPPH_ACTIVITY_DATE'
     static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_CHG_SEQ_NUM = 'FOBAPPH_CHG_SEQ_NUM'

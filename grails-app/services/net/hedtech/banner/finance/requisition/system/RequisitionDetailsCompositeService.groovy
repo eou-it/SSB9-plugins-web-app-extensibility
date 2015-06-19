@@ -267,17 +267,17 @@ class RequisitionDetailsCompositeService {
             commodity = financeCommodityService.findCommodityByCode( requisitionDetail.commodity )
         }
         boolean isCommodityLevelAccounting = !requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ).isDocumentLevelAccounting
-        def privateComment = ''
-        def publicComment = ''
+        def privateComment = FinanceProcurementConstants.EMPTY_STRING
+        def publicComment = FinanceProcurementConstants.EMPTY_STRING
         financeTextService.getFinanceTextByCodeAndItemAndPrintOption( requisitionDetail.requestCode,
                                                                       requisitionDetail.item,
                                                                       FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
-            privateComment = privateComment + (it.text ? it.text : '')
+            privateComment = privateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
         financeTextService.getFinanceTextByCodeAndItemAndPrintOption( requisitionDetail.requestCode,
                                                                       requisitionDetail.item,
                                                                       FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
-            publicComment = publicComment + (it.text ? it.text : '')
+            publicComment = publicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
         return [requisitionDetail: requisitionDetail,
                 taxGroup         : taxGroup,
@@ -449,7 +449,7 @@ class RequisitionDetailsCompositeService {
     /**
      * Gets Sum of accounting percentage total. Need to provide accounting List
      */
-    private def fetchSumOfAccountingTotalPercentage = {accountingList ->
+    private final def fetchSumOfAccountingTotalPercentage = {accountingList ->
         def sum = 0.0
         accountingList.each {
             sum += it.percentage
@@ -460,7 +460,7 @@ class RequisitionDetailsCompositeService {
     /**
      * Gets Sum of accounting total. Need to provide accounting List
      */
-    private def fetchSumOfAccountingTotal = {accountingList ->
+    private final def fetchSumOfAccountingTotal = {accountingList ->
         def sum = 0.0
         accountingList.each {it ->
             sum += it.requisitionAmount + it.taxAmount + it.additionalChargeAmount - it.discountAmount
@@ -471,7 +471,7 @@ class RequisitionDetailsCompositeService {
     /**
      * Gets Sum of commodity total. Need to provide commodity List
      */
-    private def fetchSumOfCommodityTotal = {commodityList ->
+    private final def fetchSumOfCommodityTotal = {commodityList ->
         def sum = 0.0
         commodityList.each {it ->
             sum += (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + it.taxAmount + it.additionalChargeAmount - it.discountAmount
@@ -482,14 +482,14 @@ class RequisitionDetailsCompositeService {
     /**
      * Gets commodity description. Need to provide description Map and commodity code
      */
-    private def getCommodityDescription = {commodityCodeDescMap, commodity ->
+    private final def getCommodityDescription = {commodityCodeDescMap, commodity ->
         commodityCodeDescMap.get( commodity )
     }
 
     /**
      * Process accounting. Sets amount that is adjusted one
      */
-    private def processAccounting = {accounting ->
+    private final def processAccounting = {accounting ->
         accounting.requisitionAmount = null
         accounting.discountAmount = null
         accounting.taxAmount = null
@@ -501,7 +501,7 @@ class RequisitionDetailsCompositeService {
     /**
      * Adjust accounting amount
      */
-    private def adjustPercentageAndProcessAccounting = {accountingList ->
+    private final def adjustPercentageAndProcessAccounting = {accountingList ->
         def percentageBeforeAdjustment = 0.0, percentageAfterAdjustment = 0.0, diff = 0.0
         accountingList?.each() {
             percentageBeforeAdjustment += it.percentage

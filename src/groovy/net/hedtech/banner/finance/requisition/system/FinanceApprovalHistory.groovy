@@ -23,6 +23,9 @@ import javax.persistence.*
 public class FinanceApprovalHistory implements Serializable {
 
     @Id
+    @SequenceGenerator(name = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_SEQ_GEN,
+            sequenceName = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_SURROGATE_ID_SEQUENCE, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_SEQ_GEN)
     @Column(name = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_FOBAPPH_SURROGATE_ID, precision = 19)
     Long id
 
