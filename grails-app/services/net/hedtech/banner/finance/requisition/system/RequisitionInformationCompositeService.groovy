@@ -4,6 +4,7 @@
 package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
+import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
 
@@ -56,13 +57,13 @@ class RequisitionInformationCompositeService {
         } else {
             currency = financeCurrencyCompositeService.getFilteredCurrencyDetail(baseCcy)
         }
-        def privateComment = ''
-        def publicComment = ''
+        def privateComment = FinanceProcurementConstants.EMPTY_STRING
+        def publicComment = FinanceProcurementConstants.EMPTY_STRING
         financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd(header.requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_NO).each {
-            privateComment = privateComment + (it.text ? it.text : '')
+            privateComment = privateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
         financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd(header.requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_YES).each {
-            publicComment = publicComment + (it.text ? it.text : '')
+            publicComment = publicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
         LoggerUtility.debug(LOGGER, 'taxGroup: ' + taxGroup)
         LoggerUtility.debug(LOGGER, 'discount: ' + discount)

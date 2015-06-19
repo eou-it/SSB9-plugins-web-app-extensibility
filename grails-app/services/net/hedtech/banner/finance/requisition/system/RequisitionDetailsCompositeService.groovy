@@ -267,17 +267,17 @@ class RequisitionDetailsCompositeService {
             commodity = financeCommodityService.findCommodityByCode( requisitionDetail.commodity )
         }
         boolean isCommodityLevelAccounting = !requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ).isDocumentLevelAccounting
-        def privateComment = ''
-        def publicComment = ''
+        def privateComment = FinanceProcurementConstants.EMPTY_STRING
+        def publicComment = FinanceProcurementConstants.EMPTY_STRING
         financeTextService.getFinanceTextByCodeAndItemAndPrintOption( requisitionDetail.requestCode,
                                                                       requisitionDetail.item,
                                                                       FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
-            privateComment = privateComment + (it.text ? it.text : '')
+            privateComment = privateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
         financeTextService.getFinanceTextByCodeAndItemAndPrintOption( requisitionDetail.requestCode,
                                                                       requisitionDetail.item,
                                                                       FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
-            publicComment = publicComment + (it.text ? it.text : '')
+            publicComment = publicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
         return [requisitionDetail: requisitionDetail,
                 taxGroup         : taxGroup,
