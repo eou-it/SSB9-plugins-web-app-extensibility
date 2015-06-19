@@ -10,7 +10,6 @@ import org.apache.log4j.Logger
  * Class for Purchase Requisition Details and Accounting Composite Service
  */
 class RequisitionDetailsAndAccountingCommonCompositeService {
-    private static final Logger LOGGER = Logger.getLogger( this.class )
     def requisitionDetailService
     boolean transactional = true
 

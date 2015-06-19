@@ -135,6 +135,22 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     }
 
     /**
+     * Test case to test delete purchase requisition detail for commodity level accounting.
+     */
+    @Test
+    void testDeletePurchaseRequisitionDetailForCommodityLvlAcc() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        requisitionDetailsCompositeService.deletePurchaseRequisitionDetail('R0001033', 1)
+        try {
+            requisitionDetailService.getRequisitionDetailByRequestCodeAndItem('R0001033', 1)
+            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL
+        }
+        catch (ApplicationException ae) {
+            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL
+        }
+    }
+
+    /**
      * Test update
      */
     @Test
