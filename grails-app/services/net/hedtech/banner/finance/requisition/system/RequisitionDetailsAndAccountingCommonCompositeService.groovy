@@ -4,13 +4,11 @@
 package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
-import org.apache.log4j.Logger
 
 /**
  * Class for Purchase Requisition Details and Accounting Composite Service
  */
 class RequisitionDetailsAndAccountingCommonCompositeService {
-    private static final Logger LOGGER = Logger.getLogger( this.class )
     def requisitionDetailService
     boolean transactional = true
 
@@ -68,7 +66,7 @@ class RequisitionDetailsAndAccountingCommonCompositeService {
             adjustedPercentage = (FinanceProcurementConstants.HUNDRED * (totalAdditionalCharge * orgPercentage / FinanceProcurementConstants.HUNDRED)
                     .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )) / totalAdditionalCharge
         }
-        adjustedPercentage = adjustedPercentage.setScale( FinanceProcurementConstants.DECIMAL_PRECISION_UNIT_PRICE, BigDecimal.ROUND_HALF_UP )
+        adjustedPercentage = adjustedPercentage.setScale( FinanceProcurementConstants.DECIMAL_PRECISION_PERCENTAGE, BigDecimal.ROUND_HALF_UP )
         requisitionAccountingRequest.percentage = adjustedPercentage
         requisitionAccountingRequest.discountAmountPercent = adjustedPercentage
         requisitionAccountingRequest.additionalChargeAmountPct = adjustedPercentage

@@ -140,7 +140,7 @@ class RequisitionSummaryService extends ServiceBase {
                         commodityAdditionalChargeAmount: it.commodityAdditionalChargeAmount,
                         commodityTaxAmount             : it.commodityTaxAmount,
                         commodityUnitPrice             : it.commodityUnitPrice,
-                        commodityTotal                 : (it.commodityUnitPrice * it.commodityQuantity) + it.commodityTaxAmount + it.commodityAdditionalChargeAmount
+                        commodityTotal                 : (it.commodityUnitPrice * it.commodityQuantity).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + it.commodityTaxAmount + it.commodityAdditionalChargeAmount
                                 - it.commodityDiscountAmount,
                         accounting                     : isCommodityLevelAccounting ? getAccountingForCommodityItem( it.commodityItem ) : null,
                         distributionPercentage         : isCommodityLevelAccounting ? getAccountingDistributionPercentage( getAccountingForCommodityItem( it.commodityItem ) ) : null,

@@ -20,7 +20,7 @@ class FinanceProcurementConstants {
     static final int ONE = 1
 
     static final int DECIMAL_PRECISION = 2
-    static final int DECIMAL_PRECISION_UNIT_PRICE = 4
+    static final int DECIMAL_PRECISION_PERCENTAGE = 8
 
     /* Constant for Requisition Header Domain*/
 
