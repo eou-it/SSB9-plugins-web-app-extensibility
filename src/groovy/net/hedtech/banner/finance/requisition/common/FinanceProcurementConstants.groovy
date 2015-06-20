@@ -13,12 +13,12 @@ class FinanceProcurementConstants {
     static final String DEFAULT_ACTION = 'dashboard'
     static final String INSTITUTION_BASE_CCY = 'institutionBaseCcy'
 
-    static final String DEFAULT_INDICATOR_YES = 'Y'
-    static final String DEFAULT_INDICATOR_NO = 'N'
+    static final char DEFAULT_INDICATOR_YES = 'Y'
+    static final char DEFAULT_INDICATOR_NO = 'N'
     static final int ZERO = 0
     static final int HUNDRED = 100
     static final int ONE = 1
-    static final String EMPTY_STRING = ''
+    static final char EMPTY_STRING = ''
 
     static final int DECIMAL_PRECISION = 2
     static final int DECIMAL_PRECISION_PERCENTAGE = 8
@@ -447,9 +447,6 @@ class FinanceProcurementConstants {
     static final String FINANCE_TEXT_NAMED_QUERY_LIST_ALL_FINANCE_TEXT_BY_CODE = 'FinanceText.listAllFinanceTextByCode'
     static
     final String FINANCE_TEXT_NAMED_QUERY_GET_FINANCE_TEXT_BY_CODE_AND_SEQUENCE_NO_AND_PRINT_IND = 'FinanceText.getFinanceTextByCodeAndItemNumberAndPrintInd'
-    static final String FINANCE_TEXT_NAMED_QUERY_GET_LAST_SEQUENCE = 'FinanceText.getLastSequenceNumberForHeader'
-    static
-    final String FINANCE_TEXT_NAMED_QUERY_GET_LAST_SEQUENCE_FOR_COMMODITY = 'FinanceText.getLastSequenceNumberForCommodity'
     static
     final String FINANCE_TEXT_NAMED_QUERY_LIST_HEADER_LEVEL_TEXT_BY_CODE_AND_PRINT_OPTION_IND = 'FinanceText.listHeaderLevelTextByCodeAndPrintOptionInd'
     static
