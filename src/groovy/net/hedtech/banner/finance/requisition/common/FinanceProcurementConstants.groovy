@@ -13,12 +13,12 @@ class FinanceProcurementConstants {
     static final String DEFAULT_ACTION = 'dashboard'
     static final String INSTITUTION_BASE_CCY = 'institutionBaseCcy'
 
-    static final char DEFAULT_INDICATOR_YES = 'Y'
-    static final char DEFAULT_INDICATOR_NO = 'N'
+    static final String DEFAULT_INDICATOR_YES = 'Y'
+    static final String DEFAULT_INDICATOR_NO = 'N'
     static final int ZERO = 0
     static final int HUNDRED = 100
     static final int ONE = 1
-    static final char EMPTY_STRING = ''
+    static final String EMPTY_STRING = ''
 
     static final int DECIMAL_PRECISION = 2
     static final int DECIMAL_PRECISION_PERCENTAGE = 8
