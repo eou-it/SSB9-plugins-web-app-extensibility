@@ -35,7 +35,7 @@ class RequisitionDetailsCompositeService {
     def financeAccountCompositeService
     def financeTextService
     def financeTextCompositeService
-    def requisitionDetailsAndAccountingCommonCompositeService
+    def requisitionDetailsAcctCommonCompositeService
 
     /**
      * Create purchase requisition detail
@@ -495,7 +495,7 @@ class RequisitionDetailsCompositeService {
         accounting.discountAmount = null
         accounting.taxAmount = null
         accounting.additionalChargeAmount = null
-        requisitionDetailsAndAccountingCommonCompositeService.adjustAccountPercentageAndAmount( accounting )
+        requisitionDetailsAcctCommonCompositeService.adjustAccountPercentageAndAmount( accounting )
         requisitionAccountingService.update( [domainModel: accounting] )
     }
 

@@ -10,7 +10,7 @@ import org.apache.log4j.Logger
 /**
  * Class for Purchase Requisition Details and Accounting Composite Service
  */
-class RequisitionDetailsAndAccountingCommonCompositeService {
+class RequisitionDetailsAcctCommonCompositeService {
     private static final Logger LOGGER = Logger.getLogger( this.class )
     def requisitionDetailService
     boolean transactional = true
@@ -34,8 +34,10 @@ class RequisitionDetailsAndAccountingCommonCompositeService {
             totalExtendedCommodity += (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
             BigDecimal taxAmount = it.taxAmount ? it.taxAmount : new BigDecimal( FinanceProcurementConstants.ZERO )
             totalTax += taxAmount.setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
-            totalDiscount += it.discountAmount.setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
-            totalAdditionalCharge += it.additionalChargeAmount.setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
+            BigDecimal discount = it.discountAmount ? it.discountAmount : new BigDecimal( FinanceProcurementConstants.ZERO )
+            totalDiscount += discount.setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
+            BigDecimal additionalCharge = it.additionalChargeAmount ? it.additionalChargeAmount : new BigDecimal( FinanceProcurementConstants.ZERO )
+            totalAdditionalCharge += additionalCharge.setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )
         }
 
 
