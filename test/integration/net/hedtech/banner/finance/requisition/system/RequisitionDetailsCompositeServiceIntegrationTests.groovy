@@ -246,7 +246,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
      * The test case to list commodity with accounting.
      */
     @Test
-    void testListCommodityWithAccounting() {v
+    void testListCommodityWithAccounting() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                 FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def listCommoityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting('RSD00004')
