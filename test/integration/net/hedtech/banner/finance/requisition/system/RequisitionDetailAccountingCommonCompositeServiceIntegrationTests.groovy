@@ -41,8 +41,7 @@ class RequisitionDetailAccountingCommonCompositeServiceIntegrationTests extends 
     @Test
     void adjustAccountPercentageAndAmountDLA() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def requestCode = requisitionDetailsAcctCommonCompositeService.adjustAccountPercentageAndAmount( requisitionAccountingService.findAccountingByRequestCode( 'RSD00003' )[0] ).requestCode
-        assertTrue requestCode == 'RSD00003'
+        assertTrue requisitionDetailsAcctCommonCompositeService.adjustAccountPercentageAndAmount( requisitionAccountingService.findAccountingByRequestCode( 'RSD00003' )[0] ) > 0.0
     }
 
     /**
@@ -51,7 +50,6 @@ class RequisitionDetailAccountingCommonCompositeServiceIntegrationTests extends 
     @Test
     void adjustAccountPercentageAndAmountCLA() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def requestCode = requisitionDetailsAcctCommonCompositeService.adjustAccountPercentageAndAmount( requisitionAccountingService.findAccountingByRequestCode( 'RSD00005' )[0] ).requestCode
-        assertTrue requestCode == 'RSD00005'
+        assertTrue requisitionDetailsAcctCommonCompositeService.adjustAccountPercentageAndAmount( requisitionAccountingService.findAccountingByRequestCode( 'RSD00005' )[0] ) > 0.0
     }
 }
