@@ -42,7 +42,7 @@ class RequisitionSummaryServiceIntegrationTests extends BaseIntegrationTestCase 
      */
     @Test
     void testFetchRequisitionSummaryForRequestCode() {
-        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode('R0000124')
+        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode('RSD00005')
         assertTrue headers.size() > 0
     }
 
@@ -51,7 +51,7 @@ class RequisitionSummaryServiceIntegrationTests extends BaseIntegrationTestCase 
      */
     @Test
     void testFetchRequisitionSummaryForRequestCodeForCommodityLevelAccounting() {
-        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode('R0001033')
+        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode('RSD00005')
         assertTrue headers.size() > 0
     }
 

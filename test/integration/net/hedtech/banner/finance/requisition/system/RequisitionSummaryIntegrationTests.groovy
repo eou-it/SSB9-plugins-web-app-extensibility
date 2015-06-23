@@ -37,7 +37,7 @@ class RequisitionSummaryIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void fetchRequisitionSummaryForRequestCode() {
-        def requestSummary = RequisitionSummary.fetchRequisitionSummaryForRequestCode 'R0000124';
+        def requestSummary = RequisitionSummary.fetchRequisitionSummaryForRequestCode 'RSD00005';
         assertTrue requestSummary.size() > 0
     }
 }

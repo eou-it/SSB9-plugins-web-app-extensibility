@@ -238,8 +238,8 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     void testFindByRequestCodeAndItem() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                 FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def reqDetailInfo = requisitionDetailsCompositeService.findByRequestCodeAndItem('R0000124', 1)
-        assertTrue(reqDetailInfo.requisitionDetail.requestCode == 'R0000124')
+        def reqDetailInfo = requisitionDetailsCompositeService.findByRequestCodeAndItem('RSD00005', 1)
+        assertTrue(reqDetailInfo.requisitionDetail.requestCode == 'RSD00005')
     }
 
     /**
@@ -249,7 +249,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     void testListCommodityWithAccounting() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                 FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def listCommoityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting('R0000124')
+        def listCommoityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting('RSD00005')
         assertTrue(listCommoityWithAccounting.size() > 0)
     }
 
@@ -258,12 +258,13 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testListCommodityWithDocumentLevelAccounting() {
-        def list = requisitionDetailsCompositeService.listCommodityWithDocumentLevelAccounting('R0000124')
+        def list = requisitionDetailsCompositeService.listCommodityWithDocumentLevelAccounting('RSD00005')
         assertTrue(list.size() > 0)
     }
 
+    @Test
     void testListCommodityWithCommodityLevelAccounting() {
-        def listCommoityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting('R0000004')
+        def listCommoityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting('RSD00003')
         assertTrue(listCommoityWithAccounting.size() > 0)
     }
 
