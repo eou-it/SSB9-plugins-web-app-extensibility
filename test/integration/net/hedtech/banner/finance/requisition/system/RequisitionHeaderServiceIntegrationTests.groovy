@@ -43,7 +43,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testListRequisitionHeadersByUserName() {
         def paginationParam = [max: 500, offset: 0]
-        def headers = requisitionHeaderService.listRequisitionHeaderForLoggedInUser(paginationParam)
+        def headers = requisitionHeaderService.listRequisitionHeaderForLoggedInUser( paginationParam )
         assertTrue headers.size() > 0
     }
 
@@ -55,7 +55,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
         login 'grails_user', 'u_pick_it'
         def paginationParam = [max: 500, offset: 0]
         try {
-            requisitionHeaderService.listRequisitionHeaderForLoggedInUser(paginationParam)
+            requisitionHeaderService.listRequisitionHeaderForLoggedInUser( paginationParam )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
         }
         catch (ApplicationException ae) {
@@ -72,7 +72,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
         springSecurityService.getAuthentication().user.oracleUserName = ''
         def paginationParam = [max: 500, offset: 0]
         try {
-            requisitionHeaderService.listRequisitionHeaderForLoggedInUser(paginationParam)
+            requisitionHeaderService.listRequisitionHeaderForLoggedInUser( paginationParam )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID
         } catch (ApplicationException ae) {
             assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID
@@ -88,7 +88,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
     void testFindRequisitionHeaderByRequestCodeFailedCase() {
 
         try {
-            requisitionHeaderService.findRequisitionHeaderByRequestCode('INVALID_CODE')
+            requisitionHeaderService.findRequisitionHeaderByRequestCode( 'INVALID_CODE' )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
         }
         catch (ApplicationException ae) {
@@ -103,9 +103,9 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
     void testFindRequisitionHeaderByRequestCode() {
 
         def requestHeader = newRequisitionHeader()
-        requestHeader.save(failOnError: true, flush: true)
+        requestHeader.save( failOnError: true, flush: true )
         requestHeader.refresh()
-        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode(requestHeader.requestCode)
+        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestHeader.requestCode )
         assertTrue header.requestCode == requestHeader.requestCode
     }
 
@@ -123,7 +123,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
     @Test
     public void testRecallRequisitionFailCase() {
         try {
-            requisitionHeaderService.recallRequisition('R0001435')
+            requisitionHeaderService.recallRequisition( 'RSD00001' )
         } catch (ApplicationException e) {
             assertApplicationException e, (FinanceProcurementConstants.ERROR_MESSAGE_RECALL_REQUISITION_PENDING_REQ_IS_REQUIRED)
         }

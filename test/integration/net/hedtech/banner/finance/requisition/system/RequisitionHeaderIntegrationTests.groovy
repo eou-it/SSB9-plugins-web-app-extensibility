@@ -14,7 +14,7 @@ import org.junit.Test
  */
 class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
 
-    def reqCode = "R0000026"
+    def reqCode = "RSD00001"
 
 
     @Before

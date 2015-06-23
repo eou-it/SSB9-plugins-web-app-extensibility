@@ -4,6 +4,7 @@
 package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
 
 /**
@@ -53,7 +54,6 @@ class RequisitionDetailsAndAccountingCommonCompositeService {
                 .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + (totalExtendedCommodity * (FinanceProcurementConstants.HUNDRED - orgPercentage) / FinanceProcurementConstants.HUNDRED)
                 .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ))
 
-
         // Check If at least one of them is true, and also find out what the adjusted % value is going to be.
         if (isAdjustmentNeededForExtendedAmount) {
             adjustedPercentage = (FinanceProcurementConstants.HUNDRED * (totalExtendedCommodity * orgPercentage / FinanceProcurementConstants.HUNDRED)
@@ -68,7 +68,11 @@ class RequisitionDetailsAndAccountingCommonCompositeService {
             adjustedPercentage = (FinanceProcurementConstants.HUNDRED * (totalAdditionalCharge * orgPercentage / FinanceProcurementConstants.HUNDRED)
                     .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )) / totalAdditionalCharge
         }
+        LoggerUtility.debug( LOGGER, 'adjustedPercentage before scaling  : ' + adjustedPercentage )
+
         adjustedPercentage = adjustedPercentage.setScale( FinanceProcurementConstants.DECIMAL_PRECISION_PERCENTAGE, BigDecimal.ROUND_HALF_UP )
+        LoggerUtility.debug( LOGGER, 'adjustedPercentage after scaling : ' + adjustedPercentage )
+
         requisitionAccountingRequest.percentage = adjustedPercentage
         requisitionAccountingRequest.discountAmountPercent = adjustedPercentage
         requisitionAccountingRequest.additionalChargeAmountPct = adjustedPercentage
