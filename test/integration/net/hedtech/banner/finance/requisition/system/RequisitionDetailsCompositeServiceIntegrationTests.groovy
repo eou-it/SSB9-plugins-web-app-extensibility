@@ -238,18 +238,18 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     void testFindByRequestCodeAndItem() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                 FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def reqDetailInfo = requisitionDetailsCompositeService.findByRequestCodeAndItem('RSD00005', 1)
-        assertTrue(reqDetailInfo.requisitionDetail.requestCode == 'RSD00005')
+        def reqDetailInfo = requisitionDetailsCompositeService.findByRequestCodeAndItem('RSD00004', 1)
+        assertTrue(reqDetailInfo.requisitionDetail.requestCode == 'RSD00004')
     }
 
     /**
      * The test case to list commodity with accounting.
      */
     @Test
-    void testListCommodityWithAccounting() {
+    void testListCommodityWithAccounting() {v
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                 FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def listCommoityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting('RSD00005')
+        def listCommoityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting('RSD00004')
         assertTrue(listCommoityWithAccounting.size() > 0)
     }
 
@@ -258,7 +258,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testListCommodityWithDocumentLevelAccounting() {
-        def list = requisitionDetailsCompositeService.listCommodityWithDocumentLevelAccounting('RSD00005')
+        def list = requisitionDetailsCompositeService.listCommodityWithDocumentLevelAccounting('RSD00004')
         assertTrue(list.size() > 0)
     }
 
