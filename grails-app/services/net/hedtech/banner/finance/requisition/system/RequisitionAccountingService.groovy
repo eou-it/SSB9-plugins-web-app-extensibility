@@ -6,6 +6,7 @@ package net.hedtech.banner.finance.requisition.system
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import net.hedtech.banner.finance.util.FinanceCommonUtility
 import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.service.ServiceBase
 import org.apache.log4j.Logger
@@ -27,7 +28,7 @@ class RequisitionAccountingService extends ServiceBase {
      */
     def findBasicAccountingByRequestCodeItemAndSeq( requisitionCode, Integer item, Integer sequenceNumber ) {
         LoggerUtility.debug( LOGGER, 'Input parameter for findBasicAccountingByRequestCodeItemAndSeq :' + requisitionCode )
-       RequisitionAccounting.fetchByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber ).list
+        RequisitionAccounting.fetchByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber ).list
     }
     /**
      * This method is used to find RequisitionAccounting by requisition code, item number and sequence number.
@@ -68,7 +69,7 @@ class RequisitionAccountingService extends ServiceBase {
              discountAmount        : it.discountAmount,
              taxAmount             : it.taxAmount,
              userId                : it.userId,
-             accountTotal          : it.requisitionAmount + it.additionalChargeAmount + it.taxAmount - it.discountAmount
+             accountTotal          : it.requisitionAmount + FinanceCommonUtility.nullToZero( it.additionalChargeAmount ) + FinanceCommonUtility.nullToZero( it.taxAmount ) - FinanceCommonUtility.nullToZero( it.discountAmount )
             ]
         }.getAt( 0 )
     }

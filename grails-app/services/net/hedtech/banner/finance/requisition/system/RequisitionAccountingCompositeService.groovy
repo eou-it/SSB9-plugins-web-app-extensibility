@@ -7,6 +7,7 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
+import net.hedtech.banner.finance.util.FinanceCommonUtility
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
 
@@ -233,7 +234,7 @@ class RequisitionAccountingCompositeService {
         def allAccountingAmount = 0
         def totalPercentage = 0
         allAccounting.each() {
-            allAccountingAmount += it.requisitionAmount + it.additionalChargeAmount + it.taxAmount - it.discountAmount
+            allAccountingAmount += it.requisitionAmount + FinanceCommonUtility.nullToZero(it.additionalChargeAmount) + FinanceCommonUtility.nullToZero(it.taxAmount) - FinanceCommonUtility.nullToZero(it.discountAmount)
             totalPercentage += it.percentage
         }
 
