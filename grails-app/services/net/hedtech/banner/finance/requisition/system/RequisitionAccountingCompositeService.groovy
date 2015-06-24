@@ -140,15 +140,16 @@ class RequisitionAccountingCompositeService {
     def findByRequestCodeItemAndSeq( requisitionCode, Integer item, Integer sequenceNumber ) {
         LoggerUtility.debug( LOGGER, String.format( 'Input parameter for findByRequestCodeItemAndSeq :%1s , %2d ,%3d', requisitionCode, item, sequenceNumber ) )
         def dummyPaginationParam = [max: 1, offset: 0]
+        def headerTnxDate = requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionCode ).transactionDate
         def requisitionAccounting = findCompleteAccountingByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber )
         def financeAccountIndex = financeAccountIndexService.listByIndexCodeOrTitleAndEffectiveDate( [coaCode: requisitionAccounting.chartOfAccount, indexCodeTitle: requisitionAccounting.accountIndex], dummyPaginationParam )?.get( 0 )
         def financeFund = financeFundCompositeService.findFundListByEffectiveDateAndFundCode( [effectiveDate: null, codeTitle: requisitionAccounting.fund, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )
         def financeOrganization = financeOrganizationCompositeService.findOrganizationListByEffectiveDateAndSearchParam( [searchParam  : requisitionAccounting.organization,
-                                                                                                                          effectiveDate: requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionCode ).transactionDate,
+                                                                                                                          effectiveDate: headerTnxDate,
                                                                                                                           coaCode      : requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )
 
         [accounting: requisitionAccounting, cifoapalp: [
-                chartOfAccount: [code: requisitionAccounting.chartOfAccount, title: requisitionAccounting.chartOfAccount ? chartOfAccountsService.getChartOfAccountByCode( requisitionAccounting.chartOfAccount )?.title : null],
+                chartOfAccount: [code: requisitionAccounting.chartOfAccount, title: requisitionAccounting.chartOfAccount ? chartOfAccountsService.getChartOfAccountByCode( requisitionAccounting.chartOfAccount, headerTnxDate )?.title : null],
                 index         : [
                         code                       : requisitionAccounting.accountIndex,
                         title                      : requisitionAccounting.accountIndex ? financeAccountIndex?.title : null,

@@ -355,10 +355,11 @@ class RequisitionDetailsCompositeService {
     }
 
 /**
- *
+ * List commodities detail for Commodity level accounting
+ * @param headerTxnDate
  * @param requisitionCode
  */
-    def private listCommodityWithCommodityLevelAccounting( requisitionCode ) {
+    def private listCommodityWithCommodityLevelAccounting( requisitionCode, headerTxnDate ) {
         def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
         def commodityCodes = requisitionDetails.collect() {
             it.commodity
@@ -415,7 +416,7 @@ class RequisitionDetailsCompositeService {
                                       commodityDescription: it.commodityDescription,
                                       coaCode             : getCOACode( it.commodity ),
                                       coaDescription      : getCOACode( it.commodity )
-                                              ? chartOfAccountsService.getChartOfAccountByCode( getCOACode( it.commodity ) )?.title
+                                              ? chartOfAccountsService.getChartOfAccountByCode( getCOACode( it.commodity ), headerTxnDate )?.title
                                               : null,
                                       accountCode         : getAccountCode( it.commodity ),
                                       accountDescription  : getAccountCode( it.commodity )

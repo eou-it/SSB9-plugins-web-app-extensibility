@@ -39,7 +39,7 @@ class RequisitionInformationCompositeService {
         def organization = financeOrganizationCompositeService.
                 findOrganizationListByEffectiveDateAndSearchParam( [searchParam: header.organization, effectiveDate: header.transactionDate, coaCode: header.chartOfAccount], [offset: 0, max: 1] )
         LoggerUtility.debug( LOGGER, 'organization: ' + organization )
-        def coa = chartOfAccountsService.getChartOfAccountByCode( header.chartOfAccount )
+        def coa = chartOfAccountsService.getChartOfAccountByCode( header.chartOfAccount, header.transactionDate )
         LoggerUtility.debug( LOGGER, 'coa: ' + coa )
         def taxGroup, vendor, discount = [], currency = []
         if (header.taxGroup) {
