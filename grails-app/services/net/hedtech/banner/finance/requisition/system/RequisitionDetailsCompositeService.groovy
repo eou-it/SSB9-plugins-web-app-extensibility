@@ -188,7 +188,7 @@ class RequisitionDetailsCompositeService {
             requisitionDetailRequest.taxGroup = null
         }
         // Check for Commodity
-        requisitionDetailRequest.commodityDescription = requisitionDetailRequest.commodity ? financeCommodityService.findCommodityByCode( requisitionDetailRequest.commodity ).description : requisitionDetailRequest.commodityDescription
+        requisitionDetailRequest.commodityDescription = requisitionDetailRequest.commodity ? financeCommodityService.findCommodityByCode( requisitionDetailRequest.commodity, requisitionHeader.transactionDate ).description : requisitionDetailRequest.commodityDescription
         // If details have discount code setup then remove the discountAmount value from details
         if (requisitionHeader.discount != null) {
             requisitionDetailRequest.discountAmount = null
@@ -206,7 +206,7 @@ class RequisitionDetailsCompositeService {
         def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
         Map commodityCodeDescMap = financeCommodityService.findCommodityByCodeList( requisitionDetails.collect() {
             it.commodity
-        } ).collectEntries {
+        }, requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ).transactionDate ).collectEntries {
             [it.commodityCode, it.description]
         }
         requisitionDetails.collect() {
@@ -242,9 +242,9 @@ class RequisitionDetailsCompositeService {
         def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionCode )
         def list = [:]
         if (header.isDocumentLevelAccounting == FinanceProcurementConstants.TRUE) {
-            list = listCommodityWithDocumentLevelAccounting( requisitionCode )
+            list = listCommodityWithDocumentLevelAccounting( requisitionCode, header.transactionDate )
         } else {
-            list = listCommodityWithCommodityLevelAccounting( requisitionCode )
+            list = listCommodityWithCommodityLevelAccounting( requisitionCode, header.transactionDate )
         }
         list
     }
@@ -266,7 +266,7 @@ class RequisitionDetailsCompositeService {
             taxGroup = financeTaxCompositeService.getTaxGroupByCode( requisitionDetail.taxGroup, reqHeader.transactionDate )
         }
         if (requisitionDetail.commodity) {
-            commodity = financeCommodityService.findCommodityByCode( requisitionDetail.commodity )
+            commodity = financeCommodityService.findCommodityByCode( requisitionDetail.commodity, reqHeader.transactionDate )
         }
         boolean isCommodityLevelAccounting = !reqHeader.isDocumentLevelAccounting
         def privateComment = FinanceProcurementConstants.EMPTY_STRING
@@ -296,12 +296,12 @@ class RequisitionDetailsCompositeService {
      * @param requisitionCode
      * @return
      */
-    def private listCommodityWithDocumentLevelAccounting( requisitionCode ) {
+    def private listCommodityWithDocumentLevelAccounting( requisitionCode, headerTnxDate ) {
         def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
         def commodityCodes = requisitionDetails.collect() {
             it.commodity
         }
-        Map commodityCodeDescMap = financeCommodityService.findCommodityByCodeList( commodityCodes ).collectEntries {
+        Map commodityCodeDescMap = financeCommodityService.findCommodityByCodeList( commodityCodes, headerTnxDate ).collectEntries {
             [it.commodityCode, it.description]
         }
         def accounting = requisitionAccountingService.findAccountingByRequestCode( requisitionCode )
@@ -365,7 +365,7 @@ class RequisitionDetailsCompositeService {
         def commodityCodes = requisitionDetails.collect() {
             it.commodity
         }
-        Map commodityCodeDescMap = financeCommodityService.findCommodityByCodeList( commodityCodes ).collectEntries {
+        Map commodityCodeDescMap = financeCommodityService.findCommodityByCodeList( commodityCodes, headerTxnDate ).collectEntries {
             [it.commodityCode, it.description]
         }
         Map accountingMap = requisitionAccountingService.findAccountingByRequestCode( requisitionCode ).collectEntries {
