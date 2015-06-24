@@ -257,17 +257,18 @@ class RequisitionDetailsCompositeService {
      */
     def findByRequestCodeAndItem( requestCode, Integer item ) {
         def taxGroup, unitOfMeasure, commodity = []
+        def reqHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         def requisitionDetail = requisitionDetailService.findByRequestCodeAndItem( requestCode, item )
         if (requisitionDetail.unitOfMeasure) {
             unitOfMeasure = financeUnitOfMeasureService.findUnitOfMeasureByCode( requisitionDetail.unitOfMeasure )
         }
         if (requisitionDetail.taxGroup) {
-            taxGroup = financeTaxCompositeService.getTaxGroupByCode( requisitionDetail.taxGroup )
+            taxGroup = financeTaxCompositeService.getTaxGroupByCode( requisitionDetail.taxGroup, reqHeader.transactionDate )
         }
         if (requisitionDetail.commodity) {
             commodity = financeCommodityService.findCommodityByCode( requisitionDetail.commodity )
         }
-        boolean isCommodityLevelAccounting = !requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ).isDocumentLevelAccounting
+        boolean isCommodityLevelAccounting = !reqHeader.isDocumentLevelAccounting
         def privateComment = FinanceProcurementConstants.EMPTY_STRING
         def publicComment = FinanceProcurementConstants.EMPTY_STRING
         financeTextService.getFinanceTextByCodeAndItemAndPrintOption( requisitionDetail.requestCode,
@@ -318,7 +319,7 @@ class RequisitionDetailsCompositeService {
              quantity              : it.quantity,
              taxAmount             : it.taxAmount,
              extendedAmount        : (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ),
-             commodityTotalAmount  : (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + FinanceCommonUtility.nullToZero(it.taxAmount) + FinanceCommonUtility.nullToZero(it.additionalChargeAmount) - FinanceCommonUtility.nullToZero(it.discountAmount),
+             commodityTotalAmount  : (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + FinanceCommonUtility.nullToZero( it.taxAmount ) + FinanceCommonUtility.nullToZero( it.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( it.discountAmount ),
              taxGroup              : it.taxGroup,
              unitOfMeasure         : it.unitOfMeasure,
              unitPrice             : it.unitPrice]
@@ -342,7 +343,7 @@ class RequisitionDetailsCompositeService {
               project                  : it.project,
               discountAmount           : it.discountAmount,
               taxAmount                : it.taxAmount,
-              accountingTotalAmount    : it.requisitionAmount + FinanceCommonUtility.nullToZero(it.taxAmount) + FinanceCommonUtility.nullToZero(it.additionalChargeAmount) - FinanceCommonUtility.nullToZero(it.discountAmount),
+              accountingTotalAmount    : it.requisitionAmount + FinanceCommonUtility.nullToZero( it.taxAmount ) + FinanceCommonUtility.nullToZero( it.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( it.discountAmount ),
               additionalChargeAmount   : it.additionalChargeAmount,
               discountAmountPercent    : it.discountAmountPercent,
               additionalChargeAmountPct: it.additionalChargeAmountPct,
@@ -384,7 +385,7 @@ class RequisitionDetailsCompositeService {
                                                                               project                  : it.project,
                                                                               discountAmount           : it.discountAmount,
                                                                               taxAmount                : it.taxAmount,
-                                                                              accountingTotalAmount    : it.requisitionAmount + FinanceCommonUtility.nullToZero(it.taxAmount) + FinanceCommonUtility.nullToZero(it.additionalChargeAmount) - FinanceCommonUtility.nullToZero(it.discountAmount),
+                                                                              accountingTotalAmount    : it.requisitionAmount + FinanceCommonUtility.nullToZero( it.taxAmount ) + FinanceCommonUtility.nullToZero( it.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( it.discountAmount ),
                                                                               additionalChargeAmount   : it.additionalChargeAmount,
                                                                               discountAmountPercent    : it.discountAmountPercent,
                                                                               additionalChargeAmountPct: it.additionalChargeAmountPct,
@@ -432,7 +433,7 @@ class RequisitionDetailsCompositeService {
              quantity              : it.quantity,
              taxAmount             : it.taxAmount,
              extendedAmount        : (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ),
-             commodityTotalAmount  : (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + FinanceCommonUtility.nullToZero(it.taxAmount) + FinanceCommonUtility.nullToZero(it.additionalChargeAmount) - FinanceCommonUtility.nullToZero(it.discountAmount),
+             commodityTotalAmount  : (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + FinanceCommonUtility.nullToZero( it.taxAmount ) + FinanceCommonUtility.nullToZero( it.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( it.discountAmount ),
              taxGroup              : it.taxGroup,
              unitOfMeasure         : it.unitOfMeasure,
              unitPrice             : it.unitPrice,
@@ -465,7 +466,7 @@ class RequisitionDetailsCompositeService {
     private final def fetchSumOfAccountingTotal = {accountingList ->
         def sum = 0.0
         accountingList.each {it ->
-            sum += it.requisitionAmount + FinanceCommonUtility.nullToZero(it.taxAmount) + FinanceCommonUtility.nullToZero(it.additionalChargeAmount) - FinanceCommonUtility.nullToZero(it.discountAmount)
+            sum += it.requisitionAmount + FinanceCommonUtility.nullToZero( it.taxAmount ) + FinanceCommonUtility.nullToZero( it.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( it.discountAmount )
         }
         sum
     }
@@ -476,7 +477,7 @@ class RequisitionDetailsCompositeService {
     private final def fetchSumOfCommodityTotal = {commodityList ->
         def sum = 0.0
         commodityList.each {it ->
-            sum += (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + FinanceCommonUtility.nullToZero(it.taxAmount) + FinanceCommonUtility.nullToZero(it.additionalChargeAmount) - FinanceCommonUtility.nullToZero(it.discountAmount)
+            sum += (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + FinanceCommonUtility.nullToZero( it.taxAmount ) + FinanceCommonUtility.nullToZero( it.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( it.discountAmount )
         }
         sum
     }

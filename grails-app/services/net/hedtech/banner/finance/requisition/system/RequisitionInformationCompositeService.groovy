@@ -43,7 +43,7 @@ class RequisitionInformationCompositeService {
         LoggerUtility.debug( LOGGER, 'coa: ' + coa )
         def taxGroup, vendor, discount = [], currency = []
         if (header.taxGroup) {
-            taxGroup = financeTaxGroupService.findTaxGroupsByTaxGroupCode( header.taxGroup )
+            taxGroup = financeTaxGroupService.findTaxGroupsByTaxGroupCode( header.taxGroup, header.transactionDate )
         }
         if (header.vendorPidm) {
             vendor = financeVendorService.fetchFinanceVendor( [vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence] )
