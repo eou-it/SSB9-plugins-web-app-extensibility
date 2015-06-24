@@ -36,7 +36,7 @@ class UserProfileCompositeService {
                        requesterShipCode: userProfileObj.requesterShipCode, requesterCaosCode: userProfileObj.requesterCaosCode]
         if (userProfile.requesterShipCode) {
             try {
-                def shipTo = shipToCodeService.findShipToCodesByCode( userProfile.requesterShipCode )
+                def shipTo = shipToCodeService.findShipToCodesByCode( userProfile.requesterShipCode, effectiveDate )
                 shipToCode = [zipCode     : shipTo.zipCode, state: shipTo.state, city: shipTo.city, shipCode: shipTo.shipCode, addressLine1: shipTo.addressLine1,
                               addressLine2: shipTo.addressLine2, addressLine3: shipTo.addressLine3, contact: shipTo.contact]
             } catch (ApplicationException ae) {

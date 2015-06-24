@@ -34,7 +34,7 @@ class RequisitionInformationCompositeService {
         def privateComment, publicComment
         def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         LoggerUtility.debug( LOGGER, 'Header: ' + header )
-        def shipTo = shipToCodeService.findShipToCodesByCode( header.ship )
+        def shipTo = shipToCodeService.findShipToCodesByCode( header.ship, header.transactionDate )
         LoggerUtility.debug( LOGGER, 'shipTo: ' + shipTo )
         def organization = financeOrganizationCompositeService.
                 findOrganizationListByEffectiveDateAndSearchParam( [searchParam: header.organization, effectiveDate: header.transactionDate, coaCode: header.chartOfAccount], [offset: 0, max: 1] )
