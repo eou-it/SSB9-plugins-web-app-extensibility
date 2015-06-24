@@ -56,7 +56,7 @@ class RequisitionInformationCompositeService {
             def currencyObj = financeCurrencyService.findCurrencyByCurrencyCode( header.currency )
             currency = [currencyCode: currencyObj.currencyCode, title: currencyObj.title]
         } else {
-            currency = financeCurrencyCompositeService.getFilteredCurrencyDetail( baseCcy )
+            currency = financeCurrencyCompositeService.getFilteredCurrencyDetail( baseCcy, header.transactionDate )
         }
         privateComment = FinanceProcurementConstants.EMPTY_STRING
         publicComment = FinanceProcurementConstants.EMPTY_STRING
