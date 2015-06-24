@@ -53,7 +53,7 @@ class RequisitionInformationCompositeService {
             discount = [discountCode: discountObj.discountCode, discountDescription: discountObj.discountDescription]
         }
         if (header.currency) {
-            def currencyObj = financeCurrencyService.findCurrencyByCurrencyCode( header.currency )
+            def currencyObj = financeCurrencyService.findCurrencyByCurrencyCode( header.currency, header.transactionDate )
             currency = [currencyCode: currencyObj.currencyCode, title: currencyObj.title]
         } else {
             currency = financeCurrencyCompositeService.getFilteredCurrencyDetail( baseCcy, header.transactionDate )
