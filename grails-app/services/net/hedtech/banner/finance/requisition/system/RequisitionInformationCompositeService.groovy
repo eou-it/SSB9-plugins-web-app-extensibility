@@ -46,7 +46,7 @@ class RequisitionInformationCompositeService {
             taxGroup = financeTaxGroupService.findTaxGroupsByTaxGroupCode( header.taxGroup, header.transactionDate )
         }
         if (header.vendorPidm) {
-            vendor = financeVendorService.fetchFinanceVendor( [vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence] )
+            vendor = financeVendorService.fetchFinanceVendor( [vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence, effectiveDate: header.transactionDate] )
         }
         if (header.discount) {
             def discountObj = financeDiscountService.findDiscountByDiscountCode( header.discount )
