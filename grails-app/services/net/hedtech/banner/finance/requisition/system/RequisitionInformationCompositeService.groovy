@@ -49,7 +49,7 @@ class RequisitionInformationCompositeService {
             vendor = financeVendorService.fetchFinanceVendor( [vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence, effectiveDate: header.transactionDate] )
         }
         if (header.discount) {
-            def discountObj = financeDiscountService.findDiscountByDiscountCode( header.discount )
+            def discountObj = financeDiscountService.findDiscountByDiscountCode( header.discount, header.transactionDate )
             discount = [discountCode: discountObj.discountCode, discountDescription: discountObj.discountDescription]
         }
         if (header.currency) {

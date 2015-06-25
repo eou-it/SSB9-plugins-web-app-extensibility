@@ -260,7 +260,7 @@ class RequisitionDetailsCompositeService {
         def reqHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         def requisitionDetail = requisitionDetailService.findByRequestCodeAndItem( requestCode, item )
         if (requisitionDetail.unitOfMeasure) {
-            unitOfMeasure = financeUnitOfMeasureService.findUnitOfMeasureByCode( requisitionDetail.unitOfMeasure )
+            unitOfMeasure = financeUnitOfMeasureService.findUnitOfMeasureByCode( requisitionDetail.unitOfMeasure, reqHeader.transactionDate )
         }
         if (requisitionDetail.taxGroup) {
             taxGroup = financeTaxCompositeService.getTaxGroupByCode( requisitionDetail.taxGroup, reqHeader.transactionDate )
