@@ -397,7 +397,7 @@ class RequisitionDetailsCompositeService {
                 it.key.tokenize( FinanceValidationConstants.COLON )[0] == commodityItem.toString()
             }.collect() {it -> it.value}
         }
-        def commodityRepeatMap = financeCommodityRepeatService.findCommodityRepeatByEffectiveDate( null )?.collectEntries() {
+        def commodityRepeatMap = financeCommodityRepeatService.findCommodityRepeatByEffectiveDate( headerTxnDate )?.collectEntries() {
             [it.commodityCode, it]
         }
         def getCOACode = {
@@ -424,7 +424,7 @@ class RequisitionDetailsCompositeService {
                                               ? financeAccountCompositeService.getListByAccountOrChartOfAccAndEffectiveDate(
                                               [searchParam  : getAccountCode( it.commodity ),
                                                coaCode      : getCOACode( it.commodity ),
-                                               effectiveDate: null,], [max: 1, offset: 0] )?.get( 0 )?.title
+                                               effectiveDate: headerTxnDate], [max: 1, offset: 0] )?.get( 0 )?.title
                                               : null
              ],
              currency              : it.currency,

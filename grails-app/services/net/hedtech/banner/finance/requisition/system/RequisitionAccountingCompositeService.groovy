@@ -142,8 +142,8 @@ class RequisitionAccountingCompositeService {
         def dummyPaginationParam = [max: 1, offset: 0]
         def headerTnxDate = requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionCode ).transactionDate
         def requisitionAccounting = findCompleteAccountingByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber )
-        def financeAccountIndex = financeAccountIndexService.listByIndexCodeOrTitleAndEffectiveDate( [coaCode: requisitionAccounting.chartOfAccount, indexCodeTitle: requisitionAccounting.accountIndex], dummyPaginationParam )?.get( 0 )
-        def financeFund = financeFundCompositeService.findFundListByEffectiveDateAndFundCode( [effectiveDate: null, codeTitle: requisitionAccounting.fund, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )
+        def financeAccountIndex = financeAccountIndexService.listByIndexCodeOrTitleAndEffectiveDate( [coaCode: requisitionAccounting.chartOfAccount, effectiveDate: headerTnxDate, indexCodeTitle: requisitionAccounting.accountIndex], dummyPaginationParam )?.get( 0 )
+        def financeFund = financeFundCompositeService.findFundListByEffectiveDateAndFundCode( [effectiveDate: headerTnxDate, codeTitle: requisitionAccounting.fund, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )
         def financeOrganization = financeOrganizationCompositeService.findOrganizationListByEffectiveDateAndSearchParam( [searchParam  : requisitionAccounting.organization,
                                                                                                                           effectiveDate: headerTnxDate,
                                                                                                                           coaCode      : requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )
@@ -203,11 +203,11 @@ class RequisitionAccountingCompositeService {
                         defaultLocationTitle: financeOrganization?.defaultLocationTitle
                 ],
                 account       : [code: requisitionAccounting.account, title: requisitionAccounting.account ? financeAccountCompositeService.getListByAccountOrChartOfAccAndEffectiveDate(
-                        [searchParam: requisitionAccounting.account, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )?.title : null],
-                program       : [code: requisitionAccounting.program, title: requisitionAccounting.program ? programService.findByCoaProgramAndEffectiveDate( [coa: requisitionAccounting.chartOfAccount, programCodeDesc: requisitionAccounting.program], dummyPaginationParam )?.get( 0 )?.title : null],
-                activity      : [code: requisitionAccounting.activity, title: requisitionAccounting.activity ? activityService.getListByActivityCodeTitleAndEffectiveDate( [activityCodeTitle: requisitionAccounting.activity, coaCode: requisitionAccounting.chartOfAccount], null, dummyPaginationParam )?.get( 0 )?.title : null],
-                location      : [code: requisitionAccounting.location, title: requisitionAccounting.location ? locationService.getLocationByCodeTitleAndEffectiveDate( [codeTitle: requisitionAccounting.location, coaCode: requisitionAccounting.chartOfAccount], null, dummyPaginationParam )?.get( 0 )?.title : null],
-                project       : [code: requisitionAccounting.project, title: requisitionAccounting.project ? financeProjectCompositeService.getListByProjectAndEffectiveDate( [projectCodeDesc: requisitionAccounting.project, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )?.longDescription : null]]]
+                        [searchParam: requisitionAccounting.account, effectiveDate: headerTnxDate, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )?.title : null],
+                program       : [code: requisitionAccounting.program, title: requisitionAccounting.program ? programService.findByCoaProgramAndEffectiveDate( [coa: requisitionAccounting.chartOfAccount, effectiveDate: headerTnxDate, programCodeDesc: requisitionAccounting.program], dummyPaginationParam )?.get( 0 )?.title : null],
+                activity      : [code: requisitionAccounting.activity, title: requisitionAccounting.activity ? activityService.getListByActivityCodeTitleAndEffectiveDate( [activityCodeTitle: requisitionAccounting.activity, coaCode: requisitionAccounting.chartOfAccount], headerTnxDate, dummyPaginationParam )?.get( 0 )?.title : null],
+                location      : [code: requisitionAccounting.location, title: requisitionAccounting.location ? locationService.getLocationByCodeTitleAndEffectiveDate( [codeTitle: requisitionAccounting.location, coaCode: requisitionAccounting.chartOfAccount], headerTnxDate, dummyPaginationParam )?.get( 0 )?.title : null],
+                project       : [code: requisitionAccounting.project, title: requisitionAccounting.project ? financeProjectCompositeService.getListByProjectAndEffectiveDate( [projectCodeDesc: requisitionAccounting.project, coaCode: requisitionAccounting.chartOfAccount, effectiveDate: headerTnxDate], dummyPaginationParam )?.get( 0 )?.longDescription : null]]]
     }
 
     /**
@@ -235,7 +235,7 @@ class RequisitionAccountingCompositeService {
         def allAccountingAmount = 0
         def totalPercentage = 0
         allAccounting.each() {
-            allAccountingAmount += it.requisitionAmount + FinanceCommonUtility.nullToZero(it.additionalChargeAmount) + FinanceCommonUtility.nullToZero(it.taxAmount) - FinanceCommonUtility.nullToZero(it.discountAmount)
+            allAccountingAmount += it.requisitionAmount + FinanceCommonUtility.nullToZero( it.additionalChargeAmount ) + FinanceCommonUtility.nullToZero( it.taxAmount ) - FinanceCommonUtility.nullToZero( it.discountAmount )
             totalPercentage += it.percentage
         }
 
