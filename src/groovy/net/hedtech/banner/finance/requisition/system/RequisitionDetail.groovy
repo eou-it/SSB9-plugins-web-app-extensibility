@@ -97,10 +97,8 @@ class RequisitionDetail implements Serializable {
     String organization
 
 
-    //bi-directional many-to-one association to FinanceBuyer
-    @ManyToOne
-    @JoinColumn(name = FinanceProcurementConstants.FIELD_FPRREQD_BUYR_CODE, referencedColumnName="FTVBUYR_CODE")
-    FinanceBuyerVerification buyer
+    @Column(name = FinanceProcurementConstants.FIELD_FPRREQD_BUYR_CODE)
+    String buyer
 
     /**
      * QUANTITY:  The quantity requested for the specific line item.

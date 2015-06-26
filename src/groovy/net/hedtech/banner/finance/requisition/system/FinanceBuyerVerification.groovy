@@ -19,25 +19,19 @@ import javax.persistence.*
 @ToString(includeNames = true, ignoreNulls = true)
 @NamedQueries(value = [
         @NamedQuery(name = FinanceProcurementConstants.FINANCE_BUYER_VERIFICATION_NAMED_QUERY_FIND_BY_REQUEST_CODE,
-                query = """SELECT DISTINCT buyerVerification FROM FinanceBuyerVerification buyerVerification
-                            JOIN buyerVerification.requisitionDetails requisitionDetails
-                            WHERE requisitionDetails.requestCode = :requestCode""")
+                query = """FROM FinanceBuyerVerification buyerVerification
+                            WHERE buyerVerification.requestCode = :requestCode""")
 ])
 public class FinanceBuyerVerification implements Serializable {
 
-    @Id
-    @Column(name = FinanceProcurementConstants.FINANCE_BUYER_VERIFICATION_FTVBUYR_SURROGATE_ID)
-    Long id
+    /**
+     * Composite key.
+     */
+    @EmbeddedId
+    FinanceBuyerVerificationKey id
 
-    @Column(name = FinanceProcurementConstants.FINANCE_BUYER_VERIFICATION_FTVBUYR_CODE)
-    String buyerCode
-
-    @Column(name = FinanceProcurementConstants.FINANCE_BUYER_VERIFICATION_FTVBUYR_NAME)
-    String buyerName
-
-    //bi-directional many-to-one association to RequisitionDetail
-    @OneToMany(mappedBy = FinanceProcurementConstants.FINANCE_BUYER_VERIFICATION_BUYER)
-    List<RequisitionDetail> requisitionDetails
+    @Column(name = FinanceProcurementConstants.FINANCE_BUYER_VERIFICATION_FTVBUYR_REQUEST_CODE)
+    String requestCode
 
     @Version
     @Column(name = FinanceProcurementConstants.FINANCE_BUYER_VERIFICATION_FTVBUYR_VERSION)
@@ -57,4 +51,18 @@ public class FinanceBuyerVerification implements Serializable {
         return list
     }
 
+}
+
+/**
+ * Primary class for Requisition Summary
+ */
+@Embeddable
+@ToString(includeNames = true, ignoreNulls = true)
+@EqualsAndHashCode(includeFields = true)
+class FinanceBuyerVerificationKey implements Serializable {
+    @Column(name = FinanceProcurementConstants.FINANCE_BUYER_VERIFICATION_FTVBUYR_CODE)
+    String buyerCode
+
+    @Column(name = FinanceProcurementConstants.FINANCE_BUYER_VERIFICATION_FTVBUYR_NAME)
+    String buyerName
 }

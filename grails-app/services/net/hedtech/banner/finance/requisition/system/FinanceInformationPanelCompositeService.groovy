@@ -39,8 +39,8 @@ class FinanceInformationPanelCompositeService {
                 break
             case FinanceProcurementConstants.REQUISITION_INFO_STATUS_ASSIGNED_TO_BUYER:
                 def list = financeBuyerVerificationService.findByDocumentCode(requestCode).collect {
-                    [buyerCode: it.buyerCode,
-                     buyerName: it.buyerName]
+                    [buyerCode: it.id.buyerCode,
+                     buyerName: it.id.buyerName]
                 }
                 informationPanelData = (list ? list : [])
                 break
