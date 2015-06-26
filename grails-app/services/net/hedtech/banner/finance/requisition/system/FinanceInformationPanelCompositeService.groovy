@@ -4,6 +4,7 @@
 package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import net.hedtech.banner.finance.system.FinancePendingApproverList
 
 /**
  * Composite service for Information panel.
@@ -23,19 +24,21 @@ class FinanceInformationPanelCompositeService {
     def getInformationPanelData(status, requestCode) {
         def informationPanelData = []
         if (status == FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED) {
-            def comment = (financeGeneralTicklerService.findByReferenceNumber(requestCode)
-                    ? financeGeneralTicklerService.findByReferenceNumber(requestCode)
-                    : FinanceProcurementConstants.EMPTY_STRING)
-            informationPanelData = comment
+            def comments = financeGeneralTicklerService.findByReferenceNumber(requestCode).collect {
+                [comment: it.comment]
+            }
+            informationPanelData = (comments ? comments : [])
         } else if (status == FinanceProcurementConstants.REQUISITION_INFO_STATUS_PENDING) {
-            informationPanelData = (financePendingApproverListService.findByDocumentCode(requestCode)
-                    ? financePendingApproverListService.findByDocumentCode(requestCode) : [])
+            def list = financePendingApproverListService.findByDocumentCode(requestCode).collect {
+                [approverName: it.id.approverName,
+                 description : it.description,
+                 queueId     : it.id.queueId]
+            }
+            informationPanelData = (list ? list : [])
         } else if (status == FinanceProcurementConstants.REQUISITION_INFO_STATUS_ASSIGNED_TO_BUYER) {
-            def list = financeBuyerVerificationService.findByDocumentCode(requestCode).collect { FinanceBuyerVerification buyerVerification ->
-                [
-                        buyerCode: buyerVerification.buyerCode,
-                        buyerName: buyerVerification.buyerName
-                ]
+            def list = financeBuyerVerificationService.findByDocumentCode(requestCode).collect {
+                [buyerCode: it.buyerCode,
+                 buyerName: it.buyerName]
             }
             informationPanelData = (list ? list : [])
         } else if (status == FinanceProcurementConstants.REQUISITION_INFO_STATUS_CONVERTED_TO_PO) {
