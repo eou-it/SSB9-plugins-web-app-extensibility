@@ -166,7 +166,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     }
 
     /**
-     * findByRequestCode
+     * findByDocumentCode
      */
     @Test
     void findByRequestCode() {
@@ -176,7 +176,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     }
 
     /**
-     * Test findByRequestCode InvalidCode
+     * Test findByDocumentCode InvalidCode
      */
     @Test
     void findByRequestCodeInvalidCode() {
