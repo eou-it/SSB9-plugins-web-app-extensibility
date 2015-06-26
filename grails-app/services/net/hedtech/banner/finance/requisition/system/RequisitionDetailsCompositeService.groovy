@@ -206,7 +206,7 @@ class RequisitionDetailsCompositeService {
         def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
         Map commodityCodeDescMap = financeCommodityService.findCommodityByCodeList( requisitionDetails.collect() {
             it.commodity
-        }, requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ).transactionDate ).collectEntries {
+        }, requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionCode ).transactionDate ).collectEntries {
             [it.commodityCode, it.description]
         }
         requisitionDetails.collect() {
