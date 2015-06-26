@@ -455,4 +455,25 @@ class FinanceProcurementConstants {
     static final int FINANCE_TEXT_TEXT_LENGTH = 50
     static final int FINANCE_TEXT_SEQUENCE_NUMBER_INCREMENT = 10
     static final int FINANCE_TEXT_DOCUMENT_TYPE_SEQ_NUMBER_REQUISITION = 1
+
+    /** Constants for Domain FinanceBuyerVerification **/
+    static final String FTVBUYR_TABLE = 'FTVBUYR'
+    static final String FINANCE_BUYER_VERIFICATION_NAMED_QUERY_FIND_BY_REQUEST_CODE = 'FinanceBuyerVerification.findByDocumentCode'
+    static final String FINANCE_BUYER_VERIFICATION_FTVBUYR_SURROGATE_ID = 'FTVBUYR_SURROGATE_ID'
+    static final String FINANCE_BUYER_VERIFICATION_FTVBUYR_CODE = 'FTVBUYR_CODE'
+    static final String FINANCE_BUYER_VERIFICATION_FTVBUYR_NAME = 'FTVBUYR_NAME'
+    static final String FINANCE_BUYER_VERIFICATION_FTVBUYR_VERSION = 'FTVBUYR_VERSION'
+    static final String FINANCE_BUYER_VERIFICATION_BUYER = 'buyer'
+    static final String FINANCE_BUYER_VERIFICATION_QUERY_PARAM_REQUEST_CODE = 'requestCode'
+
+    /** Constants for Domain FinanceRequestPOVerification **/
+    static final String FTVRQPO_TABLE = 'FTVRQPO'
+    static final String FINANCE_REQUEST_PO_VERIFICATION_NAMED_QUERY_FIND_BY_REQ_CODE = 'FinanceRequestPOVerification.findByRequestCode'
+    static final String FINANCE_REQUEST_PO_VERIFICATION_FTVRQPO_SURROGATE_ID = 'FTVRQPO_SURROGATE_ID'
+    static final String FINANCE_REQUEST_PO_VERIFICATION_FTVRQPO_REQD_CODE = 'FTVRQPO_REQD_CODE'
+    static final String FINANCE_REQUEST_PO_VERIFICATION_FTVRQPO_POHD_CODE = 'FTVRQPO_POHD_CODE'
+    static final String FINANCE_REQUEST_PO_VERIFICATION_FTVRQPO_VERSION = 'FTVRQPO_VERSION'
+    static final String FINANCE_REQUEST_PO_VERIFICATION_QUERY_PARAM_REQUEST_CODE = 'requestCode'
+
+
 }

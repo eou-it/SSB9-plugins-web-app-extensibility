@@ -97,8 +97,10 @@ class RequisitionDetail implements Serializable {
     String organization
 
 
-    @Column(name = FinanceProcurementConstants.FIELD_FPRREQD_BUYR_CODE)
-    String buyer
+    //bi-directional many-to-one association to FinanceBuyer
+    @ManyToOne
+    @JoinColumn(name = FinanceProcurementConstants.FIELD_FPRREQD_BUYR_CODE, referencedColumnName="FTVBUYR_CODE")
+    FinanceBuyerVerification buyer
 
     /**
      * QUANTITY:  The quantity requested for the specific line item.
@@ -324,49 +326,49 @@ class RequisitionDetail implements Serializable {
      * All required constraints for the table columns.
      */
     static constraints = {
-        requestCode( nullable: false, maxSize: 8 )
-        item( nullable: false )
-        lastModified( nullable: true )
-        userId( nullable: true, maxSize: 30 )
-        commodity( nullable: true )
-        commodityDescription( nullable: true, maxSize: 50 )
-        chartOfAccount( nullable: true, maxSize: 1 )
-        organization( nullable: true, maxSize: 6 )
-        buyer( nullable: true )
-        quantity( nullable: true )
-        unitOfMeasure( nullable: true, maxSize: 3 )
-        unitPrice( nullable: true )
-        agreement( nullable: true, maxSize: 15 )
-        deliveryDate( nullable: true )
-        ship( nullable: true, maxSize: 6 )
-        vendorPidm( nullable: true )
-        vendorReferenceNumber( nullable: true, maxSize: 15 )
-        project( nullable: true, maxSize: 8 )
-        purchaseOrder( nullable: true, maxSize: 8 )
-        purchaseOrderItem( nullable: true )
-        bid( nullable: true, maxSize: 8 )
-        completeIndicator( nullable: true, maxSize: 1 )
-        suspenseIndicator( nullable: true )
-        cancellationIndicator( nullable: true )
-        cancellationDate( nullable: true )
-        closedIndicator( nullable: true )
-        postDate( nullable: true )
-        textUsageIndicator( nullable: false, maxSize: 1 )
-        atyp( nullable: true, maxSize: 2 )
-        atypSeqNum( nullable: true )
-        recommVendName( nullable: true, maxSize: 60 )
-        currency( nullable: true, maxSize: 4 )
-        convertedUnitPrice( nullable: true )
-        discountAmount( nullable: true )
-        taxAmount( nullable: true )
-        additionalChargeAmount( nullable: true )
-        convertedDiscountAmount( nullable: true )
-        convertedTaxAmount( nullable: true )
-        convertedAdditionalChargeAmount( nullable: true )
-        taxGroup( nullable: true, maxSize: 4 )
-        amt( nullable: true )
-        descriptionChangedIndicator( nullable: true )
-        dataOrigin( nullable: true, maxSize: 30 )
+        requestCode(nullable: false, maxSize: 8)
+        item(nullable: false)
+        lastModified(nullable: true)
+        userId(nullable: true, maxSize: 30)
+        commodity(nullable: true)
+        commodityDescription(nullable: true, maxSize: 50)
+        chartOfAccount(nullable: true, maxSize: 1)
+        organization(nullable: true, maxSize: 6)
+        buyer(nullable: true)
+        quantity(nullable: true)
+        unitOfMeasure(nullable: true, maxSize: 3)
+        unitPrice(nullable: true)
+        agreement(nullable: true, maxSize: 15)
+        deliveryDate(nullable: true)
+        ship(nullable: true, maxSize: 6)
+        vendorPidm(nullable: true)
+        vendorReferenceNumber(nullable: true, maxSize: 15)
+        project(nullable: true, maxSize: 8)
+        purchaseOrder(nullable: true, maxSize: 8)
+        purchaseOrderItem(nullable: true)
+        bid(nullable: true, maxSize: 8)
+        completeIndicator(nullable: true, maxSize: 1)
+        suspenseIndicator(nullable: true)
+        cancellationIndicator(nullable: true)
+        cancellationDate(nullable: true)
+        closedIndicator(nullable: true)
+        postDate(nullable: true)
+        textUsageIndicator(nullable: false, maxSize: 1)
+        atyp(nullable: true, maxSize: 2)
+        atypSeqNum(nullable: true)
+        recommVendName(nullable: true, maxSize: 60)
+        currency(nullable: true, maxSize: 4)
+        convertedUnitPrice(nullable: true)
+        discountAmount(nullable: true)
+        taxAmount(nullable: true)
+        additionalChargeAmount(nullable: true)
+        convertedDiscountAmount(nullable: true)
+        convertedTaxAmount(nullable: true)
+        convertedAdditionalChargeAmount(nullable: true)
+        taxGroup(nullable: true, maxSize: 4)
+        amt(nullable: true)
+        descriptionChangedIndicator(nullable: true)
+        dataOrigin(nullable: true, maxSize: 30)
     }
 
     static readonlyProperties = ['requestCode', 'item']
@@ -375,10 +377,10 @@ class RequisitionDetail implements Serializable {
      * This method is used to called named query for get last item generated in requisition detail.
      * @return last generated item.
      */
-    static def getLastItem( requestCode ) {
-        def lastItem = RequisitionDetail.withSession {session ->
-            session.getNamedQuery( FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_GET_LAST_ITEM )
-                    .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
+    static def getLastItem(requestCode) {
+        def lastItem = RequisitionDetail.withSession { session ->
+            session.getNamedQuery(FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_GET_LAST_ITEM)
+                    .setString(FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode)
                     .list()
         }
         return lastItem
@@ -390,11 +392,11 @@ class RequisitionDetail implements Serializable {
      * @param item Item Number.
      * @return list of requisition.
      */
-    static def fetchByRequestCodeAndItem( requestCode, Integer item ) {
-        def requestDetailList = RequisitionDetail.withSession {session ->
-            session.getNamedQuery( FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE_AND_ITEM )
-                    .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
-                    .setInteger( FinanceProcurementConstants.QUERY_PARAM_REQUISITION_DETAIL_ITEM, item )
+    static def fetchByRequestCodeAndItem(requestCode, Integer item) {
+        def requestDetailList = RequisitionDetail.withSession { session ->
+            session.getNamedQuery(FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE_AND_ITEM)
+                    .setString(FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode)
+                    .setInteger(FinanceProcurementConstants.QUERY_PARAM_REQUISITION_DETAIL_ITEM, item)
                     .list()
         }
         return [list: requestDetailList]
@@ -406,12 +408,12 @@ class RequisitionDetail implements Serializable {
      * @param paginationParams pagination parameters.
      * @return List of requisition details.
      */
-    static def fetchByUserId( userId, paginationParams ) {
-        def requestDetailList = RequisitionDetail.withSession {session ->
-            session.getNamedQuery( FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_USER )
-                    .setString( FinanceProcurementConstants.QUERY_PARAM_USER_ID, userId )
-                    .setMaxResults( paginationParams.max )
-                    .setFirstResult( paginationParams.offset )
+    static def fetchByUserId(userId, paginationParams) {
+        def requestDetailList = RequisitionDetail.withSession { session ->
+            session.getNamedQuery(FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_USER)
+                    .setString(FinanceProcurementConstants.QUERY_PARAM_USER_ID, userId)
+                    .setMaxResults(paginationParams.max)
+                    .setFirstResult(paginationParams.offset)
                     .list()
         }
         return [list: requestDetailList]
@@ -422,10 +424,10 @@ class RequisitionDetail implements Serializable {
      * @param requestCode Requisition code.
      * @return list of requisition.
      */
-    static def fetchByRequestCode( requestCode ) {
-        def requestDetailList = RequisitionDetail.withSession {session ->
-            session.getNamedQuery( FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE )
-                    .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
+    static def fetchByRequestCode(requestCode) {
+        def requestDetailList = RequisitionDetail.withSession { session ->
+            session.getNamedQuery(FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE)
+                    .setString(FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode)
                     .list()
         }
         return [list: requestDetailList]

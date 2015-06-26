@@ -159,7 +159,7 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
     /**
-     * Test findByRequestCode with valid code
+     * Test findByDocumentCode with valid code
      */
     @Test
     public void findByRequestCode() {
@@ -168,7 +168,7 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
     /**
-     * Test findByRequestCode With InvalidCode
+     * Test findByDocumentCode With InvalidCode
      */
     @Test
     public void findByRequestCodeWithInvalidCode() {
