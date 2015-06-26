@@ -258,7 +258,8 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testListCommodityWithDocumentLevelAccounting() {
-        def list = requisitionDetailsCompositeService.listCommodityWithDocumentLevelAccounting('RSD00004')
+        def date = new Date()
+        def list = requisitionDetailsCompositeService.listCommodityWithDocumentLevelAccounting('RSD00004', date)
         assertTrue(list.size() > 0)
     }
 
