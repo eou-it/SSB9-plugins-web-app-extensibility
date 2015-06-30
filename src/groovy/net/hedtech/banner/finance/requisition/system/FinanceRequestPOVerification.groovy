@@ -20,7 +20,7 @@ import javax.persistence.*
 @ToString(includeNames = true, ignoreNulls = true)
 @NamedQueries(value = [
         @NamedQuery(name = FinanceProcurementConstants.FINANCE_REQUEST_PO_VERIFICATION_NAMED_QUERY_FIND_BY_REQ_CODE,
-                query = """SELECT requestPOVerification FROM FinanceRequestPOVerification requestPOVerification
+                query = """SELECT DISTINCT requestPOVerification.pohdCode FROM FinanceRequestPOVerification requestPOVerification
                                 WHERE requestPOVerification.requestCode = :requestCode""")
 ])
 public class FinanceRequestPOVerification implements Serializable {

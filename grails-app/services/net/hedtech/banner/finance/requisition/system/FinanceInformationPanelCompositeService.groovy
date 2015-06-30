@@ -46,7 +46,7 @@ class FinanceInformationPanelCompositeService {
                 break
             case FinanceProcurementConstants.REQUISITION_INFO_STATUS_CONVERTED_TO_PO:
                 def list = financeRequestPOVerificationService.findByRequestCode(requestCode).collect {
-                    [pohdCode: it.pohdCode]
+                    [pohdCode: it]
                 }
                 informationPanelData = (list ? list : [])
                 break
