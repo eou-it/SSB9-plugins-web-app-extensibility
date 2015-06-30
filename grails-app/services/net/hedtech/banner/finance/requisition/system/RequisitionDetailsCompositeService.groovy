@@ -36,6 +36,7 @@ class RequisitionDetailsCompositeService {
     def financeTextService
     def financeTextCompositeService
     def requisitionDetailsAcctCommonCompositeService
+    def requisitionInformationService
 
     /**
      * Create purchase requisition detail
@@ -287,7 +288,8 @@ class RequisitionDetailsCompositeService {
                 commodity        : commodity,
                 hasAccount       : isCommodityLevelAccounting ? fetchSumOfAccountingTotalPercentage( requisitionAccountingService.findAccountingByRequestCodeAndItem( requestCode, item ) ) >= FinanceValidationConstants.HUNDRED : fetchSumOfAccountingTotalPercentage( requisitionAccountingService.findAccountingByRequestCodeAndItem( requestCode, 0 ) ) >= FinanceValidationConstants.HUNDRED,
                 privateComment   : privateComment,
-                publicComment    : publicComment
+                publicComment    : publicComment,
+                status           : requisitionInformationService.fetchRequisitionsByReqNumber( requestCode )?.status
         ]
     }
 
@@ -352,7 +354,8 @@ class RequisitionDetailsCompositeService {
          commodityTotal               : fetchSumOfCommodityTotal( requisitionDetails ),
          accountingTotal              : fetchSumOfAccountingTotal( accounting ),
          accountingTotalPercentage    : fetchSumOfAccountingTotalPercentage( accounting ),
-         remainingAccountingPercentage: FinanceProcurementConstants.HUNDRED - fetchSumOfAccountingTotalPercentage( accounting )]
+         remainingAccountingPercentage: FinanceProcurementConstants.HUNDRED - fetchSumOfAccountingTotalPercentage( accounting ),
+         status                       : requisitionInformationService.fetchRequisitionsByReqNumber( requisitionCode )?.status]
     }
 
 /**
@@ -407,46 +410,47 @@ class RequisitionDetailsCompositeService {
             commodityRepeatMap?.get( it )?.accountCode
         }
 
-        [commodities: requisitionDetails.collect() {
-            [id                    : it.id,
-             requestCode           : it.requestCode,
-             version               : it.version,
-             additionalChargeAmount: it.additionalChargeAmount,
-             amt                   : it.amt,
-             commodity             : [commodity           : it.commodity,
-                                      commodityDescription: it.commodityDescription,
-                                      coaCode             : getCOACode( it.commodity ),
-                                      coaDescription      : getCOACode( it.commodity )
-                                              ? chartOfAccountsService.getChartOfAccountByCode( getCOACode( it.commodity ), headerTxnDate )?.title
-                                              : null,
-                                      accountCode         : getAccountCode( it.commodity ),
-                                      accountDescription  : getAccountCode( it.commodity )
-                                              ? financeAccountCompositeService.getListByAccountOrChartOfAccAndEffectiveDate(
-                                              [searchParam  : getAccountCode( it.commodity ),
-                                               coaCode      : getCOACode( it.commodity ),
-                                               effectiveDate: headerTxnDate], [max: 1, offset: 0] )?.get( 0 )?.title
-                                              : null
-             ],
-             currency              : it.currency,
-             discountAmount        : it.discountAmount,
-             item                  : it.item,
-             quantity              : it.quantity,
-             taxAmount             : it.taxAmount,
-             extendedAmount        : (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ),
-             commodityTotalAmount  : (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + FinanceCommonUtility.nullToZero( it.taxAmount ) + FinanceCommonUtility.nullToZero( it.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( it.discountAmount ),
-             taxGroup              : it.taxGroup,
-             unitOfMeasure         : it.unitOfMeasure,
-             unitPrice             : it.unitPrice,
-             accounting            : []
-            ]
-        }.each() {
-            it.commodity.commodityDescription = getCommodityDescription( commodityCodeDescMap, it.commodity.commodity )
-            it.accounting = getAccountingForCommodityItem( it.item )
-            it.commodityTotal = it.commodityTotalAmount
-            it.accountingTotal = fetchSumOfAccountingTotal( getAccountingForCommodityItem( it.item ) )
-            it.accountingTotalPercentage = fetchSumOfAccountingTotalPercentage( getAccountingForCommodityItem( it.item ) )
-            it.remainingAccountingPercentage = FinanceProcurementConstants.HUNDRED - fetchSumOfAccountingTotalPercentage( getAccountingForCommodityItem( it.item ) )
-        }]
+        [status     : requisitionInformationService.fetchRequisitionsByReqNumber( requisitionCode )?.status,
+         commodities: requisitionDetails.collect() {
+             [id                    : it.id,
+              requestCode           : it.requestCode,
+              version               : it.version,
+              additionalChargeAmount: it.additionalChargeAmount,
+              amt                   : it.amt,
+              commodity             : [commodity           : it.commodity,
+                                       commodityDescription: it.commodityDescription,
+                                       coaCode             : getCOACode( it.commodity ),
+                                       coaDescription      : getCOACode( it.commodity )
+                                               ? chartOfAccountsService.getChartOfAccountByCode( getCOACode( it.commodity ), headerTxnDate )?.title
+                                               : null,
+                                       accountCode         : getAccountCode( it.commodity ),
+                                       accountDescription  : getAccountCode( it.commodity )
+                                               ? financeAccountCompositeService.getListByAccountOrChartOfAccAndEffectiveDate(
+                                               [searchParam  : getAccountCode( it.commodity ),
+                                                coaCode      : getCOACode( it.commodity ),
+                                                effectiveDate: headerTxnDate], [max: 1, offset: 0] )?.get( 0 )?.title
+                                               : null
+              ],
+              currency              : it.currency,
+              discountAmount        : it.discountAmount,
+              item                  : it.item,
+              quantity              : it.quantity,
+              taxAmount             : it.taxAmount,
+              extendedAmount        : (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ),
+              commodityTotalAmount  : (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + FinanceCommonUtility.nullToZero( it.taxAmount ) + FinanceCommonUtility.nullToZero( it.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( it.discountAmount ),
+              taxGroup              : it.taxGroup,
+              unitOfMeasure         : it.unitOfMeasure,
+              unitPrice             : it.unitPrice,
+              accounting            : []
+             ]
+         }.each() {
+             it.commodity.commodityDescription = getCommodityDescription( commodityCodeDescMap, it.commodity.commodity )
+             it.accounting = getAccountingForCommodityItem( it.item )
+             it.commodityTotal = it.commodityTotalAmount
+             it.accountingTotal = fetchSumOfAccountingTotal( getAccountingForCommodityItem( it.item ) )
+             it.accountingTotalPercentage = fetchSumOfAccountingTotalPercentage( getAccountingForCommodityItem( it.item ) )
+             it.remainingAccountingPercentage = FinanceProcurementConstants.HUNDRED - fetchSumOfAccountingTotalPercentage( getAccountingForCommodityItem( it.item ) )
+         }]
     }
 
     /**

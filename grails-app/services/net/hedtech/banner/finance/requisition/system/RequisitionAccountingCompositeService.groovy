@@ -33,6 +33,7 @@ class RequisitionAccountingCompositeService {
     def financeFundCompositeService
     def financeUserProfileService
     def requisitionDetailsAcctCommonCompositeService
+    def requisitionInformationService
 
     /**
      * Creates Requisition Accounting level.
@@ -148,7 +149,8 @@ class RequisitionAccountingCompositeService {
                                                                                                                           effectiveDate: headerTnxDate,
                                                                                                                           coaCode      : requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )
 
-        [accounting: requisitionAccounting, cifoapalp: [
+        [status    : requisitionInformationService.fetchRequisitionsByReqNumber( requisitionCode )?.status,
+         accounting: requisitionAccounting, cifoapalp: [
                 chartOfAccount: [code: requisitionAccounting.chartOfAccount, title: requisitionAccounting.chartOfAccount ? chartOfAccountsService.getChartOfAccountByCode( requisitionAccounting.chartOfAccount, headerTnxDate )?.title : null],
                 index         : [
                         code                       : requisitionAccounting.accountIndex,

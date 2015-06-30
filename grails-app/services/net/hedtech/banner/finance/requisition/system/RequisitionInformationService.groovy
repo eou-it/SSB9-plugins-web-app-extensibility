@@ -43,6 +43,15 @@ class RequisitionInformationService extends ServiceBase {
     }
 
     /**
+     * Fetch Requisition for specified requisition no
+     * @param requestNo
+     * @return
+     */
+    def fetchRequisitionsByReqNumber( requestNo ) {
+        RequisitionInformation.fetchRequisitionsByReqNumber( getOracleUserNameForLoggedInUser(), requestNo )
+    }
+
+    /**
      * Gets oracle user name for Logged In user
      * @return
      */

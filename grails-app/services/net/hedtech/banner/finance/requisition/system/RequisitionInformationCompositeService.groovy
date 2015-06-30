@@ -24,6 +24,7 @@ class RequisitionInformationCompositeService {
     def financeDiscountService
     def financeCurrencyService
     def financeCurrencyCompositeService
+    def requisitionInformationService
     def financeTextService
 
     /**
@@ -82,6 +83,7 @@ class RequisitionInformationCompositeService {
                 discount            : discount,
                 currency            : currency,
                 headerPrivateComment: privateComment,
-                headerPublicComment : publicComment]
+                headerPublicComment : publicComment,
+                status              : requisitionInformationService.fetchRequisitionsByReqNumber( requestCode )?.status]
     }
 }

@@ -88,6 +88,14 @@ class RequisitionInformationServiceIntegrationTests extends BaseIntegrationTestC
      * test fetch requisitions with invalid user
      */
     @Test
+    void fetchRequisitionsByReqNumber() {
+        assertTrue requisitionInformationService.fetchRequisitionsByReqNumber( 'R0002593' ) != null
+    }
+
+    /**
+     * test fetch requisitions with invalid user
+     */
+    @Test
     void listRequisitionsByStatusWithInvalidUser() {
         def pagingParams = [max: 500, offset: 0]
         def result = requisitionInformationService.listRequisitionsByStatus( [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT], pagingParams, 'Invalid' )

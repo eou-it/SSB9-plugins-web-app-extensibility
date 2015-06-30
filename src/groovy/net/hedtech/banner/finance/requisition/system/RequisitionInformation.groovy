@@ -25,6 +25,10 @@ import javax.persistence.*
                 query = """select count(reqInfo.id) FROM RequisitionInformation reqInfo
                                     WHERE reqInfo.status in :status
                                     AND reqInfo.lastModifiedBy = :userId """),
+        @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_FINDER_BY_CODE_USER,
+                query = """FROM RequisitionInformation reqInfo
+                                           WHERE reqInfo.requisitionCode = :requisitionCode
+                                           AND reqInfo.lastModifiedBy = :userId """),
 
 ])
 @Entity
@@ -123,5 +127,21 @@ class RequisitionInformation implements Serializable {
                     .list()
         }
         return requisitionsCount[0]
+    }
+
+    /**
+     * Fetch Requisition for specified requisition no
+     * @param userId
+     * @param requisitionCode
+     * @return
+     */
+    static def fetchRequisitionsByReqNumber( userId, requisitionCode ) {
+        def requisitions = RequisitionInformation.withSession {session ->
+            session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_FINDER_BY_CODE_USER )
+                    .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
+                    .setParameterList( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_REQ_CODE, requisitionCode )
+                    .list()
+        }
+        return requisitions[0]
     }
 }

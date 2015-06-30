@@ -279,7 +279,9 @@ class FinanceProcurementConstants {
     static final String REQUISITION_INFO_FIELD_STATUS = 'STATUS'
     static final String REQUISITION_INFO_FINDER_BY_STATUS = 'RequisitionInformation.listRequisitionByStatus'
     static final String REQUISITION_INFO_COUNT_FINDER_BY_STATUS = 'RequisitionInformation.countRequisitionsByStatus'
+    static final String REQUISITION_INFO_FINDER_BY_CODE_USER = 'RequisitionInformation.countRequisitionsByCodeAndUser'
     static final String REQUISITION_INFO_FINDER_PARAM_STATUS = 'status'
+    static final String REQUISITION_INFO_FINDER_PARAM_REQ_CODE = 'requisitionCode'
     static final String REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID = 'userId'
     static final String REQUEST_PARAM_BUCKET_TYPES = 'bucketTypes'
 
