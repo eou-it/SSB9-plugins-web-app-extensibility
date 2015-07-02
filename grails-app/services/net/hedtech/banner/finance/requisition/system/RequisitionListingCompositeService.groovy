@@ -144,4 +144,86 @@ class RequisitionListingCompositeService {
     private def groupResult( groupType, records ) {
         [category: groupType, count: records.count, list: records.list]
     }
+
+        /**
+         * Returns list of Requisitions in defined data structure
+         * @param searchParam as String
+         */
+        def listRequisitionsBySearchParam( searchParam, pagingParams) {
+            def user = springSecurityService.getAuthentication()?.user
+            if (!user.oracleUserName) {
+                LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+                throw new ApplicationException( RequisitionListingCompositeService, new BusinessLogicValidationException(
+                        FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
+            }
+            def inputMap = [searchParam:searchParam?.toUpperCase()]
+            FinanceCommonUtility.applyWildCard( inputMap, true, true )
+            def searchResult = searchRequisitions( user.oracleUserName,inputMap.searchParam , pagingParams )
+
+            return [searchResult:searchResult]
+        }
+
+        /**
+         * Gets List of requisitions
+         * @param pagingParams
+         * @param search Param as String
+         * @return
+         */
+        private searchRequisitions( oracleUserName, searchParam , pagingParams) {
+            def ret = requisitionInformationService.listRequisitionsBySearchParam( oracleUserName,searchParam ,pagingParams)
+            ret.list = ret.list.collect() {RequisitionInformation it ->
+                [id             : it.id,
+                 version        : it.version,
+                 amount         : deriveFormattedAmount( it.amount, it.currency, institutionalDescriptionService.findByKey().baseCurrCode ),
+                 coasCode       : it.coasCode,
+                 requestDate    : it.requestDate,
+                 requisitionCode: it.requisitionCode,
+                 transactionDate: it.transactionDate,
+                 vendorName     : it.vendorName,
+                 organization   : it.organizationTitle,
+                 status         : MessageHelper.message( 'purchaseRequisition.status.' + it.status ),
+                 infoStatus     : it.status]
+            }
+            return ret
+        }
+
+        /**
+         * Returns list of Requisitions in defined data structure
+         * @param searchParam as date type
+         */
+        def listRequisitionsByByTransactionDate( searchParam, pagingParams) {
+            def user = springSecurityService.getAuthentication()?.user
+            if (!user.oracleUserName) {
+                LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+                throw new ApplicationException( RequisitionListingCompositeService, new BusinessLogicValidationException(
+                        FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
+            }
+            def searchResult = searchRequisitionsByTransactionDate( user.oracleUserName,searchParam , pagingParams)
+
+            return [searchResult:searchResult]
+        }
+
+    /**
+         * Gets List of requisitions with search parameter
+         * @param pagingParams
+         * @param searchParam as date type
+         * @return
+         */
+        private searchRequisitionsByTransactionDate( oracleUserName, searchParam , pagingParams) {
+            def ret = requisitionInformationService.listRequisitionsByTransactionDate( oracleUserName,searchParam ,pagingParams)
+            ret.list = ret.list.collect() {RequisitionInformation it ->
+                [id             : it.id,
+                 version        : it.version,
+                 amount         : deriveFormattedAmount( it.amount, it.currency, institutionalDescriptionService.findByKey().baseCurrCode ),
+                 coasCode       : it.coasCode,
+                 requestDate    : it.requestDate,
+                 requisitionCode: it.requisitionCode,
+                 transactionDate: it.transactionDate,
+                 vendorName     : it.vendorName,
+                 organization   : it.organizationTitle,
+                 status         : MessageHelper.message( 'purchaseRequisition.status.' + it.status ),
+                 infoStatus     : it.status]
+            }
+            return ret
+        }
 }
