@@ -10,6 +10,7 @@ import net.hedtech.banner.service.ServiceBase
  * Service class for FinanceUnapprovedDocument.
  */
 class FinanceUnapprovedDocumentService extends ServiceBase {
+    boolean transactional = true
     /**
      * Method is used to get FinanceUnapprovedDocument by document code.
      * @param documentCode document code.
