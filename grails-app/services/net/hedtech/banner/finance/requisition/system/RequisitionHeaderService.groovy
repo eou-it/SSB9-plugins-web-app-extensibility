@@ -80,17 +80,27 @@ class RequisitionHeaderService extends ServiceBase {
             requestHeader.completeIndicator = false
             RequisitionHeader requestHeaderUpdated = update([domainModel: requestHeader], true)
             // Insert FOBAPPH Approval History table with queueId = DENY and queueLevel = 0.
-            FinanceApprovalHistory financeApprovalHistory = new FinanceApprovalHistory()
-            financeApprovalHistory.documentCode = requestHeaderUpdated.requestCode
-            financeApprovalHistory.queueId = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_ID_DENY
-            financeApprovalHistory.queueLevel = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_LEVEL_ZERO
-            financeApprovalHistory.lastModifiedBy = user
-            financeApprovalHistory.activityDate = new Date()
-            financeApprovalHistory.lastModifiedBy = user
-            financeApprovalHistory.activityDate = new Date()
-            financeApprovalHistory.dataOrigin = FinanceProcurementConstants.EMPTY_STRING
-            financeApprovalHistory.sequenceNumber = new BigDecimal(FinanceProcurementConstants.ONE)
-            financeApprovalHistoryService.create([domainModel: financeApprovalHistory])
+            def approvalHistoryList = financeApprovalHistoryService.findByDocumentCode(requestHeaderUpdated.requestCode)
+            if (approvalHistoryList.size() > 0) {
+                approvalHistoryList.each { FinanceApprovalHistory approvalHistory ->
+                    approvalHistory.documentCode = requestHeaderUpdated.requestCode
+                    approvalHistory.queueId = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_ID_DENY
+                    approvalHistory.queueLevel = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_LEVEL_ZERO
+                    approvalHistory.lastModifiedBy = user
+                    approvalHistory.activityDate = new Date()
+                    approvalHistory.sequenceNumber = new BigDecimal(FinanceProcurementConstants.ONE)
+                    financeApprovalHistoryService.update([domainModel: approvalHistory])
+                }
+            } else {
+                FinanceApprovalHistory financeApprovalHistory = new FinanceApprovalHistory()
+                financeApprovalHistory.documentCode = requestHeaderUpdated.requestCode
+                financeApprovalHistory.queueId = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_ID_DENY
+                financeApprovalHistory.queueLevel = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_LEVEL_ZERO
+                financeApprovalHistory.lastModifiedBy = user
+                financeApprovalHistory.activityDate = new Date()
+                financeApprovalHistory.sequenceNumber = new BigDecimal(FinanceProcurementConstants.ONE)
+                financeApprovalHistoryService.create([domainModel: financeApprovalHistory])
+            }
             // Removing the row relating to this requisition in FOBUAPP FinanceUnapprovedDocument.
             financeUnapprovedDocumentService.findByDocumentCode(requestHeaderUpdated.requestCode).each {
                 FinanceUnapprovedDocument financeUnapprovedDocument ->
