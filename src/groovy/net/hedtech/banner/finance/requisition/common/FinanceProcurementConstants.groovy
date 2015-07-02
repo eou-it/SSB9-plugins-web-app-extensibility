@@ -356,7 +356,7 @@ class FinanceProcurementConstants {
     static final String COPY_REQUISITION_HEADER_COPIED_FROM = 'COPIED FROM '
 
     /** Date format error **/
-    static final String ERROR_MESSAGE_INVALID_DATE_FORMAT = '@@r1:default.invalidDate@@'
+    static final String ERROR_MESSAGE_INVALID_DATE_FORMAT = 'default.invalid.date.format'
 
     /** Recall requisition **/
     static
