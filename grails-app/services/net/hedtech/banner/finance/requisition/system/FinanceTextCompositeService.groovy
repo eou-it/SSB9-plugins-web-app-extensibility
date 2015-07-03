@@ -27,7 +27,7 @@ class FinanceTextCompositeService {
         financeTextService.listHeaderLevelTextByCode(header.requestCode).each { FinanceText financeTextToDelete ->
             listToDelete << financeTextToDelete
         }
-        financeTextService.delete(listToDelete)
+        financeTextService.delete(listToDelete, true)
         if (map?.privateComment) {
             splitAndGetTextList(map?.privateComment).eachWithIndex { def textPart, int index ->
                 prepareTextList(textPart, FinanceValidationConstants.REQUISITION_INDICATOR_NO, null, header, user, listToSave)

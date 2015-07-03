@@ -103,6 +103,15 @@ final class FinanceProcurementSQLUtils {
         query.append('		fprreqa_disc_rucl_code,fprreqa_tax_rucl_code,fprreqa_addl_rucl_code               ');
         query.append('	FROM FPRREQA');
         query.append('	WHERE FPRREQA_REQH_CODE=(:oldDocCode);');
+        query.append('  INSERT INTO FOBTEXT(');
+        query.append('    FOBTEXT_DTYP_SEQ_NUM, FOBTEXT_CODE, FOBTEXT_CHG_SEQ_NUM,   ');
+        query.append('    FOBTEXT_ITEM, FOBTEXT_SEQ_NUM, FOBTEXT_PIDM, FOBTEXT_ACTIVITY_DATE , ');
+        query.append('    FOBTEXT_USER_ID,FOBTEXT_CLA_NUM, FOBTEXT_PRT_IND, FOBTEXT_TEXT)');
+        query.append('  SELECT FOBTEXT_DTYP_SEQ_NUM,:nextDocCode,FOBTEXT_CHG_SEQ_NUM,FOBTEXT_ITEM,');
+        query.append('    FOBTEXT_SEQ_NUM,FOBTEXT_PIDM,FOBTEXT_ACTIVITY_DATE,USER,                ');
+        query.append('    FOBTEXT_CLA_NUM,FOBTEXT_PRT_IND,FOBTEXT_TEXT');
+        query.append('  FROM FOBTEXT');
+        query.append('  WHERE FOBTEXT_CODE=:oldDocCode AND FOBTEXT_DTYP_SEQ_NUM = 1;');
         query.append('END;');
         query.toString()
     }

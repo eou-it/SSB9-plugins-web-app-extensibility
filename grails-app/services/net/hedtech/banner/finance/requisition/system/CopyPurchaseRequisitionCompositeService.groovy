@@ -3,7 +3,6 @@
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
-import grails.transaction.Transactional
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
@@ -20,12 +19,11 @@ class CopyPurchaseRequisitionCompositeService {
 
     def sessionFactory
     def requisitionHeaderService
-    def requisitionInformationCompositeService
 
     /**
      * This method is used to copy the requisition.
      */
-    def copyRequisition(requestCode, institutionBaseCcy) {
+    def copyRequisition(requestCode) {
         def header = requisitionHeaderService.findRequisitionHeaderByRequestCode(requestCode)
         if (header && header.completeIndicator) {
             try {
@@ -36,7 +34,7 @@ class CopyPurchaseRequisitionCompositeService {
                         .setParameter('nextDocCode', nextDocCode)
                         .setParameter('oldDocCode', requestCode)
                         .executeUpdate()
-                return requisitionInformationCompositeService.fetchPurchaseRequisition(nextDocCode, institutionBaseCcy)
+                return nextDocCode
             } catch (Exception e) {
                 LoggerUtility.error(LOGGER, "Error While Copy Requisition $header.requestCode")
                 throw new ApplicationException(CopyPurchaseRequisitionCompositeService, e)
