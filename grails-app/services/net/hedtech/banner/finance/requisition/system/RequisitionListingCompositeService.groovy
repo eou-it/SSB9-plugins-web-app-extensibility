@@ -23,15 +23,16 @@ class RequisitionListingCompositeService {
 
     def springSecurityService
     def requisitionInformationService
-    def institutionalDescriptionService
     def currencyFormatService
+    def private static institutionCcy
 
     /**
      * Returns list of Requisitions in defined data structure
      * @param buckets
      * @param pagingParams
      */
-    def listRequisitionsByBucket( buckets, pagingParams ) {
+    def listRequisitionsByBucket( buckets, pagingParams, baseCcy ) {
+        institutionCcy = baseCcy
         def user = springSecurityService.getAuthentication()?.user
         if (!user.oracleUserName) {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
@@ -136,7 +137,7 @@ class RequisitionListingCompositeService {
         ret.list = ret.list.collect() {RequisitionInformation it ->
             [id             : it.id,
              version        : it.version,
-             amount         : deriveFormattedAmount( it.amount, it.currency, institutionalDescriptionService.findByKey().baseCurrCode ),
+             amount         : deriveFormattedAmount( it.amount, it.currency, institutionCcy ),
              coasCode       : it.coasCode,
              requestDate    : it.requestDate,
              requisitionCode: it.requisitionCode,
@@ -172,7 +173,7 @@ class RequisitionListingCompositeService {
         }
         def inputMap = [searchParam: searchParam?.toUpperCase()]
         FinanceCommonUtility.applyWildCard( inputMap, true, true )
-        return [searchResult:  searchRequisitions( user.oracleUserName, inputMap.searchParam, pagingParams )]
+        return [searchResult: searchRequisitions( user.oracleUserName, inputMap.searchParam, pagingParams )]
     }
 
     /**
@@ -186,7 +187,7 @@ class RequisitionListingCompositeService {
         ret.list = ret.list.collect() {
             [id             : it.id,
              version        : it.version,
-             amount         : deriveFormattedAmount( it.amount, it.currency, institutionalDescriptionService.findByKey().baseCurrCode ),
+             amount         : deriveFormattedAmount( it.amount, it.currency, institutionCcy ),
              coasCode       : it.coasCode,
              requestDate    : it.requestDate,
              requisitionCode: it.requisitionCode,
@@ -210,7 +211,7 @@ class RequisitionListingCompositeService {
         ret.list = ret.list.collect() {
             [id             : it.id,
              version        : it.version,
-             amount         : deriveFormattedAmount( it.amount, it.currency, institutionalDescriptionService.findByKey().baseCurrCode ),
+             amount         : deriveFormattedAmount( it.amount, it.currency, institutionCcy ),
              coasCode       : it.coasCode,
              requestDate    : it.requestDate,
              requisitionCode: it.requisitionCode,

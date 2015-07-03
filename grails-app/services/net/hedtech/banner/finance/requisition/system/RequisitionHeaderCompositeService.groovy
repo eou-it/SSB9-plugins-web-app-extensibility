@@ -76,7 +76,7 @@ class RequisitionHeaderCompositeService {
      * @param requestCode
      * @return
      */
-    private boolean isCommentModified( privateComment, publicComment, requestCode ) {
+    private boolean isCommentUnChanged( privateComment, publicComment, requestCode ) {
         def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
         def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
         financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
@@ -114,7 +114,7 @@ class RequisitionHeaderCompositeService {
                 newHeader.deliveryComment == existingHeader.deliveryComment &&
                 newHeader.taxGroup == existingHeader.taxGroup &&
                 newHeader.discount == existingHeader.discount &&
-                newHeader.currency == existingHeader.currency && isCommentModified( map.requisitionHeader.privateComment, map.requisitionHeader.publicComment, newHeader.requestCode )
+                newHeader.currency == existingHeader.currency && isCommentUnChanged( map.requisitionHeader.privateComment, map.requisitionHeader.publicComment, newHeader.requestCode )
 
         ) {
             LoggerUtility.debug( LOGGER, 'Modification not required' )
@@ -132,7 +132,7 @@ class RequisitionHeaderCompositeService {
         def existingHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         if (!checkHeaderUpdateEligibility( map, existingHeader )) {
             LoggerUtility.debug( LOGGER, 'Modification not required' )
-            //return existingHeader //TODO Need complete implementation
+            return existingHeader
         }
         FinanceProcurementHelper.checkCompleteRequisition( existingHeader )
         def user = springSecurityService.getAuthentication()?.user
