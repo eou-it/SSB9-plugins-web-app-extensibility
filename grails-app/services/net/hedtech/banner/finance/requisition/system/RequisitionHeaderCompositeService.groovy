@@ -99,7 +99,7 @@ class RequisitionHeaderCompositeService {
      */
     private boolean checkHeaderUpdateEligibility( def map, RequisitionHeader existingHeader ) {
         RequisitionHeader newHeader = map.requisitionHeader
-        if (new java.sql.Date( newHeader.transactionDate.getTime() ) == existingHeader.transactionDate &&
+        return !(new java.sql.Date( newHeader.transactionDate.getTime() ) == existingHeader.transactionDate &&
                 new java.sql.Date( newHeader.deliveryDate.getTime() ) == existingHeader.deliveryDate &&
                 newHeader.requesterName == existingHeader.requesterName &&
                 newHeader.ship == existingHeader.ship &&
@@ -114,11 +114,8 @@ class RequisitionHeaderCompositeService {
                 newHeader.deliveryComment == existingHeader.deliveryComment &&
                 newHeader.taxGroup == existingHeader.taxGroup &&
                 newHeader.discount == existingHeader.discount &&
-                newHeader.currency == existingHeader.currency && isCommentUnChanged( map.requisitionHeader.privateComment, map.requisitionHeader.publicComment, newHeader.requestCode )
-
-        ) {
-            LoggerUtility.debug( LOGGER, 'Modification not required' )
-        }
+                newHeader.currency == existingHeader.currency &&
+                isCommentUnChanged( map.requisitionHeader.privateComment, map.requisitionHeader.publicComment, newHeader.requestCode ))
     }
     /**
      * Update Purchase requisition
