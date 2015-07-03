@@ -70,54 +70,6 @@ class RequisitionHeaderCompositeService {
     }
 
     /**
-     *
-     * @param privateComment
-     * @param publicComment
-     * @param requestCode
-     * @return
-     */
-    private boolean isCommentUnChanged( privateComment, publicComment, requestCode ) {
-        def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
-        def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
-            existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
-        }
-        if (existingPrivateComment == privateComment) {
-            return true
-        }
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
-            existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
-        }
-        return existingPublicComment == publicComment
-    }
-
-    /**
-     *
-     * @param map
-     * @param existingHeader
-     * @return
-     */
-    private boolean checkHeaderUpdateEligibility( def map, RequisitionHeader existingHeader ) {
-        RequisitionHeader newHeader = map.requisitionHeader
-        return !(new java.sql.Date( newHeader.transactionDate.getTime() ) == existingHeader.transactionDate &&
-                new java.sql.Date( newHeader.deliveryDate.getTime() ) == existingHeader.deliveryDate &&
-                newHeader.requesterName == existingHeader.requesterName &&
-                newHeader.ship == existingHeader.ship &&
-                newHeader.vendorPidm == existingHeader.vendorPidm &&
-                newHeader.vendorAddressType == existingHeader.vendorAddressType &&
-                newHeader.vendorAddressTypeSequence == existingHeader.vendorAddressTypeSequence &&
-                newHeader.chartOfAccount == existingHeader.chartOfAccount &&
-                newHeader.organization == existingHeader.organization &&
-                newHeader.deliveryDate == existingHeader.deliveryDate &&
-                newHeader.attentionTo == existingHeader.attentionTo &&
-                newHeader.isDocumentLevelAccounting == existingHeader.isDocumentLevelAccounting &&
-                newHeader.deliveryComment == existingHeader.deliveryComment &&
-                newHeader.taxGroup == existingHeader.taxGroup &&
-                newHeader.discount == existingHeader.discount &&
-                newHeader.currency == existingHeader.currency &&
-                isCommentUnChanged( map.requisitionHeader.privateComment, map.requisitionHeader.publicComment, newHeader.requestCode ))
-    }
-    /**
      * Update Purchase requisition
      *
      * @param map the requisition map
@@ -176,4 +128,53 @@ class RequisitionHeaderCompositeService {
         return currencyCode
     }
 
+    /**
+     * Check if header's text is modified and save to db is required
+     *
+     * @param privateComment
+     * @param publicComment
+     * @param requestCode
+     * @return
+     */
+    private boolean isCommentUnChanged( privateComment, publicComment, requestCode ) {
+        def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
+        def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+            existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
+        }
+        if (existingPrivateComment == privateComment) {
+            return true
+        }
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+            existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
+        }
+        return existingPublicComment == publicComment
+    }
+
+    /**
+     * Check if header is modified and save to db is required
+     * @param map
+     * @param existingHeader
+     * @return
+     */
+    private boolean checkHeaderUpdateEligibility( def map, RequisitionHeader existingHeader ) {
+        RequisitionHeader newHeader = map.requisitionHeader
+        return !(new java.sql.Date( newHeader.transactionDate.getTime() ) == existingHeader.transactionDate &&
+                new java.sql.Date( newHeader.deliveryDate.getTime() ) == existingHeader.deliveryDate &&
+                newHeader.requesterName == existingHeader.requesterName &&
+                newHeader.ship == existingHeader.ship &&
+                newHeader.vendorPidm == existingHeader.vendorPidm &&
+                newHeader.vendorAddressType == existingHeader.vendorAddressType &&
+                newHeader.vendorAddressTypeSequence == existingHeader.vendorAddressTypeSequence &&
+                newHeader.chartOfAccount == existingHeader.chartOfAccount &&
+                newHeader.organization == existingHeader.organization &&
+                newHeader.deliveryDate == existingHeader.deliveryDate &&
+                newHeader.attentionTo == existingHeader.attentionTo &&
+                newHeader.isDocumentLevelAccounting == existingHeader.isDocumentLevelAccounting &&
+                newHeader.deliveryComment == existingHeader.deliveryComment &&
+                newHeader.taxGroup == existingHeader.taxGroup &&
+                newHeader.discount == existingHeader.discount &&
+                newHeader.currency == existingHeader.currency &&
+                isCommentUnChanged( map.requisitionHeader.privateComment, map.requisitionHeader.publicComment, newHeader.requestCode ))
+    }
 }
