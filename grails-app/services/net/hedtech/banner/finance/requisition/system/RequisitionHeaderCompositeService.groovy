@@ -24,7 +24,6 @@ class RequisitionHeaderCompositeService {
     def requisitionAccountingService
     def springSecurityService
     def financeSystemControlService
-    def institutionalDescriptionService
     def financeTextService
     def financeTextCompositeService
 
@@ -76,10 +75,10 @@ class RequisitionHeaderCompositeService {
      * @param requestCode
      */
     @Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
-    def updateRequisitionHeader( map, requestCode ) {
+    def updateRequisitionHeader( map, requestCode, baseCcy ) {
         // Update header
         def existingHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
-        if (!checkHeaderUpdateEligibility( map, existingHeader )) {
+        if (!checkHeaderUpdateEligibility( map, existingHeader, baseCcy )) {
             LoggerUtility.debug( LOGGER, 'Modification not required' )
             return existingHeader
         }
@@ -120,12 +119,9 @@ class RequisitionHeaderCompositeService {
      * @param ccyCode
      * @return
      */
-    def getCurrencyDetailByReqCode( requestCode ) {
+    def getCurrencyDetailByReqCode( requestCode, baseCurrCode ) {
         def currencyCode = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ).currency
-        if (!currencyCode) {
-            currencyCode = institutionalDescriptionService.findByKey().baseCurrCode
-        }
-        return currencyCode
+        currencyCode ? currencyCode : baseCurrCode
     }
 
     /**
@@ -157,7 +153,7 @@ class RequisitionHeaderCompositeService {
      * @param existingHeader
      * @return
      */
-    private boolean checkHeaderUpdateEligibility( def map, RequisitionHeader existingHeader ) {
+    private boolean checkHeaderUpdateEligibility( def map, RequisitionHeader existingHeader, baseCcy ) {
         RequisitionHeader newHeader = map.requisitionHeader
         return !(new java.sql.Date( newHeader.transactionDate.getTime() ) == existingHeader.transactionDate &&
                 new java.sql.Date( newHeader.deliveryDate.getTime() ) == existingHeader.deliveryDate &&
@@ -174,7 +170,7 @@ class RequisitionHeaderCompositeService {
                 newHeader.deliveryComment == existingHeader.deliveryComment &&
                 newHeader.taxGroup == existingHeader.taxGroup &&
                 newHeader.discount == existingHeader.discount &&
-                newHeader.currency == existingHeader.currency &&
+                (newHeader.currency == baseCcy || newHeader.currency == existingHeader.currency) &&
                 isCommentUnChanged( map.requisitionHeader.privateComment, map.requisitionHeader.publicComment, newHeader.requestCode ))
     }
 }

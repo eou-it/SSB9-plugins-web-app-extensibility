@@ -45,7 +45,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def headerDomainModel = newRequisitionHeader()
         def domainModelMap = [requisitionHeader: headerDomainModel]
-        def requestCode = requisitionHeaderCompositeService.createPurchaseRequisitionHeader(domainModelMap)
+        def requestCode = requisitionHeaderCompositeService.createPurchaseRequisitionHeader( domainModelMap )
         assertTrue requestCode != FinanceProcurementConstants.DEFAULT_REQUEST_CODE
     }
 
@@ -55,7 +55,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     @Test
     void createPurchaseRequisitionWithNoTax() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def financeSystemControlServiceMeta = requisitionHeaderCompositeService.financeSystemControlService.metaClass
         def requisitionHeaderServiceMeta = requisitionHeaderCompositeService.requisitionHeaderService.metaClass
         def requisitionHeaderMeta = RequisitionHeader.metaClass
@@ -72,7 +72,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
                 return [requestCode: headerDomainModel.requestCode]
             }
             def domainModelMap = [requisitionHeader: headerDomainModel]
-            def requestCode = requisitionHeaderCompositeService.createPurchaseRequisitionHeader(domainModelMap)
+            def requestCode = requisitionHeaderCompositeService.createPurchaseRequisitionHeader( domainModelMap )
             assertTrue requestCode != FinanceProcurementConstants.DEFAULT_REQUEST_CODE
         } finally {
             requisitionHeaderCompositeService.financeSystemControlService.metaClass = financeSystemControlServiceMeta
@@ -89,7 +89,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         login 'Invalid_user', 'invalid_password'
         def headerDomainModel = newRequisitionHeader()
         def domainModelMap = [requisitionHeader: headerDomainModel]
-        requisitionHeaderCompositeService.createPurchaseRequisitionHeader(domainModelMap)
+        requisitionHeaderCompositeService.createPurchaseRequisitionHeader( domainModelMap )
     }
 
     /**
@@ -100,7 +100,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         def headerDomainModel = newRequisitionHeader()
         headerDomainModel.currency = 'ABC'
         def domainModelMap = [requisitionHeader: headerDomainModel]
-        requisitionHeaderCompositeService.createPurchaseRequisitionHeader(domainModelMap)
+        requisitionHeaderCompositeService.createPurchaseRequisitionHeader( domainModelMap )
     }
 
     /**
@@ -109,15 +109,15 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     @Test
     void createPurchaseRequisitionForInvalidUser() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
         springSecurityService.getAuthentication().user.oracleUserName = ''
         def headerDomainModel = newRequisitionHeader()
         def domainModelMap = [requisitionHeader: headerDomainModel]
         try {
-            requisitionHeaderCompositeService.createPurchaseRequisitionHeader(domainModelMap)
+            requisitionHeaderCompositeService.createPurchaseRequisitionHeader( domainModelMap )
         } catch (ApplicationException ae) {
-            assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID)
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
         } finally {
             springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
         }
@@ -131,10 +131,10 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def headerDomainModel = newRequisitionHeader()
         def domainModelMap = [requisitionHeader: headerDomainModel]
-        def requestCode = requisitionHeaderCompositeService.createPurchaseRequisitionHeader(domainModelMap)
-        requisitionHeaderCompositeService.deletePurchaseRequisition(requestCode)
+        def requestCode = requisitionHeaderCompositeService.createPurchaseRequisitionHeader( domainModelMap )
+        requisitionHeaderCompositeService.deletePurchaseRequisition( requestCode )
         try {
-            requisitionHeaderService.findRequisitionHeaderByRequestCode(requestCode)
+            requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
         }
         catch (ApplicationException ae) {
@@ -148,7 +148,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     @Test
     void testCompleteRequisition() {
         try {
-            requisitionHeaderService.completeRequisition('INVALID')
+            requisitionHeaderService.completeRequisition( 'INVALID' )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
         }
         catch (ApplicationException ae) {
@@ -162,7 +162,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     @Test
     void testCompleteAlreadyCompletedRequisition() {
         try {
-            requisitionHeaderService.completeRequisition('R0000001')
+            requisitionHeaderService.completeRequisition( 'R0000001' )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_REQUISITION_ALREADY_COMPLETED
         }
         catch (ApplicationException ae) {
@@ -180,7 +180,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         headerDomainModel.requesterName = 'Modified'
         def domainModelMap = [requisitionHeader: headerDomainModel]
         try {
-            requisitionHeaderCompositeService.updateRequisitionHeader(domainModelMap, 'R0000026')
+            requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'R0000026', 'USD' )
         }
         catch (ApplicationException ae) {
             assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_REQUISITION_ALREADY_COMPLETED
@@ -198,7 +198,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         headerDomainModel.requesterName = 'Modified'
         def domainModelMap = [requisitionHeader: headerDomainModel]
         try {
-            requisitionHeaderCompositeService.updateRequisitionHeader(domainModelMap, 'R0000026')
+            requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'R0000026', 'USD' )
         }
         catch (ApplicationException ae) {
             assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_REQUISITION_ALREADY_COMPLETED
@@ -214,7 +214,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         def headerDomainModel = newRequisitionHeader()
         headerDomainModel.requesterName = 'Modified'
         def domainModelMap = [requisitionHeader: headerDomainModel]
-        assert 'Modified' == requisitionHeaderCompositeService.updateRequisitionHeader(domainModelMap, 'R0000802').requesterName
+        assert 'Modified' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'R0000802', 'USD' ).requesterName
     }
 
     /**
@@ -223,16 +223,16 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     @Test
     void updatePurchaseRequisitionInvalidUser() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
         springSecurityService.getAuthentication().user.oracleUserName = ''
         def headerDomainModel = newRequisitionHeader()
         headerDomainModel.requesterName = 'Modified'
         def domainModelMap = [requisitionHeader: headerDomainModel]
         try {
-            requisitionHeaderCompositeService.updateRequisitionHeader(domainModelMap, 'R0000802')
+            requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'R0000802', 'USD' )
         } catch (ApplicationException ae) {
-            assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID)
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
         } finally {
             springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
         }
@@ -248,7 +248,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         headerDomainModel.requesterName = 'Modified'
         def domainModelMap = [requisitionHeader: headerDomainModel]
         try {
-            requisitionHeaderCompositeService.updateRequisitionHeader(domainModelMap, 'INVALID')
+            requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'INVALID', 'USD' )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
         }
         catch (ApplicationException ae) {
@@ -261,8 +261,8 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
      */
     @Test
     void testGetCurrencyDetailByReqCode() {
-        def currency = requisitionHeaderCompositeService.getCurrencyDetailByReqCode('R0000001');
-        assertNotNull(currency)
+        def currency = requisitionHeaderCompositeService.getCurrencyDetailByReqCode( 'R0000001', 'USD' );
+        assertNotNull( currency )
     }
 
     /**
@@ -270,8 +270,8 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
      */
     @Test
     void testGetCurrencyDetailByReqCodeByNoCurInReq() {
-        def currency = requisitionHeaderCompositeService.getCurrencyDetailByReqCode('R0000114');
-        assertNotNull(currency)
+        def currency = requisitionHeaderCompositeService.getCurrencyDetailByReqCode( 'R0000114', 'USD' );
+        assertNotNull( currency )
     }
 
     /**
@@ -281,8 +281,8 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     private def newRequisitionHeader() {
         return [
                 'requestCode'              : FinanceProcurementConstants.DEFAULT_REQUEST_CODE,
-                'requestDate'              : new Date('18-Jun-2015'),
-                'transactionDate'          : new Date('19-Jun-2015'),
+                'requestDate'              : new Date( '18-Jun-2015' ),
+                'transactionDate'          : new Date( '19-Jun-2015' ),
                 'requesterName'            : 'Caliper College_u1',
                 'ship'                     : 'EAST',
                 'requesterPhoneNumber'     : '242037662',
@@ -309,7 +309,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
                 'vendorContact'            : 'Bangalore',
                 'vendorEmailAddress'       : 'vendor@vendorgroup.com',
                 'requisitionOrigination'   : FinanceProcurementConstants.DEFAULT_REQUISITION_ORIGIN,
-                'deliveryDate'             : new Date('20-Jun-2015')
+                'deliveryDate'             : new Date( '20-Jun-2015' )
         ]
     }
 }

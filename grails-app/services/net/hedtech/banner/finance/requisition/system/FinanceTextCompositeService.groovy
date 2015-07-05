@@ -21,27 +21,29 @@ class FinanceTextCompositeService {
      * @param user User information.
      * @return
      */
-    public def saveTextForHeader(header, map, user) {
+    public def saveTextForHeader( header, map, user ) {
         def listToSave = []
         def listToDelete = []
-        financeTextService.listHeaderLevelTextByCode(header.requestCode).each { FinanceText financeTextToDelete ->
+        financeTextService.listHeaderLevelTextByCode( header.requestCode ).each {FinanceText financeTextToDelete ->
             listToDelete << financeTextToDelete
         }
-        financeTextService.delete(listToDelete, true)
+        if (listToDelete.size() > 0) {
+            financeTextService.delete( listToDelete, true )
+        }
         if (map?.privateComment) {
-            splitAndGetTextList(map?.privateComment).eachWithIndex { def textPart, int index ->
-                prepareTextList(textPart, FinanceValidationConstants.REQUISITION_INDICATOR_NO, null, header, user, listToSave)
+            splitAndGetTextList( map?.privateComment ).eachWithIndex {def textPart, int index ->
+                prepareTextList( textPart, FinanceValidationConstants.REQUISITION_INDICATOR_NO, null, header, user, listToSave )
             }
         }
         if (map?.publicComment) {
-            splitAndGetTextList(map?.publicComment).eachWithIndex { def textPart, int index ->
-                prepareTextList(textPart, FinanceValidationConstants.REQUISITION_INDICATOR_YES, null, header, user, listToSave)
+            splitAndGetTextList( map?.publicComment ).eachWithIndex {def textPart, int index ->
+                prepareTextList( textPart, FinanceValidationConstants.REQUISITION_INDICATOR_YES, null, header, user, listToSave )
             }
         }
-        listToSave.eachWithIndex { FinanceText entry, int i ->
+        listToSave.eachWithIndex {FinanceText entry, int i ->
             entry.sequenceNumber = (i + 1) * FinanceProcurementConstants.FINANCE_TEXT_SEQUENCE_NUMBER_INCREMENT
         }
-        financeTextService.create(listToSave)
+        financeTextService.create( listToSave )
     }
 
     /**
@@ -52,27 +54,27 @@ class FinanceTextCompositeService {
      * @param item item number.
      * @return
      */
-    public def saveTextForCommodity(detail, map, user, Integer item) {
+    public def saveTextForCommodity( detail, map, user, Integer item ) {
         def listToSave = []
         def listToDelete = []
-        financeTextService.getFinanceTextByCodeAndItemNumber(detail.requestCode, item).each { FinanceText financeTextToDelete ->
+        financeTextService.getFinanceTextByCodeAndItemNumber( detail.requestCode, item ).each {FinanceText financeTextToDelete ->
             listToDelete << financeTextToDelete
         }
-        financeTextService.delete(listToDelete, true)
+        financeTextService.delete( listToDelete, true )
         if (map?.privateComment) {
-            splitAndGetTextList(map?.privateComment).eachWithIndex { def textPart, int index ->
-                prepareTextList(textPart, FinanceValidationConstants.REQUISITION_INDICATOR_NO, item, detail, user, listToSave)
+            splitAndGetTextList( map?.privateComment ).eachWithIndex {def textPart, int index ->
+                prepareTextList( textPart, FinanceValidationConstants.REQUISITION_INDICATOR_NO, item, detail, user, listToSave )
             }
         }
         if (map?.publicComment) {
-            splitAndGetTextList(map?.publicComment).eachWithIndex { def textPart, int index ->
-                prepareTextList(textPart, FinanceValidationConstants.REQUISITION_INDICATOR_YES, item, detail, user, listToSave)
+            splitAndGetTextList( map?.publicComment ).eachWithIndex {def textPart, int index ->
+                prepareTextList( textPart, FinanceValidationConstants.REQUISITION_INDICATOR_YES, item, detail, user, listToSave )
             }
         }
-        listToSave.eachWithIndex { FinanceText entry, int i ->
+        listToSave.eachWithIndex {FinanceText entry, int i ->
             entry.sequenceNumber = (i + 1) * FinanceProcurementConstants.FINANCE_TEXT_SEQUENCE_NUMBER_INCREMENT
         }
-        financeTextService.create(listToSave)
+        financeTextService.create( listToSave )
     }
 
     /**
@@ -84,8 +86,8 @@ class FinanceTextCompositeService {
      * @param user User information.
      * @param listToSave List of finance text to save.
      */
-    private void prepareTextList(textPart, printOptionIndicator, textItem, headerOrDetail, user, listToSave) {
-        FinanceText financeText = prepareFinanceTextForSave(headerOrDetail, user)
+    private void prepareTextList( textPart, printOptionIndicator, textItem, headerOrDetail, user, listToSave ) {
+        FinanceText financeText = prepareFinanceTextForSave( headerOrDetail, user )
         financeText.text = textPart
         financeText.printOptionIndicator = printOptionIndicator
         financeText.textItem = textItem
@@ -98,7 +100,7 @@ class FinanceTextCompositeService {
      * @param user user information.
      * @return
      */
-    private FinanceText prepareFinanceTextForSave(headerOrDetail, user) {
+    private FinanceText prepareFinanceTextForSave( headerOrDetail, user ) {
         FinanceText financeText = new FinanceText()
         financeText.textCode = headerOrDetail.requestCode
         financeText.activityDate = headerOrDetail.lastModified
@@ -115,7 +117,7 @@ class FinanceTextCompositeService {
      * @param text Finance text.
      * @return List of splitted the text.
      */
-    private static final def splitAndGetTextList(text) {
-        return text.toList().collate(FinanceProcurementConstants.FINANCE_TEXT_TEXT_LENGTH)*.join()
+    private static final def splitAndGetTextList( text ) {
+        return text.toList().collate( FinanceProcurementConstants.FINANCE_TEXT_TEXT_LENGTH )*.join()
     }
 }
