@@ -32,7 +32,7 @@ class CopyPurchaseRequisitionCompositeService {
         if (header && header.completeIndicator) {
             Session session
             try {
-                session = sessionFactory.getCurrentSession()
+                session = sessionFactory.openSession()
                 session.createSQLQuery( FinanceProcurementSQLUtils.getUpdateReqNextQuery() ).executeUpdate()
                 def nextDocCode = session.createSQLQuery( FinanceProcurementSQLUtils.getSelectGeneratedReqCodeQuery() ).list()[0]
                 session.createSQLQuery( FinanceProcurementSQLUtils.getCopyRequisitionQuery() )
