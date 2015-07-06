@@ -114,7 +114,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testRecallRequisition() {
-        requisitionHeaderService.recallRequisition('R0002593')
+        requisitionHeaderService.recallRequisition('R0000206')
     }
 
     /**
