@@ -46,12 +46,12 @@ import javax.persistence.*
                                     AND reqInfo.lastModifiedBy = :userId """),
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_SEARCH_BY_TRANSACTION_DATE,
                 query = """FROM RequisitionInformation reqInfo
-                            WHERE reqInfo.transactionDate = :searchParam
+                            WHERE TRUNC(reqInfo.transactionDate) = TRUNC(:searchParam)
                             AND reqInfo.lastModifiedBy = :userId
                             order by reqInfo.activityDate desc """),
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_SEARCH_COUNT_FINDER_BY_TRANSACTION_DATE,
                 query = """select count(reqInfo.id) FROM RequisitionInformation reqInfo
-                                    WHERE reqInfo.transactionDate = :searchParam
+                                    WHERE TRUNC(reqInfo.transactionDate) = TRUNC(:searchParam)
                                     AND reqInfo.lastModifiedBy = :userId """)
 ])
 @Entity
