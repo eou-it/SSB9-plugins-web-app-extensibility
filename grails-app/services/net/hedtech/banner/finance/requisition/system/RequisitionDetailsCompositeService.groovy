@@ -188,9 +188,7 @@ class RequisitionDetailsCompositeService {
                 && StringUtils.isBlank( requisitionDetailRequest.taxGroup ))) {
             requisitionDetailRequest.taxGroup = null
         }
-        // Check for Commodity
-        requisitionDetailRequest.commodityDescription = requisitionDetailRequest.commodity ? financeCommodityService.findCommodityByCode( requisitionDetailRequest.commodity, requisitionHeader.transactionDate ).description : requisitionDetailRequest.commodityDescription
-        // If details have discount code setup then remove the discountAmount value from details
+       // If details have discount code setup then remove the discountAmount value from details
         if (requisitionHeader.discount != null) {
             requisitionDetailRequest.discountAmount = null
         }
@@ -205,7 +203,9 @@ class RequisitionDetailsCompositeService {
     @Transactional(readOnly = true)
     def findByRequestCode( requisitionCode ) {
         def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
-        Map commodityCodeDescMap = financeCommodityService.findCommodityByCodeList( requisitionDetails.collect() {
+        Map commodityCodeDescMap = financeCommodityService.findCommodityByCodeList( requisitionDetails.findAll() {
+            it.commodityDescription != null
+        }.collect() {
             it.commodity
         }, requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionCode ).transactionDate ).collectEntries {
             [it.commodityCode, it.description]
@@ -217,7 +217,7 @@ class RequisitionDetailsCompositeService {
              additionalChargeAmount: it.additionalChargeAmount,
              amt                   : it.amt,
              commodity             : it.commodity,
-             commodityDescription  : it.commodityDescription,
+             commodityDescription  : it.commodityDescription ? it.commodityDescription : getCommodityDescription( commodityCodeDescMap, it.commodity ),
              currency              : it.currency,
              discountAmount        : it.discountAmount,
              item                  : it.item,
@@ -226,8 +226,6 @@ class RequisitionDetailsCompositeService {
              taxGroup              : it.taxGroup,
              unitOfMeasure         : it.unitOfMeasure,
              unitPrice             : it.unitPrice]
-        }.each() {
-            it.commodityDescription = getCommodityDescription( commodityCodeDescMap, it.commodity )
         }
     }
 
@@ -282,10 +280,10 @@ class RequisitionDetailsCompositeService {
                                                                       FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
             publicComment = publicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
+        requisitionDetail.commodityDescription = requisitionDetail.commodityDescription ? requisitionDetail.commodityDescription : commodity.description
         return [requisitionDetail: requisitionDetail,
                 taxGroup         : taxGroup,
                 unitOfMeasure    : unitOfMeasure,
-                commodity        : commodity,
                 hasAccount       : isCommodityLevelAccounting ? fetchSumOfAccountingTotalPercentage( requisitionAccountingService.findAccountingByRequestCodeAndItem( requestCode, item ) ) >= FinanceValidationConstants.HUNDRED : fetchSumOfAccountingTotalPercentage( requisitionAccountingService.findAccountingByRequestCodeAndItem( requestCode, 0 ) ) >= FinanceValidationConstants.HUNDRED,
                 privateComment   : privateComment,
                 publicComment    : publicComment,
@@ -300,7 +298,7 @@ class RequisitionDetailsCompositeService {
      */
     def private listCommodityWithDocumentLevelAccounting( requisitionCode, headerTnxDate ) {
         def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
-        def commodityCodes = requisitionDetails.collect() {
+        def commodityCodes = requisitionDetails.findAll() {it.commodityDescription != null}.collect() {
             it.commodity
         }
         Map commodityCodeDescMap = financeCommodityService.findCommodityByCodeList( commodityCodes, headerTnxDate ).collectEntries {
@@ -314,7 +312,7 @@ class RequisitionDetailsCompositeService {
              additionalChargeAmount: it.additionalChargeAmount,
              amt                   : it.amt,
              commodity             : [commodity           : it.commodity,
-                                      commodityDescription: it.commodityDescription],
+                                      commodityDescription: it.commodityDescription ? it.commodityDescription : getCommodityDescription( commodityCodeDescMap, it.commodity )],
              currency              : it.currency,
              discountAmount        : it.discountAmount,
              item                  : it.item,
@@ -325,8 +323,6 @@ class RequisitionDetailsCompositeService {
              taxGroup              : it.taxGroup,
              unitOfMeasure         : it.unitOfMeasure,
              unitPrice             : it.unitPrice]
-        }.each() {
-            it.commodity.commodityDescription = getCommodityDescription( commodityCodeDescMap, it.commodity.commodity )
         },
          accounting                   : accounting.collect() {
              [requestCode              : it.requestCode,
@@ -365,7 +361,7 @@ class RequisitionDetailsCompositeService {
  */
     def private listCommodityWithCommodityLevelAccounting( requisitionCode, headerTxnDate ) {
         def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
-        def commodityCodes = requisitionDetails.collect() {
+        def commodityCodes = requisitionDetails.findAll() {it.commodityDescription != null}.collect() {
             it.commodity
         }
         Map commodityCodeDescMap = financeCommodityService.findCommodityByCodeList( commodityCodes, headerTxnDate ).collectEntries {
@@ -418,7 +414,7 @@ class RequisitionDetailsCompositeService {
               additionalChargeAmount: it.additionalChargeAmount,
               amt                   : it.amt,
               commodity             : [commodity           : it.commodity,
-                                       commodityDescription: it.commodityDescription,
+                                       commodityDescription: it.commodityDescription ? it.commodityDescription : getCommodityDescription( commodityCodeDescMap, it.commodity ),
                                        coaCode             : getCOACode( it.commodity ),
                                        coaDescription      : getCOACode( it.commodity )
                                                ? chartOfAccountsService.getChartOfAccountByCode( getCOACode( it.commodity ), headerTxnDate )?.title
@@ -444,7 +440,6 @@ class RequisitionDetailsCompositeService {
               accounting            : []
              ]
          }.each() {
-             it.commodity.commodityDescription = getCommodityDescription( commodityCodeDescMap, it.commodity.commodity )
              it.accounting = getAccountingForCommodityItem( it.item )
              it.commodityTotal = it.commodityTotalAmount
              it.accountingTotal = fetchSumOfAccountingTotal( getAccountingForCommodityItem( it.item ) )
