@@ -52,6 +52,32 @@ import javax.persistence.*
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_SEARCH_COUNT_FINDER_BY_TRANSACTION_DATE,
                 query = """select count(reqInfo.id) FROM RequisitionInformation reqInfo
                                     WHERE TRUNC(reqInfo.transactionDate) = TRUNC(:searchParam)
+                                    AND reqInfo.lastModifiedBy = :userId """),
+        @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_FINDER_BY_SEARCH_PARAM_AND_STATUS,
+                query = """FROM RequisitionInformation reqInfo
+                            WHERE (UPPER(reqInfo.requisitionCode) LIKE :searchParam
+                                        OR UPPER(reqInfo.vendorName) LIKE :searchParam
+                                        OR reqInfo.amount LIKE :searchParam)
+							AND reqInfo.status in :status
+                            AND reqInfo.lastModifiedBy = :userId
+                            order by reqInfo.activityDate desc """),
+        @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_COUNT_FINDER_BY_SEARCH_PARAM_AND_STATUS,
+                query = """select count(reqInfo.id) FROM RequisitionInformation reqInfo
+                                    WHERE (UPPER(reqInfo.requisitionCode) LIKE :searchParam
+                                        OR UPPER(reqInfo.vendorName) LIKE :searchParam
+                                        OR reqInfo.amount LIKE :searchParam)
+									AND reqInfo.status in :status
+                                    AND reqInfo.lastModifiedBy = :userId """),
+        @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_SEARCH_BY_TRANSACTION_DATE_AND_STATUS,
+                query = """FROM RequisitionInformation reqInfo
+                            WHERE TRUNC(reqInfo.transactionDate) = TRUNC(:searchParam)
+							AND reqInfo.status in :status
+                            AND reqInfo.lastModifiedBy = :userId
+                            order by reqInfo.activityDate desc """),
+        @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_SEARCH_COUNT_FINDER_BY_TRANSACTION_DATE_AND_STATUS,
+                query = """select count(reqInfo.id) FROM RequisitionInformation reqInfo
+                                    WHERE TRUNC(reqInfo.transactionDate) = TRUNC(:searchParam)
+									AND reqInfo.status in :status
                                     AND reqInfo.lastModifiedBy = :userId """)
 ])
 @Entity
@@ -237,4 +263,79 @@ class RequisitionInformation implements Serializable {
         }
         return requisitionsCount[0]
     }
+
+    /**
+     * List all requisitions by user , specified search param and status bucket
+     * @param userId
+     * @param paginationParams
+     * @param status
+     * @return
+     */
+    static def listRequisitionsByStatusAndSearchParam( userId, searchParam, paginationParams, status ) {
+        return RequisitionInformation.withSession {session ->
+            session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_FINDER_BY_SEARCH_PARAM_AND_STATUS )
+                    .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
+                    .setString( FinanceProcurementConstants.REQUISITION_INFO_SEARCH_PARAM, searchParam )
+                    .setParameterList( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS, status )
+                    .setMaxResults( paginationParams.max )
+                    .setFirstResult( paginationParams.offset )
+                    .list()
+        }
+    }
+
+    /**
+     * count number of all requisitions by user , search param and status bucket
+     * @param userId
+     * @param paginationParams
+     * @param searchParam
+     * @return
+     */
+    static def fetchRequisitionsCountByStatusAndSearchParam( searchParam, userId, status ) {
+        def requisitionsCount = RequisitionInformation.withSession {session ->
+            session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_COUNT_FINDER_BY_SEARCH_PARAM_AND_STATUS )
+                    .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
+                    .setParameterList( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS, status )
+                    .setString( FinanceProcurementConstants.REQUISITION_INFO_SEARCH_PARAM, searchParam )
+                    .list()
+        }
+        return requisitionsCount[0]
+    }
+
+    /**
+     * List all requisitions by user and specified search param
+     * @param userId
+     * @param paginationParams
+     * @param searchParam
+     * @return
+     */
+    static def listRequisitionsByStatusAndTransactionDate( userId, searchParam, paginationParams, status ) {
+        return RequisitionInformation.withSession {session ->
+            session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_SEARCH_BY_TRANSACTION_DATE_AND_STATUS )
+                    .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
+                    .setParameterList( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS, status )
+                    .setDate( FinanceProcurementConstants.REQUISITION_INFO_SEARCH_PARAM, searchParam )
+                    .setMaxResults( paginationParams.max )
+                    .setFirstResult( paginationParams.offset )
+                    .list()
+        }
+    }
+
+    /**
+     * count number of all requisitions by user and search param as date
+     * @param userId
+     * @param paginationParams
+     * @param searchParam
+     * @return
+     */
+    static def fetchRequisitionsCountByStatusAndTransactionDate( searchParam, userId, status ) {
+        def requisitionsCount = RequisitionInformation.withSession {session ->
+            session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_SEARCH_COUNT_FINDER_BY_TRANSACTION_DATE_AND_STATUS )
+                    .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
+                    .setParameterList( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS, status )
+                    .setDate( FinanceProcurementConstants.REQUISITION_INFO_SEARCH_PARAM, searchParam )
+                    .list()
+        }
+        return requisitionsCount[0]
+    }
+
 }

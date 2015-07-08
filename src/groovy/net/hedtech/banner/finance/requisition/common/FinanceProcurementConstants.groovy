@@ -284,7 +284,7 @@ class FinanceProcurementConstants {
     static final String REQUISITION_INFO_FINDER_PARAM_REQ_CODE = 'requisitionCode'
     static final String REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID = 'userId'
     static final String REQUEST_PARAM_BUCKET_TYPES = 'bucketTypes'
-    static final String REQUISITION_INFO_FINDER_BY_SEARCH_PARAM = 'RequisitionInformation.listRequisitionsBySearchParam'
+    static final String REQUISITION_INFO_FINDER_BY_SEARCH_PARAM = 'RequisitionInformation.searchRequisitionsBySearchParam'
     static final String REQUISITION_INFO_COUNT_FINDER_BY_SEARCH_PARAM = 'RequisitionInformation.countRequisitionsBySearchParam'
     static final String REQUISITION_INFO_SEARCH_PARAM = 'searchParam'
     static final String REQUISITION_INFO_SEARCH_BY_TRANSACTION_DATE = 'RequisitionInformation.listRequisitionsByTransactionDate'
@@ -297,6 +297,11 @@ class FinanceProcurementConstants {
     static final String REQUISITION_INFO_STATUS_COMPLETED = 'completed'
     static final String REQUISITION_INFO_STATUS_ASSIGNED_TO_BUYER = 'assignedToBuyer'
     static final String REQUISITION_INFO_STATUS_CONVERTED_TO_PO = 'convertedToPo'
+    static final String REQUISITION_INFO_FINDER_BY_SEARCH_PARAM_AND_STATUS = 'RequisitionInformation.searchRequisitionsByStatusAndSearchParam'
+    static final String REQUISITION_INFO_COUNT_FINDER_BY_SEARCH_PARAM_AND_STATUS = 'RequisitionInformation.countRequisitionsByStatusAndSearchParam'
+    static final String REQUISITION_INFO_SEARCH_BY_TRANSACTION_DATE_AND_STATUS = 'RequisitionInformation.listRequisitionsByTransactionDateAndStatus'
+    static final String REQUISITION_INFO_SEARCH_COUNT_FINDER_BY_TRANSACTION_DATE_AND_STATUS = 'RequisitionInformation.countRequisitionsByTransactionDateAndStatus'
+    static final String FAILURE_MESSAGE_SEARCH_REQUISITION_INFO = 'net.hedtech.banner.finance.requisition.search.requisition.info.failure'
 
     /** Constants for listing and search Requisitions */
     static final String REQUISITION_LIST_BUCKET_DRAFT = 'draft'

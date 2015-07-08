@@ -71,20 +71,6 @@ class RequisitionListingCompositeService {
     }
 
     /**
-     * Returns list of Requisitions in defined data structure
-     * @param searchParam as date type
-     */
-    def listRequisitionsByByTransactionDate( searchParam, pagingParams ) {
-        def user = springSecurityService.getAuthentication()?.user
-        if (!user.oracleUserName) {
-            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
-            throw new ApplicationException( RequisitionListingCompositeService, new BusinessLogicValidationException(
-                    FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
-        }
-        return [searchResult: searchRequisitionsByTransactionDate( user.oracleUserName, searchParam, pagingParams )]
-    }
-
-    /**
      * Process each Bucket
      *
      * @param wrapperList
@@ -161,29 +147,109 @@ class RequisitionListingCompositeService {
     }
 
     /**
+     * search requisitions as per search param or search param and bucket/ status
+     * @param groupType
+     * @param records
+     * @return
+     */
+    def searchPurchaseRequisition( searchDataMap, bucketType, pagingParams, baseCcy ) {
+        try {
+            if (bucketType) {
+                return searchRequisitionsByStatusAndSearchParam( bucketType, searchDataMap?.convertValue, pagingParams, searchDataMap?.isDateString, baseCcy )
+            } else {
+                return searchRequisitionsBySearchParam( searchDataMap?.convertValue, pagingParams, searchDataMap?.isDateString, baseCcy )
+            }
+        } catch (ApplicationException e) {
+            log.error( e )
+            throw e
+        }
+    }
+
+    /**
      * Returns list of Requisitions in defined data structure
      * @param searchParam as String
      */
-    def listRequisitionsBySearchParam( searchParam, pagingParams ) {
+    private def searchRequisitionsBySearchParam( searchParam, pagingParams, isDateString, baseCcy ) {
+        def user = springSecurityService.getAuthentication()?.user
+        institutionCcy = baseCcy
+        if (!user.oracleUserName) {
+            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            throw new ApplicationException( RequisitionListingCompositeService, new BusinessLogicValidationException(
+                    FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
+        }
+        def inputMap = [searchParam: (isDateString) ? searchParam : searchParam?.toUpperCase()]
+        if (!isDateString) {
+            FinanceCommonUtility.applyWildCard( inputMap, true, true )
+        }
+        def searchResult = requisitionInformationService.searchRequisitionsBySearchParam( user.oracleUserName, inputMap.searchParam, pagingParams, isDateString )
+        filterRequisitionDataMap( searchResult, institutionCcy )
+        return [searchResult: searchResult]
+    }
+
+    /**
+     * Returns list of Requisitions in defined data structure w.r.t search param and status
+     *
+     * @param wrapperList
+     * @param bucket
+     * @param pagingParams
+     * @return
+     */
+    def searchRequisitionsByStatusAndSearchParam( bucket, searchParam, pagingParams, isDateString, baseCcy ) {
+        def dataMap = [:]
         def user = springSecurityService.getAuthentication()?.user
         if (!user.oracleUserName) {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
             throw new ApplicationException( RequisitionListingCompositeService, new BusinessLogicValidationException(
                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
-        def inputMap = [searchParam: searchParam?.toUpperCase()]
-        FinanceCommonUtility.applyWildCard( inputMap, true, true )
-        return [searchResult: searchRequisitions( user.oracleUserName, inputMap.searchParam, pagingParams )]
+        def draftStatus = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT,
+                           FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
+
+        def completedStatus = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_COMPLETED,
+                               FinanceProcurementConstants.REQUISITION_INFO_STATUS_ASSIGNED_TO_BUYER,
+                               FinanceProcurementConstants.REQUISITION_INFO_STATUS_CONVERTED_TO_PO]
+
+        def pendingStatus = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_PENDING]
+        switch (bucket) {
+            case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT:
+                dataMap = fetchRequisitionsByStatusAndSearchParam( user.oracleUserName, searchParam, pagingParams, draftStatus, isDateString, baseCcy )
+                break
+            case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING:
+                dataMap = fetchRequisitionsByStatusAndSearchParam( user.oracleUserName, searchParam, pagingParams, pendingStatus, isDateString, baseCcy )
+                break
+            case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE:
+                dataMap = fetchRequisitionsByStatusAndSearchParam( user.oracleUserName, searchParam, pagingParams, completedStatus, isDateString, baseCcy )
+                break
+            default:
+                LoggerUtility.error( LOGGER, 'Group Type not valid' )
+                throw new ApplicationException( RequisitionListingCompositeService, new BusinessLogicValidationException(
+                        FinanceProcurementConstants.ERROR_MESSAGE_INVALID_BUCKET_TYPE, [bucket] ) )
+        }
+
+        return dataMap;
     }
 
     /**
-     * Gets List of requisitions
-     * @param pagingParams
-     * @param search Param as String
-     * @return
+     * Returns list of Requisitions in defined data structure
+     * @param searchParam as String
      */
-    private searchRequisitions( oracleUserName, searchParam, pagingParams ) {
-        def ret = requisitionInformationService.listRequisitionsBySearchParam( oracleUserName, searchParam, pagingParams )
+    private def fetchRequisitionsByStatusAndSearchParam( user, searchParam, pagingParams, status, isDateString, baseCcy ) {
+        institutionCcy = baseCcy
+        def inputMap = [searchParam: (isDateString) ? searchParam : searchParam?.toUpperCase()]
+        if (!isDateString) {
+            FinanceCommonUtility.applyWildCard( inputMap, true, true )
+        }
+        def searchResult = requisitionInformationService.searchRequisitionsByStatusAndSearchParam( user, inputMap.searchParam, pagingParams, status, isDateString )
+        filterRequisitionDataMap( searchResult, institutionCcy )
+        return [searchResult: searchResult]
+    }
+
+    /**
+     * Returns list of filtered requisitions as per UI display needs
+     * @param list of requisitions
+     * @param institutionCcy
+     */
+    private void filterRequisitionDataMap( ret, institutionCcy ) {
         ret.list = ret.list.collect() {
             [id             : it.id,
              version        : it.version,
@@ -197,30 +263,5 @@ class RequisitionListingCompositeService {
              status         : MessageHelper.message( 'purchaseRequisition.status.' + it.status ),
              infoStatus     : it.status]
         }
-        return ret
-    }
-
-    /**
-     * Gets List of requisitions with search parameter
-     * @param pagingParams
-     * @param searchParam as date type
-     * @return
-     */
-    private searchRequisitionsByTransactionDate( oracleUserName, searchParam, pagingParams ) {
-        def ret = requisitionInformationService.listRequisitionsByTransactionDate( oracleUserName, searchParam, pagingParams )
-        ret.list = ret.list.collect() {
-            [id             : it.id,
-             version        : it.version,
-             amount         : deriveFormattedAmount( it.amount, it.currency, institutionCcy ),
-             coasCode       : it.coasCode,
-             requestDate    : it.requestDate,
-             requisitionCode: it.requisitionCode,
-             transactionDate: it.transactionDate,
-             vendorName     : it.vendorName,
-             organization   : it.organizationTitle,
-             status         : MessageHelper.message( 'purchaseRequisition.status.' + it.status ),
-             infoStatus     : it.status]
-        }
-        return ret
     }
 }

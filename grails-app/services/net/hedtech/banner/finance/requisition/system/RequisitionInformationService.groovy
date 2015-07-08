@@ -72,12 +72,18 @@ class RequisitionInformationService extends ServiceBase {
      * @return
      */
 
-    def listRequisitionsBySearchParam( oracleUserName, searchParam, pagingParams ) {
+    def searchRequisitionsBySearchParam( oracleUserName, searchParam, pagingParams, isDateString ) {
         if (oracleUserName == null) {
             oracleUserName = getOracleUserNameForLoggedInUser()
         }
-        def list = RequisitionInformation.listRequisitionsBySearchParam( oracleUserName, searchParam, pagingParams )
-        [list: list, count: pagingParams.offset == 0 ? fetchRequisitionsCountBySearchParam( searchParam, oracleUserName ) : list?.size()]
+        if (isDateString) {
+            def list = RequisitionInformation.listRequisitionsByTransactionDate( oracleUserName, searchParam, pagingParams )
+            [list: list, count: pagingParams.offset == 0 ? fetchRequisitionsCountByTransactionDate( searchParam, oracleUserName ) : list?.size()]
+        } else {
+            def list = RequisitionInformation.listRequisitionsBySearchParam( oracleUserName, searchParam, pagingParams )
+            [list: list, count: pagingParams.offset == 0 ? fetchRequisitionsCountBySearchParam( searchParam, oracleUserName ) : list?.size()]
+        }
+
     }
 
     /**
@@ -86,26 +92,11 @@ class RequisitionInformationService extends ServiceBase {
      * @param oracleUserName
      * @return
      */
-    def fetchRequisitionsCountBySearchParam( searchParam, oracleUserName ) {
+    private def fetchRequisitionsCountBySearchParam( searchParam, oracleUserName ) {
         if (oracleUserName == null) {
             oracleUserName = getOracleUserNameForLoggedInUser()
         }
         RequisitionInformation.fetchRequisitionsCountBySearchParam( searchParam, oracleUserName )
-    }
-
-    /**
-     * List requisition information by search param as date
-     * @param searchParam
-     * @param pagingParams
-     * @return
-     */
-
-    def listRequisitionsByTransactionDate( oracleUserName, searchParam, pagingParams ) {
-        if (oracleUserName == null) {
-            oracleUserName = getOracleUserNameForLoggedInUser()
-        }
-        def list = RequisitionInformation.listRequisitionsByTransactionDate( oracleUserName, searchParam, pagingParams )
-        [list: list, count: pagingParams.offset == 0 ? fetchRequisitionsCountByTransactionDate( searchParam, oracleUserName ) : list?.size()]
     }
 
     /**
@@ -114,10 +105,56 @@ class RequisitionInformationService extends ServiceBase {
      * @param oracleUserName
      * @return
      */
-    def fetchRequisitionsCountByTransactionDate( searchParam, oracleUserName ) {
+    private def fetchRequisitionsCountByTransactionDate( searchParam, oracleUserName ) {
         if (oracleUserName == null) {
             oracleUserName = getOracleUserNameForLoggedInUser()
         }
         RequisitionInformation.fetchRequisitionsCountByTransactionDate( searchParam, oracleUserName )
+    }
+
+    /**
+     * List requisition information by search param
+     * @param searchParam
+     * @param pagingParams
+     * @return
+     */
+
+    def searchRequisitionsByStatusAndSearchParam( oracleUserName, searchParam, pagingParams, status, isDateString ) {
+        if (oracleUserName == null) {
+            oracleUserName = getOracleUserNameForLoggedInUser()
+        }
+        if (isDateString) {
+            def list = RequisitionInformation.listRequisitionsByStatusAndTransactionDate( oracleUserName, searchParam, pagingParams, status )
+            [list: list, count: pagingParams.offset == 0 ? fetchRequisitionsCountByStatusAndTransactionDate( searchParam, oracleUserName, status ) : list?.size()]
+        } else {
+            def list = RequisitionInformation.listRequisitionsByStatusAndSearchParam( oracleUserName, searchParam, pagingParams, status )
+            [list: list, count: pagingParams.offset == 0 ? fetchRequisitionsCountByBucketAndSearchParam( searchParam, oracleUserName, status ) : list?.size()]
+        }
+    }
+
+    /**
+     * Fetch Requisition Count by search param
+     * @param searchParam
+     * @param oracleUserName
+     * @return
+     */
+    private def fetchRequisitionsCountByBucketAndSearchParam( searchParam, oracleUserName, status ) {
+        if (oracleUserName == null) {
+            oracleUserName = getOracleUserNameForLoggedInUser()
+        }
+        RequisitionInformation.fetchRequisitionsCountByStatusAndSearchParam( searchParam, oracleUserName, status )
+    }
+
+    /**
+     * Fetch Requisition Count by search param
+     * @param searchParam
+     * @param oracleUserName
+     * @return
+     */
+    private def fetchRequisitionsCountByStatusAndTransactionDate( searchParam, oracleUserName, status ) {
+        if (oracleUserName == null) {
+            oracleUserName = getOracleUserNameForLoggedInUser()
+        }
+        RequisitionInformation.fetchRequisitionsCountByStatusAndTransactionDate( searchParam, oracleUserName, status )
     }
 }
