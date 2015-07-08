@@ -134,7 +134,7 @@ class RequisitionSummaryService extends ServiceBase {
                         commodityItem                  : it.commodityItem,
                         commodityCode                  : it.commodityCode,
                         commodityDescription           : it.commodityDescription,
-                        commodityCodeDesc              : it.commodityCodeDesc,
+                        commodityCodeDesc              : it.commodityDescription?it.commodityDescription:it.commodityCodeDesc,
                         commodityQuantity              : it.commodityQuantity,
                         commodityDiscountAmount        : it.commodityDiscountAmount,
                         commodityAdditionalChargeAmount: it.commodityAdditionalChargeAmount,

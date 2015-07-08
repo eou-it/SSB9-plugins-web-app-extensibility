@@ -40,11 +40,10 @@ class CopyPurchaseRequisitionCompositeService {
                         .setParameter( 'oldDocCode', requestCode )
                         .executeUpdate()
                 return nextDocCode
-            } catch (HibernateException | SQLException e) {
+            } catch (HibernateException e) {
                 LoggerUtility.error( LOGGER, "Error While Copy Requisition $header.requestCode" )
                 throw new ApplicationException( CopyPurchaseRequisitionCompositeService, e )
-            }
-            finally {
+            } finally {
                 try {
                     session?.close()
                 }
