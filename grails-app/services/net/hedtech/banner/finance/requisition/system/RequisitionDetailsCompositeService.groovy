@@ -298,7 +298,7 @@ class RequisitionDetailsCompositeService {
      */
     def private listCommodityWithDocumentLevelAccounting( requisitionCode, headerTnxDate ) {
         def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
-        def commodityCodes = requisitionDetails.collect() {
+        def commodityCodes = requisitionDetails.findAll() {it.commodityDescription == null}.collect() {
             it.commodity
         }
         Map commodityCodeDescMap = financeCommodityService.findCommodityByCodeList( commodityCodes, headerTnxDate ).collectEntries {
@@ -361,7 +361,7 @@ class RequisitionDetailsCompositeService {
  */
     def private listCommodityWithCommodityLevelAccounting( requisitionCode, headerTxnDate ) {
         def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
-        def commodityCodes = requisitionDetails.collect() {
+        def commodityCodes = requisitionDetails.findAll() {it.commodityDescription == null}.collect() {
             it.commodity
         }
         Map commodityCodeDescMap = financeCommodityService.findCommodityByCodeList( commodityCodes, headerTxnDate ).collectEntries {
