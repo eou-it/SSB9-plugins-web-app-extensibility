@@ -153,15 +153,10 @@ class RequisitionListingCompositeService {
      * @return
      */
     def searchPurchaseRequisition( searchDataMap, bucketType, pagingParams, baseCcy ) {
-        try {
-            if (bucketType) {
-                return searchRequisitionsByStatusAndSearchParam( bucketType, searchDataMap?.convertValue, pagingParams, searchDataMap?.isDateString, baseCcy )
-            } else {
-                return searchRequisitionsBySearchParam( searchDataMap?.convertValue, pagingParams, searchDataMap?.isDateString, baseCcy )
-            }
-        } catch (ApplicationException e) {
-            log.error( e )
-            throw e
+        if (bucketType) {
+            return searchRequisitionsByStatusAndSearchParam( bucketType, searchDataMap?.convertValue, pagingParams, searchDataMap?.isDateString, baseCcy )
+        } else {
+            return searchRequisitionsBySearchParam( searchDataMap?.convertValue, pagingParams, searchDataMap?.isDateString, baseCcy )
         }
     }
 
@@ -233,7 +228,8 @@ class RequisitionListingCompositeService {
      * Returns list of Requisitions in defined data structure
      * @param searchParam as String
      */
-    private def fetchRequisitionsByStatusAndSearchParam( user, searchParam, pagingParams, status, isDateString, baseCcy ) {
+    private
+    def fetchRequisitionsByStatusAndSearchParam( user, searchParam, pagingParams, status, isDateString, baseCcy ) {
         institutionCcy = baseCcy
         def inputMap = [searchParam: (isDateString) ? searchParam : searchParam?.toUpperCase()]
         if (!isDateString) {

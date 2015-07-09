@@ -301,7 +301,7 @@ class FinanceProcurementConstants {
     static final String REQUISITION_INFO_COUNT_FINDER_BY_SEARCH_PARAM_AND_STATUS = 'RequisitionInformation.countRequisitionsByStatusAndSearchParam'
     static final String REQUISITION_INFO_SEARCH_BY_TRANSACTION_DATE_AND_STATUS = 'RequisitionInformation.listRequisitionsByTransactionDateAndStatus'
     static final String REQUISITION_INFO_SEARCH_COUNT_FINDER_BY_TRANSACTION_DATE_AND_STATUS = 'RequisitionInformation.countRequisitionsByTransactionDateAndStatus'
-    static final String FAILURE_MESSAGE_SEARCH_REQUISITION_INFO = 'net.hedtech.banner.finance.requisition.search.requisition.info.failure'
+    static final String EMPTY_SEARCH_REQUISITION_INFO_MESSAGE = 'net.hedtech.banner.finance.requisition.search.requisition.info.failure'
 
     /** Constants for listing and search Requisitions */
     static final String REQUISITION_LIST_BUCKET_DRAFT = 'draft'
