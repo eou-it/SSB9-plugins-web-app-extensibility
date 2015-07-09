@@ -5,6 +5,7 @@ package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import net.hedtech.banner.finance.util.FinanceCommonUtility
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
@@ -120,5 +121,64 @@ class RequisitionInformationServiceIntegrationTests extends BaseIntegrationTestC
         } finally {
             springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
         }
+    }
+
+    /**
+     * Test Fetch Requisitions for specified status
+     */
+    @Test
+    void searchRequisitionsBySearchParamAsString() {
+
+        def pagingParams = [max: 500, offset: 0]
+        def requisitions = requisitionInformationService.searchRequisitionsBySearchParam(
+                FinanceProcurementConstants.REQUISITION_INFO_USER_NAME, FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT.toUpperCase(),
+                pagingParams,false )
+        assertNotNull requisitions
+        assert requisitions.size() > 0
+    }
+
+    /**
+     * Test Fetch Requisitions for specified status
+     */
+    @Test
+    void searchRequisitionsBySearchParamAsDate() {
+
+        def pagingParams = [max: 500, offset: 0]
+        def requisitions = requisitionInformationService.searchRequisitionsBySearchParam(
+                null, FinanceCommonUtility.parseDate( '06/19/2015' ),
+                pagingParams,true )
+        assertNotNull requisitions
+        assert requisitions.size() > 0
+    }
+
+
+    /**
+     * Test Fetch Requisitions for specified status
+     */
+    @Test
+    void searchRequisitionsByStatusAndSearchParamString() {
+        def status = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT,
+                           FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
+        def pagingParams = [max: 500, offset: 0]
+        def requisitions = requisitionInformationService.searchRequisitionsByStatusAndSearchParam(
+                FinanceProcurementConstants.REQUISITION_INFO_USER_NAME, 'RSD00001'.toUpperCase(),
+                pagingParams,status,false )
+        assertNotNull requisitions
+        assert requisitions.size() > 0
+    }
+
+    /**
+     * Test Fetch Requisitions for specified status
+     */
+    @Test
+    void searchRequisitionsByStatusAndSearchParamAsDate() {
+        def status = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT,
+                           FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
+        def pagingParams = [max: 500, offset: 0]
+        def requisitions = requisitionInformationService.searchRequisitionsByStatusAndSearchParam(
+                null, FinanceCommonUtility.parseDate( '06/19/2015' ),
+                pagingParams,status,true )
+        assertNotNull requisitions
+        assert requisitions.size() > 0
     }
 }

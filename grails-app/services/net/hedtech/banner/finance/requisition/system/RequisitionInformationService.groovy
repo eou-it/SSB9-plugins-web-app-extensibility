@@ -87,6 +87,26 @@ class RequisitionInformationService extends ServiceBase {
     }
 
     /**
+     * List requisition information by search param
+     * @param searchParam
+     * @param pagingParams
+     * @return
+     */
+
+    def searchRequisitionsByStatusAndSearchParam( oracleUserName, searchParam, pagingParams, status, isDateString ) {
+        if (oracleUserName == null) {
+            oracleUserName = getOracleUserNameForLoggedInUser()
+        }
+        if (isDateString) {
+            def list = RequisitionInformation.listRequisitionsByStatusAndTransactionDate( oracleUserName, searchParam, pagingParams, status )
+            [list: list, count: pagingParams.offset == 0 ? fetchRequisitionsCountByStatusAndTransactionDate( searchParam, oracleUserName, status ) : list?.size()]
+        } else {
+            def list = RequisitionInformation.listRequisitionsByStatusAndSearchParam( oracleUserName, searchParam, pagingParams, status )
+            [list: list, count: pagingParams.offset == 0 ? fetchRequisitionsCountByBucketAndSearchParam( searchParam, oracleUserName, status ) : list?.size()]
+        }
+    }
+
+    /**
      * Fetch Requisition Count by search param
      * @param searchParam
      * @param oracleUserName
@@ -110,26 +130,6 @@ class RequisitionInformationService extends ServiceBase {
             oracleUserName = getOracleUserNameForLoggedInUser()
         }
         RequisitionInformation.fetchRequisitionsCountByTransactionDate( searchParam, oracleUserName )
-    }
-
-    /**
-     * List requisition information by search param
-     * @param searchParam
-     * @param pagingParams
-     * @return
-     */
-
-    def searchRequisitionsByStatusAndSearchParam( oracleUserName, searchParam, pagingParams, status, isDateString ) {
-        if (oracleUserName == null) {
-            oracleUserName = getOracleUserNameForLoggedInUser()
-        }
-        if (isDateString) {
-            def list = RequisitionInformation.listRequisitionsByStatusAndTransactionDate( oracleUserName, searchParam, pagingParams, status )
-            [list: list, count: pagingParams.offset == 0 ? fetchRequisitionsCountByStatusAndTransactionDate( searchParam, oracleUserName, status ) : list?.size()]
-        } else {
-            def list = RequisitionInformation.listRequisitionsByStatusAndSearchParam( oracleUserName, searchParam, pagingParams, status )
-            [list: list, count: pagingParams.offset == 0 ? fetchRequisitionsCountByBucketAndSearchParam( searchParam, oracleUserName, status ) : list?.size()]
-        }
     }
 
     /**

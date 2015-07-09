@@ -154,9 +154,9 @@ class RequisitionListingCompositeService {
      */
     def searchPurchaseRequisition( searchDataMap, bucketType, pagingParams, baseCcy ) {
         if (bucketType) {
-            return searchRequisitionsByStatusAndSearchParam( bucketType, searchDataMap?.convertValue, pagingParams, searchDataMap?.isDateString, baseCcy )
+            searchRequisitionsByStatusAndSearchParam( bucketType, searchDataMap?.convertValue, pagingParams, searchDataMap?.isDateString, baseCcy )
         } else {
-            return searchRequisitionsBySearchParam( searchDataMap?.convertValue, pagingParams, searchDataMap?.isDateString, baseCcy )
+            searchRequisitionsBySearchParam( searchDataMap?.convertValue, pagingParams, searchDataMap?.isDateString, baseCcy )
         }
     }
 

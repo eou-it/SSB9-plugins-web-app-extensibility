@@ -5,6 +5,7 @@ package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import net.hedtech.banner.finance.util.FinanceCommonUtility
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
@@ -43,7 +44,7 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
     void listRequisitionsByDraftBucket() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def pagingParams = [max: 500, offset: 0]
-        def list = requisitionListingCompositeService.listRequisitionsByBucket([FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT], pagingParams, 'USD')
+        def list = requisitionListingCompositeService.listRequisitionsByBucket( [FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT], pagingParams, 'USD' )
         assertTrue list[0].count > 0
     }
 
@@ -57,9 +58,9 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
         springSecurityService.getAuthentication().user.oracleUserName = ''
         try {
             def pagingParams = [max: 500, offset: 0]
-            requisitionListingCompositeService.listRequisitionsByBucket([FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT], pagingParams, 'USD')
+            requisitionListingCompositeService.listRequisitionsByBucket( [FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT], pagingParams, 'USD' )
         } catch (ApplicationException ae) {
-            assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID)
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
         } finally {
             springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
         }
@@ -72,7 +73,7 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
     void listRequisitionsByAllBuckets() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def pagingParams = [max: 500, offset: 0]
-        def list = requisitionListingCompositeService.listRequisitionsByBucket([], pagingParams, 'USD')
+        def list = requisitionListingCompositeService.listRequisitionsByBucket( [], pagingParams, 'USD' )
         assertTrue list[0].count > 0
     }
 
@@ -86,9 +87,9 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
         springSecurityService.getAuthentication().user.oracleUserName = ''
         try {
             def pagingParams = [max: 500, offset: 0]
-            requisitionListingCompositeService.listRequisitionsByBucket([], pagingParams, 'USD')
+            requisitionListingCompositeService.listRequisitionsByBucket( [], pagingParams, 'USD' )
         } catch (ApplicationException ae) {
-            assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID)
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
         } finally {
             springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
         }
@@ -104,9 +105,9 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
         springSecurityService.getAuthentication().user.oracleUserName = null
         try {
             def pagingParams = [max: 500, offset: 0]
-            requisitionListingCompositeService.listRequisitionsByBucket([FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE], pagingParams, 'USD')
+            requisitionListingCompositeService.listRequisitionsByBucket( [FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE], pagingParams, 'USD' )
         } catch (ApplicationException ae) {
-            assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID)
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
         } finally {
             springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
         }
@@ -119,7 +120,7 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
     void listRequisitionsByPendingBucket() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def pagingParams = [max: 500, offset: 0]
-        def list = requisitionListingCompositeService.listRequisitionsByBucket([FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING], pagingParams, 'USD')
+        def list = requisitionListingCompositeService.listRequisitionsByBucket( [FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING], pagingParams, 'USD' )
         assertTrue list[0].count != null
     }
 
@@ -133,9 +134,9 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
         springSecurityService.getAuthentication().user.oracleUserName = null
         try {
             def pagingParams = [max: 500, offset: 0]
-            requisitionListingCompositeService.listRequisitionsByBucket([FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING], pagingParams, 'USD')
+            requisitionListingCompositeService.listRequisitionsByBucket( [FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING], pagingParams, 'USD' )
         } catch (ApplicationException ae) {
-            assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID)
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
         } finally {
             springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
         }
@@ -148,7 +149,7 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
     void listRequisitionsByCompleteBucket() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def pagingParams = [max: 500, offset: 0]
-        def list = requisitionListingCompositeService.listRequisitionsByBucket([FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE], pagingParams, 'USD')
+        def list = requisitionListingCompositeService.listRequisitionsByBucket( [FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE], pagingParams, 'USD' )
         assertTrue list[0].count != null
     }
 
@@ -162,9 +163,9 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
         springSecurityService.getAuthentication().user.oracleUserName = null
         try {
             def pagingParams = [max: 500, offset: 0]
-            requisitionListingCompositeService.listRequisitionsByBucket([FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE], pagingParams, 'USD')
+            requisitionListingCompositeService.listRequisitionsByBucket( [FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE], pagingParams, 'USD' )
         } catch (ApplicationException ae) {
-            assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID)
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
         } finally {
             springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
         }
@@ -178,9 +179,147 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def pagingParams = [max: 500, offset: 0]
         try {
-            requisitionListingCompositeService.listRequisitionsByBucket(['INVALID'], pagingParams, 'USD')
+            requisitionListingCompositeService.listRequisitionsByBucket( ['INVALID'], pagingParams, 'USD' )
         } catch (ApplicationException e) {
-            assertApplicationException(e, FinanceProcurementConstants.ERROR_MESSAGE_INVALID_BUCKET_TYPE)
+            assertApplicationException( e, FinanceProcurementConstants.ERROR_MESSAGE_INVALID_BUCKET_TYPE )
+        }
+    }
+
+    /**
+     * Test search Requisitions for specified search param and status
+     */
+    @Test
+    void searchPurchaseRequisitionWithSearchParamAsString() {
+        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
+        springSecurityService.getAuthentication().user.oracleUserName = 'GRAILS'
+        try {
+            def pagingParams = [max: 500, offset: 0]
+            def searchParams = [convertValue: 'RSD00001', isDateString: false]
+            def requisitions = requisitionListingCompositeService.searchPurchaseRequisition( searchParams, null, pagingParams, 'institutionBaseCcy' )
+            assertNotNull requisitions
+            assert requisitions.size() > 0
+        }
+        finally {
+            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
+        }
+    }
+
+    /**
+     * Test search Requisitions for specified search param and status
+     */
+    @Test
+    void searchPurchaseRequisitionWithSearchParamAsDate() {
+        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
+        springSecurityService.getAuthentication().user.oracleUserName = 'GRAILS'
+        try {
+            def pagingParams = [max: 500, offset: 0]
+            def searchParams = [convertValue: FinanceCommonUtility.parseDate( '06/19/2015' ), isDateString: true]
+            def requisitions = requisitionListingCompositeService.searchPurchaseRequisition( searchParams, null, pagingParams, 'institutionBaseCcy' )
+            assertNotNull requisitions
+            assert requisitions.size() > 0
+        }
+        finally {
+            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
+        }
+    }
+
+    /**
+     * Test search Requisitions for specified search param and status
+     */
+    @Test
+    void searchPurchaseRequisitionWithSearchParamAsStringAndDraftStatus() {
+        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
+        springSecurityService.getAuthentication().user.oracleUserName = 'GRAILS'
+
+        try {
+            def pagingParams = [max: 500, offset: 0]
+            def searchParams = [convertValue: 'RSD00001', isDateString: false]
+            def requisitions = requisitionListingCompositeService.searchPurchaseRequisition( searchParams, FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT, pagingParams, 'institutionBaseCcy' )
+            assertNotNull requisitions
+            assert requisitions.size() > 0
+        }
+        finally {
+            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
+        }
+    }
+
+    /**
+     * Test search Requisitions for specified search param and status
+     */
+    @Test
+    void searchPurchaseRequisitionWithSearchParamAsStringAndPendingStatus() {
+        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
+        springSecurityService.getAuthentication().user.oracleUserName = 'GRAILS'
+
+        try {
+            def pagingParams = [max: 500, offset: 0]
+            def searchParams = [convertValue: 'RSD00007', isDateString: false]
+            def requisitions = requisitionListingCompositeService.searchPurchaseRequisition( searchParams, FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING, pagingParams, 'institutionBaseCcy' )
+            assertNotNull requisitions
+            assert requisitions.size() > 0
+        }
+        finally {
+            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
+        }
+    }
+
+    /**
+     * Test search Requisitions for specified search param and status
+     */
+    @Test
+    void searchPurchaseRequisitionWithSearchParamAsStringAndCompletedStatus() {
+        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
+        springSecurityService.getAuthentication().user.oracleUserName = 'GRAILS'
+
+        try {
+            def pagingParams = [max: 500, offset: 0]
+            def searchParams = [convertValue: 'RSD00005', isDateString: false]
+            def requisitions = requisitionListingCompositeService.searchPurchaseRequisition( searchParams, FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE, pagingParams, 'institutionBaseCcy' )
+            assertNotNull requisitions
+            assert requisitions.size() > 0
+        }
+        finally {
+            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
+        }
+    }
+
+    /**
+     * Test search Requisitions for specified search param and status
+     */
+    @Test
+    void searchPurchaseRequisitionWithSearchParamAsDateAndStatus() {
+        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
+        springSecurityService.getAuthentication().user.oracleUserName = 'GRAILS'
+
+        try {
+            def pagingParams = [max: 500, offset: 0]
+            def searchParams = [convertValue: FinanceCommonUtility.parseDate( '06/19/2015' ), isDateString: true]
+            def requisitions = requisitionListingCompositeService.searchPurchaseRequisition( searchParams, FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT, pagingParams, 'institutionBaseCcy' )
+            assertNotNull requisitions
+            assert requisitions.size() > 0
+        }
+        finally {
+            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
+        }
+    }
+
+    /**
+     * Test search Requisitions for specified search param and status
+     */
+    @Test
+    void searchRequisitionWithInvalidUserName() {
+        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
+        springSecurityService.getAuthentication().user.oracleUserName = null
+        try {
+            def pagingParams = [max: 500, offset: 0]
+            def searchParams = [convertValue: 'RSD00007', isDateString: false]
+            def requisitions = requisitionListingCompositeService.searchPurchaseRequisition( searchParams, FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING, pagingParams, 'institutionBaseCcy' )
+            assertNotNull requisitions
+            assert requisitions.size() > 0
+        } catch (ApplicationException ae) {
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
+        } finally {
+            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
         }
     }
 }
