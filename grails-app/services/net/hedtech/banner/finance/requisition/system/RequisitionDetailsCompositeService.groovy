@@ -188,7 +188,7 @@ class RequisitionDetailsCompositeService {
                 && StringUtils.isBlank( requisitionDetailRequest.taxGroup ))) {
             requisitionDetailRequest.taxGroup = null
         }
-       // If details have discount code setup then remove the discountAmount value from details
+        // If details have discount code setup then remove the discountAmount value from details
         if (requisitionHeader.discount != null) {
             requisitionDetailRequest.discountAmount = null
         }
@@ -298,7 +298,7 @@ class RequisitionDetailsCompositeService {
      */
     def private listCommodityWithDocumentLevelAccounting( requisitionCode, headerTnxDate ) {
         def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
-        def commodityCodes = requisitionDetails.findAll() {it.commodityDescription != null}.collect() {
+        def commodityCodes = requisitionDetails.collect() {
             it.commodity
         }
         Map commodityCodeDescMap = financeCommodityService.findCommodityByCodeList( commodityCodes, headerTnxDate ).collectEntries {
@@ -361,7 +361,7 @@ class RequisitionDetailsCompositeService {
  */
     def private listCommodityWithCommodityLevelAccounting( requisitionCode, headerTxnDate ) {
         def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
-        def commodityCodes = requisitionDetails.findAll() {it.commodityDescription != null}.collect() {
+        def commodityCodes = requisitionDetails.collect() {
             it.commodity
         }
         Map commodityCodeDescMap = financeCommodityService.findCommodityByCodeList( commodityCodes, headerTxnDate ).collectEntries {

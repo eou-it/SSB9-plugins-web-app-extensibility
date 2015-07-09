@@ -32,7 +32,7 @@ class CopyPurchaseRequisitionCompositeService {
         if (header && header.completeIndicator) {
             Session session
             try {
-                session = sessionFactory.openSession()
+                session = sessionFactory.getCurrentSession()
                 session.createSQLQuery( FinanceProcurementSQLUtils.getUpdateReqNextQuery() ).executeUpdate()
                 def nextDocCode = session.createSQLQuery( FinanceProcurementSQLUtils.getSelectGeneratedReqCodeQuery() ).list()[0]
                 session.createSQLQuery( FinanceProcurementSQLUtils.getCopyRequisitionQuery() )
@@ -43,14 +43,6 @@ class CopyPurchaseRequisitionCompositeService {
             } catch (HibernateException e) {
                 LoggerUtility.error( LOGGER, "Error While Copy Requisition $header.requestCode" )
                 throw new ApplicationException( CopyPurchaseRequisitionCompositeService, e )
-            } finally {
-                try {
-                    session?.close()
-                }
-                catch (HibernateException e) {
-                    LoggerUtility.error( LOGGER, "Error While Copy Requisition $header.requestCode" )
-                    throw new ApplicationException( CopyPurchaseRequisitionCompositeService, e )
-                }
             }
         } else {
             LoggerUtility.error( LOGGER, "Only completed requisition can be copied = $header.requestCode" )
