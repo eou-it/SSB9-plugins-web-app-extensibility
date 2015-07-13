@@ -138,13 +138,10 @@ class RequisitionHeaderCompositeService {
         financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
             existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
-        if (existingPrivateComment == privateComment) {
-            return true
-        }
         financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
             existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
-        return existingPublicComment == publicComment
+        existingPublicComment == publicComment && existingPrivateComment == privateComment
     }
 
     /**

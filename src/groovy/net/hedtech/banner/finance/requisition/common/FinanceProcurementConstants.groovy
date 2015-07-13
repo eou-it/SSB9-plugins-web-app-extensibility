@@ -284,12 +284,16 @@ class FinanceProcurementConstants {
     static final String REQUISITION_INFO_FINDER_PARAM_REQ_CODE = 'requisitionCode'
     static final String REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID = 'userId'
     static final String REQUEST_PARAM_BUCKET_TYPES = 'bucketTypes'
-    static final String REQUISITION_INFO_FINDER_BY_SEARCH_PARAM = 'RequisitionInformation.searchRequisitionsBySearchParam'
-    static final String REQUISITION_INFO_COUNT_FINDER_BY_SEARCH_PARAM = 'RequisitionInformation.countRequisitionsBySearchParam'
+    static
+    final String REQUISITION_INFO_FINDER_BY_SEARCH_PARAM = 'RequisitionInformation.searchRequisitionsBySearchParam'
+    static
+    final String REQUISITION_INFO_COUNT_FINDER_BY_SEARCH_PARAM = 'RequisitionInformation.countRequisitionsBySearchParam'
     static final String REQUISITION_INFO_SEARCH_PARAM = 'searchParam'
-    static final String REQUISITION_INFO_SEARCH_BY_TRANSACTION_DATE = 'RequisitionInformation.listRequisitionsByTransactionDate'
-    static final String REQUISITION_INFO_SEARCH_COUNT_FINDER_BY_TRANSACTION_DATE = 'RequisitionInformation.countRequisitionsByTransactionDate'
-    static final String REQUISITION_INFO_USER_NAME='GRAILS'
+    static
+    final String REQUISITION_INFO_SEARCH_BY_TRANSACTION_DATE = 'RequisitionInformation.listRequisitionsByTransactionDate'
+    static
+    final String REQUISITION_INFO_SEARCH_COUNT_FINDER_BY_TRANSACTION_DATE = 'RequisitionInformation.countRequisitionsByTransactionDate'
+    static final String REQUISITION_INFO_USER_NAME = 'GRAILS'
     /** Properties keys for Requisition Information status  **/
     static final String REQUISITION_INFO_STATUS_DRAFT = 'draft'
     static final String REQUISITION_INFO_STATUS_DISAPPROVED = 'disapproved'
@@ -297,11 +301,16 @@ class FinanceProcurementConstants {
     static final String REQUISITION_INFO_STATUS_COMPLETED = 'completed'
     static final String REQUISITION_INFO_STATUS_ASSIGNED_TO_BUYER = 'assignedToBuyer'
     static final String REQUISITION_INFO_STATUS_CONVERTED_TO_PO = 'convertedToPo'
-    static final String REQUISITION_INFO_FINDER_BY_SEARCH_PARAM_AND_STATUS = 'RequisitionInformation.searchRequisitionsByStatusAndSearchParam'
-    static final String REQUISITION_INFO_COUNT_FINDER_BY_SEARCH_PARAM_AND_STATUS = 'RequisitionInformation.countRequisitionsByStatusAndSearchParam'
-    static final String REQUISITION_INFO_SEARCH_BY_TRANSACTION_DATE_AND_STATUS = 'RequisitionInformation.listRequisitionsByTransactionDateAndStatus'
-    static final String REQUISITION_INFO_SEARCH_COUNT_FINDER_BY_TRANSACTION_DATE_AND_STATUS = 'RequisitionInformation.countRequisitionsByTransactionDateAndStatus'
-    static final String EMPTY_SEARCH_REQUISITION_INFO_MESSAGE = 'net.hedtech.banner.finance.requisition.search.requisition.info.failure'
+    static
+    final String REQUISITION_INFO_FINDER_BY_SEARCH_PARAM_AND_STATUS = 'RequisitionInformation.searchRequisitionsByStatusAndSearchParam'
+    static
+    final String REQUISITION_INFO_COUNT_FINDER_BY_SEARCH_PARAM_AND_STATUS = 'RequisitionInformation.countRequisitionsByStatusAndSearchParam'
+    static
+    final String REQUISITION_INFO_SEARCH_BY_TRANSACTION_DATE_AND_STATUS = 'RequisitionInformation.listRequisitionsByTransactionDateAndStatus'
+    static
+    final String REQUISITION_INFO_SEARCH_COUNT_FINDER_BY_TRANSACTION_DATE_AND_STATUS = 'RequisitionInformation.countRequisitionsByTransactionDateAndStatus'
+    static
+    final String EMPTY_SEARCH_REQUISITION_INFO_MESSAGE = 'net.hedtech.banner.finance.requisition.search.requisition.info.failure'
 
     /** Constants for listing and search Requisitions */
     static final String REQUISITION_LIST_BUCKET_DRAFT = 'draft'
@@ -325,7 +334,9 @@ class FinanceProcurementConstants {
     static final String REQUISITION_SUMMARY_FIELD_FPRREQA_ORGN_CODE = 'FPRREQA_ORGN_CODE'
     static final String REQUISITION_SUMMARY_FIELD_FPRREQA_ACCT_CODE = 'FPRREQA_ACCT_CODE'
     static final String REQUISITION_SUMMARY_FIELD_FPRREQA_ACTV_CODE = 'FPRREQA_ACTV_CODE'
+    static final String REQUISITION_SUMMARY_FIELD_SHIP_TO_CODE = 'FPBREQH_SHIP_CODE'
     static final String REQUISITION_SUMMARY_FIELD_FPRREQA_PROJ_CODE = 'FPRREQA_PROJ_CODE'
+    static final String REQUISITION_SUMMARY_FIELD_FPBREQH_ATTENTION_TO = 'FPBREQH_ATTENTION_TO'
     static final String REQUISITION_SUMMARY_FIELD_FPRREQA_PROG_CODE = 'FPRREQA_PROG_CODE'
     static final String REQUISITION_SUMMARY_FIELD_FPRREQA_DISC_AMT = 'FPRREQA_DISC_AMT'
     static final String REQUISITION_SUMMARY_FIELD_FPRREQA_ADDL_CHRG_AMT = 'FPRREQA_ADDL_CHRG_AMT'
@@ -352,6 +363,9 @@ class FinanceProcurementConstants {
     static final String REQUISITION_SUMMARY_FIELD_FPBREQH_SURROGATE_ID = 'FPBREQH_SURROGATE_ID'
     static final String REQUISITION_SUMMARY_FIELD_FPRREQD_SURROGATE_ID = 'FPRREQD_SURROGATE_ID'
     static final String REQUISITION_SUMMARY_FIELD_FPRREQA_SURROGATE_ID = 'FPRREQA_SURROGATE_ID'
+    static final String REQUISITION_SUMMARY_FIELD_FPVVEND_PHONE_NUMBER = 'FPVVEND_PHONE_NUMBER'
+    static final String REQUISITION_SUMMARY_FIELD_FPVVEND_PHONE_EXT = 'FPVVEND_PHONE_EXT'
+
     static
     final String REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE = 'RequisitionSummary.FetchRequisitionSummaryForRequestCode'
 
@@ -359,7 +373,8 @@ class FinanceProcurementConstants {
     static
     final String ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED = 'missing.requisition.complemented.requisition.required'
     static final String COPY_REQUISITION_HEADER_COPIED_FROM = 'COPIED FROM '
-    static final String SUCCESS_MESSAGE_COPY_REQUISITION_HEADER = 'net.hedtech.banner.finance.requisition.copy.requisition.header.success'
+    static
+    final String SUCCESS_MESSAGE_COPY_REQUISITION_HEADER = 'net.hedtech.banner.finance.requisition.copy.requisition.header.success'
 
     /** Date format error **/
     static final String ERROR_MESSAGE_INVALID_DATE_FORMAT = 'default.invalid.date.format'
@@ -471,7 +486,8 @@ class FinanceProcurementConstants {
 
     /** Constants for Domain FinanceBuyerVerification **/
     static final String FTVBUYR_TABLE = 'FVQ_REQ_BUYER_VERIFICATION'
-    static final String FINANCE_BUYER_VERIFICATION_NAMED_QUERY_FIND_BY_REQUEST_CODE = 'FinanceBuyerVerification.findByDocumentCode'
+    static
+    final String FINANCE_BUYER_VERIFICATION_NAMED_QUERY_FIND_BY_REQUEST_CODE = 'FinanceBuyerVerification.findByDocumentCode'
     static final String FINANCE_BUYER_VERIFICATION_FTVBUYR_REQUEST_CODE = 'REQUEST_CODE'
     static final String FINANCE_BUYER_VERIFICATION_FTVBUYR_CODE = 'BUYER_CODE'
     static final String FINANCE_BUYER_VERIFICATION_FTVBUYR_NAME = 'BUYER_NAME'
@@ -481,12 +497,21 @@ class FinanceProcurementConstants {
 
     /** Constants for Domain FinanceRequestPOVerification **/
     static final String FTVRQPO_TABLE = 'FTVRQPO'
-    static final String FINANCE_REQUEST_PO_VERIFICATION_NAMED_QUERY_FIND_BY_REQ_CODE = 'FinanceRequestPOVerification.findByRequestCode'
+    static
+    final String FINANCE_REQUEST_PO_VERIFICATION_NAMED_QUERY_FIND_BY_REQ_CODE = 'FinanceRequestPOVerification.findByRequestCode'
     static final String FINANCE_REQUEST_PO_VERIFICATION_FTVRQPO_SURROGATE_ID = 'FTVRQPO_SURROGATE_ID'
     static final String FINANCE_REQUEST_PO_VERIFICATION_FTVRQPO_REQD_CODE = 'FTVRQPO_REQD_CODE'
     static final String FINANCE_REQUEST_PO_VERIFICATION_FTVRQPO_POHD_CODE = 'FTVRQPO_POHD_CODE'
     static final String FINANCE_REQUEST_PO_VERIFICATION_FTVRQPO_VERSION = 'FTVRQPO_VERSION'
     static final String FINANCE_REQUEST_PO_VERIFICATION_QUERY_PARAM_REQUEST_CODE = 'requestCode'
-
+    static final String FINANCE_PROCUREMENT_PDF_CONTENT_TYPE = 'application/pdf'
+    static final String FINANCE_PROCUREMENT_PDF_CONTENT = 'Content-disposition'
+    static final String FINANCE_PROCUREMENT_PDF_INLINE = 'inline;filename='
+    static final String FINANCE_PROCUREMENT_PDF_HEADER_EXPIRES = 'Expires'
+    static final String FINANCE_PROCUREMENT_PDF_HEADER_PRAGMA = 'Pragma'
+    static final String FINANCE_PROCUREMENT_PDF_HEADER_PRAGMA_PUBLIC = 'public'
+    static
+    final String FINANCE_PROCUREMENT_PDF_HEADER_CACHE_CONTROL = 'Cache-Control'
+    static final String FINANCE_PROCUREMENT_PDF_HEADER_CACHE_CONTROL_MUST_RE_VALIDATE = 'must-revalidate, post-check=0, pre-check=0'
 
 }

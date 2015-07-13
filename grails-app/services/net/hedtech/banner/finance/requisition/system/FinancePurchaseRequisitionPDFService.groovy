@@ -3,111 +3,160 @@
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
+import grails.converters.JSON
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.i18n.MessageHelper
 import net.hedtech.banner.pdf.exceptions.PdfGeneratorException
 import net.hedtech.banner.pdf.impl.PdfGenerator
-import org.codehaus.groovy.grails.plugins.web.taglib.ValidationTagLib as g
 import org.codehaus.groovy.grails.web.context.ServletContextHolder
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.springframework.context.ApplicationContext
 import org.springframework.context.i18n.LocaleContextHolder
 
 /**
- * Service class for FinanceApprovalHistory.
+ * Service class for Finance Purchase Requisition PDF.
  */
 class FinancePurchaseRequisitionPDFService {
     PdfGenerator pdfGenerator = PdfGenerator.getInstance();
     def requisitionSummaryService
-    private static final FOP_CONFIG_FILENAME_DEFAULT = "fop-config.xml"
-    static final XSL_FILE_EXTENSION = "xsl"
-    static final pdfName = "purchaseRequisition"
+    private static final FOP_CONFIG_FILENAME_DEFAULT = 'fop-config.xml'
+    static final XSL_FILE_EXTENSION = 'xsl'
+    static final BASE_DIR = 'fop'
+    static final pdfName = 'purchaseRequisition'
 
-
+    /**
+     * Generates PDf stream
+     * @param requisitionCode
+     * @return
+     */
     def generatePdfStream( requisitionCode ) {
-        // get PDF Model
-        def summaryModel = requisitionSummaryService.fetchRequisitionSummaryForRequestCode( requisitionCode )
-        renderPDFResponse( summaryModel )
+        renderPDFResponse( requisitionSummaryService.fetchRequisitionSummaryForRequestCode( requisitionCode, true ) )
     }
 
+    /**
+     * Gets pdfFile Name
+     * @param requisitionCode
+     * @return
+     */
+    def getPdfFileName( requisitionCode ) {
+        MessageHelper.message( code: 'banner.finance.procurement.requisition.pdf.filename',
+                               args: [requisitionCode] ).replaceAll( "\\s+", "" )
+    }
 
+    /**
+     * Process PDF Response
+     * @param summaryModel
+     * @return
+     */
     private renderPDFResponse( summaryModel ) {
-        def pdfModel = toPDFModel( summaryModel )
         try {
-            // Convert the summaryModel to XML
-            String xmlString = pdfGenerator.toXmlString( pdfModel )
-            // Eliminate the resulting JSON null objects literals
-            xmlString = xmlString.replaceAll( ">null</", "></" )
-
-            def File configFile = getConfigFile( fopBasePath )
             def fopBasePath = getFopBasePath()
-            def File xslFile = getXslFile( fopBasePath )
-            return pdfGenerator.generatePdfFromXmlString( xmlString, xslFile, configFile )
+            return pdfGenerator.generatePdfFromXmlString( pdfGenerator.toXmlString( (toPDFModel( summaryModel ) as JSON).toString() )
+                                                                  .replaceAll( ">null</", "></" ), getXslFilePath( fopBasePath ), getConfigFilePath( fopBasePath ), [:] )
         } catch (PdfGeneratorException pdfe) {
             pdfe.printStackTrace()
-            throw new ApplicationException( "", 'Exception' );
+            throw new ApplicationException( "", pdfe );
         }
     }
 
-
+    /**
+     * Gets FOB Base path
+     * @return
+     */
     private getFopBasePath() {
-        def fopBasePath = getApplicationContext().getResource( 'fop' ).file.absolutePath
-        File fopBaseFile = new File( fopBasePath )
-
-        if (!fopBaseFile.exists()) {
+        def fopBasePath = getApplicationContext().getResource( BASE_DIR ).file.absolutePath
+        if (!new File( fopBasePath ).exists()) {
             fopBasePath = null
         }
-        return fopBasePath
+        fopBasePath
     }
 
-
+    /**
+     * Get Application Context
+     * @return
+     */
     private ApplicationContext getApplicationContext() {
         return (ApplicationContext) ServletContextHolder.getServletContext().getAttribute( GrailsApplicationAttributes.APPLICATION_CONTEXT )
     }
 
-
-    private File getXslFile( String fopBasePath ) {
-        def File xslFile = new File( new File( fopBasePath, pdfName ), pdfName.concat( "." ).concat( XSL_FILE_EXTENSION ) )
-        return xslFile
-    }
-
-
+    /**
+     * Convert To Pdf Model
+     * @param model
+     * @return
+     */
     private toPDFModel( model ) {
-        // The JSON summaryModel will eventually be converted to an XML structure for PDF generation.
-        // The XML must be well-formed in order for the PDF generator to work properly.
-        // Here, we construct a new JSON object from the existing one and make minor adjustments
-        // to ensure the converted XML file is well-formed.
 
+        def labels = [:]
+        collectLabels( labels )
         def pdfModel = [:]
-
-        // Labels must be localized and loaded to the JSON summaryModel for PDF rendering
-        def labels = [:]   // This is a standard JSON element for PDF models
-        labels.requisitionNo = g.message( code: 'banner.finance.procurement.requisition.number' )
-
-        // Copy existing summaryModel elements to the new JSON summaryModel for a well-formed XML conversion.
-        pdfModel.pdfFileName = getPdfFileName( model.header.requestCode )
-        pdfModel.labels = labels
-        pdfModel.config.languageDirection = g.message( code: 'default.language.direction' )
-        pdfModel.config.locale = LocaleContextHolder.getLocale()
-        pdfModel.requisitionNo = model.header.requestCode
+        pdfModel.pdfModel = [:]
+        pdfModel.pdfModel.pdfFileName = getPdfFileName( model.header.requestCode )
+        pdfModel.pdfModel.labels = labels
+        pdfModel.pdfModel.config = [logoTopBottom: 'TOP', logoLeftRight: 'LEFT']
+        pdfModel.pdfModel.config.languageDirection = MessageHelper.message( code: 'default.language.direction' )
+        pdfModel.pdfModel.config.locale = LocaleContextHolder.getLocale()
+        pdfModel.pdfModel.requisition = model
         pdfModel
     }
 
-
-    private File getConfigFile( String fopBasePath ) {
-        def File configFile = new File( fopBasePath, FOP_CONFIG_FILENAME_DEFAULT )
-        return configFile
+    /**
+     * Get Config files path
+     * @param fopBasePath
+     * @return
+     */
+    private String getConfigFilePath( String fopBasePath ) {
+        new File( fopBasePath, FOP_CONFIG_FILENAME_DEFAULT ).path
     }
 
+    /**
+     * Get XSl file path
+     * @param fopBasePath
+     * @return
+     */
+    private String getXslFilePath( String fopBasePath ) {
+        new File( new File( fopBasePath, pdfName ), pdfName.concat( "." ).concat( XSL_FILE_EXTENSION ) ).path
+    }
 
-    def getPdfFileName( requisitionCode ) {
-        def pdfFileName
-        if (requisitionCode) {
-            pdfFileName = g.message( code: 'banner.finance.procurement.requisition.pdf.filename',
-                                     args: [requisitionCode] )
-        } else {
-            pdfFileName = g.message( code: 'banner.finance.procurement.requisition.pdf.filename' )
-        }
-        pdfFileName = pdfFileName.replaceAll( "\\s+", "" )
-        return pdfFileName
+    /**
+     * Collects all labels
+     */
+    private def collectLabels = {labels ->
+        labels.title = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.title" )
+        labels.requisitionNo = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.number" )
+        labels.requestor = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.requestor" )
+        labels.transactionDate = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.transactionDate" )
+        labels.phone = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.phone" )
+        labels.extension = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.extension" )
+        labels.email = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.email" )
+        labels.deliveryDate = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.deliveryDate" )
+        labels.organization = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.organization" )
+        labels.status = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.status" )
+        labels.shipTo = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.shipTo" )
+        labels.address = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.address" )
+        labels.vendor = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.vendor" )
+        labels.attentionTo = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.attentionTo" )
+        labels.headerComment = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.header.comment" )
+        labels.commodities = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.commodities" )
+        labels.commodityItem = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.commodity.item" )
+        labels.commodityDesc = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.commodity.item.description" )
+        labels.commoditityUOM = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.commodity.uom" )
+        labels.commodityQuantity = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.commodity.quantity" )
+        labels.commodityUnitPrice = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.commodity.unitPrice" )
+        labels.commodityOther = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.commodity.other" )
+        labels.commodityTax = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.commodity.tax" )
+        labels.commodityTotal = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.commodity.itemTotal" )
+        labels.requisitionType = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.type" )
+        labels.documentRequisitionType = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.document.type" )
+        labels.commodityRequisitionType = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.commodity.type" )
+        labels.commodityItemText = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.commodity.item.text" )
+        labels.disclaimer = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.disclaimer" )
+        labels.grandTotalCommodity = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.grand.total.commodity" )
+        labels.accountingDistribution = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.accounting.distribution" )
+        labels.accountingSequence = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.accounting.sequence" )
+        labels.accountingString = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.accounting.account.string" )
+        labels.accountingPercentage = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.accounting.distribution.percentage" )
+        labels.accountingTotal = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.accounting.distribution.total" )
+        labels.grandTotalAccounting = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.grand.total.accounting" )
+        labels
     }
 }

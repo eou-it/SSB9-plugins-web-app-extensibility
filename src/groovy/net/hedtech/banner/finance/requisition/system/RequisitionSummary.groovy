@@ -6,6 +6,7 @@ package net.hedtech.banner.finance.requisition.system
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
+import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.service.DatabaseModifiesState
 import org.hibernate.annotations.Type
@@ -58,6 +59,12 @@ class RequisitionSummary implements Serializable {
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPRREQA_ACCI_CODE)
     String accountingIndexCode
 
+    @Column(name = FinanceProcurementConstants.REQUISITION_HEADER_FIELD_FPBREQH_COAS_CODE)
+    String chartOfAccountCode
+
+    @Column(name = FinanceProcurementConstants.REQUISITION_HEADER_FIELD_FPBREQH_ORGN_CODE)
+    String organizationCode
+
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPRREQA_FUND_CODE)
     String accountingFundCode
 
@@ -70,8 +77,23 @@ class RequisitionSummary implements Serializable {
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPRREQA_ACTV_CODE)
     String accountingActivityCode
 
+    @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_SHIP_TO_CODE)
+    String shipToCode
+
+    @Column(name = FinanceProcurementConstants.REQUISITION_HEADER_FIELD_FPBREQH_REQD_DATE)
+    @Temporal(TemporalType.DATE)
+    Date deliveryDate
+
+    @Column(name = FinanceProcurementConstants.REQUISITION_HEADER_FIELD_FPBREQH_TRANS_DATE)
+    @Temporal(TemporalType.DATE)
+    Date transactionDate
+
+
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPRREQA_PROJ_CODE)
     String accountingProjectCode
+
+    @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPBREQH_ATTENTION_TO)
+    String attentionTo
 
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPRREQA_PROG_CODE)
     String accountingProgramCode
@@ -115,6 +137,9 @@ class RequisitionSummary implements Serializable {
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPRREQD_UNIT_PRICE)
     BigDecimal commodityUnitPrice
 
+    @Column(name = FinanceProcurementConstants.FIELD_FPRREQD_UOMS_CODE)
+    String unitOfMeasure
+
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPBREQH_CODE)
     String requestCode
 
@@ -141,6 +166,11 @@ class RequisitionSummary implements Serializable {
 
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPVVEND_SPRADDR_CITY)
     String vendorAddressCity
+
+    @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPVVEND_PHONE_NUMBER)
+    String vendorPhoneNumber
+    @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPVVEND_PHONE_EXT)
+    String vendorPhoneExtension
 
     /**
      * This method is used to fetch requisition detail by requisition code.
