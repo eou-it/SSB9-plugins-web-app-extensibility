@@ -80,7 +80,7 @@ class RequisitionSummaryService extends ServiceBase {
                                                                                                                                                 FinanceValidationConstants.REQUISITION_INDICATOR_YES ) ),
                     transactionDate          : it.transactionDate,
                     deliveryDate             : it.deliveryDate,
-                    status                   : requisitionInformationService.fetchRequisitionsByReqNumber( it.requestCode ).status,
+                    status                   : !needPdf ? null : requisitionInformationService.fetchRequisitionsByReqNumber( it.requestCode ).status,
                     vendorAddressTypeSequence: it.vendorAddressTypeSequence,
                     vendorAddressTypeCode    : it.vendorAddressTypeCode,
                     vendorLastName           : it.vendorLastName,
