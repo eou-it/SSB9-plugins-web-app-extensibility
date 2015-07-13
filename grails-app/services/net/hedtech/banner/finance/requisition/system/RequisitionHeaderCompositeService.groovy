@@ -167,7 +167,7 @@ class RequisitionHeaderCompositeService {
                 newHeader.deliveryComment == existingHeader.deliveryComment &&
                 newHeader.taxGroup == existingHeader.taxGroup &&
                 newHeader.discount == existingHeader.discount &&
-                (newHeader.currency == baseCcy || newHeader.currency == existingHeader.currency) &&
+                ((newHeader.currency == baseCcy && existingHeader.currency == null) || newHeader.currency == existingHeader.currency) &&
                 isCommentUnChanged( map.requisitionHeader.privateComment, map.requisitionHeader.publicComment, newHeader.requestCode ))
     }
 }
