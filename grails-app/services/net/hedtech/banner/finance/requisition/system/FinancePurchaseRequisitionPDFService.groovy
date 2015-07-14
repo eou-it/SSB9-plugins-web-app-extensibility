@@ -23,9 +23,9 @@ class FinancePurchaseRequisitionPDFService {
     PdfGenerator pdfGenerator = PdfGenerator.getInstance();
     def requisitionSummaryService
     private static final FOP_CONFIG_FILENAME_DEFAULT = 'fop-config.xml'
-    static final XSL_FILE_EXTENSION = 'xsl'
-    static final BASE_DIR = 'fop'
-    static final pdfName = 'purchaseRequisition'
+    private static final XSL_FILE_EXTENSION = 'xsl'
+    private static final BASE_DIR = 'fop'
+    private static final pdfName = 'purchaseRequisition'
 
     /**
      * Generates PDf stream
@@ -56,9 +56,9 @@ class FinancePurchaseRequisitionPDFService {
             def fopBasePath = getFopBasePath()
             return pdfGenerator.generatePdfFromXmlString( pdfGenerator.toXmlString( (toPDFModel( summaryModel ) as JSON).toString() )
                                                                   .replaceAll( ">null</", "></" ), getXslFilePath( fopBasePath ), getConfigFilePath( fopBasePath ), [:] )
-        } catch (PdfGeneratorException pdfe) {
-            pdfe.printStackTrace()
-            throw new ApplicationException( "", pdfe );
+        } catch (PdfGeneratorException e) {
+            LoggerUtility.error( LOGGER, 'Error while generating PDF' + e )
+            throw new ApplicationException( FinancePurchaseRequisitionPDFService, "generatorError" )
         }
     }
 
