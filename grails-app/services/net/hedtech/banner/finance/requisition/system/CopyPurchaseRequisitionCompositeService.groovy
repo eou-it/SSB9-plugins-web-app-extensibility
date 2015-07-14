@@ -6,7 +6,7 @@ package net.hedtech.banner.finance.requisition.system
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
-import net.hedtech.banner.finance.requisition.util.FinanceProcurementSQLUtils
+import net.hedtech.banner.finance.requisition.common.FinanceProcurementSQLConstants
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
 import org.hibernate.HibernateException
@@ -31,9 +31,9 @@ class CopyPurchaseRequisitionCompositeService {
             Session session
             try {
                 session = sessionFactory.getCurrentSession()
-                session.createSQLQuery(FinanceProcurementSQLUtils.QUERY_UPDATE_NEXT_REQ_SEQUENCE).executeUpdate()
-                def nextDocCode = session.createSQLQuery(FinanceProcurementSQLUtils.QUERY_NEXT_REQ_NUMBER).list()[0]
-                session.createSQLQuery(FinanceProcurementSQLUtils.QUERY_COPY_REQUISITION)
+                session.createSQLQuery(FinanceProcurementSQLConstants.QUERY_UPDATE_NEXT_REQ_SEQUENCE).executeUpdate()
+                def nextDocCode = session.createSQLQuery(FinanceProcurementSQLConstants.QUERY_NEXT_REQ_NUMBER).list()[0]
+                session.createSQLQuery(FinanceProcurementSQLConstants.QUERY_COPY_REQUISITION)
                         .setParameter('nextDocCode', nextDocCode)
                         .setParameter('oldDocCode', requestCode)
                         .executeUpdate()

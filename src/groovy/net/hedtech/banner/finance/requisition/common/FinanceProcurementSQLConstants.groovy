@@ -1,12 +1,12 @@
 /*******************************************************************************
  Copyright 2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
-package net.hedtech.banner.finance.requisition.util
+package net.hedtech.banner.finance.requisition.common
 
 /**
  * This util file will have the final methods where the methods will return the required SQL Queries.
  */
-final class FinanceProcurementSQLUtils {
+final class FinanceProcurementSQLConstants {
     /**
      * This constant is used update the next requisition number.
      */
