@@ -176,6 +176,7 @@ class RequisitionSummaryService extends ServiceBase {
                         commodityQuantity              : it.commodityQuantity,
                         unitOfMeasure                  : it.unitOfMeasure,
                         commodityDiscountAmount        : it.commodityDiscountAmount,
+                        others                         : it.commodityAdditionalChargeAmount + it.commodityTaxAmount - it.commodityDiscountAmount,
                         commodityAdditionalChargeAmount: it.commodityAdditionalChargeAmount,
                         commodityText                  : !needPdf ? null : processComment( financeTextService.getFinanceTextByCodeAndItemAndPrintOption( requestCode, it.commodityItem.intValue(),
                                                                                                                                                          FinanceValidationConstants.REQUISITION_INDICATOR_YES ) ),

@@ -5,9 +5,11 @@ package net.hedtech.banner.finance.requisition.system
 
 import grails.converters.JSON
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.i18n.MessageHelper
 import net.hedtech.banner.pdf.exceptions.PdfGeneratorException
 import net.hedtech.banner.pdf.impl.PdfGenerator
+import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.web.context.ServletContextHolder
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.springframework.context.ApplicationContext
@@ -17,6 +19,7 @@ import org.springframework.context.i18n.LocaleContextHolder
  * Service class for Finance Purchase Requisition PDF.
  */
 class FinancePurchaseRequisitionPDFService {
+    private static final Logger LOGGER = Logger.getLogger( this.class )
     PdfGenerator pdfGenerator = PdfGenerator.getInstance();
     def requisitionSummaryService
     private static final FOP_CONFIG_FILENAME_DEFAULT = 'fop-config.xml'
@@ -68,6 +71,7 @@ class FinancePurchaseRequisitionPDFService {
         if (!new File( fopBasePath ).exists()) {
             fopBasePath = null
         }
+        LoggerUtility.debug( LOGGER, 'fopBasePath' + fopBasePath )
         fopBasePath
     }
 
@@ -105,7 +109,9 @@ class FinancePurchaseRequisitionPDFService {
      * @return
      */
     private String getConfigFilePath( String fopBasePath ) {
-        new File( fopBasePath, FOP_CONFIG_FILENAME_DEFAULT ).path
+        String configPath = new File( fopBasePath, FOP_CONFIG_FILENAME_DEFAULT ).path
+        LoggerUtility.debug( LOGGER, 'configPath' + configPath )
+        configPath
     }
 
     /**
@@ -114,7 +120,9 @@ class FinancePurchaseRequisitionPDFService {
      * @return
      */
     private String getXslFilePath( String fopBasePath ) {
-        new File( new File( fopBasePath, pdfName ), pdfName.concat( "." ).concat( XSL_FILE_EXTENSION ) ).path
+        String xslPath = new File( new File( fopBasePath, pdfName ), pdfName.concat( "." ).concat( XSL_FILE_EXTENSION ) ).path
+        LoggerUtility.debug( LOGGER, 'xslPath' + xslPath )
+        xslPath
     }
 
     /**
