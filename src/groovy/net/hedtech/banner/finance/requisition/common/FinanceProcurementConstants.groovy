@@ -110,6 +110,7 @@ class FinanceProcurementConstants {
     String SUCCESS_MESSAGE_UPDATE_REQUISITION_HEADER = 'net.hedtech.banner.finance.requisition.update.requisition.header.success'
     public static final
     String SUCCESS_MESSAGE_DELETE_REQUISITION_HEADER = 'net.hedtech.banner.finance.requisition.delete.requisition.header.success'
+    static final String SUCCESS_MESSAGE_DELETE_REQUISITION = 'net.hedtech.banner.finance.requisition.delete.requisition.success'
 
     /** Constant variable for Purchase Requisition Detail Domain Property column name **/
     static final String FPVREQD_VIEW = 'FV_FPRREQD'
@@ -513,5 +514,8 @@ class FinanceProcurementConstants {
     static
     final String FINANCE_PROCUREMENT_PDF_HEADER_CACHE_CONTROL = 'Cache-Control'
     static final String FINANCE_PROCUREMENT_PDF_HEADER_CACHE_CONTROL_MUST_RE_VALIDATE = 'must-revalidate, post-check=0, pre-check=0'
+
+    /** Recall requisition **/
+    static final String ERROR_MESSAGE_DELETE_REQUISITION_DRAFT_OR_DISAPPROVED_REQ_IS_REQUIRED = 'missing.requisition.delete.requisition.draftOrDisapproved.required'
 
 }
