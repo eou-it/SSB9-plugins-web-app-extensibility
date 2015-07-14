@@ -20,7 +20,6 @@ import org.springframework.context.i18n.LocaleContextHolder
  */
 class FinancePurchaseRequisitionPDFService {
     private static final Logger LOGGER = Logger.getLogger( this.class )
-    PdfGenerator pdfGenerator = PdfGenerator.getInstance();
     def requisitionSummaryService
     private static final FOP_CONFIG_FILENAME_DEFAULT = 'fop-config.xml'
     private static final XSL_FILE_EXTENSION = 'xsl'
@@ -54,6 +53,7 @@ class FinancePurchaseRequisitionPDFService {
     private renderPDFResponse( summaryModel ) {
         try {
             def fopBasePath = getFopBasePath()
+            PdfGenerator pdfGenerator = PdfGenerator.getInstance();
             return pdfGenerator.generatePdfFromXmlString( pdfGenerator.toXmlString( (toPDFModel( summaryModel ) as JSON).toString() )
                                                                   .replaceAll( ">null</", "></" ), getXslFilePath( fopBasePath ), getConfigFilePath( fopBasePath ), [:] )
         } catch (PdfGeneratorException e) {

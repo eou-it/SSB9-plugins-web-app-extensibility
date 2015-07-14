@@ -6,7 +6,6 @@ package net.hedtech.banner.finance.requisition.system
 
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
-import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.service.DatabaseModifiesState
 import org.hibernate.annotations.Type

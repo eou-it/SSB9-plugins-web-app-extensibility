@@ -12,8 +12,6 @@ import org.apache.log4j.Logger
 import org.hibernate.HibernateException
 import org.hibernate.Session
 
-import java.sql.SQLException
-
 /**
  * The service class which is used to have methods for copy purchase requisition.
  */

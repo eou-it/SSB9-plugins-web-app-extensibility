@@ -29,13 +29,13 @@ class RequisitionSummaryService extends ServiceBase {
      * Find the requisition summary for specified requestCode
      * @param requestCode
      */
-    def fetchRequisitionSummaryForRequestCode( requestCode, needPdf = false ) {
+    def fetchRequisitionSummaryForRequestCode( requestCode, doesNotNeedPdf = true ) {
         LoggerUtility.debug( LOGGER, 'Input parameters for fetchRequisitionSummaryForRequestCode :' + requestCode )
         def requisitionSummary = RequisitionSummary.fetchRequisitionSummaryForRequestCode( requestCode )
         if (!requisitionSummary) {
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }
-        processSummaryInformation( requisitionSummary, requestCode, needPdf )
+        processSummaryInformation( requisitionSummary, requestCode, doesNotNeedPdf )
     }
 
     /**
@@ -43,7 +43,7 @@ class RequisitionSummaryService extends ServiceBase {
      * @param requisitionSummary
      * @param requestCode
      */
-    private def processSummaryInformation( requisitionSummary, requestCode, boolean needPdf ) {
+    private def processSummaryInformation( requisitionSummary, requestCode, boolean doesNotNeedPdf ) {
         def retJSON = [:]
         def processComment = {list ->
             def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
@@ -60,27 +60,27 @@ class RequisitionSummaryService extends ServiceBase {
                     vendorPidm               : it.vendorPidm,
                     attentionTo              : it.attentionTo,
                     vendorCode               : it.vendorCode,
-                    shipTo                   : !needPdf ? null : shipToCodeService.findShipToCodesByCode( it.shipToCode, it.transactionDate ).collect() {
+                    shipTo                   : doesNotNeedPdf ? null : shipToCodeService.findShipToCodesByCode( it.shipToCode, it.transactionDate ).collect() {
                         [zipCode     : it.zipCode, state: it.state, city: it.city,
                          shipCode    : it.shipCode, addressLine1: it.addressLine1,
                          addressLine2: it.addressLine2, addressLine3: it.addressLine3,
                          contact     : it.contact]
 
                     },
-                    requester                : !needPdf ? null : financeUserProfileService.getUserProfileByUserId( springSecurityService.getAuthentication()?.user?.oracleUserName ).collect() {userProfileObj ->
+                    requester                : doesNotNeedPdf ? null : financeUserProfileService.getUserProfileByUserId( springSecurityService.getAuthentication()?.user?.oracleUserName ).collect() {userProfileObj ->
                         [userId           : userProfileObj.userId, requesterName: userProfileObj.requesterName, requesterPhoneNumber: userProfileObj.requesterPhoneNumber,
                          requesterPhoneExt: userProfileObj.requesterPhoneExt, requesterEmailAddress: userProfileObj.requesterEmailAddress]
                     },
-                    organization             : !needPdf ? null : financeOrganizationCompositeService.
+                    organization             : doesNotNeedPdf ? null : financeOrganizationCompositeService.
                             findOrganizationListByEffectiveDateAndSearchParam( [searchParam: it.organizationCode, effectiveDate: it.transactionDate, coaCode: it.chartOfAccountCode],
                                                                                [offset: FinanceProcurementConstants.ZERO, max: FinanceProcurementConstants.ONE] ).collect() {organization ->
                         [orgnCode: organization.orgnCode, orgnTitle: organization.orgnTitle]
                     },
-                    headerComment            : !needPdf ? null : processComment( financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( it.requestCode,
-                                                                                                                                                FinanceValidationConstants.REQUISITION_INDICATOR_YES ) ),
+                    headerComment            : doesNotNeedPdf ? null : processComment( financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( it.requestCode,
+                                                                                                                                                      FinanceValidationConstants.REQUISITION_INDICATOR_YES ) ),
                     transactionDate          : it.transactionDate,
                     deliveryDate             : it.deliveryDate,
-                    status                   : !needPdf ? null : requisitionInformationService.fetchRequisitionsByReqNumber( it.requestCode ).status,
+                    status                   : doesNotNeedPdf ? null : requisitionInformationService.fetchRequisitionsByReqNumber( it.requestCode ).status,
                     vendorAddressTypeSequence: it.vendorAddressTypeSequence,
                     vendorAddressTypeCode    : it.vendorAddressTypeCode,
                     vendorLastName           : it.vendorLastName,
@@ -178,8 +178,8 @@ class RequisitionSummaryService extends ServiceBase {
                         commodityDiscountAmount        : it.commodityDiscountAmount,
                         others                         : it.commodityAdditionalChargeAmount + it.commodityTaxAmount - it.commodityDiscountAmount,
                         commodityAdditionalChargeAmount: it.commodityAdditionalChargeAmount,
-                        commodityText                  : !needPdf ? null : processComment( financeTextService.getFinanceTextByCodeAndItemAndPrintOption( requestCode, it.commodityItem.intValue(),
-                                                                                                                                                         FinanceValidationConstants.REQUISITION_INDICATOR_YES ) ),
+                        commodityText                  : doesNotNeedPdf ? null : processComment( financeTextService.getFinanceTextByCodeAndItemAndPrintOption( requestCode, it.commodityItem.intValue(),
+                                                                                                                                                               FinanceValidationConstants.REQUISITION_INDICATOR_YES ) ),
                         commodityTaxAmount             : it.commodityTaxAmount,
                         commodityUnitPrice             : it.commodityUnitPrice,
                         commodityTotal                 : (it.commodityUnitPrice * it.commodityQuantity).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + it.commodityTaxAmount + it.commodityAdditionalChargeAmount
