@@ -32,7 +32,7 @@ class FinancePurchaseRequisitionPDFService {
      * @return
      */
     def generatePdfStream( requisitionCode ) {
-        renderPDFResponse( requisitionSummaryService.fetchRequisitionSummaryForRequestCode( requisitionCode, true ) )
+        renderPDFResponse( requisitionSummaryService.fetchRequisitionSummaryForRequestCode( requisitionCode, false ) )
     }
 
     /**
@@ -128,7 +128,7 @@ class FinancePurchaseRequisitionPDFService {
     /**
      * Collects all labels
      */
-    private def collectLabels = {labels ->
+    def collectLabels = {labels ->
         labels.title = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.title" )
         labels.requisitionNo = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.number" )
         labels.requestor = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.requestor" )
