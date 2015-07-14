@@ -4,19 +4,21 @@
 package net.hedtech.banner.finance.requisition.common
 
 /**
- * This util file will have the final methods where the methods will return the required SQL Queries.
+ * This final class will have the constants where these constants will holds the required SQL Queries.
  */
 final class FinanceProcurementSQLConstants {
+    // To avoid instantiating.
+    private FinanceProcurementSQLConstants(){}
     /**
-     * This constant is used update the next requisition number.
+     * This constant is used get query to update the next requisition number.
      */
     public static final String QUERY_UPDATE_NEXT_REQ_SEQUENCE = "UPDATE FOBSEQN SET FOBSEQN_MAXSEQNO_7 = FOBSEQN_MAXSEQNO_7 + 1 WHERE FOBSEQN_SEQNO_TYPE = 'R'"
     /**
-     * This method is used to get generated request code.
+     * This constant is used to get query for to get generated request code.
      */
     public static final String QUERY_NEXT_REQ_NUMBER = "SELECT FOBSEQN_SEQNO_PREFIX||LPAD(TO_CHAR(FOBSEQN_MAXSEQNO_7),7,'0') AS NEXT_REQ_NUMBER FROM FOBSEQN WHERE FOBSEQN_SEQNO_TYPE = 'R'"
     /**
-     * This constant is used to copy requisition.
+     * This constant is used to get query to copy requisition.
      */
     public static final String QUERY_COPY_REQUISITION = "BEGIN"+
         "	INSERT INTO FPBREQH ("+
