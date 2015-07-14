@@ -127,12 +127,12 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
      * Test delete
      */
     @Test
-    void deletePurchaseRequisition() {
+    void deletePurchaseRequisitionHeader() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def headerDomainModel = newRequisitionHeader()
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def requestCode = requisitionHeaderCompositeService.createPurchaseRequisitionHeader( domainModelMap )
-        requisitionHeaderCompositeService.deletePurchaseRequisition( requestCode )
+        requisitionHeaderCompositeService.deletePurchaseRequisitionHeader( requestCode )
         try {
             requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
