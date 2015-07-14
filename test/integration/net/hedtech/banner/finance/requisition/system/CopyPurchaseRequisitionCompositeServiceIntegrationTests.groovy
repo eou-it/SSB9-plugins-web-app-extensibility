@@ -38,7 +38,7 @@ class CopyPurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegr
      */
     @Test
     public void testCopyRequisition() {
-        assertNotNull(copyPurchaseRequisitionCompositeService.copyRequisition('R0001195'))
+        assertNotNull(copyPurchaseRequisitionCompositeService.copyRequisition('R0002230'))
     }
 
     /**
@@ -47,7 +47,7 @@ class CopyPurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegr
     @Test
     public void testCopyRequisitionFailCase() {
         try {
-            copyPurchaseRequisitionCompositeService.copyRequisition('R0001195')
+            copyPurchaseRequisitionCompositeService.copyRequisition('R0002210')
         } catch (ApplicationException e) {
             assertApplicationException e, (FinanceProcurementConstants.ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED)
         }
