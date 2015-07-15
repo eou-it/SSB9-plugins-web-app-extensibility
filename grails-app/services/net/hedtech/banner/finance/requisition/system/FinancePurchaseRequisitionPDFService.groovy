@@ -4,6 +4,7 @@
 package net.hedtech.banner.finance.requisition.system
 
 import grails.converters.JSON
+import grails.util.Holders
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.i18n.MessageHelper
@@ -25,6 +26,7 @@ class FinancePurchaseRequisitionPDFService {
     private static final XSL_FILE_EXTENSION = 'xsl'
     private static final BASE_DIR = 'fop'
     private static final pdfName = 'purchaseRequisition'
+    private static final logoFile = 'ellucian-logo.png'
 
     /**
      * Generates PDf stream
@@ -96,9 +98,12 @@ class FinancePurchaseRequisitionPDFService {
         pdfModel.pdfModel = [:]
         pdfModel.pdfModel.pdfFileName = getPdfFileName( model.header.requestCode )
         pdfModel.pdfModel.labels = labels
-        pdfModel.pdfModel.config = [logoTopBottom: 'TOP', logoLeftRight: 'LEFT']
-        pdfModel.pdfModel.config.languageDirection = MessageHelper.message( code: 'default.language.direction' )
+        def languageDirection = MessageHelper.message( code: 'default.language.direction' )
+        pdfModel.pdfModel.config = [logoTopBottom: 'TOP', logoLeftRight: (languageDirection == 'ltr' ? 'LEFT' : 'RIGHT')]
+        pdfModel.pdfModel.config.languageDirection = languageDirection
         pdfModel.pdfModel.config.locale = LocaleContextHolder.getLocale()
+        pdfModel.pdfModel.logoPath = Holders.config.banner.finance.procurementLogoPath
+        pdfModel.pdfModel.logoFilename = logoFile
         pdfModel.pdfModel.requisition = model
         pdfModel
     }
@@ -109,7 +114,7 @@ class FinancePurchaseRequisitionPDFService {
      * @return
      */
     private String getConfigFilePath( String fopBasePath ) {
-        String configPath = new File( fopBasePath, FOP_CONFIG_FILENAME_DEFAULT ).path
+        String configPath = new File( fopBasePath, FOP_CONFIG_FILENAME_DEFAULT ).absolutePath
         LoggerUtility.debug( LOGGER, 'configPath' + configPath )
         configPath
     }
@@ -120,7 +125,7 @@ class FinancePurchaseRequisitionPDFService {
      * @return
      */
     private String getXslFilePath( String fopBasePath ) {
-        String xslPath = new File( new File( fopBasePath, pdfName ), pdfName.concat( "." ).concat( XSL_FILE_EXTENSION ) ).path
+        String xslPath = new File( new File( fopBasePath, pdfName ), pdfName.concat( "." ).concat( XSL_FILE_EXTENSION ) ).absolutePath
         LoggerUtility.debug( LOGGER, 'xslPath' + xslPath )
         xslPath
     }
