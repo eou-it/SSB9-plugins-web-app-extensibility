@@ -73,6 +73,7 @@ class FinancePurchaseRequisitionPDFService {
         if (!new File( fopBasePath ).exists()) {
             fopBasePath = null
         }
+        println 'fopBasePath' + fopBasePath
         LoggerUtility.debug( LOGGER, 'fopBasePath' + fopBasePath )
         fopBasePath
     }
@@ -85,6 +86,34 @@ class FinancePurchaseRequisitionPDFService {
         return (ApplicationContext) ServletContextHolder.getServletContext().getAttribute( GrailsApplicationAttributes.APPLICATION_CONTEXT )
     }
 
+    /**
+     * Get Config files path
+     * @param fopBasePath
+     * @return
+     */
+    private String getConfigFilePath( String fopBasePath ) {
+        String configPath = new File( fopBasePath, FOP_CONFIG_FILENAME_DEFAULT ).absolutePath
+        println 'configPath ' + configPath
+        LoggerUtility.debug( LOGGER, 'configPath' + configPath )
+        configPath
+    }
+
+    /**
+     * Get XSl file path
+     * @param fopBasePath
+     * @return
+     */
+    private String getXslFilePath( String fopBasePath ) {
+        println 'inside getXslFilePath'
+        println 'pdfName ' + pdfName
+
+        println 'fopBasePath ' + fopBasePath
+        String xslPath = new File( new File( fopBasePath, pdfName ), pdfName.concat( "." ).concat( XSL_FILE_EXTENSION ) ).absolutePath
+
+        println 'xslPath ' + xslPath
+        LoggerUtility.debug( LOGGER, 'xslPath' + xslPath )
+        xslPath
+    }
     /**
      * Convert To Pdf Model
      * @param model
@@ -106,28 +135,6 @@ class FinancePurchaseRequisitionPDFService {
         pdfModel.pdfModel.logoFilename = logoFile
         pdfModel.pdfModel.requisition = model
         pdfModel
-    }
-
-    /**
-     * Get Config files path
-     * @param fopBasePath
-     * @return
-     */
-    private String getConfigFilePath( String fopBasePath ) {
-        String configPath = new File( fopBasePath, FOP_CONFIG_FILENAME_DEFAULT ).absolutePath
-        LoggerUtility.debug( LOGGER, 'configPath' + configPath )
-        configPath
-    }
-
-    /**
-     * Get XSl file path
-     * @param fopBasePath
-     * @return
-     */
-    private String getXslFilePath( String fopBasePath ) {
-        String xslPath = new File( new File( fopBasePath, pdfName ), pdfName.concat( "." ).concat( XSL_FILE_EXTENSION ) ).absolutePath
-        LoggerUtility.debug( LOGGER, 'xslPath' + xslPath )
-        xslPath
     }
 
     /**
