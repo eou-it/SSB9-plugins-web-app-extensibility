@@ -48,7 +48,7 @@ class FinanceInformationPanelCompositeServiceIntegrationTests extends BaseIntegr
      */
     @Test
     public void testGetInformationPanelDataForPending() {
-        assert (!financeInformationPanelCompositeService.getInformationPanelData(
+        assert (financeInformationPanelCompositeService.getInformationPanelData(
                 FinanceProcurementConstants.REQUISITION_INFO_STATUS_PENDING, 'R0000128').isEmpty())
     }
 
