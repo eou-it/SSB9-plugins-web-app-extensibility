@@ -143,7 +143,7 @@ class RequisitionSummaryService extends ServiceBase {
             }
 
             /** closure to get All accounting  total*/
-            def getAllAccountingTotalForCommodityItem = {list ->
+            def getAllAccountingTotal = {list ->
                 def sum = 0;
                 list.each() {
                     sum += it.accountingTotal
@@ -186,7 +186,7 @@ class RequisitionSummaryService extends ServiceBase {
                                 - it.commodityDiscountAmount,
                         accounting                     : isCommodityLevelAccounting ? getAccountingForCommodityItem( it.commodityItem ) : null,
                         distributionPercentage         : isCommodityLevelAccounting ? getAccountingDistributionPercentage( getAccountingForCommodityItem( it.commodityItem ) ) : null,
-                        allAccountingTotal             : isCommodityLevelAccounting ? getAllAccountingTotalForCommodityItem( getAccountingForCommodityItem( it.commodityItem ) ) : null,
+                        allAccountingTotal             : isCommodityLevelAccounting ? getAllAccountingTotal( getAccountingForCommodityItem( it.commodityItem ) ) : null,
                         itemBalanced                   : isCommodityLevelAccounting ? getAccountingDistributionPercentage( getAccountingForCommodityItem( it.commodityItem ) ) == FinanceValidationConstants.HUNDRED : null]]
 
             }.each() {
@@ -197,7 +197,7 @@ class RequisitionSummaryService extends ServiceBase {
             if (retJSON['header'].isDocumentLevelAccounting) {
                 retJSON['accounting'] = accountingList
                 retJSON['distributionPercentage'] = getAccountingDistributionPercentage( accountingList )
-                retJSON['allAccountingTotal'] = getAllAccountingTotalForCommodityItem( accountingList )
+                retJSON['allAccountingTotal'] = getAllAccountingTotal( accountingList )
                 retJSON['allCommodityTotal'] = getAllCommodityTotal( commodityList )
                 retJSON['balanced'] = retJSON['distributionPercentage'] == FinanceValidationConstants.HUNDRED
                 retJSON['commodity'].each { // Clean unnecessary keys for commodity
@@ -206,6 +206,8 @@ class RequisitionSummaryService extends ServiceBase {
                 }
             } else {
                 retJSON['balanced'] = checkIfAllItemBalanced( commodityList, accountingList.size() > 0 )
+                retJSON['grandCommodityTotal'] = getAllCommodityTotal( commodityList )
+                retJSON['grandAccountingTotal'] = getAllAccountingTotal( accountingList )
             }
             // Clean unnecessary keys for header
             retJSON['header'].remove( 'commodityItem' )

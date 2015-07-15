@@ -177,6 +177,8 @@ class FinancePurchaseRequisitionPDFService {
         labels.accountingPercentage = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.accounting.distribution.percentage" )
         labels.accountingTotal = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.accounting.distribution.total" )
         labels.grandTotalAccounting = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.grand.total.accounting" )
+        labels.claAccountingTotalAtCommodity = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.accounting.total" )
+        labels.commodity = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.commodity" )
         labels
     }
 }
