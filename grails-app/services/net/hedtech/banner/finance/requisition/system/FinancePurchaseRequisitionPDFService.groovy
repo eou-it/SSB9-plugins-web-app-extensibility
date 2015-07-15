@@ -70,10 +70,6 @@ class FinancePurchaseRequisitionPDFService {
      */
     private getFopBasePath() {
         def fopBasePath = getApplicationContext().getResource( BASE_DIR ).file.absolutePath
-        if (!new File( fopBasePath ).exists()) {
-            fopBasePath = null
-        }
-        println 'fopBasePath' + fopBasePath
         LoggerUtility.debug( LOGGER, 'fopBasePath' + fopBasePath )
         fopBasePath
     }
@@ -93,7 +89,6 @@ class FinancePurchaseRequisitionPDFService {
      */
     private String getConfigFilePath( String fopBasePath ) {
         String configPath = new File( fopBasePath, FOP_CONFIG_FILENAME_DEFAULT ).absolutePath
-        println 'configPath ' + configPath
         LoggerUtility.debug( LOGGER, 'configPath' + configPath )
         configPath
     }
@@ -104,13 +99,7 @@ class FinancePurchaseRequisitionPDFService {
      * @return
      */
     private String getXslFilePath( String fopBasePath ) {
-        println 'inside getXslFilePath'
-        println 'pdfName ' + pdfName
-
-        println 'fopBasePath ' + fopBasePath
         String xslPath = new File( new File( fopBasePath, pdfName ), pdfName.concat( "." ).concat( XSL_FILE_EXTENSION ) ).absolutePath
-
-        println 'xslPath ' + xslPath
         LoggerUtility.debug( LOGGER, 'xslPath' + xslPath )
         xslPath
     }
