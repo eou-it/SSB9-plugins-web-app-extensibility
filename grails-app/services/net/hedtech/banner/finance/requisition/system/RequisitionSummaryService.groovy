@@ -8,6 +8,7 @@ import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.LoggerUtility
+import net.hedtech.banner.i18n.MessageHelper
 import net.hedtech.banner.service.ServiceBase
 import org.apache.log4j.Logger
 
@@ -80,7 +81,7 @@ class RequisitionSummaryService extends ServiceBase {
                                                                                                                                                       FinanceValidationConstants.REQUISITION_INDICATOR_YES ) ),
                     transactionDate          : it.transactionDate,
                     deliveryDate             : it.deliveryDate,
-                    status                   : doesNotNeedPdf ? null : requisitionInformationService.fetchRequisitionsByReqNumber( it.requestCode ).status,
+                    status                   : doesNotNeedPdf ? null : MessageHelper.message( 'purchaseRequisition.status.' + requisitionInformationService.fetchRequisitionsByReqNumber( it.requestCode ).status ),
                     vendorAddressTypeSequence: it.vendorAddressTypeSequence,
                     vendorAddressTypeCode    : it.vendorAddressTypeCode,
                     vendorLastName           : it.vendorLastName,
