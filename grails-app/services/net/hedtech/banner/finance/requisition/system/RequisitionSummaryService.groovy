@@ -7,6 +7,7 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
 import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.i18n.MessageHelper
 import net.hedtech.banner.service.ServiceBase
@@ -174,15 +175,15 @@ class RequisitionSummaryService extends ServiceBase {
                         commodityCode                  : it.commodityCode,
                         commodityDescription           : it.commodityDescription,
                         commodityCodeDesc              : it.commodityDescription ? it.commodityDescription : it.commodityCodeDesc,
-                        commodityQuantity              : it.commodityQuantity,
+                        commodityQuantity              : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityQuantity, FinanceValidationConstants.TWO ),
                         unitOfMeasure                  : it.unitOfMeasure,
-                        commodityDiscountAmount        : it.commodityDiscountAmount,
-                        others                         : it.commodityAdditionalChargeAmount + it.commodityTaxAmount - it.commodityDiscountAmount,
+                        commodityDiscountAmount        : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityDiscountAmount, FinanceValidationConstants.TWO ),
+                        others                         : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityAdditionalChargeAmount + it.commodityTaxAmount - it.commodityDiscountAmount, FinanceValidationConstants.TWO ),
                         commodityAdditionalChargeAmount: it.commodityAdditionalChargeAmount,
                         commodityText                  : doesNotNeedPdf ? null : processComment( financeTextService.getFinanceTextByCodeAndItemAndPrintOption( requestCode, it.commodityItem.intValue(),
                                                                                                                                                                FinanceValidationConstants.REQUISITION_INDICATOR_YES ) ),
-                        commodityTaxAmount             : it.commodityTaxAmount,
-                        commodityUnitPrice             : it.commodityUnitPrice,
+                        commodityTaxAmount             : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityTaxAmount, FinanceValidationConstants.TWO ),
+                        commodityUnitPrice             : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityUnitPrice, FinanceValidationConstants.FOUR ),
                         commodityTotal                 : (it.commodityUnitPrice * it.commodityQuantity).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + it.commodityTaxAmount + it.commodityAdditionalChargeAmount
                                 - it.commodityDiscountAmount,
                         accounting                     : isCommodityLevelAccounting ? getAccountingForCommodityItem( it.commodityItem ) : null,

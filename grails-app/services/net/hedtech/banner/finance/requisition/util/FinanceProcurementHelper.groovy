@@ -6,6 +6,9 @@ package net.hedtech.banner.finance.requisition.util
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import org.springframework.context.i18n.LocaleContextHolder
+
+import java.text.NumberFormat
 
 /**
  * Helper Class for Finance Procurement.
@@ -17,11 +20,11 @@ class FinanceProcurementHelper {
      * @param requisitionHeaderJSON Requisition Header info from the request.
      * @return RequisitionHeader domain.
      */
-    private static def getHeaderDomainModel(requisitionHeaderJSON) {
+    private static def getHeaderDomainModel( requisitionHeaderJSON ) {
         return [
                 requestCode              : FinanceProcurementConstants.DEFAULT_REQUEST_CODE,
-                requestDate              : new Date(requisitionHeaderJSON.transactionDate),
-                transactionDate          : new Date(requisitionHeaderJSON.transactionDate),
+                requestDate              : new Date( requisitionHeaderJSON.transactionDate ),
+                transactionDate          : new Date( requisitionHeaderJSON.transactionDate ),
                 requesterName            : requisitionHeaderJSON.requesterName,
                 ship                     : requisitionHeaderJSON.ship,
                 vendorPidm               : requisitionHeaderJSON.vendorPidm,
@@ -48,7 +51,7 @@ class FinanceProcurementHelper {
      * @param requisitionHeaderJSON Requisition Detail info from the request.
      * @return RequisitionDetail domain.
      */
-    private static def getDetailDomainModel(requisitionDetailJSON) {
+    private static def getDetailDomainModel( requisitionDetailJSON ) {
         return [
                 requestCode           : requisitionDetailJSON.requestCode,
                 item                  : requisitionDetailJSON.item,
@@ -73,7 +76,7 @@ class FinanceProcurementHelper {
      * @param requisitionHeaderJSON Requisition Accounting info from the request.
      * @return RequisitionAccounting domain.
      */
-    private static def getAccountingDomainModel(requisitionAccountingJSON) {
+    private static def getAccountingDomainModel( requisitionAccountingJSON ) {
         return [
                 requestCode              : requisitionAccountingJSON.requestCode,
                 item                     : requisitionAccountingJSON.item,
@@ -102,17 +105,17 @@ class FinanceProcurementHelper {
      * @param inputJSON
      * @return an object
      */
-    static def getDomainModel(inputJSON) {
+    static def getDomainModel( inputJSON ) {
         if (inputJSON.header) {
-            def headerDomainModel = getHeaderDomainModel(inputJSON.header)
+            def headerDomainModel = getHeaderDomainModel( inputJSON.header )
             if (inputJSON.header.deliveryDate) {
-                headerDomainModel.deliveryDate = new Date(inputJSON.header.deliveryDate)
+                headerDomainModel.deliveryDate = new Date( inputJSON.header.deliveryDate )
             }
             return [requisitionHeader: headerDomainModel]
         } else if (inputJSON.detail) {
-            return [requisitionDetail: getDetailDomainModel(inputJSON.detail)]
+            return [requisitionDetail: getDetailDomainModel( inputJSON.detail )]
         } else if (inputJSON.accounting) {
-            return [requisitionAccounting: getAccountingDomainModel(inputJSON.accounting)]
+            return [requisitionAccounting: getAccountingDomainModel( inputJSON.accounting )]
         }
     }
 
@@ -120,11 +123,25 @@ class FinanceProcurementHelper {
      * Checks if requisition is already complete
      * @param requisitionHeader
      */
-    static def checkCompleteRequisition(requisitionHeader) {
+    static def checkCompleteRequisition( requisitionHeader ) {
         if (true == requisitionHeader?.completeIndicator) {
             throw new ApplicationException(
                     FinanceProcurementHelper,
-                    new BusinessLogicValidationException(FinanceProcurementConstants.ERROR_MESSAGE_REQUISITION_ALREADY_COMPLETED, [requisitionHeader.requestCode]))
+                    new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_REQUISITION_ALREADY_COMPLETED, [requisitionHeader.requestCode] ) )
         }
+    }
+
+    /**
+     * Get Locale based formatted number
+     * @param amount
+     * @param fractionDigits
+     * @return
+     */
+    static def getLocaleBasedFormattedNumber( amount, fractionDigits ) {
+        Locale fmtLocale = LocaleContextHolder.getLocale()
+        NumberFormat formatter = NumberFormat.getInstance( fmtLocale );
+        formatter.setMaximumFractionDigits( fractionDigits);
+        formatter.setMinimumFractionDigits( fractionDigits );
+        formatter.format( amount )
     }
 }
