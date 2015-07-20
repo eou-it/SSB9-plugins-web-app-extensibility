@@ -108,6 +108,7 @@ class RequisitionSummaryService extends ServiceBase {
                             accountingItem                  : it.accountingItem,
                             accountingSequenceNumber        : it.accountingSequenceNumber,
                             accountingPercentage            : it.accountingPercentage,
+                            accountingPercentageDisplay     : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.accountingPercentage, FinanceValidationConstants.FOUR ),
                             accountingAmount                : it.accountingAmount,
                             accountingCoaCode               : it.accountingCoaCode,
                             accountingIndexCode             : it.accountingIndexCode,
@@ -121,7 +122,9 @@ class RequisitionSummaryService extends ServiceBase {
                             accountingAdditionalChargeAmount: it.accountingAdditionalChargeAmount,
                             accountingTaxAmount             : it.accountingTaxAmount,
                             accountingTotal                 : it.accountingAmount + it.accountingAdditionalChargeAmount + it.accountingTaxAmount
-                                    - it.accountingDiscountAmount]]
+                                    - it.accountingDiscountAmount,
+                            accountingTotalDisplay          : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.accountingAmount + it.accountingAdditionalChargeAmount + it.accountingTaxAmount
+                                                                                                                              - it.accountingDiscountAmount, FinanceValidationConstants.TWO )]]
                 }.each() {
                     key, value ->
                         accountingList.add( value )
@@ -171,26 +174,33 @@ class RequisitionSummaryService extends ServiceBase {
             boolean isCommodityLevelAccounting = !retJSON['header'].isDocumentLevelAccounting
             requisitionSummary.collectEntries() {
                 [it.commodityItem, [
-                        commodityItem                  : it.commodityItem,
-                        commodityCode                  : it.commodityCode,
-                        commodityDescription           : it.commodityDescription,
-                        commodityCodeDesc              : it.commodityDescription ? it.commodityDescription : it.commodityCodeDesc,
-                        commodityQuantityDisplay       : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityQuantity, FinanceValidationConstants.TWO ),
-                        commodityQuantity              : it.commodityQuantity,
-                        unitOfMeasure                  : it.unitOfMeasure,
-                        commodityDiscountAmount        : it.commodityDiscountAmount,
-                        others                         : it.commodityAdditionalChargeAmount + it.commodityTaxAmount - it.commodityDiscountAmount,
-                        commodityAdditionalChargeAmount: it.commodityAdditionalChargeAmount,
-                        commodityText                  : doesNotNeedPdf ? null : processComment( financeTextService.getFinanceTextByCodeAndItemAndPrintOption( requestCode, it.commodityItem.intValue(),
-                                                                                                                                                               FinanceValidationConstants.REQUISITION_INDICATOR_YES ) ),
-                        commodityTaxAmount             : it.commodityTaxAmount,
-                        commodityUnitPrice             : it.commodityUnitPrice,
-                        commodityTotal                 : (it.commodityUnitPrice * it.commodityQuantity).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + it.commodityTaxAmount + it.commodityAdditionalChargeAmount
+                        commodityItem                         : it.commodityItem,
+                        commodityCode                         : it.commodityCode,
+                        commodityDescription                  : it.commodityDescription,
+                        commodityCodeDesc                     : it.commodityDescription ? it.commodityDescription : it.commodityCodeDesc,
+                        commodityQuantityDisplay              : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityQuantity, FinanceValidationConstants.TWO ),
+                        commodityQuantity                     : it.commodityQuantity,
+                        unitOfMeasure                         : it.unitOfMeasure,
+                        commodityDiscountAmount               : it.commodityDiscountAmount,
+                        commodityDiscountAmountDisplay        : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityDiscountAmount, FinanceValidationConstants.TWO ),
+                        othersDisplay                                : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityAdditionalChargeAmount + it.commodityTaxAmount - it.commodityDiscountAmount, FinanceValidationConstants.TWO ),
+                        commodityAdditionalChargeAmount       : it.commodityAdditionalChargeAmount,
+                        commodityAdditionalChargeAmountDisplay: FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityAdditionalChargeAmount, FinanceValidationConstants.TWO ),
+                        commodityText                         : doesNotNeedPdf ? null : processComment( financeTextService.getFinanceTextByCodeAndItemAndPrintOption( requestCode, it.commodityItem.intValue(),
+                                                                                                                                                                      FinanceValidationConstants.REQUISITION_INDICATOR_YES ) ),
+                        commodityTaxAmount                    : it.commodityTaxAmount,
+                        commodityUnitPrice                    : it.commodityUnitPrice,
+                        commodityUnitPriceDisplay             : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityUnitPrice, FinanceValidationConstants.FOUR ),
+                        commodityTotal                        : (it.commodityUnitPrice * it.commodityQuantity).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + it.commodityTaxAmount + it.commodityAdditionalChargeAmount
                                 - it.commodityDiscountAmount,
-                        accounting                     : isCommodityLevelAccounting ? getAccountingForCommodityItem( it.commodityItem ) : null,
-                        distributionPercentage         : isCommodityLevelAccounting ? getAccountingDistributionPercentage( getAccountingForCommodityItem( it.commodityItem ) ) : null,
-                        allAccountingTotal             : isCommodityLevelAccounting ? getAllAccountingTotal( getAccountingForCommodityItem( it.commodityItem ) ) : null,
-                        itemBalanced                   : isCommodityLevelAccounting ? getAccountingDistributionPercentage( getAccountingForCommodityItem( it.commodityItem ) ) == FinanceValidationConstants.HUNDRED : null]]
+                        commodityTotalDisplay                 : FinanceProcurementHelper.getLocaleBasedFormattedNumber( (it.commodityUnitPrice * it.commodityQuantity).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + it.commodityTaxAmount + it.commodityAdditionalChargeAmount
+                                                                                                                                - it.commodityDiscountAmount, FinanceValidationConstants.TWO ),
+                        accounting                            : isCommodityLevelAccounting ? getAccountingForCommodityItem( it.commodityItem ) : null,
+                        distributionPercentageDisplay         : isCommodityLevelAccounting ? FinanceProcurementHelper.getLocaleBasedFormattedNumber( getAccountingDistributionPercentage( getAccountingForCommodityItem( it.commodityItem ) ), FinanceValidationConstants.FOUR ) : null,
+                        distributionPercentage                : isCommodityLevelAccounting ? getAccountingDistributionPercentage( getAccountingForCommodityItem( it.commodityItem ) ) : null,
+                        allAccountingTotalDisplay             : isCommodityLevelAccounting ? FinanceProcurementHelper.getLocaleBasedFormattedNumber( getAllAccountingTotal( getAccountingForCommodityItem( it.commodityItem ) ), FinanceValidationConstants.TWO ) : null,
+                        allAccountingTotal                    : isCommodityLevelAccounting ? getAllAccountingTotal( getAccountingForCommodityItem( it.commodityItem ) ) : null,
+                        itemBalanced                          : isCommodityLevelAccounting ? getAccountingDistributionPercentage( getAccountingForCommodityItem( it.commodityItem ) ) == FinanceValidationConstants.HUNDRED : null]]
 
             }.each() {
                 key, value ->
@@ -200,8 +210,11 @@ class RequisitionSummaryService extends ServiceBase {
             if (retJSON['header'].isDocumentLevelAccounting) {
                 retJSON['accounting'] = accountingList
                 retJSON['distributionPercentage'] = getAccountingDistributionPercentage( accountingList )
+                retJSON['distributionPercentageDisplay'] = FinanceProcurementHelper.getLocaleBasedFormattedNumber( getAccountingDistributionPercentage( accountingList ), FinanceValidationConstants.FOUR )
                 retJSON['allAccountingTotal'] = getAllAccountingTotal( accountingList )
+                retJSON['allAccountingTotalDisplay'] = FinanceProcurementHelper.getLocaleBasedFormattedNumber( getAllAccountingTotal( accountingList ), FinanceValidationConstants.TWO )
                 retJSON['allCommodityTotal'] = getAllCommodityTotal( commodityList )
+                retJSON['allCommodityTotalDisplay'] = FinanceProcurementHelper.getLocaleBasedFormattedNumber( getAllCommodityTotal( commodityList ), FinanceValidationConstants.TWO )
                 retJSON['balanced'] = retJSON['distributionPercentage'] == FinanceValidationConstants.HUNDRED
                 retJSON['commodity'].each { // Clean unnecessary keys for commodity
                     it.remove( 'accounting' )
@@ -211,6 +224,8 @@ class RequisitionSummaryService extends ServiceBase {
                 retJSON['balanced'] = checkIfAllItemBalanced( commodityList, accountingList.size() > 0 )
                 retJSON['grandCommodityTotal'] = getAllCommodityTotal( commodityList )
                 retJSON['grandAccountingTotal'] = getAllAccountingTotal( accountingList )
+                retJSON['grandCommodityTotalDisplay'] = FinanceProcurementHelper.getLocaleBasedFormattedNumber( getAllCommodityTotal( commodityList ), FinanceValidationConstants.TWO )
+                retJSON['grandAccountingTotalDisplay'] = FinanceProcurementHelper.getLocaleBasedFormattedNumber( getAllAccountingTotal( accountingList ), FinanceValidationConstants.TWO )
             }
             // Clean unnecessary keys for header
             retJSON['header'].remove( 'commodityItem' )
