@@ -3,7 +3,6 @@
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
-import net.hedtech.banner.finance.system.FinancePendingApproverList
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
