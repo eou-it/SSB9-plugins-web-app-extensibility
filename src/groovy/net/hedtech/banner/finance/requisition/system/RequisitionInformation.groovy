@@ -58,7 +58,7 @@ import javax.persistence.*
                             WHERE (UPPER(reqInfo.requisitionCode) LIKE :searchParam
                                         OR UPPER(reqInfo.vendorName) LIKE :searchParam
                                         OR reqInfo.amount LIKE :searchParam)
-							AND reqInfo.status in :status
+                            AND reqInfo.status in :status
                             AND reqInfo.lastModifiedBy = :userId
                             order by reqInfo.activityDate desc """),
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_COUNT_FINDER_BY_SEARCH_PARAM_AND_STATUS,
@@ -66,18 +66,18 @@ import javax.persistence.*
                                     WHERE (UPPER(reqInfo.requisitionCode) LIKE :searchParam
                                         OR UPPER(reqInfo.vendorName) LIKE :searchParam
                                         OR reqInfo.amount LIKE :searchParam)
-									AND reqInfo.status in :status
+                                    AND reqInfo.status in :status
                                     AND reqInfo.lastModifiedBy = :userId """),
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_SEARCH_BY_TRANSACTION_DATE_AND_STATUS,
                 query = """FROM RequisitionInformation reqInfo
                             WHERE TRUNC(reqInfo.transactionDate) = TRUNC(:searchParam)
-							AND reqInfo.status in :status
+                            AND reqInfo.status in :status
                             AND reqInfo.lastModifiedBy = :userId
                             order by reqInfo.activityDate desc """),
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_SEARCH_COUNT_FINDER_BY_TRANSACTION_DATE_AND_STATUS,
                 query = """select count(reqInfo.id) FROM RequisitionInformation reqInfo
                                     WHERE TRUNC(reqInfo.transactionDate) = TRUNC(:searchParam)
-									AND reqInfo.status in :status
+                                    AND reqInfo.status in :status
                                     AND reqInfo.lastModifiedBy = :userId """)
 ])
 @Entity
@@ -99,10 +99,7 @@ class RequisitionInformation implements Serializable {
 
     @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPBREQH_TRANS_DATE)
     Date transactionDate
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_REQUEST_DATE)
-    Date requestDate
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_DELIVERY_DATE)
-    Date deliveryDate
+
     @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPBREQH_ACTIVITY_DATE)
     Date activityDate
 
@@ -118,23 +115,11 @@ class RequisitionInformation implements Serializable {
     @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_AMOUNT)
     String amount
 
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_REQUESTOR_NAME)
-    String requesterName
-
     @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPBREQH_VEND_PIDM)
     String vendorPidm
+
     @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_VENDOR_NAME)
     String vendorName
-
-
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPBREQH_ORGN_CODE)
-    String organizationCode
-
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_ORG_TITLE)
-    String organizationTitle
-
-    @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_FPBREQH_COAS_CODE)
-    String coasCode
 
     @Column(name = FinanceProcurementConstants.REQUISITION_INFO_FIELD_STATUS)
     String status

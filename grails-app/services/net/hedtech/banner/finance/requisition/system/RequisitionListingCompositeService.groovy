@@ -124,12 +124,9 @@ class RequisitionListingCompositeService {
             [id             : it.id,
              version        : it.version,
              amount         : deriveFormattedAmount( it.amount, it.currency, institutionCcy ),
-             coasCode       : it.coasCode,
-             requestDate    : it.requestDate,
              requisitionCode: it.requisitionCode,
              transactionDate: it.transactionDate,
              vendorName     : it.vendorName,
-             organization   : it.organizationTitle,
              status         : MessageHelper.message( 'purchaseRequisition.status.' + it.status ),
              infoStatus     : it.status]
         }
@@ -250,12 +247,9 @@ class RequisitionListingCompositeService {
             [id             : it.id,
              version        : it.version,
              amount         : deriveFormattedAmount( it.amount, it.currency, institutionCcy ),
-             coasCode       : it.coasCode,
-             requestDate    : it.requestDate,
              requisitionCode: it.requisitionCode,
              transactionDate: it.transactionDate,
              vendorName     : it.vendorName,
-             organization   : it.organizationTitle,
              status         : MessageHelper.message( 'purchaseRequisition.status.' + it.status ),
              infoStatus     : it.status]
         }

@@ -28,5 +28,6 @@
         <mapping class="net.hedtech.banner.finance.requisition.system.FinanceText"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.FinanceBuyerVerification"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.FinanceRequestPOVerification"/>
+        <mapping class="net.hedtech.banner.finance.requisition.system.FinancePendingApproverList"/>
     </session-factory>
 </hibernate-configuration>

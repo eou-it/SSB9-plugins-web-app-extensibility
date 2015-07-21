@@ -110,7 +110,8 @@ class FinanceProcurementConstants {
     String SUCCESS_MESSAGE_UPDATE_REQUISITION_HEADER = 'net.hedtech.banner.finance.requisition.update.requisition.header.success'
     public static final
     String SUCCESS_MESSAGE_DELETE_REQUISITION_HEADER = 'net.hedtech.banner.finance.requisition.delete.requisition.header.success'
-    static final String SUCCESS_MESSAGE_DELETE_REQUISITION = 'net.hedtech.banner.finance.requisition.delete.requisition.success'
+    static
+    final String SUCCESS_MESSAGE_DELETE_REQUISITION = 'net.hedtech.banner.finance.requisition.delete.requisition.success'
 
     /** Constant variable for Purchase Requisition Detail Domain Property column name **/
     static final String FPVREQD_VIEW = 'FV_FPRREQD'
@@ -262,18 +263,12 @@ class FinanceProcurementConstants {
 
     static final String REQUISITION_INFO_FIELD_SURROGATE_ID = 'SURROGATE_ID'
     static final String REQUISITION_INFO_FIELD_AMOUNT = 'AMOUNT'
-    static final String REQUISITION_INFO_FIELD_REQUESTOR_NAME = 'REQUESTOR_NAME'
     static final String REQUISITION_INFO_FIELD_VENDOR_NAME = 'VENDOR_NAME'
     static final String REQUISITION_INFO_FIELD_FPBREQH_TRANS_DATE = 'TRANS_DATE'
-    static final String REQUISITION_INFO_FIELD_REQUEST_DATE = 'REQUEST_DATE'
-    static final String REQUISITION_INFO_FIELD_DELIVERY_DATE = 'DELIVERY_DATE'
     static final String REQUISITION_INFO_FIELD_FPBREQH_USER_ID = 'USER_ID'
     static final String REQUISITION_INFO_FIELD_FPBREQH_ORIGIN_CODE = 'ORIGIN_CODE'
     static final String REQUISITION_INFO_FIELD_FPBREQH_CURR_CODE = 'CURR_CODE'
     static final String REQUISITION_INFO_FIELD_VERSION = 'VERSION'
-    static final String REQUISITION_INFO_FIELD_FPBREQH_ORGN_CODE = 'ORGN_CODE'
-    static final String REQUISITION_INFO_FIELD_ORG_TITLE = 'ORG_TITLE'
-    static final String REQUISITION_INFO_FIELD_FPBREQH_COAS_CODE = 'COAS_CODE'
     static final String REQUISITION_INFO_FIELD_FPBREQH_VEND_PIDM = 'VEND_PIDM'
     static final String REQUISITION_INFO_FIELD_FPBREQH_ACTIVITY_DATE = 'ACTIVITY_DATE'
     static final String REQUISITION_INFO_FIELD_FPBREQH_FPBREQH_CODE = 'CODE'
@@ -513,9 +508,21 @@ class FinanceProcurementConstants {
     static final String FINANCE_PROCUREMENT_PDF_HEADER_PRAGMA_PUBLIC = 'public'
     static
     final String FINANCE_PROCUREMENT_PDF_HEADER_CACHE_CONTROL = 'Cache-Control'
-    static final String FINANCE_PROCUREMENT_PDF_HEADER_CACHE_CONTROL_MUST_RE_VALIDATE = 'must-revalidate, post-check=0, pre-check=0'
+    static
+    final String FINANCE_PROCUREMENT_PDF_HEADER_CACHE_CONTROL_MUST_RE_VALIDATE = 'must-revalidate, post-check=0, pre-check=0'
 
     /** Recall requisition **/
-    static final String ERROR_MESSAGE_DELETE_REQUISITION_DRAFT_OR_DISAPPROVED_REQ_IS_REQUIRED = 'missing.requisition.delete.requisition.draftOrDisapproved.required'
+    static
+    final String ERROR_MESSAGE_DELETE_REQUISITION_DRAFT_OR_DISAPPROVED_REQ_IS_REQUIRED = 'missing.requisition.delete.requisition.draftOrDisapproved.required'
+
+    /** Constants for FVQ_REQ_APPROVER_LIST View **/
+    static final String FVQ_REQ_APPROVER_LIST_VIEW = 'FVQ_REQ_APPROVER_LIST'
+    static final String FVQ_REQ_APPROVER_LIST_QUERY_FIND_BY_DOC_CODE = 'FinancePendingApproverList.findByDocumentCode'
+    static final String FINANCE_PENDING_APPROVER_LIST_APPROVER_NAME = 'APPROVER_NAME'
+    static final String FINANCE_PENDING_APPROVER_LIST_DESCRIPTION = 'DESCRIPTION'
+    static final String FINANCE_PENDING_APPROVER_LIST_DOC_CODE = 'DOC_CODE'
+    static final String FINANCE_PENDING_APPROVER_LIST_QUEUE_ID = 'QUEUE_ID'
+    static final String FINANCE_PENDING_APPROVER_LIST_VERSION = 'VERSION'
+    static final String FINANCE_PENDING_APPROVER_LIST_QUERY_PARAM_DOC_CODE = 'documentCode'
 
 }
