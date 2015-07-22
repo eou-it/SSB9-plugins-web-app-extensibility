@@ -120,17 +120,8 @@ class RequisitionListingCompositeService {
      */
     private listRequisitions( oracleUserName, pagingParams, status ) {
         def ret = requisitionInformationService.listRequisitionsByStatus( status, pagingParams, oracleUserName )
-        ret.list = ret.list.collect() {RequisitionInformation it ->
-            [id             : it.id,
-             version        : it.version,
-             amount         : deriveFormattedAmount( it.amount, it.currency, institutionCcy ),
-             requisitionCode: it.requisitionCode,
-             transactionDate: it.transactionDate,
-             vendorName     : it.vendorName,
-             status         : MessageHelper.message( 'purchaseRequisition.status.' + it.status ),
-             infoStatus     : it.status]
-        }
-        return ret
+        ret.list = processResult( ret, institutionCcy )
+        ret
     }
 
     /**
@@ -243,10 +234,22 @@ class RequisitionListingCompositeService {
      * @param institutionCcy
      */
     private void filterRequisitionDataMap( ret, institutionCcy ) {
-        ret.list = ret.list.collect() {
+        ret.list = processResult( ret, institutionCcy )
+        ret
+    }
+
+    /**
+     * process the list
+     * @param ret
+     * @param institutionCcy
+     * @return
+     */
+    private def processResult( ret, institutionCcy ) {
+        ret.list.collect() {
             [id             : it.id,
              version        : it.version,
              amount         : deriveFormattedAmount( it.amount, it.currency, institutionCcy ),
+             baseAmount     : it.amount,
              requisitionCode: it.requisitionCode,
              transactionDate: it.transactionDate,
              vendorName     : it.vendorName,
