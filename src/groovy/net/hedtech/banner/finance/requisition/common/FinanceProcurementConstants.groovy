@@ -96,6 +96,7 @@ class FinanceProcurementConstants {
     public static final String DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD = 'u_pick_it'
 
     public static final String ERROR_MESSAGE_USER_NOT_VALID = 'user.not.valid'
+    public static final String ERROR_MESSAGE_REQ_RECORD_COUNT = 'error.record.count'
     public static final String ERROR_MESSAGE_NO_MORE_ACCOUNTING = 'no.more.new.accounting'
     public static final String ERROR_MESSAGE_DOCUMENT_CHANGE = 'document.type.cannot.modified'
 
