@@ -259,6 +259,11 @@ class FinanceProcurementConstants {
     String SUCCESS_MESSAGE_UPDATE_REQUISITION_ACCOUNTING = 'net.hedtech.banner.finance.requisition.update.requisition.accounting.success'
 
     /** Constants for Requisition Information */
+    static final String REQUISITION_COUNT_QURY_1 = 'select count(reqInfo.surrogate_id) as numberOfRows from '
+    static final String REQUISITION_COUNT_QURY_2 = ' reqInfo where reqInfo.status in ( '
+    static final String REQUISITION_COUNT_QURY_3 = ") and reqinfo.user_id = '"
+    static final String SINGLE_QUOTES = "'"
+    static final String COMMA = ','
     static final String VIEW_FVQ_REQ_DASHBOARD_INFO = 'FVQ_REQ_DASHBOARD_INFO'
     static final String ERROR_MESSAGE_INVALID_BUCKET_TYPE = 'invalid.bucket.type'
 

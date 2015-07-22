@@ -46,9 +46,15 @@ class RequisitionInformationService extends ServiceBase {
         }
         try {
             sql = new Sql( sessionFactory.currentSession.connection() )
-            result = sql.firstRow( "select count(reqInfo.surrogate_id) as numberOfRows from " +
+            result = sql.firstRow( FinanceProcurementConstants.REQUISITION_COUNT_QURY_1 +
                                            FinanceProcurementConstants.VIEW_FVQ_REQ_DASHBOARD_INFO +
-                                           " reqInfo where reqInfo.status in ( " + status.collect() {it -> it = "'" + it + "'"}.join( ',' ) + ") and reqinfo.user_id = '" + oracleUserName + "'" ).numberOfRows
+                                           FinanceProcurementConstants.REQUISITION_COUNT_QURY_2
+                                           + status.collect() {it ->
+                FinanceProcurementConstants.SINGLE_QUOTES + it +
+                        FinanceProcurementConstants.SINGLE_QUOTES
+            }.join( FinanceProcurementConstants.COMMA ) +
+                                           FinanceProcurementConstants.REQUISITION_COUNT_QURY_3 + oracleUserName +
+                                           FinanceProcurementConstants.SINGLE_QUOTES ).numberOfRows
         }
         catch (SQLException sqe) {
             LoggerUtility.error( LOGGER, 'Error while getting requisition count ' + sqe )
