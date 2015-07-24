@@ -148,7 +148,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     @Test
     void testCompleteRequisition() {
         try {
-            requisitionHeaderService.completeRequisition( 'INVALID' )
+            requisitionHeaderService.completeRequisition( 'INVALID', 'no' )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
         }
         catch (ApplicationException ae) {
@@ -162,7 +162,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     @Test
     void testCompleteAlreadyCompletedRequisition() {
         try {
-            requisitionHeaderService.completeRequisition( 'R0000001' )
+            requisitionHeaderService.completeRequisition( 'R0000001', 'no' )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_REQUISITION_ALREADY_COMPLETED
         }
         catch (ApplicationException ae) {
