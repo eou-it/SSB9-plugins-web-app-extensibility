@@ -58,7 +58,7 @@ class RequisitionHeaderService extends ServiceBase {
      * Completes the purchase requisition
      * @param requestCode
      */
-    def completeRequisition(requestCode) {
+    def completeRequisition(requestCode, forceComplete) {
         LoggerUtility.debug(LOGGER, 'Input parameters for completeRequisition :' + requestCode)
         def requisitionHeader = RequisitionHeader.fetchByRequestCode(requestCode)
         if (!requisitionHeader) {
@@ -66,6 +66,7 @@ class RequisitionHeaderService extends ServiceBase {
         }
         FinanceProcurementHelper.checkCompleteRequisition(requisitionHeader)
         requisitionHeader.completeIndicator = Boolean.TRUE
+        requisitionHeader.deliveryComment=forceComplete // Custom comment used only for complete
         update([domainModel: requisitionHeader])
     }
 
