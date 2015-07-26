@@ -31,13 +31,13 @@ class RequisitionSummaryService extends ServiceBase {
      * Find the requisition summary for specified requestCode
      * @param requestCode
      */
-    def fetchRequisitionSummaryForRequestCode( requestCode, doesNotNeedPdf = true ) {
+    def fetchRequisitionSummaryForRequestCode( requestCode, baseCcy, doesNotNeedPdf = true ) {
         LoggerUtility.debug( LOGGER, 'Input parameters for fetchRequisitionSummaryForRequestCode :' + requestCode )
         def requisitionSummary = RequisitionSummary.fetchRequisitionSummaryForRequestCode( requestCode )
         if (!requisitionSummary) {
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }
-        processSummaryInformation( requisitionSummary, requestCode, doesNotNeedPdf )
+        processSummaryInformation( requisitionSummary, baseCcy, requestCode, doesNotNeedPdf )
     }
 
     /**
@@ -45,7 +45,7 @@ class RequisitionSummaryService extends ServiceBase {
      * @param requisitionSummary
      * @param requestCode
      */
-    private def processSummaryInformation( requisitionSummary, requestCode, boolean doesNotNeedPdf ) {
+    private def processSummaryInformation( requisitionSummary, baseCcy, requestCode, boolean doesNotNeedPdf ) {
         def retJSON = [:]
         def processComment = {list ->
             def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
@@ -63,7 +63,7 @@ class RequisitionSummaryService extends ServiceBase {
                     attentionTo              : it.attentionTo,
                     vendorCode               : it.vendorCode,
                     shipTo                   : doesNotNeedPdf ? null : shipToCodeService.findShipToCodesByCode( it.shipToCode, it.transactionDate ).collect() {
-                        [zipCode     : it.zipCode, state: it.state, city: it.city,
+                        [zipCode     : it.zipCode,
                          shipCode    : it.shipCode, addressLine1: it.addressLine1,
                          addressLine2: it.addressLine2, addressLine3: it.addressLine3,
                          contact     : it.contact]
@@ -81,12 +81,15 @@ class RequisitionSummaryService extends ServiceBase {
                     headerComment            : doesNotNeedPdf ? null : processComment( financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( it.requestCode,
                                                                                                                                                       FinanceValidationConstants.REQUISITION_INDICATOR_YES ) ),
                     transactionDate          : it.transactionDate,
+                    ccy                      : doesNotNeedPdf ? null : it.ccyCode ? it.ccyCode : baseCcy,
                     deliveryDate             : it.deliveryDate,
                     status                   : doesNotNeedPdf ? null : MessageHelper.message( 'purchaseRequisition.status.' + requisitionInformationService.fetchRequisitionsByReqNumber( it.requestCode ).status ),
                     vendorAddressTypeSequence: it.vendorAddressTypeSequence,
                     vendorAddressTypeCode    : it.vendorAddressTypeCode,
                     vendorLastName           : it.vendorLastName,
                     vendorAddressLine1       : it.vendorAddressLine1,
+                    vendorAddressLine2       : it.vendorAddressLine2,
+                    vendorAddressLine3       : it.vendorAddressLine3,
                     vendorAddressZipCode     : it.vendorAddressZipCode,
                     vendorAddressStateCode   : it.vendorAddressStateCode,
                     vendorAddressCity        : it.vendorAddressCity,
@@ -183,7 +186,7 @@ class RequisitionSummaryService extends ServiceBase {
                         unitOfMeasure                         : it.unitOfMeasure,
                         commodityDiscountAmount               : it.commodityDiscountAmount,
                         commodityDiscountAmountDisplay        : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityDiscountAmount, FinanceValidationConstants.TWO ),
-                        othersDisplay                                : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityAdditionalChargeAmount + it.commodityTaxAmount - it.commodityDiscountAmount, FinanceValidationConstants.TWO ),
+                        othersDisplay                         : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityAdditionalChargeAmount + it.commodityTaxAmount - it.commodityDiscountAmount, FinanceValidationConstants.TWO ),
                         commodityAdditionalChargeAmount       : it.commodityAdditionalChargeAmount,
                         commodityAdditionalChargeAmountDisplay: FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityAdditionalChargeAmount, FinanceValidationConstants.TWO ),
                         commodityText                         : doesNotNeedPdf ? null : processComment( financeTextService.getFinanceTextByCodeAndItemAndPrintOption( requestCode, it.commodityItem.intValue(),

@@ -33,8 +33,8 @@ class FinancePurchaseRequisitionPDFService {
      * @param requisitionCode
      * @return
      */
-    def generatePdfStream( requisitionCode ) {
-        renderPDFResponse( requisitionSummaryService.fetchRequisitionSummaryForRequestCode( requisitionCode, false ) )
+    def generatePdfStream( requisitionCode, baseCcy ) {
+        renderPDFResponse( requisitionSummaryService.fetchRequisitionSummaryForRequestCode( requisitionCode, baseCcy, false ) )
     }
 
     /**
@@ -169,6 +169,7 @@ class FinancePurchaseRequisitionPDFService {
         labels.claAccountingTotalAtCommodity = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.accounting.total" )
         labels.commodity = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.commodity" )
         labels.subtitle = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.subtitle" )
+        labels.currency = MessageHelper.message( code: "banner.finance.procurement.requisition.pdf.label.currency" )
 
         labels
     }
