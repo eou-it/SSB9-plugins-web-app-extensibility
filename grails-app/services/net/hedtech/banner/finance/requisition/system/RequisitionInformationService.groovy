@@ -30,7 +30,7 @@ class RequisitionInformationService extends ServiceBase {
             oracleUserName = getOracleUserNameForLoggedInUser()
         }
         def list = RequisitionInformation.listRequisitionsByStatus( oracleUserName, pagingParams, status )
-        [list: list, count: pagingParams.offset == 0 ? fetchRequisitionsCountByStatus( status, oracleUserName ) : list?.size()]
+        [list: list, count: pagingParams.offset == 0 ? 0 : list?.size()]
     }
 
     /**
@@ -40,21 +40,27 @@ class RequisitionInformationService extends ServiceBase {
      * @return
      */
     def fetchRequisitionsCountByStatus( status, oracleUserName ) {
-        def sql, result
+        def countMap = [:]
+        def sql
         if (oracleUserName == null) {
             oracleUserName = getOracleUserNameForLoggedInUser()
         }
         try {
             sql = new Sql( sessionFactory.currentSession.connection() )
-            result = sql.firstRow( FinanceProcurementConstants.REQUISITION_COUNT_QURY_1 +
-                                           FinanceProcurementConstants.VIEW_FVQ_REQ_DASHBOARD_INFO +
-                                           FinanceProcurementConstants.REQUISITION_COUNT_QURY_2
-                                           + status.collect() {it ->
+            sql.eachRow( FinanceProcurementConstants.REQUISITION_COUNT_QRY_1 +
+                                 FinanceProcurementConstants.VIEW_FVQ_REQ_DASHBOARD_INFO +
+                                 FinanceProcurementConstants.REQUISITION_COUNT_QRY_2
+                                 + status.collect() {it ->
                 FinanceProcurementConstants.SINGLE_QUOTES + it +
                         FinanceProcurementConstants.SINGLE_QUOTES
             }.join( FinanceProcurementConstants.COMMA ) +
-                                           FinanceProcurementConstants.REQUISITION_COUNT_QURY_3 + oracleUserName +
-                                           FinanceProcurementConstants.SINGLE_QUOTES ).numberOfRows
+                                 FinanceProcurementConstants.REQUISITION_COUNT_QRY_3 + oracleUserName +
+                                 FinanceProcurementConstants.SINGLE_QUOTES +
+                                 FinanceProcurementConstants.REQUISITION_COUNT_QRY_4
+            ) {row ->
+                countMap.put( row.status, row.numberOfRows )
+            }
+            countMap
         }
         catch (SQLException sqe) {
             LoggerUtility.error( LOGGER, 'Error while getting requisition count ' + sqe )
@@ -63,7 +69,7 @@ class RequisitionInformationService extends ServiceBase {
         finally {
             sql?.close()
         }
-        result
+        countMap
     }
 
     /**

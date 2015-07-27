@@ -87,23 +87,28 @@ class RequisitionListingCompositeService {
                                FinanceProcurementConstants.REQUISITION_INFO_STATUS_CONVERTED_TO_PO]
 
         def pendingStatus = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_PENDING]
+        def countMap = [:]
         switch (bucket) {
             case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_ALL:
-                wrapperList.add( groupResult( FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT,
+                countMap = requisitionInformationService.fetchRequisitionsCountByStatus( draftStatus + completedStatus + pendingStatus, user )
+                wrapperList.add( groupResult( countMap, draftStatus, FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT,
                                               listRequisitions( user, pagingParams, draftStatus ) ) )
-                wrapperList.add( groupResult( FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING,
+                wrapperList.add( groupResult( countMap, pendingStatus, FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING,
                                               listRequisitions( user, pagingParams, pendingStatus ) ) )
-                wrapperList.add( groupResult( FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE,
+                wrapperList.add( groupResult( countMap, completedStatus, FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE,
                                               listRequisitions( user, pagingParams, completedStatus ) ) )
                 break
             case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT:
-                wrapperList.add( groupResult( bucket, listRequisitions( user, pagingParams, draftStatus ) ) )
+                countMap = requisitionInformationService.fetchRequisitionsCountByStatus( draftStatus, user )
+                wrapperList.add( groupResult( countMap, draftStatus, bucket, listRequisitions( user, pagingParams, draftStatus ) ) )
                 break
             case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING:
-                wrapperList.add( groupResult( bucket, listRequisitions( user, pagingParams, pendingStatus ) ) )
+                countMap = requisitionInformationService.fetchRequisitionsCountByStatus( pendingStatus, user )
+                wrapperList.add( groupResult( countMap, pendingStatus, bucket, listRequisitions( user, pagingParams, pendingStatus ) ) )
                 break
             case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE:
-                wrapperList.add( groupResult( bucket, listRequisitions( user, pagingParams, completedStatus ) ) )
+                countMap = requisitionInformationService.fetchRequisitionsCountByStatus( completedStatus, user )
+                wrapperList.add( groupResult( countMap, completedStatus, bucket, listRequisitions( user, pagingParams, completedStatus ) ) )
                 break
             default:
                 LoggerUtility.error( LOGGER, 'Group Type not valid' )
@@ -126,12 +131,18 @@ class RequisitionListingCompositeService {
 
     /**
      * Groups the records as per buckets
+     * @param countMap
+     * @param statusList
      * @param groupType
      * @param records
      * @return
      */
-    private def groupResult( groupType, records ) {
-        [category: groupType, count: records.count, list: records.list]
+    private def groupResult( countMap, statusList, groupType, records ) {
+        def getCount = 0;
+        statusList.each() {
+            getCount += countMap.get( it ) ? countMap.get( it ).intValue() : 0
+        }
+        [category: groupType, count: getCount, list: records.list]
     }
 
     /**

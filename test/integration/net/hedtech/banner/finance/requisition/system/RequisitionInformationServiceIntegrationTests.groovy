@@ -132,7 +132,7 @@ class RequisitionInformationServiceIntegrationTests extends BaseIntegrationTestC
         def pagingParams = [max: 500, offset: 0]
         def requisitions = requisitionInformationService.searchRequisitionsBySearchParam(
                 FinanceProcurementConstants.REQUISITION_INFO_USER_NAME, FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT.toUpperCase(),
-                pagingParams,false )
+                pagingParams, false )
         assertNotNull requisitions
         assert requisitions.size() > 0
     }
@@ -146,11 +146,10 @@ class RequisitionInformationServiceIntegrationTests extends BaseIntegrationTestC
         def pagingParams = [max: 500, offset: 0]
         def requisitions = requisitionInformationService.searchRequisitionsBySearchParam(
                 null, FinanceCommonUtility.parseDate( '06/19/2015' ),
-                pagingParams,true )
+                pagingParams, true )
         assertNotNull requisitions
         assert requisitions.size() > 0
     }
-
 
     /**
      * Test Fetch Requisitions for specified status
@@ -158,11 +157,11 @@ class RequisitionInformationServiceIntegrationTests extends BaseIntegrationTestC
     @Test
     void searchRequisitionsByStatusAndSearchParamString() {
         def status = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT,
-                           FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
+                      FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
         def pagingParams = [max: 500, offset: 0]
         def requisitions = requisitionInformationService.searchRequisitionsByStatusAndSearchParam(
                 FinanceProcurementConstants.REQUISITION_INFO_USER_NAME, 'RSD00001'.toUpperCase(),
-                pagingParams,status,false )
+                pagingParams, status, false )
         assertNotNull requisitions
         assert requisitions.size() > 0
     }
@@ -173,11 +172,11 @@ class RequisitionInformationServiceIntegrationTests extends BaseIntegrationTestC
     @Test
     void searchRequisitionsByStatusAndSearchParamAsDate() {
         def status = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT,
-                           FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
+                      FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
         def pagingParams = [max: 500, offset: 0]
         def requisitions = requisitionInformationService.searchRequisitionsByStatusAndSearchParam(
                 null, FinanceCommonUtility.parseDate( '06/19/2015' ),
-                pagingParams,status,true )
+                pagingParams, status, true )
         assertNotNull requisitions
         assert requisitions.size() > 0
     }
