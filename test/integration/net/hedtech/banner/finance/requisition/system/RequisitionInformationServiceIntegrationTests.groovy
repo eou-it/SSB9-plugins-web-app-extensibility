@@ -53,7 +53,7 @@ class RequisitionInformationServiceIntegrationTests extends BaseIntegrationTestC
     @Test
     void fetchRequisitionsCountByStatusWithInvalidUser() {
         def count = requisitionInformationService.fetchRequisitionsCountByStatus( [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT], 'Invalid' )
-        assertTrue count.size() == null
+        assertTrue count.size() == 0
     }
 
     /**
