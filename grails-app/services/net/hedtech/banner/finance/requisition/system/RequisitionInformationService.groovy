@@ -30,7 +30,7 @@ class RequisitionInformationService extends ServiceBase {
             oracleUserName = getOracleUserNameForLoggedInUser()
         }
         def list = RequisitionInformation.listRequisitionsByStatus( oracleUserName, pagingParams, status )
-        [list: list, count: pagingParams.offset == 0 ? 0 : list?.size()]
+        [list: list, count: list?.size()]
     }
 
     /**
