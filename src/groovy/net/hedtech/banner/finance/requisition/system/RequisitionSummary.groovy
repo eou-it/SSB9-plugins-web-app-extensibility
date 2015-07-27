@@ -139,6 +139,9 @@ class RequisitionSummary implements Serializable {
     @Column(name = FinanceProcurementConstants.FIELD_FPRREQD_UOMS_CODE)
     String unitOfMeasure
 
+    @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPBREQH_CURR_CODE)
+     String ccyCode
+
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPBREQH_CODE)
     String requestCode
 
@@ -157,6 +160,10 @@ class RequisitionSummary implements Serializable {
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPVVEND_SPRADDR_STREET_LINE1)
     String vendorAddressLine1
 
+    @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPVVEND_SPRADDR_STREET_LINE2)
+    String vendorAddressLine2
+    @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPVVEND_SPRADDR_STREET_LINE3)
+    String vendorAddressLine3
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPVVEND_SPRADDR_ZIP)
     String vendorAddressZipCode
 
