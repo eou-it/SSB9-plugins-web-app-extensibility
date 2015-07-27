@@ -27,7 +27,7 @@ class UserProfileCompositeService {
      * @param user
      * @param effectiveDate
      */
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(propagation = Propagation.SUPPORTS)
     def getUserProfileDetail( user, effectiveDate ) {
         def coa = [:], shipToCode = [:], org = [:], userProfile = [:]
 
