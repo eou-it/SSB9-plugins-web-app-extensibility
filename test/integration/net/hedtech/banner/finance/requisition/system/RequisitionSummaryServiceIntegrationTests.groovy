@@ -42,7 +42,7 @@ class RequisitionSummaryServiceIntegrationTests extends BaseIntegrationTestCase 
      */
     @Test
     void testFetchRequisitionSummaryForRequestCode() {
-        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode('RSD00003')
+        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode('RSD00003', 'USD')
         assertTrue headers.size() > 0
     }
 
@@ -51,7 +51,7 @@ class RequisitionSummaryServiceIntegrationTests extends BaseIntegrationTestCase 
      */
     @Test
     void testFetchRequisitionSummaryForRequestCodeForCommodityLevelAccounting() {
-        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode('RSD00005')
+        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode('RSD00005','USD')
         assertTrue headers.size() > 0
     }
 
@@ -61,7 +61,7 @@ class RequisitionSummaryServiceIntegrationTests extends BaseIntegrationTestCase 
     @Test
     void testFetchRequisitionSummaryForRequestCodeInvalidCode() {
         try {
-            requisitionSummaryService.fetchRequisitionSummaryForRequestCode('INVALID')
+            requisitionSummaryService.fetchRequisitionSummaryForRequestCode('INVALID', 'USD')
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
         }
         catch (ApplicationException ae) {
