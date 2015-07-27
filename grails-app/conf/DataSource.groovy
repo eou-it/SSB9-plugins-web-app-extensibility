@@ -26,7 +26,7 @@ environments {
             dialect = "org.hibernate.dialect.Oracle10gDialect"
             username = "baninst1"
             password = "u_pick_it"
-            url = "jdbc:oracle:thin:@oracledb:1521:ban83"
+            url = "jdbc:oracle:thin:@localhost:1521:ban83"
             dbCreate = "none" //"validate"
             //loggingSql = true
             //logSql =true
@@ -40,7 +40,7 @@ environments {
             dialect = "org.hibernate.dialect.Oracle10gDialect"
             username = "baninst1"
             password = "u_pick_it"
-            url = "jdbc:oracle:thin:@oracledb:1521:ban83"
+            url = "jdbc:oracle:thin:@localhost:1521:ban83"
             dbCreate = "none" //"validate"
             //loggingSql = true
             //logSql =true
