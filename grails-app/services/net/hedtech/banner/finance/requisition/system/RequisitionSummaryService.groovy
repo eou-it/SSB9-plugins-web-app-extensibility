@@ -57,7 +57,7 @@ class RequisitionSummaryService extends ServiceBase {
         def headerRecord = requisitionSummary[0], shipToCodeMap = [:], userProfileMap = [:], orgMap = [:], headerTextMap = [:], statusMap = [:]
         if (!doesNotNeedPdf) {
             shipToCodeMap[headerRecord.requestCode] = shipToCodeService.findShipToCodesByCode( headerRecord.shipToCode, headerRecord.transactionDate ).collect() {
-                [zipCode     : it.zipCode,
+                [zipCode     : it.zipCode, state: it.state, city: it.city,
                  shipCode    : it.shipCode, addressLine1: it.addressLine1,
                  addressLine2: it.addressLine2, addressLine3: it.addressLine3,
                  contact     : it.contact]
@@ -188,8 +188,8 @@ class RequisitionSummaryService extends ServiceBase {
                 requisitionSummary.collectEntries() {
                     [it.commodityItem, it.commodityItem]
                 }.each {key, value ->
-                    commodityTextMap[key, processComment( financeTextService.getFinanceTextByCodeAndItemAndPrintOption( requestCode, key.intValue(),
-                                                                                                                        FinanceValidationConstants.REQUISITION_INDICATOR_YES ) )]
+                    commodityTextMap[key] = processComment( financeTextService.getFinanceTextByCodeAndItemAndPrintOption( requestCode, key.intValue(),
+                                                                                                                          FinanceValidationConstants.REQUISITION_INDICATOR_YES ) )
                 }
             }
             requisitionSummary.collectEntries() {
