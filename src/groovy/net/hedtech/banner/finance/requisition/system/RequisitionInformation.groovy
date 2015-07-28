@@ -57,27 +57,29 @@ import javax.persistence.*
                 query = """FROM RequisitionInformation reqInfo
                             WHERE (UPPER(reqInfo.requisitionCode) LIKE :searchParam
                                         OR UPPER(reqInfo.vendorName) LIKE :searchParam
+                                        OR UPPER(reqInfo.status) LIKE :searchParam
                                         OR reqInfo.amount LIKE :searchParam)
-                            AND reqInfo.status in :status
+							AND reqInfo.status in :status
                             AND reqInfo.lastModifiedBy = :userId
                             order by reqInfo.activityDate desc """),
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_COUNT_FINDER_BY_SEARCH_PARAM_AND_STATUS,
                 query = """select count(reqInfo.id) FROM RequisitionInformation reqInfo
                                     WHERE (UPPER(reqInfo.requisitionCode) LIKE :searchParam
                                         OR UPPER(reqInfo.vendorName) LIKE :searchParam
+                                        OR UPPER(reqInfo.status) LIKE :searchParam
                                         OR reqInfo.amount LIKE :searchParam)
-                                    AND reqInfo.status in :status
+									AND reqInfo.status in :status
                                     AND reqInfo.lastModifiedBy = :userId """),
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_SEARCH_BY_TRANSACTION_DATE_AND_STATUS,
                 query = """FROM RequisitionInformation reqInfo
                             WHERE TRUNC(reqInfo.transactionDate) = TRUNC(:searchParam)
-                            AND reqInfo.status in :status
+							AND reqInfo.status in :status
                             AND reqInfo.lastModifiedBy = :userId
                             order by reqInfo.activityDate desc """),
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_SEARCH_COUNT_FINDER_BY_TRANSACTION_DATE_AND_STATUS,
                 query = """select count(reqInfo.id) FROM RequisitionInformation reqInfo
                                     WHERE TRUNC(reqInfo.transactionDate) = TRUNC(:searchParam)
-                                    AND reqInfo.status in :status
+									AND reqInfo.status in :status
                                     AND reqInfo.lastModifiedBy = :userId """)
 ])
 @Entity
