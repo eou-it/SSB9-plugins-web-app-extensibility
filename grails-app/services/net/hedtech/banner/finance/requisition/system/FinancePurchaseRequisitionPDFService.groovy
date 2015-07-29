@@ -34,7 +34,7 @@ class FinancePurchaseRequisitionPDFService {
      * @return
      */
     def generatePdfStream( requisitionCode, baseCcy ) {
-        renderPDFResponse( requisitionSummaryService.fetchRequisitionSummaryForRequestCode( requisitionCode, baseCcy, false ) )
+        generateByteStream( requisitionSummaryService.fetchRequisitionSummaryForRequestCode( requisitionCode, baseCcy, false ) )
     }
 
     /**
@@ -52,7 +52,7 @@ class FinancePurchaseRequisitionPDFService {
      * @param summaryModel
      * @return
      */
-    private renderPDFResponse( summaryModel ) {
+    private generateByteStream( summaryModel ) {
         try {
             def fopBasePath = getFopBasePath()
             PdfGenerator pdfGenerator = PdfGenerator.getInstance();
