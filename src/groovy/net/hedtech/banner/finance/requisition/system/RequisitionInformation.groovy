@@ -34,7 +34,7 @@ import javax.persistence.*
                             WHERE (UPPER(reqInfo.requisitionCode) LIKE :searchParam
                                         OR UPPER(reqInfo.vendorName) LIKE :searchParam
                                         OR reqInfo.amount LIKE :searchParam
-                                        OR UPPER(reqInfo.status) LIKE :searchParam )
+                                        OR UPPER(reqInfo.status) LIKE :trimmedSearchParam )
                             AND reqInfo.lastModifiedBy = :userId
                             order by reqInfo.activityDate desc """),
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_COUNT_FINDER_BY_SEARCH_PARAM,
@@ -42,7 +42,7 @@ import javax.persistence.*
                                     WHERE (UPPER(reqInfo.requisitionCode) LIKE :searchParam
                                             OR UPPER(reqInfo.vendorName) LIKE :searchParam
                                             OR reqInfo.amount LIKE :searchParam
-                                            OR UPPER(reqInfo.status) LIKE :searchParam )
+                                            OR UPPER(reqInfo.status) LIKE :trimmedSearchParam )
                                     AND reqInfo.lastModifiedBy = :userId """),
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_SEARCH_BY_TRANSACTION_DATE,
                 query = """FROM RequisitionInformation reqInfo
@@ -57,7 +57,7 @@ import javax.persistence.*
                 query = """FROM RequisitionInformation reqInfo
                             WHERE (UPPER(reqInfo.requisitionCode) LIKE :searchParam
                                         OR UPPER(reqInfo.vendorName) LIKE :searchParam
-                                        OR UPPER(reqInfo.status) LIKE :searchParam
+                                        OR UPPER(reqInfo.status) LIKE :trimmedSearchParam
                                         OR reqInfo.amount LIKE :searchParam)
 							AND reqInfo.status in :status
                             AND reqInfo.lastModifiedBy = :userId
@@ -66,7 +66,7 @@ import javax.persistence.*
                 query = """select count(reqInfo.id) FROM RequisitionInformation reqInfo
                                     WHERE (UPPER(reqInfo.requisitionCode) LIKE :searchParam
                                         OR UPPER(reqInfo.vendorName) LIKE :searchParam
-                                        OR UPPER(reqInfo.status) LIKE :searchParam
+                                        OR UPPER(reqInfo.status) LIKE :trimmedSearchParam
                                         OR reqInfo.amount LIKE :searchParam)
 									AND reqInfo.status in :status
                                     AND reqInfo.lastModifiedBy = :userId """),
@@ -193,6 +193,7 @@ class RequisitionInformation implements Serializable {
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_FINDER_BY_SEARCH_PARAM )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_SEARCH_PARAM, searchParam )
+                    .setString( FinanceProcurementConstants.REQUISITION_INFO_SEARCH_PARAM_TRIMMED_SPACES, searchParam.replaceAll("\\s","") )
                     .setMaxResults( paginationParams.max )
                     .setFirstResult( paginationParams.offset )
                     .list()
@@ -211,6 +212,7 @@ class RequisitionInformation implements Serializable {
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_COUNT_FINDER_BY_SEARCH_PARAM )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_SEARCH_PARAM, searchParam )
+                    .setString( FinanceProcurementConstants.REQUISITION_INFO_SEARCH_PARAM_TRIMMED_SPACES, searchParam.replaceAll("\\s","") )
                     .list()
         }
         return requisitionsCount[0]
@@ -263,6 +265,7 @@ class RequisitionInformation implements Serializable {
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_FINDER_BY_SEARCH_PARAM_AND_STATUS )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_SEARCH_PARAM, searchParam )
+                    .setString( FinanceProcurementConstants.REQUISITION_INFO_SEARCH_PARAM_TRIMMED_SPACES, searchParam.replaceAll("\\s","") )
                     .setParameterList( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS, status )
                     .setMaxResults( paginationParams.max )
                     .setFirstResult( paginationParams.offset )
@@ -278,10 +281,12 @@ class RequisitionInformation implements Serializable {
      * @return
      */
     static def fetchRequisitionsCountByStatusAndSearchParam( searchParam, userId, status ) {
+        println searchParam.trim()
         def requisitionsCount = RequisitionInformation.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_COUNT_FINDER_BY_SEARCH_PARAM_AND_STATUS )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
                     .setParameterList( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS, status )
+                    .setString( FinanceProcurementConstants.REQUISITION_INFO_SEARCH_PARAM_TRIMMED_SPACES, searchParam.replaceAll("\\s","") )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_SEARCH_PARAM, searchParam )
                     .list()
         }

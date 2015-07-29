@@ -298,6 +298,7 @@ class FinanceProcurementConstants {
     static
     final String REQUISITION_INFO_SEARCH_COUNT_FINDER_BY_TRANSACTION_DATE = 'RequisitionInformation.countRequisitionsByTransactionDate'
     static final String REQUISITION_INFO_USER_NAME = 'GRAILS'
+    static final String REQUISITION_INFO_SEARCH_PARAM_TRIMMED_SPACES = 'trimmedSearchParam'
     /** Properties keys for Requisition Information status  **/
     static final String REQUISITION_INFO_STATUS_DRAFT = 'draft'
     static final String REQUISITION_INFO_STATUS_DISAPPROVED = 'disapproved'
