@@ -36,7 +36,6 @@ grails.project.dependency.resolution = {
         if (System.properties['PROXY_SERVER_NAME']) {
             mavenRepo "${System.properties['PROXY_SERVER_NAME']}"
             mavenRepo "${System.properties['RELEASE_REPO_NAME']}"
-            print ">>>>>>>  nnnnnnnn Lokee ${System.properties['RELEASE_REPO_NAME']}"
         } else {
             grailsPlugins()
             grailsHome()
