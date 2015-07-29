@@ -1,6 +1,6 @@
 /*******************************************************************************
   Copyright 2015 Ellucian Company L.P. and its affiliates.
- *******************************************************************************/
+*******************************************************************************/
 
 tomcat.deploy.username = "manager"
 tomcat.deploy.password = "manager!"
@@ -35,6 +35,7 @@ grails.project.dependency.resolution = {
     repositories {
         if (System.properties['PROXY_SERVER_NAME']) {
             mavenRepo "${System.properties['PROXY_SERVER_NAME']}"
+            mavenRepo "${System.properties['RELEASE_REPO_NAME']}"
         } else {
             grailsPlugins()
             grailsHome()
@@ -57,7 +58,13 @@ grails.project.dependency.resolution = {
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
         // Note: elvyx-1.0.24_beta.jar remains in the lib/ directory of the project as it is not available in a public repo due to licensing issues.
-
+        test (
+                "net.hedtech.banner.pdf:banner_pdf_generator:1.0",
+                "org.apache.avalon.framework:avalon-framework-api:4.3.1",
+                "org.apache.avalon.framework:avalon-framework-impl:4.3.1",
+                "org.json:json:20090211",
+                "org.apache.xmlgraphics:fop:1.1"
+        )
     }
 
 }
