@@ -58,17 +58,21 @@ class RequisitionDetailsAcctCommonCompositeService {
 
         // Check If at least one of them is true, and also find out what the adjusted % value is going to be.
         if (isAdjustmentNeededForExtendedAmount) {
-            adjustedPercentage = (FinanceProcurementConstants.HUNDRED * (totalExtendedCommodity * orgPercentage / FinanceProcurementConstants.HUNDRED)
-                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION_PERCENTAGE, BigDecimal.ROUND_HALF_UP )) / totalExtendedCommodity
+            adjustedPercentage = ((FinanceProcurementConstants.HUNDRED * (totalExtendedCommodity * orgPercentage / FinanceProcurementConstants.HUNDRED)
+                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )) / totalExtendedCommodity)
+                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION_PERCENTAGE, BigDecimal.ROUND_HALF_UP )
         } else if (isAdjustmentNeededForTax) {
-            adjustedPercentage = (FinanceProcurementConstants.HUNDRED * (totalTax * orgPercentage / FinanceProcurementConstants.HUNDRED)
-                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION_PERCENTAGE, BigDecimal.ROUND_HALF_UP )) / totalTax
+            adjustedPercentage = ((FinanceProcurementConstants.HUNDRED * (totalTax * orgPercentage / FinanceProcurementConstants.HUNDRED)
+                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )) / totalTax)
+                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION_PERCENTAGE, BigDecimal.ROUND_HALF_UP )
         } else if (isAdjustmentNeededForDiscount) {
-            adjustedPercentage = (FinanceProcurementConstants.HUNDRED * (totalDiscount * orgPercentage / FinanceProcurementConstants.HUNDRED)
-                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION_PERCENTAGE, BigDecimal.ROUND_HALF_UP )) / totalDiscount
+            adjustedPercentage = ((FinanceProcurementConstants.HUNDRED * (totalDiscount * orgPercentage / FinanceProcurementConstants.HUNDRED)
+                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )) / totalDiscount)
+                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION_PERCENTAGE, BigDecimal.ROUND_HALF_UP )
         } else if (isAdjustmentNeededForAdditionalCharge) {
-            adjustedPercentage = (FinanceProcurementConstants.HUNDRED * (totalAdditionalCharge * orgPercentage / FinanceProcurementConstants.HUNDRED)
-                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION_PERCENTAGE, BigDecimal.ROUND_HALF_UP )) / totalAdditionalCharge
+            adjustedPercentage = ((FinanceProcurementConstants.HUNDRED * (totalAdditionalCharge * orgPercentage / FinanceProcurementConstants.HUNDRED)
+                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )) / totalAdditionalCharge)
+                    .setScale( FinanceProcurementConstants.DECIMAL_PRECISION_PERCENTAGE, BigDecimal.ROUND_HALF_UP )
         }
         LoggerUtility.debug( LOGGER, 'adjustedPercentage before scaling  : ' + adjustedPercentage )
 
