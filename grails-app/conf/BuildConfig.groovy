@@ -65,7 +65,7 @@ grails.project.dependency.resolution = {
                 "org.json:json:20090211",
                 "org.apache.xmlgraphics:fop:1.1"
         ) {
-            excludes 'xml-apis'
+              excludes 'xml-apis','xmlParserAPIs','xercesImpl'
         }
 
     }
