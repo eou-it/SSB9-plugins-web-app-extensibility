@@ -45,12 +45,12 @@ class FinancePurchaseRequisitionPDFServiceIntegrationTests extends BaseIntegrati
         assertTrue fileName == 'Purchase_Requisition_R0002312.pdf'
     }
 
-    /* *//**
+    /**
      * test generate Pdf Stream
-     *//*
+     */
     @Test
     void generatePdfStream() {
-        def pdfStream = financePurchaseRequisitionPDFService.generatePdfStream( 'R0002497' )
+        def pdfStream = financePurchaseRequisitionPDFService.generatePdfStream( 'R0002497','USD')
         assertTrue pdfStream != null
-    }*/
+    }
 }

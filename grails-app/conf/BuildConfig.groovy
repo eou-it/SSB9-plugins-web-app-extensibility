@@ -57,7 +57,31 @@ grails.project.dependency.resolution = {
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
         // Note: elvyx-1.0.24_beta.jar remains in the lib/ directory of the project as it is not available in a public repo due to licensing issues.
-
+        test (  "net.hedtech.banner.pdf:banner_pdf_generator:1.0",
+                "org.apache.xmlgraphics:fop:1.1",
+                "org.apache.xmlgraphics:batik-transcoder:1.8",
+                "org.apache.xmlgraphics:batik-codec:1.8",
+                "org.apache.xmlgraphics:batik-awt-util:1.8",
+                "org.apache.xmlgraphics:batik-bridge:1.8",
+                "org.apache.xmlgraphics:batik-dom:1.8",
+                "org.apache.xmlgraphics:batik-gvt:1.8",
+                "org.apache.xmlgraphics:batik-svg-dom:1.8",
+                "org.apache.xmlgraphics:batik-svggen:1.8",
+                "org.apache.xmlgraphics:batik-util:1.8",
+                "org.apache.xmlgraphics:batik-xml:1.8",
+                "org.apache.xmlgraphics:batik-anim:1.8",
+                "org.apache.xmlgraphics:batik-css:1.8",
+                "org.apache.xmlgraphics:batik-ext:1.8",
+                //    "org.apache.xmlgraphics:batik-js:1.8",
+                "org.apache.xmlgraphics:batik-parser:1.8",
+                "org.apache.xmlgraphics:batik-script:1.8",
+                "org.apache.xmlgraphics:xmlgraphics-commons:1.5",
+                "commons-logging:commons-logging:1.0.4",
+                "org.apache.avalon.framework:avalon-framework-api:4.3.1",
+                "org.apache.avalon.framework:avalon-framework-impl:4.3.1",
+                "xml-apis:xml-apis-ext:1.3.04",
+                "org.json:json:20090211" )
+                {transitive = false}
     }
 
 }
