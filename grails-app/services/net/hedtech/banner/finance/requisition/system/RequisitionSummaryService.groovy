@@ -208,6 +208,7 @@ class RequisitionSummaryService extends ServiceBase {
                         commodityAdditionalChargeAmountDisplay: FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityAdditionalChargeAmount, FinanceValidationConstants.TWO ),
                         commodityText                         : commodityTextMap[it.commodityItem],
                         commodityTaxAmount                    : it.commodityTaxAmount,
+                        commodityTaxAmountDisplay :FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityTaxAmount, FinanceValidationConstants.TWO ),
                         commodityUnitPrice                    : it.commodityUnitPrice,
                         commodityUnitPriceDisplay             : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityUnitPrice, FinanceValidationConstants.FOUR ),
                         commodityTotal                        : (it.commodityUnitPrice * it.commodityQuantity).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + it.commodityTaxAmount + it.commodityAdditionalChargeAmount
@@ -241,8 +242,8 @@ class RequisitionSummaryService extends ServiceBase {
                 }
             } else {
                 retJSON['balanced'] = checkIfAllItemBalanced( commodityList, accountingList.size() > 0 )
-                retJSON['grandCommodityTotal'] = getAllCommodityTotal( commodityList )
-                retJSON['grandAccountingTotal'] = getAllAccountingTotal( accountingList )
+                retJSON['grandCommodityTotal'] = FinanceProcurementHelper.getLocaleBasedFormattedNumber( getAllCommodityTotal( commodityList ), FinanceValidationConstants.TWO )
+                retJSON['grandAccountingTotal'] = FinanceProcurementHelper.getLocaleBasedFormattedNumber( getAllAccountingTotal( accountingList ), FinanceValidationConstants.TWO )
                 retJSON['grandCommodityTotalDisplay'] = FinanceProcurementHelper.getLocaleBasedFormattedNumber( getAllCommodityTotal( commodityList ), FinanceValidationConstants.TWO )
                 retJSON['grandAccountingTotalDisplay'] = FinanceProcurementHelper.getLocaleBasedFormattedNumber( getAllAccountingTotal( accountingList ), FinanceValidationConstants.TWO )
             }
