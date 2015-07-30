@@ -200,6 +200,7 @@ class RequisitionSummaryService extends ServiceBase {
                         commodityCodeDesc                     : it.commodityDescription ? it.commodityDescription : it.commodityCodeDesc,
                         commodityQuantityDisplay              : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityQuantity, FinanceValidationConstants.TWO ),
                         commodityQuantity                     : it.commodityQuantity,
+                        commodityQuantityDisplay              : FinanceProcurementHelper.getLocaleBasedFormattedNumber(it.commodityQuantity, FinanceValidationConstants.TWO ),
                         unitOfMeasure                         : it.unitOfMeasure,
                         commodityDiscountAmount               : it.commodityDiscountAmount,
                         commodityDiscountAmountDisplay        : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityDiscountAmount, FinanceValidationConstants.TWO ),
