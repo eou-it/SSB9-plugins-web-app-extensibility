@@ -281,7 +281,6 @@ class RequisitionInformation implements Serializable {
      * @return
      */
     static def fetchRequisitionsCountByStatusAndSearchParam( searchParam, userId, status ) {
-        println searchParam.trim()
         def requisitionsCount = RequisitionInformation.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_COUNT_FINDER_BY_SEARCH_PARAM_AND_STATUS )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
