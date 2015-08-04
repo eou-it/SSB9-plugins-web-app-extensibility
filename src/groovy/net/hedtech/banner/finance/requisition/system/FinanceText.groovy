@@ -18,28 +18,33 @@ import javax.persistence.*
 @NamedQueries(value = [
         @NamedQuery(name = FinanceProcurementConstants.FINANCE_TEXT_NAMED_QUERY_LIST_ALL_FINANCE_TEXT_BY_CODE,
                 query = """FROM FinanceText financeText
-                                    WHERE financeText.textCode = :textCode"""),
+                                    WHERE financeText.textCode = :textCode
+                                    AND financeText.documentTypeSequenceNumber = 1 """),
         @NamedQuery(name = FinanceProcurementConstants.FINANCE_TEXT_NAMED_QUERY_GET_FINANCE_TEXT_BY_CODE_AND_SEQUENCE_NO,
                 query = """FROM FinanceText financeText
                             WHERE financeText.textCode = :textCode
                             AND financeText.textItem = :textItem
+                            AND financeText.documentTypeSequenceNumber = 1
                             ORDER BY financeText.sequenceNumber ASC"""),
         @NamedQuery(name = FinanceProcurementConstants.FINANCE_TEXT_NAMED_QUERY_GET_FINANCE_TEXT_BY_CODE_AND_SEQUENCE_NO_AND_PRINT_IND,
                 query = """FROM FinanceText financeText
                             WHERE financeText.textCode = :textCode
                             AND financeText.textItem = :textItem
                             AND financeText.printOptionIndicator = :printOptionIndicator
+                            AND financeText.documentTypeSequenceNumber = 1
                             ORDER BY financeText.sequenceNumber ASC"""),
         @NamedQuery(name = FinanceProcurementConstants.FINANCE_TEXT_NAMED_QUERY_LIST_HEADER_LEVEL_TEXT_BY_CODE_AND_PRINT_OPTION_IND,
                 query = """FROM FinanceText financeText
                             WHERE financeText.textCode = :textCode
                             AND financeText.textItem IS NULL
                             AND financeText.printOptionIndicator = :printOptionIndicator
+                            AND financeText.documentTypeSequenceNumber = 1
                             ORDER BY financeText.sequenceNumber ASC"""),
         @NamedQuery(name = FinanceProcurementConstants.FINANCE_TEXT_NAMED_QUERY_LIST_HEADER_LEVEL_TEXT_BY_CODE,
                 query = """FROM FinanceText financeText
                             WHERE financeText.textCode = :textCode
-                            AND financeText.textItem IS NULL""")
+                            AND financeText.textItem IS NULL
+                            AND financeText.documentTypeSequenceNumber = 1""")
 ])
 @ToString(includeNames = true, ignoreNulls = true)
 @EqualsAndHashCode(includeFields = true)
