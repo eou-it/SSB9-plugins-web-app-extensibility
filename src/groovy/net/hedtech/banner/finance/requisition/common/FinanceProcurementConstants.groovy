@@ -537,4 +537,19 @@ class FinanceProcurementConstants {
     static final String FINANCE_PENDING_APPROVER_LIST_VERSION = 'VERSION'
     static final String FINANCE_PENDING_APPROVER_LIST_QUERY_PARAM_DOC_CODE = 'documentCode'
 
+    /** Constants for document **/
+    static final String BDM_DATE_FORMAT = 'YYYY-MM-dd HH:mm:ss'
+    static final String BDM_DOCUMENT_ID = 'DOCUMENT ID'
+    static final String BDM_BANNER_DOC_TYPE = 'BANNER DOC TYPE'
+    static final String BDM_DOCUMENT_TYPE = 'DOCUMENT TYPE'
+    static final String BDM_TRANSACTION_DATE = 'TRANSACTION DATE'
+    static final String BDM_VENDOR_ID = 'VENDOR ID'
+    static final String BDM_VENDOR_NAME = 'VENDOR NAME'
+    static final String BDM_FIRST_NAME = 'FIRST NAME'
+    static final String BDM_PIDM = 'PIDM'
+    static final String BDM_ROUTING_STATUS = 'ROUTING STATUS'
+    static final String BDM_ACTIVITY_DATE = 'ACTIVITY DATE'
+    static final String BDM_VPDI_CODE = 'VPDI_CODE'
+    static final String BDM_DISPOSITION_DATE = 'DISPOSITION DATE'
+
 }
