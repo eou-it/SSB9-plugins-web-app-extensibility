@@ -45,8 +45,8 @@ class DocumentManagementCompositeService {
         documentAttributes.put(FinanceProcurementConstants.BDM_BANNER_DOC_TYPE,docType)
         documentAttributes.put(FinanceProcurementConstants.BDM_DOCUMENT_TYPE,docType)
         documentAttributes.put(FinanceProcurementConstants.BDM_TRANSACTION_DATE,requisition.transactionDate)
-        documentAttributes.put(FinanceProcurementConstants.BDM_VENDOR_ID,emptyString)
-        documentAttributes.put(FinanceProcurementConstants.BDM_VENDOR_NAME,emptyString)
+        documentAttributes.put(FinanceProcurementConstants.BDM_VENDOR_ID,requisition.vendorPidm)
+        documentAttributes.put(FinanceProcurementConstants.BDM_VENDOR_NAME,PersonIdentificationName.findByPidm(requisition.vendorPidm)?.fullName)
         documentAttributes.put(FinanceProcurementConstants.BDM_FIRST_NAME,fileName)
         documentAttributes.put(FinanceProcurementConstants.BDM_PIDM,ownerPidm)
         documentAttributes.put(FinanceProcurementConstants.BDM_ROUTING_STATUS,emptyString)
@@ -71,7 +71,7 @@ class DocumentManagementCompositeService {
            def docWithUsername = []
            SimpleDateFormat dateFormat = new SimpleDateFormat(FinanceProcurementConstants.BDM_DATE_FORMAT)
            documentList.each{doc->
-               String ownerPidm = doc.docAttributes.get('OWNER_PIDM')
+               String ownerPidm = doc.docAttributes.get(FinanceProcurementConstants.BDM_PIDM)
                String ownerName = PersonIdentificationName.findByPidm(ownerPidm)?.fullName
                Map docAttrs = doc.docAttributes
                docAttrs.put('USER_NAME', ownerName)
@@ -89,8 +89,10 @@ class DocumentManagementCompositeService {
      * @param vpdiCode
      */
     def deleteDocumentsByRequisitionCode(documentId, vpdiCode){
+        def docIds = []
+        docIds.add(documentId)
         try {
-            bdmAttachmentService.deleteDocument(getBdmParams(), documentId, vpdiCode)
+            bdmAttachmentService.deleteDocument(getBdmParams(), docIds, vpdiCode)
         } catch (ApplicationException ae) {
             throw ae
         }
@@ -105,7 +107,7 @@ class DocumentManagementCompositeService {
         ConfigurationHolder.config.bdmserver.each{k,v->
             bdmParams.put(k,v)
         }
-        bdmParams.put('DataSource',ConfigurationHolder.config.bdmserver.BdmDataSource)
+        //bdmParams.put('DataSource',ConfigurationHolder.config.bdmserver.BdmDataSource)
         log.info("BDMParams :: "+bdmParams)
 
         return bdmParams
