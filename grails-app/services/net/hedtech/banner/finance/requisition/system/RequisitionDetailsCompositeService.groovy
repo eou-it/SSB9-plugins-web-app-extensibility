@@ -281,13 +281,20 @@ class RequisitionDetailsCompositeService {
             publicComment = publicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
         requisitionDetail.commodityDescription = requisitionDetail.commodityDescription ? requisitionDetail.commodityDescription : commodity.description
-        return [requisitionDetail: requisitionDetail,
-                taxGroup         : taxGroup,
-                unitOfMeasure    : unitOfMeasure,
-                hasAccount       : isCommodityLevelAccounting ? fetchSumOfAccountingTotalPercentage( requisitionAccountingService.findAccountingByRequestCodeAndItem( requestCode, item ) ) >= FinanceValidationConstants.HUNDRED : fetchSumOfAccountingTotalPercentage( requisitionAccountingService.findAccountingByRequestCodeAndItem( requestCode, 0 ) ) >= FinanceValidationConstants.HUNDRED,
-                privateComment   : privateComment,
-                publicComment    : publicComment,
-                status           : requisitionInformationService.fetchRequisitionsByReqNumber( requestCode )?.status
+        return [requisitionDetail            : requisitionDetail,
+                quantityDisplay              : FinanceProcurementHelper.getLocaleBasedFormattedNumber( requisitionDetail.quantity, FinanceValidationConstants.TWO ),
+                unitPriceDisplay             : FinanceProcurementHelper.getLocaleBasedFormattedNumber( requisitionDetail.unitPrice, FinanceValidationConstants.FOUR ),
+                extendedAmountDisplay        : FinanceProcurementHelper.getLocaleBasedFormattedNumber( (requisitionDetail.quantity * requisitionDetail.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ), FinanceValidationConstants.TWO ),
+                discountAmountDisplay        : FinanceProcurementHelper.getLocaleBasedFormattedNumber( FinanceCommonUtility.nullToZero( requisitionDetail.discountAmount ), FinanceValidationConstants.TWO ),
+                taxAmountDisplay             : FinanceProcurementHelper.getLocaleBasedFormattedNumber( FinanceCommonUtility.nullToZero( requisitionDetail.taxAmount ), FinanceValidationConstants.TWO ),
+                additionalChargeAmountDisplay: FinanceProcurementHelper.getLocaleBasedFormattedNumber( FinanceCommonUtility.nullToZero( requisitionDetail.additionalChargeAmount ), FinanceValidationConstants.TWO ),
+                commodityTotalDisplay        : FinanceProcurementHelper.getLocaleBasedFormattedNumber( (requisitionDetail.quantity * requisitionDetail.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + FinanceCommonUtility.nullToZero( requisitionDetail.taxAmount ) + FinanceCommonUtility.nullToZero( requisitionDetail.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( requisitionDetail.discountAmount ), FinanceValidationConstants.TWO ),
+                taxGroup                     : taxGroup,
+                unitOfMeasure                : unitOfMeasure,
+                hasAccount                   : isCommodityLevelAccounting ? fetchSumOfAccountingTotalPercentage( requisitionAccountingService.findAccountingByRequestCodeAndItem( requestCode, item ) ) >= FinanceValidationConstants.HUNDRED : fetchSumOfAccountingTotalPercentage( requisitionAccountingService.findAccountingByRequestCodeAndItem( requestCode, 0 ) ) >= FinanceValidationConstants.HUNDRED,
+                privateComment               : privateComment,
+                publicComment                : publicComment,
+                status                       : requisitionInformationService.fetchRequisitionsByReqNumber( requestCode )?.status
         ]
     }
 

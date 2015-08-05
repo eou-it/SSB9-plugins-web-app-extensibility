@@ -302,7 +302,7 @@ class RequisitionAccountingCompositeService {
      * @return
      */
     private def setNSFOverride( requisitionAccounting, oracleUserName ) {
-        requisitionAccounting.insufficientFundsOverrideIndicator = financeUserProfileService.getUserProfileByUserId( oracleUserName )
-                .nsfOverrider
+        requisitionAccounting.insufficientFundsOverrideIndicator = FinanceProcurementConstants.FALSE
+        // Populate always false from XE as Requestd by BA Mark/Kumar
     }
 }
