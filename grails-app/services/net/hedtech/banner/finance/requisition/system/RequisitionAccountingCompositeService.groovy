@@ -5,6 +5,7 @@ package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
+import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
 import net.hedtech.banner.finance.util.FinanceCommonUtility
@@ -290,6 +291,13 @@ class RequisitionAccountingCompositeService {
              commodityTotalCommodityTaxAmount    : commodityTotalCommodityTaxAmount,
              commodityTotalAdditionalChargeAmount: commodityTotalAdditionalChargeAmount,
              commodityTotalDiscountAmount        : commodityTotalDiscountAmount,
+             percentageDisplay                   : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.percentage, FinanceValidationConstants.TWO ),
+             requisitionAmountDisplay            : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.requisitionAmount, FinanceValidationConstants.TWO ),
+             additionalChargeAmountDisplay       : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.additionalChargeAmount, FinanceValidationConstants.TWO ),
+             discountAmountDisplay               : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.discountAmount, FinanceValidationConstants.TWO ),
+             taxAmountDisplay                    : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.taxAmount, FinanceValidationConstants.TWO ),
+             accountTotalDisplay                 : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.requisitionAmount + it.additionalChargeAmount + it.taxAmount - it.discountAmount, FinanceValidationConstants.TWO ),
+             renamingAmountDisplay               : FinanceProcurementHelper.getLocaleBasedFormattedNumber( (commodityTotalExtendedAmount + commodityTotalCommodityTaxAmount + commodityTotalAdditionalChargeAmount - commodityTotalDiscountAmount) - allAccountingAmount, FinanceValidationConstants.TWO )
             ]
         }.getAt( 0 )
     }
