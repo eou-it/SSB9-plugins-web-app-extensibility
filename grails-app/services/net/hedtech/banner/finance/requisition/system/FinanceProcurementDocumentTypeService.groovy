@@ -28,7 +28,6 @@ class FinanceProcurementDocumentTypeService extends ServiceBase {
     def getCommonMatchingDocs( filterText, max, offset ) {
            def inputMap = [filterText: filterText?.toUpperCase()]
            FinanceCommonUtility.applyWildCard( inputMap, true, true )
-           println "filter text ::" + inputMap.filterText
            def documents = []
            def sql
            try {
