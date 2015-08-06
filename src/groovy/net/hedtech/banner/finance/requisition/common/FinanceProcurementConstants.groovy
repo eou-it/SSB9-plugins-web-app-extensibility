@@ -549,7 +549,7 @@ class FinanceProcurementConstants {
     static final String BDM_PIDM = 'PIDM'
     static final String BDM_ROUTING_STATUS = 'ROUTING STATUS'
     static final String BDM_ACTIVITY_DATE = 'ACTIVITY DATE'
-    static final String BDM_VPDI_CODE = 'VPDI_CODE'
+    static final String USER_NAME = 'USER_NAME'
     static final String BDM_DISPOSITION_DATE = 'DISPOSITION DATE'
 
 }
