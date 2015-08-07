@@ -63,8 +63,10 @@ class DocumentManagementCompositeService {
            def documentList
            try {
                documentList = bdmAttachmentService.viewDocument(getBdmParams(), criteria, vpdiCode)
-           }catch (ApplicationException ae) {
-               throw ae
+           }catch (Throwable ae) {
+               throw new ApplicationException( DocumentManagementCompositeService,
+                                                           new BusinessLogicValidationException(
+                                                                   FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR, [] ) )
            }
         def dataMap =[:]
            def requisition = requisitionHeaderService.findRequisitionHeaderByRequestCode(requisitionCode)

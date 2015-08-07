@@ -96,6 +96,7 @@ class FinanceProcurementConstants {
     public static final String DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD = 'u_pick_it'
 
     public static final String ERROR_MESSAGE_USER_NOT_VALID = 'user.not.valid'
+    public static final String ERROR_MESSAGE_BDM_ERROR = 'finance.bdm.error'
     public static final String ERROR_MESSAGE_REQ_RECORD_COUNT = 'error.record.count'
     public static final String ERROR_MESSAGE_NO_MORE_ACCOUNTING = 'no.more.new.accounting'
     public static final String ERROR_MESSAGE_DOCUMENT_CHANGE = 'document.type.cannot.modified'
@@ -113,6 +114,8 @@ class FinanceProcurementConstants {
     String SUCCESS_MESSAGE_DELETE_REQUISITION_HEADER = 'net.hedtech.banner.finance.requisition.delete.requisition.header.success'
     static
     final String SUCCESS_MESSAGE_DELETE_REQUISITION = 'net.hedtech.banner.finance.requisition.delete.requisition.success'
+    static
+    final String ERROR_MESSAGE_DELETE_REQUISITION_WARNING_DOCUMENT_PRESENT = 'net.hedtech.banner.finance.requisition.delete.warning.document.present'
 
     /** Constant variable for Purchase Requisition Detail Domain Property column name **/
     static final String FPVREQD_VIEW = 'FV_FPRREQD'
