@@ -520,6 +520,8 @@ class FinanceProcurementConstants {
     static final String FINANCE_PROCUREMENT_PDF_INLINE = 'inline;filename='
     static final String FINANCE_PROCUREMENT_PDF_HEADER_EXPIRES = 'Expires'
     static final String FINANCE_PROCUREMENT_PDF_HEADER_PRAGMA = 'Pragma'
+    static final int HTTP_ERROR = 404
+
     static final String FINANCE_PROCUREMENT_PDF_HEADER_PRAGMA_PUBLIC = 'public'
     static
     final String FINANCE_PROCUREMENT_PDF_HEADER_CACHE_CONTROL = 'Cache-Control'

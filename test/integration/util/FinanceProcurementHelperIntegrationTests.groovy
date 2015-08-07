@@ -35,36 +35,6 @@ class FinanceProcurementHelperIntegrationTests extends BaseIntegrationTestCase {
     }
 
     /**
-     * The test case to test getDomainModel and type of the domain model is requisition header.
-     */
-    @Test
-    public void testGetHeaderDomainModel() {
-        def inputJSON = getRequisitionHeaderJson()
-        def headerDomainModel = FinanceProcurementHelper.getDomainModel( inputJSON ).requisitionHeader
-        assert (headerDomainModel != null) && headerDomainModel.isDocumentLevelAccounting
-    }
-
-    /**
-     * The test case to test getDomainModel and type of the domain model is requisition detail.
-     */
-    @Test
-    public void testGetDetailDomainModel() {
-        def inputJSON = getRequisitionDetailJson()
-        def detailDomainModel = FinanceProcurementHelper.getDomainModel( inputJSON ).requisitionDetail
-        assert (detailDomainModel != null) && detailDomainModel.requestCode == 'R0000124'
-    }
-
-    /**
-     * The test case to test getDomainModel and type of the domain model is requisition accounting.
-     */
-    @Test
-    public void testGetAccountingDomainModel() {
-        def inputJSON = getRequisitionAccountingJson()
-        def detailAccountingModel = FinanceProcurementHelper.getDomainModel( inputJSON ).requisitionAccounting
-        assert (detailAccountingModel != null) && detailAccountingModel.requisitionAmount == 100
-    }
-
-    /**
      * The test case to test checkCompleteRequisition.
      */
     @Test
