@@ -31,6 +31,7 @@ class DocumentManagementCompositeService {
             def requisition = requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionCode )
             uploadDocToBdmServer( requisition, docType, ownerPidm, map.fileName, map.absoluteFileName, vpdiCode )
             map.userDir.deleteDir()
+            return listDocumentsByRequisitionCode(requisitionCode,vpdiCode,bdmInstalled)
         } catch (FileNotFoundException e) {
             throw new ApplicationException( DocumentManagementCompositeService, new BusinessLogicValidationException( e.getMessage(), [] ) )
         } catch (ApplicationException ae) {
@@ -62,7 +63,30 @@ class DocumentManagementCompositeService {
         bdmAttachmentService.createDocument( getBdmParams(), absoluteFileName, documentAttributes, vpdiCode )
     }
 
+    /**
+     * this method will delete the documents uploaded to BDM server
+     * @param documentId
+     * @param vpdiCode
+     */
+    def deleteDocumentsByRequisitionCode( documentId, vpdiCode, bdmInstalled ,requisitionCode) {
+        def docIds = []
+        docIds.add( documentId )
+        try {
+            if (!bdmInstalled) {
+                throw new ApplicationException( DocumentManagementCompositeService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED, [] ) )
+            }
+            bdmAttachmentService.deleteDocument( getBdmParams(), docIds, vpdiCode )
+            return listDocumentsByRequisitionCode(requisitionCode,vpdiCode,bdmInstalled)
+        } catch (ApplicationException ae) {
+            throw ae
+        }
+    }
 
+    /**
+     * this method will delete the documents uploaded to BDM server
+     * @param documentId
+     * @param vpdiCode
+     */
     def listDocumentsByRequisitionCode( def requisitionCode, vpdiCode, bdmInstalled ) {
         def criteria = [:]
         criteria.put( FinanceProcurementConstants.BDM_DOCUMENT_ID, requisitionCode )
@@ -90,24 +114,6 @@ class DocumentManagementCompositeService {
         }
         dataMap.documentList = documentList
         return dataMap
-    }
-
-    /**
-     * this method will delete the documents uploaded to BDM server
-     * @param documentId
-     * @param vpdiCode
-     */
-    def deleteDocumentsByRequisitionCode( documentId, vpdiCode, bdmInstalled ) {
-        def docIds = []
-        docIds.add( documentId )
-        try {
-            if (!bdmInstalled) {
-                throw new ApplicationException( DocumentManagementCompositeService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED, [] ) )
-            }
-            bdmAttachmentService.deleteDocument( getBdmParams(), docIds, vpdiCode )
-        } catch (ApplicationException ae) {
-            throw ae
-        }
     }
 
     /**

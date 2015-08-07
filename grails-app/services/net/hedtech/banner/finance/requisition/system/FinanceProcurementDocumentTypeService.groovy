@@ -35,11 +35,14 @@ class FinanceProcurementDocumentTypeService extends ServiceBase {
                    FROM ETVDTYP e, otgmgr.ul506_2 \
                    WHERE e.ETVDTYP_CODE = otgmgr.ul506_2.item \
                    AND (UPPER(e.ETVDTYP_CODE) LIKE :docTypCode OR  UPPER(e.ETVDTYP_DESC) LIKE :docTypDesc)"
-               sessionFactory.getCurrentSession().createSQLQuery( commonMatchSql )
+               def documentResult = sessionFactory.getCurrentSession().createSQLQuery( commonMatchSql )
                        .setString( 'docTypCode', inputMap.filterText )
                        .setString( 'docTypDesc', inputMap.filterText )
+                       .setMaxResults( max )
+                       .setFirstResult( offset )
                        .list()
-                       .each() {document ->
+
+               documentResult.each() {document ->
                    documents << ['code' : document[0], 'description' : document[1]]
                }
            }
