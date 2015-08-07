@@ -554,5 +554,7 @@ class FinanceProcurementConstants {
     static final String BDM_ACTIVITY_DATE = 'ACTIVITY DATE'
     static final String USER_NAME = 'USER_NAME'
     static final String BDM_DISPOSITION_DATE = 'DISPOSITION DATE'
+    static final String IS_BDM_INSTALLED = 'isBdmInstalled'
+    public static final String ERROR_MESSAGE_BDM_NOT_INSTALLED = 'bdm.not.installed'
 
 }
