@@ -174,8 +174,8 @@ class RequisitionHeaderCompositeService {
     }
 
 
-    def deletePurchaseRequisition( requestCode, boolean forceDelete, mep, isBDMInstalled ) {
-        if (!forceDelete) {
+    def deletePurchaseRequisition( requestCode, boolean forceDelete, mep, boolean isBDMInstalled ) {
+        if (!forceDelete && isBDMInstalled) {
             if (documentManagementCompositeService.listDocumentsByRequisitionCode( requestCode, mep, isBDMInstalled ).size() > 0) {
                 LoggerUtility.info( LOGGER, "Documents are present for this requisition. You may need to remove them before deleting this requisition" + requestCode )
                 throw new ApplicationException(
