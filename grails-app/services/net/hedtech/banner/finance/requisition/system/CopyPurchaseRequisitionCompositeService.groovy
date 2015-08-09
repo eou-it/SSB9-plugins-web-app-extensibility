@@ -34,8 +34,8 @@ class CopyPurchaseRequisitionCompositeService {
                 session.createSQLQuery(FinanceProcurementSQLConstants.QUERY_UPDATE_NEXT_REQ_SEQUENCE).executeUpdate()
                 def nextDocCode = session.createSQLQuery(FinanceProcurementSQLConstants.QUERY_NEXT_REQ_NUMBER).list()[0]
                 session.createSQLQuery(FinanceProcurementSQLConstants.QUERY_COPY_REQUISITION)
-                        .setParameter('nextDocCode', nextDocCode)
-                        .setParameter('oldDocCode', requestCode)
+                        .setParameter(FinanceProcurementConstants.NEXT_DOC_CODE, nextDocCode)
+                        .setParameter(FinanceProcurementConstants.OLD_DOC_CODE, requestCode)
                         .executeUpdate()
                 return nextDocCode
             } catch (HibernateException e) {

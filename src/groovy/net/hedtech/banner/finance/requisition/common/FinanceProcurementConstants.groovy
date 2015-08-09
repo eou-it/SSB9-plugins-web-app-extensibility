@@ -381,6 +381,8 @@ class FinanceProcurementConstants {
     final String REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE = 'RequisitionSummary.FetchRequisitionSummaryForRequestCode'
 
     /** Copy requisition **/
+    static final String NEXT_DOC_CODE = 'nextDocCode'
+    static final String OLD_DOC_CODE = 'oldDocCode'
     static
     final String ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED = 'missing.requisition.complemented.requisition.required'
     static final String COPY_REQUISITION_HEADER_COPIED_FROM = 'COPIED FROM '
@@ -558,5 +560,77 @@ class FinanceProcurementConstants {
     static final String BDM_DISPOSITION_DATE = 'DISPOSITION DATE'
     static final String IS_BDM_INSTALLED = 'isBdmInstalled'
     public static final String ERROR_MESSAGE_BDM_NOT_INSTALLED = 'bdm.not.installed'
+
+    /** Constants for PDF*/
+    static final String FOP_CONFIG_FILENAME_DEFAULT = 'fop-config.xml'
+    static final String XSL_FILE_EXTENSION = 'xsl'
+    static final String BASE_DIR = 'fop'
+    static final String PDF_NAME = 'purchaseRequisition'
+    static final String LOG_FILE = 'ellucian-logo.png'
+    static final String PDF_FILE_NAME = 'banner.finance.procurement.requisition.pdf.filename'
+    static final String PDF_REPLACE_STRING = '\\s+'
+    static final String PDF_NULL_VALUE = '>null</'
+    static final String PDF_NULL_REPLACE_VALUE = '></'
+    static final String DOT = '.'
+    static final String LANGUAGE_DIRECTION = 'default.language.direction'
+    static final String PDF_HEADER_TOP = 'TOP'
+    static final String PDF_WRITE_DIRECTION_LEFT = 'ltr'
+    static final String PDF_DIRECTION_LEFT = 'LEFT'
+    static final String PDF_DIRECTION_RIGHT = 'RIGHT'
+
+    static final String LABELS_TITLE = 'banner.finance.procurement.requisition.pdf.label.title'
+    static final String LABELS_REQUISITION_NO = 'banner.finance.procurement.requisition.pdf.label.number'
+    static final String LABELS_REQUESTOR = 'banner.finance.procurement.requisition.pdf.label.requestor'
+    static final String LABELS_TRANSACTION_DATE = 'banner.finance.procurement.requisition.pdf.label.transactionDate'
+    static final String LABELS_PHONE = 'banner.finance.procurement.requisition.pdf.label.phone'
+    static final String LABELS_EXTENSION = 'banner.finance.procurement.requisition.pdf.label.extension'
+    static final String LABELS_EMAIL = 'banner.finance.procurement.requisition.pdf.label.email'
+    static final String LABELS_DELIVERY_DATE = 'banner.finance.procurement.requisition.pdf.label.deliveryDate'
+    static final String LABELS_ORGANIZATION = 'banner.finance.procurement.requisition.pdf.label.organization'
+    static final String LABELS_STATUS = 'banner.finance.procurement.requisition.pdf.label.status'
+    static final String LABELS_SHIP_TO = 'banner.finance.procurement.requisition.pdf.label.shipTo'
+    static final String LABELS_ADDRESS = 'banner.finance.procurement.requisition.pdf.label.address'
+    static final String LABELS_VENDOR = 'banner.finance.procurement.requisition.pdf.label.vendor'
+    static final String LABELS_ATTENTION_TO = 'banner.finance.procurement.requisition.pdf.label.attentionTo'
+    static final String LABELS_HEADER_COMMENT = 'banner.finance.procurement.requisition.pdf.label.header.comment'
+    static final String LABELS_COMMODITIES = 'banner.finance.procurement.requisition.pdf.label.commodities'
+    static final String LABELS_COMMODITY_ITEM = 'banner.finance.procurement.requisition.pdf.label.commodity.item'
+    static
+    final String LABELS_COMMODITY_DESC = 'banner.finance.procurement.requisition.pdf.label.commodity.item.description'
+    static final String LABELS_COMMODITY_UOM = 'banner.finance.procurement.requisition.pdf.label.commodity.uom'
+    static
+    final String LABELS_COMMODITY_QUANTITY = 'banner.finance.procurement.requisition.pdf.label.commodity.quantity'
+    static
+    final String LABELS_COMMODITY_UNIT_PRICE = 'banner.finance.procurement.requisition.pdf.label.commodity.unitPrice'
+    static final String LABELS_COMMODITY_OTHER = 'banner.finance.procurement.requisition.pdf.label.commodity.other'
+    static final String LABELS_COMMODITY_TAX = 'banner.finance.procurement.requisition.pdf.label.commodity.tax'
+    static final String LABELS_COMMODITY_TOTAL = 'banner.finance.procurement.requisition.pdf.label.commodity.itemTotal'
+    static final String LABELS_REQUISITION_TYPE = 'banner.finance.procurement.requisition.pdf.label.type'
+    static
+    final String LABELS_DOCUMENT_REQUISITION_TYPE = 'banner.finance.procurement.requisition.pdf.label.document.type'
+    static
+    final String LABELS_COMMODITY_REQUISITION_TYPE = 'banner.finance.procurement.requisition.pdf.label.commodity.type'
+    static
+    final String LABELS_COMMODITY_ITEM_TEXT = 'banner.finance.procurement.requisition.pdf.label.commodity.item.text'
+    static final String LABELS_DISCLAIMER = 'banner.finance.procurement.requisition.pdf.label.disclaimer'
+    static
+    final String LABELS_GRAND_TOTAL_COMMODITY = 'banner.finance.procurement.requisition.pdf.label.grand.total.commodity'
+    static
+    final String LABELS_ACCOUNTING_DISTRIBUTION = 'banner.finance.procurement.requisition.pdf.label.accounting.distribution'
+    static
+    final String LABELS_ACCOUNTING_SEQUENCE = 'banner.finance.procurement.requisition.pdf.label.accounting.sequence'
+    static
+    final String LABELS_ACCOUNTING_STRING = 'banner.finance.procurement.requisition.pdf.label.accounting.account.string'
+    static
+    final String LABELS_ACCOUNTING_PERCENTAGE = 'banner.finance.procurement.requisition.pdf.label.accounting.distribution.percentage'
+    static
+    final String LABELS_ACCOUNTING_TOTAL = 'banner.finance.procurement.requisition.pdf.label.accounting.distribution.total'
+    static
+    final String LABELS_GRAND_TOTAL_ACCOUNTING = 'banner.finance.procurement.requisition.pdf.label.grand.total.accounting'
+    static
+    final String LABELS_CLA_ACCOUNTING_TOTAL_AT_COMMODITY = 'banner.finance.procurement.requisition.pdf.label.accounting.total'
+    static final String LABELS_COMMODITY = 'banner.finance.procurement.requisition.pdf.label.commodity'
+    static final String LABELS_SUBTITLE = 'banner.finance.procurement.requisition.pdf.label.subtitle'
+    static final String LABELS_CURRENCY = 'banner.finance.procurement.requisition.pdf.label.currency'
 
 }
