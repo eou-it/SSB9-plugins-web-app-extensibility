@@ -54,7 +54,6 @@ class FinanceProcurementDocumentTypeService extends ServiceBase {
            finally {
                sql?.close()
            }
-           println documents
            return documents
        }
 
