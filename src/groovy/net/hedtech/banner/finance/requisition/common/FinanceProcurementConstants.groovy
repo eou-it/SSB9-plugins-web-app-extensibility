@@ -545,7 +545,7 @@ class FinanceProcurementConstants {
     static final String FINANCE_PENDING_APPROVER_LIST_QUERY_PARAM_DOC_CODE = 'documentCode'
 
     /** Constants for document **/
-    static final String BDM_DATE_FORMAT = 'YYYY-MM-dd HH:mm:ss'
+    static final String BDM_DATE_FORMAT = 'yyyy-MM-dd HH:mm:ss'
     static final String BDM_DOCUMENT_ID = 'DOCUMENT ID'
     static final String BDM_BANNER_DOC_TYPE = 'BANNER DOC TYPE'
     static final String BDM_DOCUMENT_TYPE = 'DOCUMENT TYPE'

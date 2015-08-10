@@ -39,6 +39,26 @@ class DocumentManagementCompositeService {
         }
     }
 
+
+    private
+    def uploadDocToBdmServer( RequisitionHeader requisition, docType, ownerPidm, fileName, absoluteFileName, vpdiCode ) throws ApplicationException {
+        DateFormat dateFormat = new SimpleDateFormat( FinanceProcurementConstants.BDM_DATE_FORMAT )
+        def documentAttributes = [:]
+        //This empty string is just to verify all fields data is set
+        String emptyString = ''
+        documentAttributes.put( FinanceProcurementConstants.BDM_DOCUMENT_ID, requisition.requestCode )
+        documentAttributes.put( FinanceProcurementConstants.BDM_BANNER_DOC_TYPE, docType )
+        documentAttributes.put( FinanceProcurementConstants.BDM_DOCUMENT_TYPE, docType )
+        documentAttributes.put( FinanceProcurementConstants.BDM_TRANSACTION_DATE, requisition.transactionDate )
+        documentAttributes.put( FinanceProcurementConstants.BDM_VENDOR_ID, requisition?.vendorPidm ? requisition.vendorPidm : emptyString )
+        documentAttributes.put( FinanceProcurementConstants.BDM_VENDOR_NAME, PersonIdentificationName.findByPidm( ownerPidm )?.fullName )
+        documentAttributes.put( FinanceProcurementConstants.BDM_FIRST_NAME, fileName )
+        documentAttributes.put( FinanceProcurementConstants.BDM_PIDM, ownerPidm )
+        documentAttributes.put( FinanceProcurementConstants.BDM_ROUTING_STATUS, emptyString )
+        documentAttributes.put( FinanceProcurementConstants.BDM_ACTIVITY_DATE, dateFormat.format( new Date() ) )
+        documentAttributes.put( FinanceProcurementConstants.BDM_DISPOSITION_DATE, emptyString )
+        bdmAttachmentService.createDocument( getBdmParams(), absoluteFileName, documentAttributes, vpdiCode )
+    }
     /**
      * this method will delete the documents uploaded to BDM server
      * @param documentId
@@ -92,27 +112,6 @@ class DocumentManagementCompositeService {
         }
         dataMap.documentList = documentList
         return dataMap
-    }
-
-
-    private
-    def uploadDocToBdmServer( RequisitionHeader requisition, docType, ownerPidm, fileName, absoluteFileName, vpdiCode ) throws ApplicationException {
-        DateFormat dateFormat = new SimpleDateFormat( FinanceProcurementConstants.BDM_DATE_FORMAT )
-        def documentAttributes = [:]
-        //This empty string is just to verify all fields data is set
-        String emptyString = ''
-        documentAttributes.put( FinanceProcurementConstants.BDM_DOCUMENT_ID, requisition.requestCode )
-        documentAttributes.put( FinanceProcurementConstants.BDM_BANNER_DOC_TYPE, docType )
-        documentAttributes.put( FinanceProcurementConstants.BDM_DOCUMENT_TYPE, docType )
-        documentAttributes.put( FinanceProcurementConstants.BDM_TRANSACTION_DATE, requisition.transactionDate )
-        documentAttributes.put( FinanceProcurementConstants.BDM_VENDOR_ID, requisition?.vendorPidm ? requisition.vendorPidm : emptyString )
-        documentAttributes.put( FinanceProcurementConstants.BDM_VENDOR_NAME, requisition?.vendorPidm ? PersonIdentificationName.findByPidm( requisition?.vendorPidm )?.fullName : emptyString )
-        documentAttributes.put( FinanceProcurementConstants.BDM_FIRST_NAME, fileName )
-        documentAttributes.put( FinanceProcurementConstants.BDM_PIDM, ownerPidm )
-        documentAttributes.put( FinanceProcurementConstants.BDM_ROUTING_STATUS, emptyString )
-        documentAttributes.put( FinanceProcurementConstants.BDM_ACTIVITY_DATE, dateFormat.format( new Date() ) )
-        documentAttributes.put( FinanceProcurementConstants.BDM_DISPOSITION_DATE, emptyString )
-        bdmAttachmentService.createDocument( getBdmParams(), absoluteFileName, documentAttributes, vpdiCode )
     }
 
     /**
