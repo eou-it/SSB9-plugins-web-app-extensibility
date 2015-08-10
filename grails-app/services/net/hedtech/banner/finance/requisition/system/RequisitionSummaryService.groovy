@@ -57,10 +57,12 @@ class RequisitionSummaryService extends ServiceBase {
         def headerRecord = requisitionSummary[0], shipToCodeMap = [:], userProfileMap = [:], orgMap = [:], headerTextMap = [:], statusMap = [:]
         if (!doesNotNeedPdf) {
             shipToCodeMap[headerRecord.requestCode] = shipToCodeService.findShipToCodesByCode( headerRecord.shipToCode, headerRecord.transactionDate ).collect() {
-                [zipCode     : it.zipCode, state: it.state, city: it.city,
-                 shipCode    : it.shipCode, addressLine1: it.addressLine1,
-                 addressLine2: it.addressLine2, addressLine3: it.addressLine3,
-                 contact     : it.contact]
+                [zipCode       : it.zipCode, state: it.state, city: it.city,
+                 shipCode      : it.shipCode, addressLine1: it.addressLine1,
+                 addressLine2  : it.addressLine2, addressLine3: it.addressLine3,
+                 contact       : it.contact,
+                 phoneNumber   : it.phoneNumber,
+                 phoneExtension: it.phoneExtension]
             }
             userProfileMap[headerRecord.requestCode] = financeUserProfileService.getUserProfileByUserId( springSecurityService.getAuthentication()?.user?.oracleUserName ).collect() {userProfileObj ->
                 [userId           : userProfileObj.userId, requesterName: userProfileObj.requesterName, requesterPhoneNumber: userProfileObj.requesterPhoneNumber,
@@ -200,7 +202,7 @@ class RequisitionSummaryService extends ServiceBase {
                         commodityCodeDesc                     : it.commodityDescription ? it.commodityDescription : it.commodityCodeDesc,
                         commodityQuantityDisplay              : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityQuantity, FinanceValidationConstants.TWO ),
                         commodityQuantity                     : it.commodityQuantity,
-                        commodityQuantityDisplay              : FinanceProcurementHelper.getLocaleBasedFormattedNumber(it.commodityQuantity, FinanceValidationConstants.TWO ),
+                        commodityQuantityDisplay              : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityQuantity, FinanceValidationConstants.TWO ),
                         unitOfMeasure                         : it.unitOfMeasure,
                         commodityDiscountAmount               : it.commodityDiscountAmount,
                         commodityDiscountAmountDisplay        : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityDiscountAmount, FinanceValidationConstants.TWO ),
@@ -209,7 +211,7 @@ class RequisitionSummaryService extends ServiceBase {
                         commodityAdditionalChargeAmountDisplay: FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityAdditionalChargeAmount, FinanceValidationConstants.TWO ),
                         commodityText                         : commodityTextMap[it.commodityItem],
                         commodityTaxAmount                    : it.commodityTaxAmount,
-                        commodityTaxAmountDisplay :FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityTaxAmount, FinanceValidationConstants.TWO ),
+                        commodityTaxAmountDisplay             : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityTaxAmount, FinanceValidationConstants.TWO ),
                         commodityUnitPrice                    : it.commodityUnitPrice,
                         commodityUnitPriceDisplay             : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityUnitPrice, FinanceValidationConstants.FOUR ),
                         commodityTotal                        : (it.commodityUnitPrice * it.commodityQuantity).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + it.commodityTaxAmount + it.commodityAdditionalChargeAmount
