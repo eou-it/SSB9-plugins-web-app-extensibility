@@ -376,6 +376,7 @@ class FinanceProcurementConstants {
     static final String REQUISITION_SUMMARY_FIELD_FPRREQA_SURROGATE_ID = 'FPRREQA_SURROGATE_ID'
     static final String REQUISITION_SUMMARY_FIELD_FPVVEND_PHONE_NUMBER = 'FPVVEND_PHONE_NUMBER'
     static final String REQUISITION_SUMMARY_FIELD_FPVVEND_PHONE_EXT = 'FPVVEND_PHONE_EXT'
+    static final String REQUISITION_SUMMARY_FIELD_FPVVEND_FAX = 'FPVVEND_FAX'
 
     static
     final String REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE = 'RequisitionSummary.FetchRequisitionSummaryForRequestCode'
@@ -632,6 +633,8 @@ class FinanceProcurementConstants {
     static final String LABELS_COMMODITY = 'banner.finance.procurement.requisition.pdf.label.commodity'
     static final String LABELS_SUBTITLE = 'banner.finance.procurement.requisition.pdf.label.subtitle'
     static final String LABELS_CURRENCY = 'banner.finance.procurement.requisition.pdf.label.currency'
+    static final String LABELS_VENDOR_FAX = 'banner.finance.procurement.requisition.pdf.label.vendor.fax'
+
 
     /** Constants for General Tickler Table GURTKLR **/
     static final String GURTKLR_TABLE = 'GURTKLR'

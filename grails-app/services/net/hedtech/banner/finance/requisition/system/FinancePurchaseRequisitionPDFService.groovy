@@ -169,6 +169,7 @@ class FinancePurchaseRequisitionPDFService {
         labels.commodity = MessageHelper.message( code: FinanceProcurementConstants.LABELS_COMMODITY )
         labels.subtitle = MessageHelper.message( code: FinanceProcurementConstants.LABELS_SUBTITLE )
         labels.currency = MessageHelper.message( code: FinanceProcurementConstants.LABELS_CURRENCY )
+        labels.vendorPhoneFax = MessageHelper.message( code: FinanceProcurementConstants.LABELS_VENDOR_FAX )
 
         labels
     }

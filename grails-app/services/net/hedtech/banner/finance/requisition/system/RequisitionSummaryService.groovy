@@ -105,6 +105,7 @@ class RequisitionSummaryService extends ServiceBase {
                     vendorAddressCity        : it.vendorAddressCity,
                     vendorPhoneNumber        : it.vendorPhoneNumber,
                     vendorPhoneExtension     : it.vendorPhoneExtension,
+                    vendorPhoneFax           : it.vendorPhoneFax,
                     commodityItem            : it.commodityItem,
                     accountingItem           : it.accountingItem]]
         }.each() {

@@ -140,7 +140,7 @@ class RequisitionSummary implements Serializable {
     String unitOfMeasure
 
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPBREQH_CURR_CODE)
-     String ccyCode
+    String ccyCode
 
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPBREQH_CODE)
     String requestCode
@@ -177,6 +177,9 @@ class RequisitionSummary implements Serializable {
     String vendorPhoneNumber
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPVVEND_PHONE_EXT)
     String vendorPhoneExtension
+
+    @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPVVEND_FAX)
+    String vendorPhoneFax
 
     /**
      * This method is used to fetch requisition detail by requisition code.
