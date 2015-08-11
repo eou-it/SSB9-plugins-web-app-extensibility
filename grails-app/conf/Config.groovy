@@ -34,13 +34,6 @@ grails.config.locations.each {
 }
 
 grails.plugin.springsecurity.useRequestMapDomainClass = false
-//grails.plugin.springsecurity.providerNames = ['casBannerAuthenticationProvider', 'selfServiceBannerAuthenticationProvider', 'bannerAuthenticationProvider']
-//grails.plugin.springsecurity.rejectIfNoRule = true
-
-grails.plugin.springsecurity.filterChain.chainMap = [
-        '/**': 'securityContextPersistenceFilter,logoutFilter,authenticationProcessingFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor'
-]
-
 grails.plugin.springsecurity.securityConfigType = SecurityConfigType.InterceptUrlMap
 
 // Configuration for a Banner self service application
