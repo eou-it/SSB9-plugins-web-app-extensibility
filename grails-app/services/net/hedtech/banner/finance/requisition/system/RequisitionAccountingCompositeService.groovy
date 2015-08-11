@@ -53,7 +53,7 @@ class RequisitionAccountingCompositeService {
                 requisitionAccountingRequest.item = 0
             }
             requisitionAccountingRequest.sequenceNumber = requisitionAccountingService.getLastSequenceNumberByRequestCode( requisitionAccountingRequest.requestCode, requisitionAccountingRequest.item ).next()
-            setNSFOverride( requisitionAccountingRequest, user.oracleUserName )
+            setNSFOverride( requisitionAccountingRequest )
             requisitionDetailsAcctCommonCompositeService.adjustAccountPercentageAndAmount( requisitionAccountingRequest )
             RequisitionAccounting requisitionAccounting = requisitionAccountingService.create( [domainModel: requisitionAccountingRequest] )
             LoggerUtility.debug( LOGGER, 'Requisition Accounting created ' + requisitionAccounting )
@@ -119,7 +119,7 @@ class RequisitionAccountingCompositeService {
             requisitionAccountingRequest.item = existingAccountingInfo.item
             requisitionAccountingRequest.sequenceNumber = existingAccountingInfo.sequenceNumber
             requisitionAccountingRequest.userId = user.oracleUserName
-            setNSFOverride( requisitionAccountingRequest, user.oracleUserName )
+            setNSFOverride( requisitionAccountingRequest )
             requisitionDetailsAcctCommonCompositeService.adjustAccountPercentageAndAmount( requisitionAccountingRequest )
             def requisitionAccounting = requisitionAccountingService.update( [domainModel: requisitionAccountingRequest] )
             LoggerUtility.debug( LOGGER, "Requisition Accounting information updated " + requisitionAccounting )
@@ -306,10 +306,9 @@ class RequisitionAccountingCompositeService {
      * Set NSF Overrider to requisition accounting from user profile
      *
      * @param requisitionAccounting
-     * @param oracleUserName
      * @return
      */
-    private def setNSFOverride( requisitionAccounting, oracleUserName ) {
+    private def setNSFOverride( requisitionAccounting ) {
         requisitionAccounting.insufficientFundsOverrideIndicator = FinanceProcurementConstants.FALSE
         // Populate always false from XE as Requestd by BA Mark/Kumar
     }
