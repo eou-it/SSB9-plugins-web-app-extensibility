@@ -181,6 +181,9 @@ class RequisitionSummary implements Serializable {
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPVVEND_FAX)
     String vendorPhoneFax
 
+    @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPVVEND_PHONE_AREA)
+    String vendorPhoneArea
+
     /**
      * This method is used to fetch requisition detail by requisition code.
      * @param requestCode Requisition code.

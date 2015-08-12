@@ -377,6 +377,7 @@ class FinanceProcurementConstants {
     static final String REQUISITION_SUMMARY_FIELD_FPVVEND_PHONE_NUMBER = 'FPVVEND_PHONE_NUMBER'
     static final String REQUISITION_SUMMARY_FIELD_FPVVEND_PHONE_EXT = 'FPVVEND_PHONE_EXT'
     static final String REQUISITION_SUMMARY_FIELD_FPVVEND_FAX = 'FPVVEND_FAX'
+    static final String REQUISITION_SUMMARY_FIELD_FPVVEND_PHONE_AREA='FPVVEND_PHONE_AREA'
 
     static
     final String REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE = 'RequisitionSummary.FetchRequisitionSummaryForRequestCode'

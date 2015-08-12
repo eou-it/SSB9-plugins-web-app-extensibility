@@ -62,6 +62,7 @@ class RequisitionSummaryService extends ServiceBase {
                  addressLine2  : it.addressLine2, addressLine3: it.addressLine3,
                  contact       : it.contact,
                  phoneNumber   : it.phoneNumber,
+                 phoneArea     : it.phoneArea,
                  phoneExtension: it.phoneExtension]
             }
             userProfileMap[headerRecord.requestCode] = financeUserProfileService.getUserProfileByUserId( springSecurityService.getAuthentication()?.user?.oracleUserName ).collect() {userProfileObj ->
@@ -106,6 +107,7 @@ class RequisitionSummaryService extends ServiceBase {
                     vendorPhoneNumber        : it.vendorPhoneNumber,
                     vendorPhoneExtension     : it.vendorPhoneExtension,
                     vendorPhoneFax           : it.vendorPhoneFax,
+                    vendorPhoneArea          : it.vendorPhoneArea,
                     commodityItem            : it.commodityItem,
                     accountingItem           : it.accountingItem]]
         }.each() {
