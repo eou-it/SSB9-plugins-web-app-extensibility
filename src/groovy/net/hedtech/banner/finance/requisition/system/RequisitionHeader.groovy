@@ -18,13 +18,11 @@ import javax.persistence.*
 @NamedQueries(value = [
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_HEADER_FINDER_BY_REQUEST_CODE,
                 query = """FROM RequisitionHeader a
-             WHERE a.requestCode = :requestCode
-   """),
+             WHERE a.requestCode = :requestCode AND a.userId = :userId"""),
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_HEADER_FINDER_BY_USER,
                 query = """FROM RequisitionHeader a
                      WHERE a.userId = :userId
-                    order by lastModified desc
-           """)
+                    order by lastModified desc""")
 ])
 
 
@@ -360,12 +358,15 @@ class RequisitionHeader implements Serializable {
     /**
      * Fetches the requisitionHeader by request Code
      * @param requestCode
+     * @param oracleUserName
      * @return
      */
-    public static RequisitionHeader fetchByRequestCode( requestCode ) {
+    public static RequisitionHeader fetchByRequestCode( requestCode, oracleUserName ) {
         def requestHeader = RequisitionHeader.withSession {session ->
-            session.getNamedQuery( FinanceProcurementConstants.REQUISITION_HEADER_FINDER_BY_REQUEST_CODE ).setString(
-                    FinanceProcurementConstants.REQUISITION_HEADER_FINDER_BY_REQUEST_CODE_PARAM_REQUEST_CODE, requestCode ).list()[0]
+            session.getNamedQuery( FinanceProcurementConstants.REQUISITION_HEADER_FINDER_BY_REQUEST_CODE )
+                    .setString( FinanceProcurementConstants.REQUISITION_HEADER_FINDER_BY_REQUEST_CODE_PARAM_REQUEST_CODE, requestCode )
+                    .setString( FinanceProcurementConstants.REQUISITION_HEADER_FINDER_BY_REQUEST_CODE_PARAM_USER_ID, oracleUserName )
+                    .list()[0]
         }
         return requestHeader
     }

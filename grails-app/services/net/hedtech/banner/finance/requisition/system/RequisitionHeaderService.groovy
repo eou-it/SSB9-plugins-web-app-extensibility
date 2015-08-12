@@ -17,7 +17,7 @@ import org.apache.log4j.Logger
  */
 class RequisitionHeaderService extends ServiceBase {
     boolean transactional = true
-    private static final def LOGGER = Logger.getLogger(this.getClass())
+    private static final def LOGGER = Logger.getLogger( this.getClass() )
     def springSecurityService
     def financeApprovalHistoryService
     def financeApprovalsInProcessService
@@ -27,12 +27,12 @@ class RequisitionHeaderService extends ServiceBase {
      * Find the requisition Header for specified requestCode
      * @param requestCode
      */
-    def findRequisitionHeaderByRequestCode(requestCode) {
-        LoggerUtility.debug(LOGGER, 'Input parameters for findRequisitionHeaderByRequestCode :' + requestCode)
-        def retRequisitionHeader = RequisitionHeader.fetchByRequestCode(requestCode)
+    def findRequisitionHeaderByRequestCode( requestCode ) {
+        LoggerUtility.debug( LOGGER, 'Input parameters for findRequisitionHeaderByRequestCode :' + requestCode )
+        def retRequisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode, springSecurityService.getAuthentication()?.user?.oracleUserName )
 
         if (!retRequisitionHeader) {
-            throw new ApplicationException(RequisitionHeaderService, new BusinessLogicValidationException(FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, []))
+            throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }
         return retRequisitionHeader;
     }
@@ -40,17 +40,17 @@ class RequisitionHeaderService extends ServiceBase {
     /**
      * Find the requisition Header for Logged-in user
      */
-    def listRequisitionHeaderForLoggedInUser(pagingParams) {
+    def listRequisitionHeaderForLoggedInUser( pagingParams ) {
         def user = springSecurityService.getAuthentication()?.user
         if (user?.oracleUserName) {
-            def requisitionHeaderList = RequisitionHeader.fetchByUser(user.oracleUserName, pagingParams)
+            def requisitionHeaderList = RequisitionHeader.fetchByUser( user.oracleUserName, pagingParams )
             if (requisitionHeaderList?.list?.size() == 0) {
-                throw new ApplicationException(RequisitionHeaderService, new BusinessLogicValidationException(FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, []))
+                throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
             }
             return requisitionHeaderList.list;
         } else {
-            LoggerUtility.error(LOGGER, 'User' + user + ' is not valid')
-            throw new ApplicationException(RequisitionHeaderService, new BusinessLogicValidationException(FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, []))
+            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
     }
 
@@ -58,39 +58,39 @@ class RequisitionHeaderService extends ServiceBase {
      * Completes the purchase requisition
      * @param requestCode
      */
-    def completeRequisition(requestCode, forceComplete) {
-        LoggerUtility.debug(LOGGER, 'Input parameters for completeRequisition :' + requestCode)
-        def requisitionHeader = RequisitionHeader.fetchByRequestCode(requestCode)
+    def completeRequisition( requestCode, forceComplete ) {
+        LoggerUtility.debug( LOGGER, 'Input parameters for completeRequisition :' + requestCode )
+        def requisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode, springSecurityService.getAuthentication()?.user?.oracleUserName )
         if (!requisitionHeader) {
-            throw new ApplicationException(RequisitionHeaderService, new BusinessLogicValidationException(FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, []))
+            throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }
-        FinanceProcurementHelper.checkCompleteRequisition(requisitionHeader)
+        FinanceProcurementHelper.checkCompleteRequisition( requisitionHeader )
         requisitionHeader.completeIndicator = Boolean.TRUE
-        requisitionHeader.deliveryComment=forceComplete // Custom comment used only for complete
-        update([domainModel: requisitionHeader])
+        requisitionHeader.deliveryComment = forceComplete // Custom comment used only for complete
+        update( [domainModel: requisitionHeader] )
     }
 
     /**
      * Service Method to recall a purchase requisition.
      * @param requestCode request code.
      */
-    def recallRequisition(requestCode) {
-        def requestHeader = findRequisitionHeaderByRequestCode(requestCode)
+    def recallRequisition( requestCode ) {
+        def requestHeader = findRequisitionHeaderByRequestCode( requestCode )
         def user = springSecurityService.getAuthentication()?.user.oracleUserName
         if (requestHeader && requestHeader.completeIndicator && !requestHeader.approvalIndicator) {
             requestHeader.completeIndicator = false
-            RequisitionHeader requestHeaderUpdated = update([domainModel: requestHeader], true)
+            RequisitionHeader requestHeaderUpdated = update( [domainModel: requestHeader], true )
             // Insert FOBAPPH Approval History table with queueId = DENY and queueLevel = 0.
-            def approvalHistoryList = financeApprovalHistoryService.findByDocumentCode(requestHeaderUpdated.requestCode)
+            def approvalHistoryList = financeApprovalHistoryService.findByDocumentCode( requestHeaderUpdated.requestCode )
             if (approvalHistoryList.size() > 0) {
-                approvalHistoryList.each { FinanceApprovalHistory approvalHistory ->
+                approvalHistoryList.each {FinanceApprovalHistory approvalHistory ->
                     approvalHistory.documentCode = requestHeaderUpdated.requestCode
                     approvalHistory.queueId = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_ID_DENY
                     approvalHistory.queueLevel = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_LEVEL_ZERO
                     approvalHistory.lastModifiedBy = user
                     approvalHistory.activityDate = new Date()
-                    approvalHistory.sequenceNumber = new BigDecimal(FinanceProcurementConstants.ONE)
-                    financeApprovalHistoryService.update([domainModel: approvalHistory])
+                    approvalHistory.sequenceNumber = new BigDecimal( FinanceProcurementConstants.ONE )
+                    financeApprovalHistoryService.update( [domainModel: approvalHistory] )
                 }
             } else {
                 FinanceApprovalHistory financeApprovalHistory = new FinanceApprovalHistory()
@@ -99,26 +99,26 @@ class RequisitionHeaderService extends ServiceBase {
                 financeApprovalHistory.queueLevel = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_LEVEL_ZERO
                 financeApprovalHistory.lastModifiedBy = user
                 financeApprovalHistory.activityDate = new Date()
-                financeApprovalHistory.sequenceNumber = new BigDecimal(FinanceProcurementConstants.ONE)
-                financeApprovalHistoryService.create([domainModel: financeApprovalHistory])
+                financeApprovalHistory.sequenceNumber = new BigDecimal( FinanceProcurementConstants.ONE )
+                financeApprovalHistoryService.create( [domainModel: financeApprovalHistory] )
             }
             // Removing the row relating to this requisition in FOBUAPP FinanceUnapprovedDocument.
-            financeUnapprovedDocumentService.findByDocumentCode(requestHeaderUpdated.requestCode).each {
+            financeUnapprovedDocumentService.findByDocumentCode( requestHeaderUpdated.requestCode ).each {
                 FinanceUnapprovedDocument financeUnapprovedDocument ->
-                    financeUnapprovedDocumentService.delete([domainModel: financeUnapprovedDocument])
+                    financeUnapprovedDocumentService.delete( [domainModel: financeUnapprovedDocument] )
             }
             // Removing the row relating to this requisition in FOBAINP FinanceApprovalsInProcess.
-            financeApprovalsInProcessService.findByDocumentNumber(requestHeaderUpdated.requestCode).each {
+            financeApprovalsInProcessService.findByDocumentNumber( requestHeaderUpdated.requestCode ).each {
                 FinanceApprovalsInProcess financeApprovalsInProcess ->
-                    financeApprovalsInProcessService.delete([domainModel: financeApprovalsInProcess])
+                    financeApprovalsInProcessService.delete( [domainModel: financeApprovalsInProcess] )
             }
             return requestHeaderUpdated.requestCode
         } else {
-            LoggerUtility.error(LOGGER, 'Only pending requisition can be recalled=' + requestCode)
+            LoggerUtility.error( LOGGER, 'Only pending requisition can be recalled=' + requestCode )
             throw new ApplicationException(
                     RequisitionHeaderCompositeService,
                     new BusinessLogicValidationException(
-                            FinanceProcurementConstants.ERROR_MESSAGE_RECALL_REQUISITION_PENDING_REQ_IS_REQUIRED, []))
+                            FinanceProcurementConstants.ERROR_MESSAGE_RECALL_REQUISITION_PENDING_REQ_IS_REQUIRED, [] ) )
         }
     }
 }

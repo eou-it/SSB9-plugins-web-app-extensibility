@@ -35,7 +35,7 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testFetchRequisitionHeaderByRequestCode() {
-        def header = RequisitionHeader.fetchByRequestCode( reqCode )
+        def header = RequisitionHeader.fetchByRequestCode( reqCode, 'GRAILS' )
         assertNotNull header
         assertEquals reqCode, header.requestCode
     }
