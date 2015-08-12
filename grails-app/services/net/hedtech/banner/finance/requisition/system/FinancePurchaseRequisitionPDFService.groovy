@@ -52,8 +52,6 @@ class FinancePurchaseRequisitionPDFService {
         try {
             def fopBasePath = getFopBasePath()
             PdfGenerator pdfGenerator = PdfGenerator.getInstance();
-            println pdfGenerator.toXmlString( (toPDFModel( summaryModel ) as JSON).toString() )
-                                                                              .replaceAll( FinanceProcurementConstants.PDF_NULL_VALUE, FinanceProcurementConstants.PDF_NULL_REPLACE_VALUE )
             return pdfGenerator.generatePdfFromXmlString( pdfGenerator.toXmlString( (toPDFModel( summaryModel ) as JSON).toString() )
                                                                   .replaceAll( FinanceProcurementConstants.PDF_NULL_VALUE, FinanceProcurementConstants.PDF_NULL_REPLACE_VALUE ),
                                                           getXslFilePath( fopBasePath ), getConfigFilePath( fopBasePath ), [:] )

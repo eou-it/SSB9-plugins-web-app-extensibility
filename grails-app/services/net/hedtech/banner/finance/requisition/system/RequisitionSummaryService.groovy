@@ -33,7 +33,7 @@ class RequisitionSummaryService extends ServiceBase {
      */
     def fetchRequisitionSummaryForRequestCode( requestCode, baseCcy, doesNotNeedPdf = true ) {
         LoggerUtility.debug( LOGGER, 'Input parameters for fetchRequisitionSummaryForRequestCode :' + requestCode )
-        def requisitionSummary = RequisitionSummary.fetchRequisitionSummaryForRequestCode( requestCode )
+        def requisitionSummary = RequisitionSummary.fetchRequisitionSummaryForRequestCode( requestCode, springSecurityService.getAuthentication()?.user?.oracleUserName )
         if (!requisitionSummary) {
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }

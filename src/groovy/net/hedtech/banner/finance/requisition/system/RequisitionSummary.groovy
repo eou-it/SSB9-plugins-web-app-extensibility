@@ -18,7 +18,8 @@ import javax.persistence.*
 @NamedQueries(value = [
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE,
                 query = """FROM RequisitionSummary summary
-                            WHERE summary.requestCode = :requestCode""")
+                            WHERE summary.requestCode = :requestCode
+                            AND summary.userId = :userId""")
 ])
 @Entity
 @Table(name = FinanceProcurementConstants.REQUISITION_SUMMARY_VIEW)
@@ -184,15 +185,20 @@ class RequisitionSummary implements Serializable {
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPVVEND_PHONE_AREA)
     String vendorPhoneArea
 
+    @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPBREQH_USER_ID)
+    String userId
+
     /**
      * This method is used to fetch requisition detail by requisition code.
      * @param requestCode Requisition code.
+     * @param userName
      * @return requisition Summary.
      */
-    static def fetchRequisitionSummaryForRequestCode( requestCode ) {
-        RequisitionDetail.withSession {session ->
+    static def fetchRequisitionSummaryForRequestCode( requestCode, userName ) {
+        RequisitionSummary.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
+                    .setString( FinanceProcurementConstants.QUERY_PARAM_USER_ID, userName )
                     .list()
         }
     }
