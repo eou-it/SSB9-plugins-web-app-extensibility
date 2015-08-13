@@ -4,9 +4,10 @@
 package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.exceptions.ApplicationException
-
-import net.hedtech.banner.service.ServiceBase
+import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.FinanceCommonUtility
+import net.hedtech.banner.finance.util.LoggerUtility
+import net.hedtech.banner.service.ServiceBase
 import org.apache.log4j.Logger
 
 import java.sql.SQLException
@@ -16,9 +17,10 @@ import java.sql.SQLException
  */
 class FinanceProcurementDocumentTypeService extends ServiceBase {
 
-    def log = Logger.getLogger(FinanceProcurementDocumentTypeService.name)
+    def LOGGER = Logger.getLogger( FinanceProcurementDocumentTypeService.name )
 
     /**
+     * Gets doc types
      *
      * @param filterText
      * @param max
@@ -26,35 +28,25 @@ class FinanceProcurementDocumentTypeService extends ServiceBase {
      * @return
      */
     def getCommonMatchingDocs( filterText, max, offset ) {
-           def inputMap = [filterText: filterText?.toUpperCase()]
-           FinanceCommonUtility.applyWildCard( inputMap, true, true )
-           def documents = []
-           def sql
-           try {
-               def commonMatchSql = "SELECT e.ETVDTYP_CODE AS code, e.ETVDTYP_DESC AS DESCRIPTION \
-                   FROM ETVDTYP e, otgmgr.ul506_2 \
-                   WHERE e.ETVDTYP_CODE = otgmgr.ul506_2.item \
-                   AND (UPPER(e.ETVDTYP_CODE) LIKE :docTypCode OR  UPPER(e.ETVDTYP_DESC) LIKE :docTypDesc)"
-               def documentResult = sessionFactory.getCurrentSession().createSQLQuery( commonMatchSql )
-                       .setString( 'docTypCode', inputMap.filterText )
-                       .setString( 'docTypDesc', inputMap.filterText )
-                       .setMaxResults( max )
-                       .setFirstResult( offset )
-                       .list()
-
-               documentResult.each() {document ->
-                   documents << ['code' : document[0], 'description' : document[1]]
-               }
-           }
-           catch (
-                   SQLException ae
-                   ) {
-               throw new ApplicationException( FinanceProcurementDocumentTypeService, ae )
-           }
-           finally {
-               sql?.close()
-           }
-           return documents
-       }
+        def inputMap = [filterText: filterText?.toUpperCase()]
+        LoggerUtility.debug( LOGGER, 'inputMap ' + inputMap )
+        FinanceCommonUtility.applyWildCard( inputMap, true, true )
+        def documents = []
+        try {
+            def documentResult = sessionFactory.getCurrentSession().createSQLQuery( FinanceProcurementConstants.COMMON_MATCH_SQL )
+                    .setString( FinanceProcurementConstants.BDM_DOC_TYPE_CODE, inputMap.filterText )
+                    .setString( FinanceProcurementConstants.BDM_DOC_TYPE_DESC, inputMap.filterText )
+                    .setMaxResults( max )
+                    .setFirstResult( offset )
+                    .list()
+            documentResult.each() {document ->
+                documents << [code: document[0], description: document[1]]
+            }
+        }
+        catch (SQLException ae) {
+            throw new ApplicationException( FinanceProcurementDocumentTypeService, ae )
+        }
+        documents
+    }
 
 }

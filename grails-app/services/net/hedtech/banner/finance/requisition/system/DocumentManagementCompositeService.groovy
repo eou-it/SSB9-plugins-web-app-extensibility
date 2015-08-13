@@ -24,7 +24,7 @@ class DocumentManagementCompositeService {
 
 
     def uploadDocument( file, requisitionCode, docType, ownerPidm, vpdiCode, bdmInstalled ) {
-
+        LoggerUtility.debug( LOGGER, 'requisitionCode ' + requisitionCode + ' vpdiCode ' + vpdiCode + 'bdmInstalled ' + bdmInstalled + 'docType ' + docType )
         if (!bdmInstalled) {
             LoggerUtility.error( LOGGER, 'BDM Not installed' )
             throw new ApplicationException( DocumentManagementCompositeService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED, [] ) )
@@ -34,7 +34,7 @@ class DocumentManagementCompositeService {
             def requisition = requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionCode )
             uploadDocToBdmServer( requisition, docType, ownerPidm, map.fileName, map.absoluteFileName, vpdiCode )
             map.userDir.deleteDir()
-            return listDocumentsByRequisitionCode( requisitionCode, vpdiCode, bdmInstalled )
+            listDocumentsByRequisitionCode( requisitionCode, vpdiCode, bdmInstalled )
         } catch (FileNotFoundException e) {
             throw new ApplicationException( DocumentManagementCompositeService, new BusinessLogicValidationException( e.getMessage(), [] ) )
         } catch (ApplicationException ae) {
@@ -48,18 +48,17 @@ class DocumentManagementCompositeService {
         DateFormat dateFormat = new SimpleDateFormat( FinanceProcurementConstants.BDM_DATE_FORMAT )
         def documentAttributes = [:]
         //This empty string is just to verify all fields data is set
-        String emptyString = ''
         documentAttributes.put( FinanceProcurementConstants.BDM_DOCUMENT_ID, requisition.requestCode )
         documentAttributes.put( FinanceProcurementConstants.BDM_BANNER_DOC_TYPE, docType )
         documentAttributes.put( FinanceProcurementConstants.BDM_DOCUMENT_TYPE, docType )
         documentAttributes.put( FinanceProcurementConstants.BDM_TRANSACTION_DATE, requisition.transactionDate )
-        documentAttributes.put( FinanceProcurementConstants.BDM_VENDOR_ID, requisition?.vendorPidm ? requisition.vendorPidm : emptyString )
+        documentAttributes.put( FinanceProcurementConstants.BDM_VENDOR_ID, requisition?.vendorPidm ? requisition.vendorPidm : FinanceProcurementConstants.EMPTY_STRING )
         documentAttributes.put( FinanceProcurementConstants.BDM_VENDOR_NAME, PersonIdentificationName.findByPidm( ownerPidm )?.fullName )
         documentAttributes.put( FinanceProcurementConstants.BDM_FIRST_NAME, fileName )
         documentAttributes.put( FinanceProcurementConstants.BDM_PIDM, ownerPidm )
-        documentAttributes.put( FinanceProcurementConstants.BDM_ROUTING_STATUS, emptyString )
+        documentAttributes.put( FinanceProcurementConstants.BDM_ROUTING_STATUS, FinanceProcurementConstants.EMPTY_STRING )
         documentAttributes.put( FinanceProcurementConstants.BDM_ACTIVITY_DATE, dateFormat.format( new Date() ) )
-        documentAttributes.put( FinanceProcurementConstants.BDM_DISPOSITION_DATE, emptyString )
+        documentAttributes.put( FinanceProcurementConstants.BDM_DISPOSITION_DATE, FinanceProcurementConstants.EMPTY_STRING )
         bdmAttachmentService.createDocument( getBdmParams(), absoluteFileName, documentAttributes, vpdiCode )
     }
     /**
@@ -69,13 +68,14 @@ class DocumentManagementCompositeService {
      */
     def deleteDocumentsByRequisitionCode( documentId, vpdiCode, bdmInstalled, requisitionCode ) {
         def docIds = []
+        LoggerUtility.debug( LOGGER, 'requisitionCode ' + requisitionCode + ' vpdiCode ' + vpdiCode + 'bdmInstalled ' + bdmInstalled )
         docIds.add( documentId )
         try {
             if (!bdmInstalled) {
                 throw new ApplicationException( DocumentManagementCompositeService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED, [] ) )
             }
             bdmAttachmentService.deleteDocument( getBdmParams(), docIds, vpdiCode )
-            return listDocumentsByRequisitionCode( requisitionCode, vpdiCode, bdmInstalled )
+            listDocumentsByRequisitionCode( requisitionCode, vpdiCode, bdmInstalled )
         } catch (ApplicationException ae) {
             throw ae
         }
@@ -88,6 +88,7 @@ class DocumentManagementCompositeService {
      */
     def listDocumentsByRequisitionCode( def requisitionCode, vpdiCode, bdmInstalled ) {
         def criteria = [:]
+        LoggerUtility.debug( LOGGER, 'requisitionCode ' + requisitionCode + ' vpdiCode ' + vpdiCode + 'bdmInstalled ' + bdmInstalled )
         criteria.put( FinanceProcurementConstants.BDM_DOCUMENT_ID, requisitionCode )
         def documentList
         try {
@@ -101,24 +102,23 @@ class DocumentManagementCompositeService {
                                                     FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR, [] ) )
         }
         def dataMap = [:]
-        def requisition = requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionCode )
         def docWithUsername = []
         SimpleDateFormat dateFormat = new SimpleDateFormat( FinanceProcurementConstants.BDM_DATE_FORMAT )
         documentList.each {doc ->
-            String ownerPidm = doc.docAttributes.get( 'OWNER_PIDM' )
+            String ownerPidm = doc.docAttributes.get( FinanceProcurementConstants.BDM_OWNER_PIDM )
             String ownerName = PersonIdentificationName.findByPidm( ownerPidm )?.fullName
             Map docAttrs = doc.docAttributes
-            docAttrs.put( 'USER_NAME', ownerName )
+            docAttrs.put( FinanceProcurementConstants.BDM_USER_NAME, ownerName )
             docAttrs.put( FinanceProcurementConstants.BDM_ACTIVITY_DATE, dateFormat.parse( docAttrs[FinanceProcurementConstants.BDM_ACTIVITY_DATE] ) )
             doc.docAttributes = docAttrs
             docWithUsername.add( doc )
         }
         dataMap.documentList = documentList
-        return dataMap
+        dataMap
     }
 
     /**
-     *
+     * Gets BDM Parameters
      * @return
      */
     private Map getBdmParams() {
@@ -126,9 +126,7 @@ class DocumentManagementCompositeService {
         ConfigurationHolder.config.bdmserver.each {k, v ->
             bdmParams.put( k, v )
         }
-        //bdmParams.put('DataSource',ConfigurationHolder.config.bdmserver.BdmDataSource)
-        log.info( "BDMParams :: " + bdmParams )
-
+        LoggerUtility.debug( LOGGER, "BDMParams :: " + bdmParams )
         return bdmParams
     }
 }

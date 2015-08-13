@@ -562,6 +562,19 @@ class FinanceProcurementConstants {
     static final String USER_NAME = 'USER_NAME'
     static final String BDM_DISPOSITION_DATE = 'DISPOSITION DATE'
     static final String IS_BDM_INSTALLED = 'isBdmInstalled'
+    static final String BDM_FILE ='file'
+    static final String BDM_FILE_UPLOAD_ERROR_MESSAGE ='uploaded.document.is.empty'
+    static final String BDM_MEP ='mep'
+    static final String BDM_JSON_DEEP ='deep'
+    static final String BDM_USER_NAME ='USER_NAME'
+    static final String BDM_OWNER_PIDM ='OWNER_PIDM'
+    static final String BDM_DOC_TYPE_CODE='docTypeCode'
+    static final String BDM_DOC_TYPE_DESC='docTypeDesc'
+    static final String COMMON_MATCH_SQL = "SELECT e.ETVDTYP_CODE AS code, e.ETVDTYP_DESC AS DESCRIPTION \
+                          FROM ETVDTYP e, otgmgr.ul506_2 \
+                          WHERE e.ETVDTYP_CODE = otgmgr.ul506_2.item \
+                          AND (UPPER(e.ETVDTYP_CODE) LIKE :docTypeCode OR  UPPER(e.ETVDTYP_DESC) LIKE :docTypeDesc)"
+
     public static final String ERROR_MESSAGE_BDM_NOT_INSTALLED = 'bdm.not.installed'
 
     /** Constants for PDF*/
