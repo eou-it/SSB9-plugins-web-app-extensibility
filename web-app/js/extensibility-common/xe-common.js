@@ -752,23 +752,22 @@ var xe = (function (xe) {
     //Add the tools menu item Extensibility if we are in developer mode
     xe.addExtensibilityMenu = function () {
         if (xe.devMode()) {
-            ToolsMenu.addSection("extensibility", $.i18n.prop("xe.menu.section.extensibility"));
-
-            /* Following item needs to be implemented for non Angular pages. Disable.
-            ToolsMenu.addItem("pagestructurebase", "Show Baseline Page Structure", "extensibility", function () {
-                xe.popups[0] = xe.showPageStructure(xe.page, xe.popups[0])
-            });
-             */
-            /*
-            ToolsMenu.addItem("pagestats", $.i18n.prop("xe.menu.extensions.status"), "extensibility", function () {
-                xe.popups[1] = xe.showStats(xe.page, xe.popups[1])
-            });
-            */
-
-            ToolsMenu.addItem("extensionseditor", $.i18n.prop("xe.menu.extensions.edit"), "extensibility", function () {
-                xe.popups[2] = xe.extensionsEditor(xe.page, xe.popups[2])
-            });
-            ToolsMenu.addSection("base", $.i18n.prop("xe.menu.section.other"));
+            try {
+                ToolsMenu.addSection("extensibility", $.i18n.prop("xe.menu.section.extensibility"));
+                /* Following item needs to be implemented for non Angular pages. Disable.  */
+                //ToolsMenu.addItem("pagestructurebase", "Show Baseline Page Structure", "extensibility", function () {
+                //    xe.popups[0] = xe.showPageStructure(xe.page, xe.popups[0]);
+                //});
+                //ToolsMenu.addItem("pagestats", $.i18n.prop("xe.menu.extensions.status"), "extensibility", function () {
+                //    xe.popups[1] = xe.showStats(xe.page, xe.popups[1]);
+                //});
+                ToolsMenu.addItem("extensionseditor", $.i18n.prop("xe.menu.extensions.edit"), "extensibility", function () {
+                    xe.popups[2] = xe.extensionsEditor(xe.page, xe.popups[2]);
+                });
+                ToolsMenu.addSection("base", $.i18n.prop("xe.menu.section.other"));
+            } catch(e) {
+                xe.log('Failed to initiate Extensibility Tools menu. Exception: ' + e);
+            }
         }
     };
 
