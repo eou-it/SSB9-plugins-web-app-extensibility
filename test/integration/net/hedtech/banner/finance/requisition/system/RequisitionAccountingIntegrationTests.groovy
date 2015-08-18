@@ -8,8 +8,7 @@ import org.junit.Test
 
 class RequisitionAccountingIntegrationTests extends BaseIntegrationTestCase {
 
-    //def i_success_requestCode = "R0000047"
-    def requestCode = "RSED0003" // "R0000053"
+    def requestCode = "RSED0003"
     def item = 0
     def sequenceNumber = 3
     def amount = 100.00
