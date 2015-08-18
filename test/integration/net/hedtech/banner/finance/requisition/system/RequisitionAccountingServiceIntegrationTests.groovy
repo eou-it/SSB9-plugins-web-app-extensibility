@@ -40,7 +40,7 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
      */
     @Test
     public void testFindByRequestCodeItemAndSeq() {
-        final def requestCode = 'R0001397'
+        final def requestCode = 'RSED0003'
         final Integer item = 0
         final Integer sequence = 2
         def requisitionAccounting = requisitionAccountingService.findByRequestCodeItemAndSeq( requestCode, item, sequence )
@@ -86,8 +86,8 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
     @Test
     public void testFetchRequisitionAccountingListByUser() {
         def pagingParams = [max: 500, offset: 0]
-        def list = requisitionAccountingService.findRequisitionAccountingListByUser( pagingParams )
-        assertTrue( list.size() > 0 || list.isEmpty() )
+        def list = requisitionAccountingService.findRequisitionAccountingListByUser( pagingParams, 'GRAILS' )
+        assertTrue( list.size() > 0 )
     }
 
     /**
@@ -169,7 +169,7 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
      * @return RequisitionAccounting.
      */
     public RequisitionAccounting getRequestAccounting() {
-        def requestCode = 'R0002497'
+        def requestCode = 'RSED0003'
         def lastSeq = requisitionAccountingService.getLastSequenceNumberByRequestCode( requestCode, 0 )
         def item = 0
         def sequenceNumber = lastSeq.next()
@@ -181,7 +181,7 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
         def indexCode = 'EPHM54'
         def fundCode = 'EPMSF1'
         def orgnCode = '11007'
-        def accountCode = '1006'
+        def accountCode = '2320'
         def programCode = '10'
         def insufficientFundsOverrideIndicator = true
         def activityCode = ''

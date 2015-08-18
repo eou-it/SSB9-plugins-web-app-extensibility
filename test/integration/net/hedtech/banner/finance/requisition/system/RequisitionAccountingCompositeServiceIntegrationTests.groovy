@@ -46,7 +46,7 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
                 FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def reqAccountingDomainModel = getRequestAccounting()
         reqAccountingDomainModel.requisitionAmount = null
-        reqAccountingDomainModel.requestCode = 'R0002208'
+        reqAccountingDomainModel.requestCode = 'RSED0003'
         def domainModelMap = [requisitionAccounting: reqAccountingDomainModel]
         def requestCode = requisitionAccountingCompositeService.createPurchaseRequisitionAccounting(domainModelMap)
         assertTrue requestCode?.requestCode == reqAccountingDomainModel.requestCode
@@ -81,9 +81,9 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
     void testDeletePurchaseRequisitionAccounting() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                 FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        requisitionAccountingCompositeService.deletePurchaseRequisitionAccountingInformation('R0001397', 0, 1)
+        requisitionAccountingCompositeService.deletePurchaseRequisitionAccountingInformation('RSED0003', 0, 1)
         try {
-            requisitionAccountingService.findByRequestCodeItemAndSeq('R0001397', 0, 1)
+            requisitionAccountingService.findByRequestCodeItemAndSeq('RSED0003', 0, 1)
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_ACCOUNTING
         } catch (ApplicationException ae) {
             assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_ACCOUNTING
@@ -100,11 +100,11 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
         def accountingDomainModel = getRequestAccounting()
         accountingDomainModel.item = 0
         accountingDomainModel.sequenceNumber = 1
-        accountingDomainModel.requestCode = 'R0002497'
+        accountingDomainModel.requestCode = 'RSED0003'
         accountingDomainModel.requisitionAmount = null
         def domainModelMap = [requisitionAccounting: accountingDomainModel]
         def accounting = requisitionAccountingCompositeService.updateRequisitionAccounting(domainModelMap)
-        assertTrue(accounting.requestCode == 'R0002497')
+        assertTrue(accounting.requestCode == 'RSED0003')
     }
 
     /**
@@ -117,7 +117,7 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
         def accountingDomainModel = getRequestAccounting()
         accountingDomainModel.item = null
         accountingDomainModel.sequenceNumber = null
-        accountingDomainModel.requestCode = 'R0001397'
+        accountingDomainModel.requestCode = 'RSED0003'
         def domainModelMap = [requisitionAccounting: accountingDomainModel]
         try {
             requisitionAccountingCompositeService.updateRequisitionAccounting(domainModelMap)
@@ -137,7 +137,7 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
         def accountingDomainModel = getRequestAccounting()
         accountingDomainModel.item = 98999
         accountingDomainModel.sequenceNumber = 10221
-        accountingDomainModel.requestCode = 'R0001397'
+        accountingDomainModel.requestCode = 'RSED0003'
         def domainModelMap = [requisitionAccounting: accountingDomainModel]
         try {
             requisitionAccountingCompositeService.updateRequisitionAccounting(domainModelMap)
@@ -159,7 +159,7 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
         def accountingDomainModel = getRequestAccounting()
         accountingDomainModel.item = 0
         accountingDomainModel.sequenceNumber = 1
-        accountingDomainModel.requestCode = 'R0001397'
+        accountingDomainModel.requestCode = 'RSED0003'
         def domainModelMap = [requisitionAccounting: accountingDomainModel]
         try {
             requisitionAccountingCompositeService.updateRequisitionAccounting(domainModelMap)
@@ -177,7 +177,7 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
     public void testFindByRequestCodeItemAndSeq() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                 FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        assertTrue(requisitionAccountingCompositeService.findByRequestCodeItemAndSeq('R0001397', 0, 2).accounting.requestCode == 'R0001397')
+        assertTrue(requisitionAccountingCompositeService.findByRequestCodeItemAndSeq('RSED0003', 0, 2).accounting.requestCode == 'RSED0003')
     }
 
     /**
@@ -188,7 +188,7 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                 FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         try {
-            requisitionAccountingCompositeService.findByRequestCodeItemAndSeq('R0000321', 0, 2)
+            requisitionAccountingCompositeService.findByRequestCodeItemAndSeq('RSED0003', 0, 2)
         } catch (ApplicationException ae) {
             assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_ACCOUNTING)
         }
@@ -199,16 +199,16 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
      * @return RequisitionAccounting.
      */
     private RequisitionAccounting getRequestAccounting() {
-        def requestCode = 'R0001397'
+        def requestCode = 'RSED0003'
         def amount = 100.00
-        def fiscalCode = '15'
+        def fiscalCode = '16'
         def period = '09'
         def ruleClassCode = 'REQP'
         def chartOfAccountsCode = 'B'
         def indexCode = 'EPHM54'
         def fundCode = 'EPMSF1'
         def orgnCode = '11007'
-        def accountCode = '1006'
+        def accountCode = '2320'
         def programCode = '10'
         def insufficientFundsOverrideIndicator = true
         def activityCode = ''

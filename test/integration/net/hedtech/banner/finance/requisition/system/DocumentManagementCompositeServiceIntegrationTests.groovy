@@ -34,27 +34,31 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
     }
 
 
-   /* @Test
-    void testUploadDocument() {
-        File testFile
-        try {
-            String data = " Test data for integration testing";
-            String filePath = 'test/util/BDMIntegrationTestData.txt'
-            testFile = new File(filePath );
-            if (!testFile.exists()) {
-                testFile.createNewFile();
-            }
-            FileWriter fileWritter = new FileWriter( testFile.getName(), true );
-            BufferedWriter bufferWritter = new BufferedWriter( fileWritter );
-            bufferWritter.write( data );
-            bufferWritter.close();
-        } catch (IOException e) {
-            //assertApplicationException e, (e.getMessage())
-            throw e
-        }
-        def dataMap = documentManagementCompositeService.uploadDocument( testFile,"RSD00001","REQUISITION",2510,null,true )
-        println dataMap
-        assertNotNull(dataMap)
+    @Test
+    void dummyTest() {
+        assertTrue( true )
+    }
+    /* @Test
+     void testUploadDocument() {
+         File testFile
+         try {
+             String data = " Test data for integration testing";
+             String filePath = 'test/util/BDMIntegrationTestData.txt'
+             testFile = new File(filePath );
+             if (!testFile.exists()) {
+                 testFile.createNewFile();
+             }
+             FileWriter fileWritter = new FileWriter( testFile.getName(), true );
+             BufferedWriter bufferWritter = new BufferedWriter( fileWritter );
+             bufferWritter.write( data );
+             bufferWritter.close();
+         } catch (IOException e) {
+             //assertApplicationException e, (e.getMessage())
+             throw e
+         }
+         def dataMap = documentManagementCompositeService.uploadDocument( testFile,"RSD00001","REQUISITION",2510,null,true )
+         println dataMap
+         assertNotNull(dataMap)
 
-    }*/
+     }*/
 }

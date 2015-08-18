@@ -79,14 +79,14 @@ class RequisitionHeaderCompositeService {
     @Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
     def updateRequisitionHeader( map, requestCode, baseCcy ) {
         // Update header
-        def existingHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
-        if (!checkHeaderUpdateEligibility( map, existingHeader, baseCcy )) {
-            LoggerUtility.debug( LOGGER, 'Modification not required' )
-            return existingHeader
-        }
-        FinanceProcurementHelper.checkCompleteRequisition( existingHeader )
         def user = springSecurityService.getAuthentication()?.user
         if (map?.requisitionHeader && user?.oracleUserName) {
+            def existingHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
+            if (!checkHeaderUpdateEligibility( map, existingHeader, baseCcy )) {
+                LoggerUtility.debug( LOGGER, 'Modification not required' )
+                return existingHeader
+            }
+            FinanceProcurementHelper.checkCompleteRequisition( existingHeader )
             RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
             requisitionHeaderRequest.id = existingHeader.id
             requisitionHeaderRequest.version = existingHeader.version

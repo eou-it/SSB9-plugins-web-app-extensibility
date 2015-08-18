@@ -91,6 +91,13 @@ class RequisitionDetailsCompositeService {
      */
     def updateRequisitionDetail( detailDomainModel ) {
         def requestCode = detailDomainModel.requisitionDetail.requestCode
+        def user = springSecurityService.getAuthentication()?.user
+        if (!user.oracleUserName) {
+            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            throw new ApplicationException( RequisitionDetailsCompositeService,
+                                            new BusinessLogicValidationException(
+                                                    FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
+        }
         FinanceProcurementHelper.checkCompleteRequisition( requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ) )
         Integer item = detailDomainModel.requisitionDetail.item
         // Null or empty check for item.
@@ -105,26 +112,19 @@ class RequisitionDetailsCompositeService {
         requisitionDetailRequest.id = existingDetail.id
         requisitionDetailRequest.version = existingDetail.version
         requisitionDetailRequest.requestCode = existingDetail.requestCode
-        def user = springSecurityService.getAuthentication()?.user
-        if (user.oracleUserName) {
-            requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
-            requisitionDetailRequest.lastModified = new Date()
-            requisitionDetailRequest.item = existingDetail.item
-            requisitionDetailRequest.userId = user.oracleUserName
-            RequisitionDetail requisitionDetail = requisitionDetailService.update( [domainModel: requisitionDetailRequest] )
-            LoggerUtility.debug LOGGER, "Requisition Detail updated " + requisitionDetail
-            /** Re-balance associated accounting information*/
-            reBalanceRequisitionAccounting requestCode, requisitionDetail.item
-            financeTextCompositeService.saveTextForCommodity( requisitionDetail,
-                                                              [privateComment: detailDomainModel.requisitionDetail.privateComment, publicComment: detailDomainModel.requisitionDetail.publicComment],
-                                                              user.oracleUserName, requisitionDetail.item )
-            return requisitionDetail
-        } else {
-            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
-            throw new ApplicationException( RequisitionDetailsCompositeService,
-                                            new BusinessLogicValidationException(
-                                                    FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
-        }
+
+        requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
+        requisitionDetailRequest.lastModified = new Date()
+        requisitionDetailRequest.item = existingDetail.item
+        requisitionDetailRequest.userId = user.oracleUserName
+        RequisitionDetail requisitionDetail = requisitionDetailService.update( [domainModel: requisitionDetailRequest] )
+        LoggerUtility.debug LOGGER, "Requisition Detail updated " + requisitionDetail
+        /** Re-balance associated accounting information*/
+        reBalanceRequisitionAccounting requestCode, requisitionDetail.item
+        financeTextCompositeService.saveTextForCommodity( requisitionDetail,
+                                                          [privateComment: detailDomainModel.requisitionDetail.privateComment, publicComment: detailDomainModel.requisitionDetail.publicComment],
+                                                          user.oracleUserName, requisitionDetail.item )
+        return requisitionDetail
     }
 
     /**

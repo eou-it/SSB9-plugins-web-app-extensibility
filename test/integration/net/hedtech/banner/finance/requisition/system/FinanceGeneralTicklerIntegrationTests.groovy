@@ -34,6 +34,6 @@ class FinanceGeneralTicklerIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testFindByReferenceNumber() {
-        assertNotNull( FinanceGeneralTickler.findByReferenceNumber( 'RSD00006' )[0] )
+        assertNotNull( FinanceGeneralTickler.findByReferenceNumber( 'RSED0006' )[0] )
     }
 }

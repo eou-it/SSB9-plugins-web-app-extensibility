@@ -43,6 +43,9 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void testListRequisitionHeadersByUserName() {
         def paginationParam = [max: 500, offset: 0]
+        def requestHeader = newRequisitionHeader()
+        requestHeader.save( failOnError: true, flush: true )
+        requestHeader.refresh()
         def headers = requisitionHeaderService.listRequisitionHeaderForLoggedInUser( paginationParam )
         assertTrue headers.size() > 0
     }
@@ -114,7 +117,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testRecallRequisition() {
-        requisitionHeaderService.recallRequisition('R0000206')
+        requisitionHeaderService.recallRequisition('RSED0007')
     }
 
     /**
@@ -123,7 +126,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
     @Test
     public void testRecallRequisitionFailCase() {
         try {
-            requisitionHeaderService.recallRequisition( 'RSD00001' )
+            requisitionHeaderService.recallRequisition( 'RSED0001' )
         } catch (ApplicationException e) {
             assertApplicationException e, (FinanceProcurementConstants.ERROR_MESSAGE_RECALL_REQUISITION_PENDING_REQ_IS_REQUIRED)
         }

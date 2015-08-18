@@ -52,7 +52,7 @@ class FinanceTextCompositeServiceIntegrationTests extends BaseIntegrationTestCas
         def commentsMap = [privateComment: 'This is header level private comment.',
                            publicComment : 'This is header level public comment.']
         def user = springSecurityService.getAuthentication()?.user.oracleUserName
-        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode('R0000002')
+        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode('RSED0001')
         def list = financeTextCompositeService.saveTextForHeader(header, commentsMap, user)
         assertTrue(list.size() == 2)
     }
@@ -65,7 +65,7 @@ class FinanceTextCompositeServiceIntegrationTests extends BaseIntegrationTestCas
         def commentsMap = [privateComment: 'This is commodity level private comment.',
                            publicComment : 'This is commodity level public comment.']
         def user = springSecurityService.getAuthentication()?.user.oracleUserName
-        RequisitionDetail details = requisitionDetailService.findByRequestCode('R0000002')[0]
+        RequisitionDetail details = requisitionDetailService.findByRequestCode('RSED0005')[0]
         def list = financeTextCompositeService.saveTextForCommodity(details, commentsMap, user, details.item)
         assertTrue(list.size() == 2)
     }
@@ -78,7 +78,7 @@ class FinanceTextCompositeServiceIntegrationTests extends BaseIntegrationTestCas
         def commentsMap = [privateComment: 'This is header level private comment. There are two types of comments.',
                            publicComment : 'This is header level public comment. There are two types of comments.']
         def user = springSecurityService.getAuthentication()?.user.oracleUserName
-        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode('R0000002')
+        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode('RSED0001')
         def list = financeTextCompositeService.saveTextForHeader(header, commentsMap, user)
         assertTrue(list.size() > 2)
     }
@@ -91,7 +91,7 @@ class FinanceTextCompositeServiceIntegrationTests extends BaseIntegrationTestCas
         def commentsMap = [privateComment: 'This is commodity level private comment. There are two types of comments.',
                            publicComment : 'This is commodity level public comment. There are two types of comments.']
         def user = springSecurityService.getAuthentication()?.user.oracleUserName
-        RequisitionDetail details = requisitionDetailService.findByRequestCode('R0000002')[0]
+        RequisitionDetail details = requisitionDetailService.findByRequestCode('RSED0005')[0]
         def list = financeTextCompositeService.saveTextForCommodity(details, commentsMap, user, details.item)
         assertTrue(list.size() > 2)
     }

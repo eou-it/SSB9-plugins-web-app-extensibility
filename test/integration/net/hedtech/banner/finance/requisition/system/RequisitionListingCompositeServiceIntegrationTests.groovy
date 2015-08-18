@@ -194,7 +194,7 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
         springSecurityService.getAuthentication().user.oracleUserName = 'GRAILS'
         try {
             def pagingParams = [max: 500, offset: 0]
-            def searchParams = [convertValue: 'RSD00001', isDateString: false]
+            def searchParams = [convertValue: 'RSED0001', isDateString: false]
             def requisitions = requisitionListingCompositeService.searchPurchaseRequisition( searchParams, null, pagingParams, 'institutionBaseCcy' )
             assertNotNull requisitions
             assert requisitions.size() > 0
@@ -233,7 +233,7 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
 
         try {
             def pagingParams = [max: 500, offset: 0]
-            def searchParams = [convertValue: 'RSD00001', isDateString: false]
+            def searchParams = [convertValue: 'RSED0001', isDateString: false]
             def requisitions = requisitionListingCompositeService.searchPurchaseRequisition( searchParams, FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT, pagingParams, 'institutionBaseCcy' )
             assertNotNull requisitions
             assert requisitions.size() > 0
@@ -253,7 +253,7 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
 
         try {
             def pagingParams = [max: 500, offset: 0]
-            def searchParams = [convertValue: 'RSD00007', isDateString: false]
+            def searchParams = [convertValue: 'RSED0007', isDateString: false]
             def requisitions = requisitionListingCompositeService.searchPurchaseRequisition( searchParams, FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING, pagingParams, 'institutionBaseCcy' )
             assertNotNull requisitions
             assert requisitions.size() > 0
@@ -273,7 +273,7 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
 
         try {
             def pagingParams = [max: 500, offset: 0]
-            def searchParams = [convertValue: 'RSD00005', isDateString: false]
+            def searchParams = [convertValue: 'RSED0005', isDateString: false]
             def requisitions = requisitionListingCompositeService.searchPurchaseRequisition( searchParams, FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE, pagingParams, 'institutionBaseCcy' )
             assertNotNull requisitions
             assert requisitions.size() > 0
@@ -312,7 +312,7 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
         springSecurityService.getAuthentication().user.oracleUserName = null
         try {
             def pagingParams = [max: 500, offset: 0]
-            def searchParams = [convertValue: 'RSD00007', isDateString: false]
+            def searchParams = [convertValue: 'RSED0007', isDateString: false]
             def requisitions = requisitionListingCompositeService.searchPurchaseRequisition( searchParams, FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING, pagingParams, 'institutionBaseCcy' )
             assertNotNull requisitions
             assert requisitions.size() > 0

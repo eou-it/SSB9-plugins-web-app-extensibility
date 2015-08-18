@@ -14,7 +14,7 @@ import org.junit.Test
  */
 class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
 
-    def reqCode = "RSD00001"
+    def reqCode = "RSED0001"
 
 
     @Before
@@ -35,7 +35,7 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testFetchRequisitionHeaderByRequestCode() {
-        def header = RequisitionHeader.fetchByRequestCode( reqCode, 'GRAILS' )
+        def header = RequisitionHeader.fetchByRequestCode( reqCode, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME )
         assertNotNull header
         assertEquals reqCode, header.requestCode
     }

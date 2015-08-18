@@ -40,7 +40,7 @@ class FinanceInformationPanelCompositeServiceIntegrationTests extends BaseIntegr
     @Test
     public void testGetInformationPanelDataForDisapproved() {
         assert (financeInformationPanelCompositeService.getInformationPanelData(
-                FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED, 'RSD00006') != null)
+                FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED, 'RSED0006') != null)
     }
 
     /**

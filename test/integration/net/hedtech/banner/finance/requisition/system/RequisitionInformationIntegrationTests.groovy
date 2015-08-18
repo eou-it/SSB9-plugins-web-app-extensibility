@@ -15,6 +15,7 @@ import org.junit.Test
  */
 class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
     def springSecurityService
+    def requisitionHeaderService
 
 
     @Before
@@ -94,7 +95,7 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
 
         def pagingParams = [max: 500, offset: 0]
         def requisitions = RequisitionInformation.listRequisitionsBySearchParam(
-                FinanceProcurementConstants.REQUISITION_INFO_USER_NAME, FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT.toUpperCase(),
+                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT.toUpperCase(),
                 pagingParams )
         assertNotNull requisitions
         assert requisitions.size() > 0
@@ -118,7 +119,7 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
     void listRequisitionsBySearchParamWithInvalidSearchParam() {
         def pagingParams = [max: 500, offset: 0]
         def requisitions = RequisitionInformation.listRequisitionsBySearchParam(
-                FinanceProcurementConstants.REQUISITION_INFO_USER_NAME, 'invalid_draft',
+                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, 'invalid_draft',
                 pagingParams )
         assert requisitions.size() == 0
     }
@@ -128,7 +129,7 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void listRequisitionsCountBySearchParam() {
-        def requisitions = RequisitionInformation.fetchRequisitionsCountBySearchParam( FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT.toUpperCase(), FinanceProcurementConstants.REQUISITION_INFO_USER_NAME
+        def requisitions = RequisitionInformation.fetchRequisitionsCountBySearchParam( FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT.toUpperCase(), FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME
         )
         assert requisitions > 0
     }
@@ -139,7 +140,7 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void listRequisitionsCountByInvalidSearchParam() {
         def requisitions = RequisitionInformation.fetchRequisitionsCountByStatus( 'draft_invalid',
-                                                                                  FinanceProcurementConstants.REQUISITION_INFO_USER_NAME )
+                                                                                  FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME )
         assert requisitions == 0
     }
 
@@ -149,8 +150,9 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void listRequisitionsByTransactionDate() {
         def pagingParams = [max: 500, offset: 0]
+        RequisitionHeader header = requisitionHeaderService.findRequisitionHeaderByRequestCode( 'RSED0001' )
         def requisitions = RequisitionInformation.listRequisitionsByTransactionDate(
-                FinanceProcurementConstants.REQUISITION_INFO_USER_NAME, FinanceCommonUtility.parseDate( '06/19/2015' ),
+                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, header.transactionDate,
                 pagingParams )
         assertNotNull requisitions
         assert requisitions.size() > 0
@@ -174,7 +176,7 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
     void listRequisitionsByTransactionDateWithInvalidSearchParam() {
         def pagingParams = [max: 500, offset: 0]
         def requisitions = RequisitionInformation.listRequisitionsBySearchParam(
-                FinanceProcurementConstants.REQUISITION_INFO_USER_NAME, 'invalid_draft',
+                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, 'invalid_draft',
                 pagingParams )
         assert requisitions.size() == 0
     }
@@ -185,7 +187,7 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void listRequisitionsCountByTransactionDate() {
         def requisitions = RequisitionInformation.fetchRequisitionsCountBySearchParam( FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT.toUpperCase(),
-                                                                                       FinanceProcurementConstants.REQUISITION_INFO_USER_NAME
+                                                                                       FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME
         )
         assert requisitions > 0
     }
@@ -196,7 +198,7 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
     @Test
     void listRequisitionsCountByInvalidTransactionDate() {
         def requisitions = RequisitionInformation.fetchRequisitionsCountByStatus( 'draft_invalid',
-                                                                                  FinanceProcurementConstants.REQUISITION_INFO_USER_NAME )
+                                                                                  FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME )
         assert requisitions == 0
     }
 
@@ -210,7 +212,7 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
         def pagingParams = [max: 500, offset: 0]
         def requisitions
         requisitions = RequisitionInformation.listRequisitionsByStatusAndSearchParam(
-                FinanceProcurementConstants.REQUISITION_INFO_USER_NAME, 'RSD00001'.toUpperCase(),
+                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, 'RSED0001'.toUpperCase(),
                 pagingParams, draftStatus )
         assertNotNull requisitions
         assert requisitions.size() > 0
@@ -220,14 +222,14 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
                                FinanceProcurementConstants.REQUISITION_INFO_STATUS_CONVERTED_TO_PO]
 
         requisitions = RequisitionInformation.listRequisitionsByStatusAndSearchParam(
-                FinanceProcurementConstants.REQUISITION_INFO_USER_NAME, 'RSD00005'.toUpperCase(),
+                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, 'RSED0005'.toUpperCase(),
                 pagingParams, completedStatus )
         assertNotNull requisitions
         assert requisitions.size() > 0
 
         def pendingStatus = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_PENDING]
         requisitions = RequisitionInformation.listRequisitionsByStatusAndSearchParam(
-                FinanceProcurementConstants.REQUISITION_INFO_USER_NAME, 'RSD00007'.toUpperCase(),
+                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, 'RSED0007',
                 pagingParams, pendingStatus )
         assertNotNull requisitions
         assert requisitions.size() > 0
@@ -255,7 +257,7 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
                            FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
         def pagingParams = [max: 500, offset: 0]
         def requisitions = RequisitionInformation.listRequisitionsByStatusAndSearchParam(
-                FinanceProcurementConstants.REQUISITION_INFO_USER_NAME, 'invalid_draft',
+                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, 'invalid_draft',
                 pagingParams, draftStatus )
         assert requisitions.size() == 0
     }
@@ -267,8 +269,8 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
     void listRequisitionsCountByStatusAndSearchParam() {
         def draftStatus = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT,
                            FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
-        def requisitions = RequisitionInformation.fetchRequisitionsCountByStatusAndSearchParam( 'RSD00001'.toUpperCase(), FinanceProcurementConstants.REQUISITION_INFO_USER_NAME
-                                                                                                ,draftStatus)
+        def requisitions = RequisitionInformation.fetchRequisitionsCountByStatusAndSearchParam( 'RSED0001'.toUpperCase(), FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME
+                                                                                                , draftStatus )
         assert requisitions > 0
     }
 
@@ -280,7 +282,7 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
         def draftStatus = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT,
                            FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
         def requisitions = RequisitionInformation.fetchRequisitionsCountByStatusAndSearchParam( 'draft_invalid',
-                                                                                  FinanceProcurementConstants.REQUISITION_INFO_USER_NAME ,draftStatus)
+                                                                                                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, draftStatus )
         assert requisitions == 0
     }
 
@@ -292,9 +294,10 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
         def draftStatus = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT,
                            FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
         def pagingParams = [max: 500, offset: 0]
+        RequisitionHeader header = requisitionHeaderService.findRequisitionHeaderByRequestCode( 'RSED0001' )
         def requisitions = RequisitionInformation.listRequisitionsByStatusAndTransactionDate(
-                FinanceProcurementConstants.REQUISITION_INFO_USER_NAME, FinanceCommonUtility.parseDate( '06/19/2015' ),
-                pagingParams ,draftStatus )
+                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, header.transactionDate,
+                pagingParams, draftStatus )
         assertNotNull requisitions
         assert requisitions.size() > 0
     }
@@ -308,7 +311,7 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
                            FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
         def pagingParams = [max: 500, offset: 0]
         def requisitions = RequisitionInformation.listRequisitionsByStatusAndTransactionDate( 'INVALID_USER', FinanceCommonUtility.parseDate( '06/19/2015' ),
-                                                                                     pagingParams ,draftStatus)
+                                                                                              pagingParams, draftStatus )
         assert requisitions.size() == 0
     }
 
@@ -321,8 +324,8 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
                            FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
         def pagingParams = [max: 500, offset: 0]
         def requisitions = RequisitionInformation.listRequisitionsByStatusAndTransactionDate(
-                FinanceProcurementConstants.REQUISITION_INFO_USER_NAME, FinanceCommonUtility.parseDate( '06/19/2000' ),
-                pagingParams ,draftStatus)
+                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceCommonUtility.parseDate( '06/19/2000' ),
+                pagingParams, draftStatus )
         assert requisitions.size() == 0
     }
 
@@ -331,10 +334,11 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void listRequisitionsCountByStatusAndTransactionDate() {
+        RequisitionHeader header = requisitionHeaderService.findRequisitionHeaderByRequestCode( 'RSED0001' )
         def draftStatus = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT,
                            FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
-        def requisitions = RequisitionInformation.fetchRequisitionsCountByStatusAndTransactionDate(  FinanceCommonUtility.parseDate( '06/19/2015' ),
-                                                                                       FinanceProcurementConstants.REQUISITION_INFO_USER_NAME,draftStatus)
+        def requisitions = RequisitionInformation.fetchRequisitionsCountByStatusAndTransactionDate( header.transactionDate,
+                                                                                                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, draftStatus )
         assert requisitions > 0
     }
 
@@ -346,7 +350,53 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
         def draftStatus = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT,
                            FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
         def requisitions = RequisitionInformation.fetchRequisitionsCountByStatusAndTransactionDate( FinanceCommonUtility.parseDate( '06/19/2000' ),
-                                                                                  FinanceProcurementConstants.REQUISITION_INFO_USER_NAME ,draftStatus)
+                                                                                                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, draftStatus )
         assert requisitions == 0
+    }
+
+    /**
+     * New object of Requisition Header
+     * @return
+     */
+    private RequisitionHeader newRequisitionHeader() {
+        def name = "Maneesh"
+        def requestorPhoneAreaCode = "080"
+        def requestorPhoneNumber = "242037662"
+        def requestorPhoneExt = "9066"
+        def vendorPidm = 278
+        def addressType = "BU"
+        def vendorAddressTypeSequence = 1
+        def chartOfAccountsCode = "B"
+        def orgnCode = "11103"
+        def attentionTo = "Avery Johnson"
+        def isDocumentLevelAccounting = true
+        def requestTypeIndicator = "P"
+        def ship_Code = "EAST"
+        def matchRequired = "U"
+        def requisitionHeader = new RequisitionHeader(
+                requestCode: FinanceProcurementConstants.DEFAULT_REQUEST_CODE,
+                requestDate: new Date(),
+                transactionDate: new Date(),
+                postingDate: new Date(),
+                deliveryDate: new Date() + 20,
+                requesterName: name,
+                ship: ship_Code,
+                requesterPhoneArea: requestorPhoneAreaCode,
+                requesterPhoneNumber: requestorPhoneNumber,
+                requesterPhoneExtension: requestorPhoneExt,
+                vendorPidm: vendorPidm,
+                vendorAddressType: addressType,
+                vendorAddressTypeSequence: vendorAddressTypeSequence,
+                chartOfAccount: chartOfAccountsCode,
+                organization: orgnCode,
+                attentionTo: attentionTo,
+                isDocumentLevelAccounting: isDocumentLevelAccounting,
+                requestTypeIndicator: requestTypeIndicator,
+                matchRequired: matchRequired,
+                lastModified: new Date(),
+                userId: FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                dataOrigin: "Banner"
+        )
+        return requisitionHeader
     }
 }

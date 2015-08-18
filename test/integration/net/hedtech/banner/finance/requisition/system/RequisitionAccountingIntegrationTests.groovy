@@ -9,7 +9,7 @@ import org.junit.Test
 class RequisitionAccountingIntegrationTests extends BaseIntegrationTestCase {
 
     //def i_success_requestCode = "R0000047"
-    def requestCode = "R0002497" // "R0000053"
+    def requestCode = "RSED0003" // "R0000053"
     def item = 0
     def sequenceNumber = 3
     def amount = 100.00
@@ -20,7 +20,7 @@ class RequisitionAccountingIntegrationTests extends BaseIntegrationTestCase {
     def indexCode = "EPHM54"
     def fundCode = "EPMSF1"
     def orgnCode = "11007"
-    def accountCode = "1006"
+    def accountCode = "2230"
     def programCode = "10"
     def insufficientFundsOverrideIndicator = true
     def activityCode = ''
@@ -90,7 +90,7 @@ class RequisitionAccountingIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void findAccountingByRequestCode() {
-        def accountingList = RequisitionAccounting.findAccountingByRequestCode( 'R0001474' )
+        def accountingList = RequisitionAccounting.findAccountingByRequestCode( 'RSED0003' )
         assertTrue( accountingList.size() > 0 )
     }
 

@@ -36,6 +36,6 @@ class FinanceGeneralTicklerServiceIntegrationTests extends BaseIntegrationTestCa
      */
     @Test
     public void testFindByReferenceNumber() {
-        assertNotNull(financeGeneralTicklerService.findByReferenceNumber('RSD00006')[0])
+        assertNotNull(financeGeneralTicklerService.findByReferenceNumber('RSED0006')[0])
     }
 }

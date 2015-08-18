@@ -86,6 +86,13 @@ class RequisitionAccountingCompositeService {
      */
     def updateRequisitionAccounting( accountingDomainModel ) {
         // Null or empty check for item number and sequence number.
+        def user = springSecurityService.getAuthentication()?.user
+        if (!user.oracleUserName) {
+            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            throw new ApplicationException( RequisitionAccountingCompositeService,
+                                            new BusinessLogicValidationException(
+                                                    FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
+        }
         FinanceProcurementHelper.checkCompleteRequisition(
                 requisitionHeaderService.findRequisitionHeaderByRequestCode( accountingDomainModel.requisitionAccounting.requestCode ) )
 
@@ -113,23 +120,15 @@ class RequisitionAccountingCompositeService {
         requisitionAccountingRequest.id = existingAccountingInfo.id
         requisitionAccountingRequest.version = existingAccountingInfo.version
         requisitionAccountingRequest.requestCode = existingAccountingInfo.requestCode
-        def user = springSecurityService.getAuthentication()?.user
-        if (user.oracleUserName) {
-            requisitionAccountingRequest.lastModified = new Date()
-            requisitionAccountingRequest.item = existingAccountingInfo.item
-            requisitionAccountingRequest.sequenceNumber = existingAccountingInfo.sequenceNumber
-            requisitionAccountingRequest.userId = user.oracleUserName
-            setNSFOverride( requisitionAccountingRequest )
-            requisitionDetailsAcctCommonCompositeService.adjustAccountPercentageAndAmount( requisitionAccountingRequest )
-            def requisitionAccounting = requisitionAccountingService.update( [domainModel: requisitionAccountingRequest] )
-            LoggerUtility.debug( LOGGER, "Requisition Accounting information updated " + requisitionAccounting )
-            return requisitionAccounting
-        } else {
-            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
-            throw new ApplicationException( RequisitionAccountingCompositeService,
-                                            new BusinessLogicValidationException(
-                                                    FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
-        }
+        requisitionAccountingRequest.lastModified = new Date()
+        requisitionAccountingRequest.item = existingAccountingInfo.item
+        requisitionAccountingRequest.sequenceNumber = existingAccountingInfo.sequenceNumber
+        requisitionAccountingRequest.userId = user.oracleUserName
+        setNSFOverride( requisitionAccountingRequest )
+        requisitionDetailsAcctCommonCompositeService.adjustAccountPercentageAndAmount( requisitionAccountingRequest )
+        def requisitionAccounting = requisitionAccountingService.update( [domainModel: requisitionAccountingRequest] )
+        LoggerUtility.debug( LOGGER, "Requisition Accounting information updated " + requisitionAccounting )
+        return requisitionAccounting
     }
 
     /**

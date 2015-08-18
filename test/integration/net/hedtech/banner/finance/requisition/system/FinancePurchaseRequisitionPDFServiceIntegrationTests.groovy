@@ -41,8 +41,8 @@ class FinancePurchaseRequisitionPDFServiceIntegrationTests extends BaseIntegrati
      */
     @Test
     void getPdfFileName() {
-        def fileName = financePurchaseRequisitionPDFService.getPdfFileName( 'R0002312' )
-        assertTrue fileName == 'Purchase_Requisition_R0002312.pdf'
+        def fileName = financePurchaseRequisitionPDFService.getPdfFileName( 'RSED0001' )
+        assertTrue fileName == 'Purchase_Requisition_RSED0001.pdf'
     }
 
     /**
@@ -50,7 +50,7 @@ class FinancePurchaseRequisitionPDFServiceIntegrationTests extends BaseIntegrati
      */
     @Test
     void generatePdfStream() {
-        def pdfStream = financePurchaseRequisitionPDFService.generatePdfStream( 'R0002497','USD')
+        def pdfStream = financePurchaseRequisitionPDFService.generatePdfStream( 'RSED0001','USD')
         assertTrue pdfStream != null
     }
 }

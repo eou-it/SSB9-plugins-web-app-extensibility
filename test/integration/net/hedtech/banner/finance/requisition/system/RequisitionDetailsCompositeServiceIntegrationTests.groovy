@@ -124,9 +124,9 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void testDeletePurchaseRequisitionDetail() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        requisitionDetailsCompositeService.deletePurchaseRequisitionDetail('R0000138', 1)
+        requisitionDetailsCompositeService.deletePurchaseRequisitionDetail('RSED0003', 1)
         try {
-            requisitionDetailService.getRequisitionDetailByRequestCodeAndItem('R0000138', 1)
+            requisitionDetailService.getRequisitionDetailByRequestCodeAndItem('RSED0003', 1)
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL
         }
         catch (ApplicationException ae) {
@@ -140,9 +140,9 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void testDeletePurchaseRequisitionDetailForCommodityLvlAcc() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        requisitionDetailsCompositeService.deletePurchaseRequisitionDetail('R0001033', 1)
+        requisitionDetailsCompositeService.deletePurchaseRequisitionDetail('RSED0004', 1)
         try {
-            requisitionDetailService.getRequisitionDetailByRequestCodeAndItem('R0001033', 1)
+            requisitionDetailService.getRequisitionDetailByRequestCodeAndItem('RSED0004', 1)
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL
         }
         catch (ApplicationException ae) {
@@ -172,7 +172,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     void findByRequestCode() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                 FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        assert requisitionDetailsCompositeService.findByRequestCode('R0000561').commodityDescription != null
+        assert requisitionDetailsCompositeService.findByRequestCode('RSED0003').commodityDescription != null
     }
 
     /**
@@ -238,8 +238,8 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     void testFindByRequestCodeAndItem() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                 FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def reqDetailInfo = requisitionDetailsCompositeService.findByRequestCodeAndItem('RSD00004', 1)
-        assertTrue(reqDetailInfo.requisitionDetail.requestCode == 'RSD00004')
+        def reqDetailInfo = requisitionDetailsCompositeService.findByRequestCodeAndItem('RSED0004', 1)
+        assertTrue(reqDetailInfo.requisitionDetail.requestCode == 'RSED0004')
     }
 
     /**
@@ -249,7 +249,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     void testListCommodityWithAccounting() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                 FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def listCommoityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting('RSD00004')
+        def listCommoityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting('RSED0004')
         assertTrue(listCommoityWithAccounting.size() > 0)
     }
 
@@ -259,13 +259,13 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void testListCommodityWithDocumentLevelAccounting() {
         def date = new Date()
-        def list = requisitionDetailsCompositeService.listCommodityWithDocumentLevelAccounting('RSD00004', date)
+        def list = requisitionDetailsCompositeService.listCommodityWithDocumentLevelAccounting('RSED0004', date)
         assertTrue(list.size() > 0)
     }
 
     @Test
     void testListCommodityWithCommodityLevelAccounting() {
-        def listCommoityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting('RSD00003')
+        def listCommoityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting('RSED0003')
         assertTrue(listCommoityWithAccounting.size() > 0)
     }
 
@@ -291,5 +291,5 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
         ]
         return requisitionDetail
     }
-    def requestHeaderCode = "R0002497"
+    def requestHeaderCode = "RSED0003"
 }

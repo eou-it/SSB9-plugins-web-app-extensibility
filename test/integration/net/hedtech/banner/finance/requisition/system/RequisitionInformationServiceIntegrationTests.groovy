@@ -90,7 +90,7 @@ class RequisitionInformationServiceIntegrationTests extends BaseIntegrationTestC
      */
     @Test
     void fetchRequisitionsByReqNumber() {
-        assertTrue requisitionInformationService.fetchRequisitionsByReqNumber( 'R0002593' ) != null
+        assertTrue requisitionInformationService.fetchRequisitionsByReqNumber( 'RSED0001' ) != null
     }
 
     /**
@@ -160,7 +160,7 @@ class RequisitionInformationServiceIntegrationTests extends BaseIntegrationTestC
                       FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
         def pagingParams = [max: 500, offset: 0]
         def requisitions = requisitionInformationService.searchRequisitionsByStatusAndSearchParam(
-                FinanceProcurementConstants.REQUISITION_INFO_USER_NAME, 'RSD00001'.toUpperCase(),
+                FinanceProcurementConstants.REQUISITION_INFO_USER_NAME, 'RSED0001'.toUpperCase(),
                 pagingParams, status, false )
         assertNotNull requisitions
         assert requisitions.size() > 0
