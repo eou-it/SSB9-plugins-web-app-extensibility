@@ -22,7 +22,16 @@ class DocumentManagementCompositeService {
     def bdmAttachmentService
     def requisitionHeaderService
 
-
+    /**
+     * This action is responsible for listing the documents
+     * @param file to be uploaded.
+     * @param requisitionCode for which file to be uploaded.
+     * @param docType for file upload.
+     * @param ownerPidm logged in user pidm.
+     * @param vpdiCode session mep code.
+     * @param bdmInstalled to check if bdm is installed.
+     * @return list of documents of requisition
+     */
     def uploadDocument( file, requisitionCode, docType, ownerPidm, vpdiCode, bdmInstalled ) {
         LoggerUtility.debug( LOGGER, 'requisitionCode ' + requisitionCode + ' vpdiCode ' + vpdiCode + 'bdmInstalled ' + bdmInstalled + 'docType ' + docType )
         if (!bdmInstalled) {
@@ -47,7 +56,7 @@ class DocumentManagementCompositeService {
     def uploadDocToBdmServer( RequisitionHeader requisition, docType, ownerPidm, fileName, absoluteFileName, vpdiCode ) throws ApplicationException {
         DateFormat dateFormat = new SimpleDateFormat( FinanceProcurementConstants.BDM_DATE_FORMAT )
         def documentAttributes = [:]
-        //This empty string is just to verify all fields data is set
+        //Empty value is set to few fields as we need to change them when we create the fields at BDM forms.
         documentAttributes.put( FinanceProcurementConstants.BDM_DOCUMENT_ID, requisition.requestCode )
         documentAttributes.put( FinanceProcurementConstants.BDM_BANNER_DOC_TYPE, docType )
         documentAttributes.put( FinanceProcurementConstants.BDM_DOCUMENT_TYPE, docType )
@@ -61,10 +70,14 @@ class DocumentManagementCompositeService {
         documentAttributes.put( FinanceProcurementConstants.BDM_DISPOSITION_DATE, FinanceProcurementConstants.EMPTY_STRING )
         bdmAttachmentService.createDocument( getBdmParams(), absoluteFileName, documentAttributes, vpdiCode )
     }
+
     /**
      * this method will delete the documents uploaded to BDM server
      * @param documentId
      * @param vpdiCode
+     * @param bdmInstalled
+     * @param requisitionCode
+     * @return list of documents of requisition
      */
     def deleteDocumentsByRequisitionCode( documentId, vpdiCode, bdmInstalled, requisitionCode ) {
         def docIds = []
@@ -85,6 +98,8 @@ class DocumentManagementCompositeService {
      * this method will delete the documents uploaded to BDM server
      * @param documentId
      * @param vpdiCode
+     * @param requisitionCode
+     * @return list of documents of requisition
      */
     def listDocumentsByRequisitionCode( def requisitionCode, vpdiCode, bdmInstalled ) {
         def criteria = [:]
