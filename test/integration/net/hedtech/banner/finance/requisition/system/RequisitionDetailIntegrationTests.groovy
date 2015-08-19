@@ -14,7 +14,7 @@ import org.junit.Test
  *
  */
 class RequisitionDetailIntegrationTests extends BaseIntegrationTestCase {
-    def reqCode = "R0000561"
+    def reqCode = "RSED0003"
     def commodityCode = '2210000000'
     def item = 1
 
@@ -77,7 +77,7 @@ class RequisitionDetailIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void fetchByRequestCode() {
-        def details = RequisitionDetail.fetchByRequestCode( 'R0000561' )
+        def details = RequisitionDetail.fetchByRequestCode( 'RSED0003' )
         assertTrue details.list.size() > 0
     }
 

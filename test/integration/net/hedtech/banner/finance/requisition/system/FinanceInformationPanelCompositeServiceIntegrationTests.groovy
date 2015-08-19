@@ -49,7 +49,7 @@ class FinanceInformationPanelCompositeServiceIntegrationTests extends BaseIntegr
     @Test
     public void testGetInformationPanelDataForPending() {
         assert (financeInformationPanelCompositeService.getInformationPanelData(
-                FinanceProcurementConstants.REQUISITION_INFO_STATUS_PENDING, 'R0000128').isEmpty())
+                FinanceProcurementConstants.REQUISITION_INFO_STATUS_PENDING, 'RSED0001').isEmpty())
     }
 
     /**
@@ -58,7 +58,7 @@ class FinanceInformationPanelCompositeServiceIntegrationTests extends BaseIntegr
     @Test
     public void testGetInformationPanelDataForAssignedToBuyer() {
         assert (!financeInformationPanelCompositeService.getInformationPanelData(
-                FinanceProcurementConstants.REQUISITION_INFO_STATUS_ASSIGNED_TO_BUYER, 'R0000057').isEmpty())
+                FinanceProcurementConstants.REQUISITION_INFO_STATUS_ASSIGNED_TO_BUYER, 'RSED0007').isEmpty())
     }
 
     /**
@@ -67,6 +67,6 @@ class FinanceInformationPanelCompositeServiceIntegrationTests extends BaseIntegr
     @Test
     public void testGetInformationPanelDataForConvertedToPO() {
         assert (!financeInformationPanelCompositeService.getInformationPanelData(
-                FinanceProcurementConstants.REQUISITION_INFO_STATUS_CONVERTED_TO_PO, 'R0000174').isEmpty())
+                FinanceProcurementConstants.REQUISITION_INFO_STATUS_CONVERTED_TO_PO, 'RSED0008').isEmpty())
     }
 }

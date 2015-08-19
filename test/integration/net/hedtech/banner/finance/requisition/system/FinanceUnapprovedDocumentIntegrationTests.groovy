@@ -34,6 +34,6 @@ class FinanceUnapprovedDocumentIntegrationTests extends BaseIntegrationTestCase 
      */
     @Test
     public void testFindByDocumentCode() {
-        assertNotNull(FinanceUnapprovedDocument.findByDocumentCode('R0000315')[0])
+        assertNotNull(FinanceUnapprovedDocument.findByDocumentCode('RSED0007')[0])
     }
 }

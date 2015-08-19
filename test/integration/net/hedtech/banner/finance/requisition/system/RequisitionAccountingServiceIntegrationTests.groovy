@@ -63,7 +63,7 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
      */
     @Test(expected = ApplicationException)
     public void testFindByWrongItem() {
-        final def requestCode = 'R0001397'
+        final def requestCode = 'RSED0003'
         final Integer item = 901291
         final Integer sequence = 2
         requisitionAccountingService.findByRequestCodeItemAndSeq( requestCode, item, sequence )
@@ -74,7 +74,7 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
      */
     @Test(expected = ApplicationException)
     public void testFindByWrongSequence() {
-        final def requestCode = 'R0001397'
+        final def requestCode = 'RSED0003'
         final Integer item = 0
         final Integer sequence = 90981
         requisitionAccountingService.findByRequestCodeItemAndSeq( requestCode, item, sequence )
@@ -129,8 +129,8 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
      */
     @Test
     public void testGetLastSequenceNumberByRequestCode() {
-        def lastSequence = requisitionAccountingService.getLastSequenceNumberByRequestCode( 'R0001397', 0 )
-        assertTrue( lastSequence == 0 || lastSequence > 0 )
+        def lastSequence = requisitionAccountingService.getLastSequenceNumberByRequestCode( 'RSED0003', 0 )
+        assertTrue(lastSequence > 0 )
     }
 
     /**
@@ -138,14 +138,14 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
      */
     @Test
     public void testGetLastItemNumberByRequestCode() {
-        def lastItem = requisitionAccountingService.getLastItemNumberByRequestCode( 'R0001397' )
-        assertTrue( lastItem == 0 || lastItem > 0 )
+        def lastItem = requisitionAccountingService.getLastItemNumberByRequestCode( 'RSED0005' )
+        assertTrue( lastItem > 0 )
     }
 
 
     @Test
     public void accountingExists() {
-        def count = requisitionAccountingService.findAccountingSizeByRequestCode( 'R0001397' )
+        def count = requisitionAccountingService.findAccountingSizeByRequestCode( 'RSED0003' )
         assertTrue( count >= 0 )
     }
 

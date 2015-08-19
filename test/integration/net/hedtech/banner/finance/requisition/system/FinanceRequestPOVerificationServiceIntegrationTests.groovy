@@ -39,7 +39,7 @@ class FinanceRequestPOVerificationServiceIntegrationTests extends BaseIntegratio
      */
     @Test
     public void testFindByRequestCode() {
-        assert (!financeRequestPOVerificationService.findByRequestCode('R0000174').isEmpty())
+        assert (!financeRequestPOVerificationService.findByRequestCode('RSED0008').isEmpty())
     }
 
     /**

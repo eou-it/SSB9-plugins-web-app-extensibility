@@ -36,8 +36,8 @@ class FinanceTextIntegrationTests extends BaseIntegrationTestCase {
     @Test
     public void testSaveFinanceText() {
         FinanceText financeText = getFinanceText()
-        financeText.save(failOnError: true, flush: true)
-        assertNotNull(financeText.id)
+        financeText.save( failOnError: true, flush: true )
+        assertNotNull( financeText.id )
     }
 
     /**
@@ -45,7 +45,7 @@ class FinanceTextIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testListAllFinanceTextByCode() {
-        def list = FinanceText.listAllFinanceTextByCode('R0000002')
+        def list = FinanceText.listAllFinanceTextByCode( 'RSED0003' )
         assert (list.size() > 0)
     }
 
@@ -54,8 +54,8 @@ class FinanceTextIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testGetFinanceTextByCodeAndItemNumber() {
-        def financeText = FinanceText.getFinanceTextByCodeAndItemNumber('R0000002', 1)[0]
-        assertNotNull(financeText)
+        def financeText = FinanceText.getFinanceTextByCodeAndItemNumber( 'RSED0003', 1 )[0]
+        assertNotNull( financeText )
     }
 
     /**
@@ -63,15 +63,15 @@ class FinanceTextIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testUpdateFinanceText() {
-        FinanceText financeText = FinanceText.getFinanceTextByCodeAndItemNumber('R0000002', 1)[0]
+        FinanceText financeText = FinanceText.getFinanceTextByCodeAndItemNumber( 'RSED0003', 1 )[0]
         def id = financeText.id
         financeText.textCode = 'UPDATE_TEST'
         financeText.version = null
         if (financeText.isDirty()) {
-            financeText.save(failOnError: true, flush: true)
-            assertTrue(id == financeText.id)
+            financeText.save( failOnError: true, flush: true )
+            assertTrue( id == financeText.id )
         } else {
-            assertNotNull(financeText.id)
+            assertNotNull( financeText.id )
         }
     }
 
@@ -80,11 +80,12 @@ class FinanceTextIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testDeleteFinanceText() {
-        FinanceText financeText = FinanceText.getFinanceTextByCodeAndItemNumber('R0000002', 1)[0]
+        def rgSize = FinanceText.getFinanceTextByCodeAndItemNumber( 'RSED0003', 1 ).size()
+        FinanceText financeText = FinanceText.getFinanceTextByCodeAndItemNumber( 'RSED0003', 1 )[0]
         def textCode = financeText.textCode
         def item = financeText.textItem
-        financeText.delete(failOnError: true, flush: true)
-        assertTrue(FinanceText.getFinanceTextByCodeAndItemNumber(textCode, item).size() == 0)
+        financeText.delete( failOnError: true, flush: true )
+        assertTrue( rgSize == FinanceText.getFinanceTextByCodeAndItemNumber( textCode, item ).size() + 1 )
     }
 
     /**
@@ -92,9 +93,9 @@ class FinanceTextIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testGetFinanceTextByCodeAndItemNumberAndPrintInd() {
-        FinanceText financeText = FinanceText.getFinanceTextByCodeAndItemNumberAndPrintInd('R0000002', 1,
-                FinanceProcurementConstants.DEFAULT_INDICATOR_YES)[0]
-        assertTrue(financeText.textCode == 'R0000002' && financeText.textItem == 1)
+        FinanceText financeText = FinanceText.getFinanceTextByCodeAndItemNumberAndPrintInd( 'RSED0003', 1,
+                                                                                            FinanceProcurementConstants.DEFAULT_INDICATOR_YES )[0]
+        assertTrue( financeText.textCode == 'RSED0003' && financeText.textItem == 1 )
     }
 
     /**
@@ -102,17 +103,17 @@ class FinanceTextIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testListHeaderLevelTextByCodeAndPrintOptionInd() {
-        def financeTextList = FinanceText.listHeaderLevelTextByCodeAndPrintOptionInd('R0000002',
-                FinanceProcurementConstants.DEFAULT_INDICATOR_YES)
-        assertTrue (financeTextList.size() == 0)
+        def financeTextList = FinanceText.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003',
+                                                                                      FinanceProcurementConstants.DEFAULT_INDICATOR_YES )
+        assertTrue( financeTextList.size() > 0 )
     }
 
     /**
      * Test case to test get list of header level text by code.
      */
     public void testListHeaderLevelTextByCode() {
-        def financeTextList = FinanceText.listHeaderLevelTextByCode('R0000072')
-        assertTrue (financeTextList.size() > 1)
+        def financeTextList = FinanceText.listHeaderLevelTextByCode( 'RSED0003' )
+        assertTrue( financeTextList.size() > 1 )
     }
 
     /**

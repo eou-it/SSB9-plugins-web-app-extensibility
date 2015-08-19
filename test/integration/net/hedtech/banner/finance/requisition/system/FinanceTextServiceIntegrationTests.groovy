@@ -37,7 +37,7 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testListAllFinanceTextByCode() {
-        assert (financeTextService.listAllFinanceTextByCode('R0000002').size() > 0)
+        assert (financeTextService.listAllFinanceTextByCode('RSED0003').size() > 0)
     }
 
     /**
@@ -45,7 +45,7 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testGetFinanceTextByCodeAndItemNumber() {
-        assertNotNull(financeTextService.getFinanceTextByCodeAndItemNumber('R0000002', 10))
+        assertNotNull(financeTextService.getFinanceTextByCodeAndItemNumber('RSED0003', 10))
     }
 
     /**
@@ -62,10 +62,10 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testUpdateText() {
-        FinanceText financeText = financeTextService.getFinanceTextByCodeAndItemNumber('R0000002', 1)[0];
+        FinanceText financeText = financeTextService.getFinanceTextByCodeAndItemNumber('RSED0003', 1)[0];
         financeText.text = 'New Text For Update'
         def updated = financeTextService.update([domainModel: financeText])
-        assertTrue(financeTextService.listAllFinanceTextByCode(updated.textCode).size() == 1)
+        assertTrue(financeTextService.listAllFinanceTextByCode(updated.textCode).size() >= 1)
     }
 
     /**
@@ -74,7 +74,7 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
     @Test
     public void testDeleteText() {
         def financeText = getFinanceText();
-        FinanceText financeTextToDelete = financeTextService.getFinanceTextByCodeAndItemNumber('R0000002', 1)[0];
+        FinanceText financeTextToDelete = financeTextService.getFinanceTextByCodeAndItemNumber('RSED0003', 1)[0];
         financeTextService.delete([domainModel: financeTextToDelete])
         assert (financeTextService.listAllFinanceTextByCode(financeText.textCode).size() == 0)
     }
@@ -84,9 +84,9 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testGetFinanceTextByCodeAndItemAndPrintOption() {
-        FinanceText financeText = financeTextService.getFinanceTextByCodeAndItemAndPrintOption('R0000002', 1,
+        FinanceText financeText = financeTextService.getFinanceTextByCodeAndItemAndPrintOption('RSED0003', 1,
                 FinanceProcurementConstants.DEFAULT_INDICATOR_YES)[0]
-        assertTrue(financeText.textCode == 'R0000002')
+        assertTrue(financeText.textCode == 'RSED0003')
     }
 
     /**
@@ -94,7 +94,7 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testListHeaderLevelTextByCodeAndPrintOptionInd() {
-        def list = financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd('R0000072',
+        def list = financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd('RSED0003',
                 FinanceProcurementConstants.DEFAULT_INDICATOR_YES)
         assertTrue(list.size() > 1)
     }
@@ -104,7 +104,7 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testListHeaderLevelTextByCode() {
-        def list = financeTextService.listHeaderLevelTextByCode('R0000072')
+        def list = financeTextService.listHeaderLevelTextByCode('RSED0003')
         assertTrue(list.size() > 1)
     }
 

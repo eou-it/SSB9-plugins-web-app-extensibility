@@ -36,7 +36,7 @@ class FinancePendingApproverListServiceIntegrationTests extends BaseIntegrationT
      */
     @Test
     public void testFindByDocumentCode() {
-        assert (financePendingApproverListService.findByDocumentCode('R0000128').isEmpty())
+        assert (financePendingApproverListService.findByDocumentCode('RSED0001').isEmpty())
     }
 
     /**

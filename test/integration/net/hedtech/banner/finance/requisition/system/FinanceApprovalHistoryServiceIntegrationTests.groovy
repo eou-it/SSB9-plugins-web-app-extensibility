@@ -38,6 +38,6 @@ class FinanceApprovalHistoryServiceIntegrationTests extends BaseIntegrationTestC
      */
     @Test
     public void testFindByDocumentCode() {
-        assertTrue(financeApprovalHistoryService.findByDocumentCode('R0000060').size() > 1)
+        assertTrue(financeApprovalHistoryService.findByDocumentCode('RSED0007').size() > 1)
     }
 }

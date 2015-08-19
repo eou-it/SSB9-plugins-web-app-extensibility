@@ -39,7 +39,7 @@ class FinanceApprovalsInProcessServiceIntegrationTests extends BaseIntegrationTe
      */
     @Test
     public void testFindByDocumentNumber() {
-        assertNotNull(financeApprovalsInProcessService.findByDocumentNumber('R0000315')[0])
+        assertNotNull(financeApprovalsInProcessService.findByDocumentNumber('RSED0007')[0])
     }
 
 }

@@ -18,7 +18,7 @@ import org.springframework.security.authentication.BadCredentialsException
 class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
     def requisitionDetailService
     def springSecurityService
-    def reqCode = 'R0000124'
+    def reqCode = 'RSED0003'
     def item = 1
     /**
      * Super class setup
@@ -132,8 +132,8 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testGetRequisitionDetailByRequestCodeAndItem() {
-        def requisitionDetail = requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'R0000561', 1 )
-        assertTrue( (requisitionDetail.requestCode == 'R0000561' && requisitionDetail.item == 1) || requisitionDetail == null )
+        def requisitionDetail = requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'RSED0003', 1 )
+        assertTrue( (requisitionDetail.requestCode == 'RSED0003' && requisitionDetail.item == 1) || requisitionDetail == null )
     }
 
     /**
@@ -163,8 +163,8 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void findByRequestCode() {
-        def detail = requisitionDetailService.findByRequestCode( 'R0000561' )
-        assertTrue 'R0000561' == detail[0].requestCode
+        def detail = requisitionDetailService.findByRequestCode( 'RSED0003' )
+        assertTrue 'RSED0003' == detail[0].requestCode
     }
 
     /**
@@ -184,7 +184,7 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
      * @return RequisitionDetail.
      */
     private RequisitionDetail getRequisitionDetails() {
-        def reqCode = "R0000561"
+        def reqCode = "RSED0003"
         def commodityCode = '2210000000'
         def lastItem = RequisitionDetail.getLastItem( reqCode ).getAt( 0 )
         if (lastItem == null) {

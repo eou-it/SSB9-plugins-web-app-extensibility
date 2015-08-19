@@ -34,6 +34,6 @@ class FinanceApprovalHistoryIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testFindByDocumentCode() {
-        assertTrue(FinanceApprovalHistory.findByDocumentCode('R0000060').size() > 1)
+        assertTrue(FinanceApprovalHistory.findByDocumentCode('RSED0007').size() > 0)
     }
 }

@@ -34,7 +34,7 @@ class FinanceBuyerVerificationIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testFindByDocumentCode() {
-        assert (!FinanceBuyerVerification.findByDocumentCode('R0000057').isEmpty())
+        assert (!FinanceBuyerVerification.findByDocumentCode('RSED0007').isEmpty())
     }
 
     /**
