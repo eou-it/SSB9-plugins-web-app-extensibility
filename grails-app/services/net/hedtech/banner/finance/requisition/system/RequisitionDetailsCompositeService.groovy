@@ -311,7 +311,7 @@ class RequisitionDetailsCompositeService {
         try {
             requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
         } catch (ApplicationException ae) {
-            LoggerUtility.info( LOGGER, 'No requisition detail available for ' + requisitionCode + ': ' + ae )
+            LoggerUtility.info( LOGGER, 'No requisition detail available for ' + requisitionCode + ': ' + ae.message )
         }
         def commodityCodes = requisitionDetails.findAll() {it.commodityDescription == null}.collect() {
             it.commodity
@@ -394,7 +394,7 @@ class RequisitionDetailsCompositeService {
         try {
             requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
         } catch (ApplicationException ae) {
-            LoggerUtility.info( LOGGER, 'No requisition detail available for ' + requisitionCode + ': ' + ae )
+            LoggerUtility.info( LOGGER, 'No requisition detail available for ' + requisitionCode + ': ' + ae.message )
         }
         def commodityCodes = requisitionDetails.findAll() {it.commodityDescription == null}.collect() {
             it.commodity
