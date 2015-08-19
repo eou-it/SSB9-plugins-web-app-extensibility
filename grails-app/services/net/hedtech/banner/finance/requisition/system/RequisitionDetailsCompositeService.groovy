@@ -13,6 +13,7 @@ import net.hedtech.banner.finance.util.FinanceCommonUtility
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.commons.lang3.StringUtils
 import org.apache.log4j.Logger
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 
 /**
@@ -236,7 +237,7 @@ class RequisitionDetailsCompositeService {
      * @param requisitionCode
      * @return
      */
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     def listCommodityWithAccounting( requisitionCode ) {
         def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionCode )
         def list = [:]
@@ -303,8 +304,15 @@ class RequisitionDetailsCompositeService {
      * @param requisitionCode
      * @return
      */
+    @Transactional(propagation = Propagation.SUPPORTS)
     def private listCommodityWithDocumentLevelAccounting( requisitionCode, headerTnxDate ) {
-        def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
+
+        def requisitionDetails = []
+        try {
+            requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
+        } catch (ApplicationException ae) {
+            LoggerUtility.info( LOGGER, 'No requisition detail available for ' + requisitionCode + ': ' + ae )
+        }
         def commodityCodes = requisitionDetails.findAll() {it.commodityDescription == null}.collect() {
             it.commodity
         }
@@ -380,8 +388,14 @@ class RequisitionDetailsCompositeService {
  * @param headerTxnDate
  * @param requisitionCode
  */
+    @Transactional(propagation = Propagation.SUPPORTS)
     def private listCommodityWithCommodityLevelAccounting( requisitionCode, headerTxnDate ) {
-        def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
+        def requisitionDetails = []
+        try {
+            requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
+        } catch (ApplicationException ae) {
+            LoggerUtility.info( LOGGER, 'No requisition detail available for ' + requisitionCode + ': ' + ae )
+        }
         def commodityCodes = requisitionDetails.findAll() {it.commodityDescription == null}.collect() {
             it.commodity
         }

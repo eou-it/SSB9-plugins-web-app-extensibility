@@ -265,8 +265,8 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
 
     @Test
     void testListCommodityWithCommodityLevelAccounting() {
-        def listCommoityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting('RSED0003')
-        assertTrue(listCommoityWithAccounting.size() > 0)
+        def listCommodityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting('RSED0003')
+        assertTrue(listCommodityWithAccounting.size() > 0)
     }
 
     /**
