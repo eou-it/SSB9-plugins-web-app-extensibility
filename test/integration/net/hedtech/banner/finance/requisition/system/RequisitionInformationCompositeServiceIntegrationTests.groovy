@@ -40,8 +40,18 @@ class RequisitionInformationCompositeServiceIntegrationTests extends BaseIntegra
     @Test
     void fetchPurchaseRequisition() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        assertTrue requisitionInformationCompositeService.fetchPurchaseRequisition('RSED0009', 'USD').header.requestCode == 'RSED0001'
+        assertTrue requisitionInformationCompositeService.fetchPurchaseRequisition('RSED0001', 'USD').header.requestCode == 'RSED0001'
     }
+
+    /**
+     * Test fetchPurchaseRequisition
+     */
+    @Test
+    void fetchPurchaseRequisitionHavingDiscount() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        assertTrue requisitionInformationCompositeService.fetchPurchaseRequisition('RSED0009', 'USD').header.requestCode == 'RSED0009'
+    }
+
 
     /**
      * Test fetchPurchaseRequisition

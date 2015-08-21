@@ -218,6 +218,9 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
             assertNotNull requisitions
             assert requisitions.size() > 0
         }
+        catch (ApplicationException ae) {
+            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID
+        }
         finally {
             springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
         }
