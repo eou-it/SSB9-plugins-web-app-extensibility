@@ -6,6 +6,9 @@ package net.hedtech.banner.finance.requisition.system
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.codehaus.groovy.grails.web.context.ServletContextHolder
+import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
+import org.hibernate.SessionFactory
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -50,6 +53,19 @@ class CopyPurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegr
             copyPurchaseRequisitionCompositeService.copyRequisition('RSED0001')
         } catch (ApplicationException e) {
             assertApplicationException e, (FinanceProcurementConstants.ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED)
+        }
+    }
+
+    /**
+     * Test case to test fail case for copy requisition.
+     */
+    @Test
+    public void testCopyRequisitionFailCaseWithHibernateException() {
+        try {
+            def defaultQuery = 'testQuery'
+            copyPurchaseRequisitionCompositeService.copyRequisition('RSED0005',defaultQuery)
+        } catch (ApplicationException e) {
+            assertApplicationException e, (e.getMessage())
         }
     }
 }

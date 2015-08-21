@@ -66,11 +66,13 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
     @Test
     public void testFindRequisitionDetailListByUser() {
         def pagingParams = [max: 500, offset: 0]
+        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
+        springSecurityService.getAuthentication().user.oracleUserName = 'GRAILS'
         try {
             def list = requisitionDetailService.fetchRequisitionDetailListByUser( pagingParams )
             assertTrue( list.size() > 0 )
-        } catch (ApplicationException e) {
-            assertApplicationException e, (FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL)
+        }finally {
+            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
         }
     }
 
@@ -123,8 +125,17 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testGetLastItem() {
-        def lastItem = requisitionDetailService.getLastItem( reqCode )
-        assertTrue( lastItem == 0 || lastItem > 0 )
+        def lastItem = requisitionDetailService.getLastItem( 'RSED0003' )
+        assertTrue( lastItem > 0 )
+    }
+
+    /**
+     * Test to test the get the last item for request code.
+     */
+    @Test
+    public void testGetLastItemWithInvalidRequestCode() {
+        def lastItem = requisitionDetailService.getLastItem( null )
+        assertTrue( lastItem == 0 )
     }
 
     /**

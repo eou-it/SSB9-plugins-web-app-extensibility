@@ -25,7 +25,7 @@ class CopyPurchaseRequisitionCompositeService {
     /**
      * This method is used to copy the requisition.
      */
-    def copyRequisition(requestCode) {
+    def copyRequisition(requestCode,defaultQuery = null) {
         def header = requisitionHeaderService.findRequisitionHeaderByRequestCode(requestCode)
         if (header && header.completeIndicator) {
             Session session
@@ -33,7 +33,7 @@ class CopyPurchaseRequisitionCompositeService {
                 session = sessionFactory.getCurrentSession()
                 session.createSQLQuery(FinanceProcurementSQLConstants.QUERY_UPDATE_NEXT_REQ_SEQUENCE).executeUpdate()
                 def nextDocCode = session.createSQLQuery(FinanceProcurementSQLConstants.QUERY_NEXT_REQ_NUMBER).list()[0]
-                session.createSQLQuery(FinanceProcurementSQLConstants.QUERY_COPY_REQUISITION)
+                session.createSQLQuery(defaultQuery? defaultQuery :FinanceProcurementSQLConstants.QUERY_COPY_REQUISITION)
                         .setParameter(FinanceProcurementConstants.NEXT_DOC_CODE, nextDocCode)
                         .setParameter(FinanceProcurementConstants.OLD_DOC_CODE, requestCode)
                         .executeUpdate()

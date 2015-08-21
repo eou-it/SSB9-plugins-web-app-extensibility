@@ -125,12 +125,39 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
     }
 
     /**
+     * Test case method to find requisition accounting list to test empty list.
+     */
+    @Test
+    public void testFetchRequisitionAccountingListWithProvider() {
+        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
+        springSecurityService.getAuthentication().user.oracleUserName = 'SYSTESTFINAUSR'
+        def pagingParams = [max: 500, offset: 0]
+        def providedUser = 'testProvider'
+        try {
+            requisitionAccountingService.findRequisitionAccountingListByUser( pagingParams,providedUser )
+        } catch (ApplicationException ae) {
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_ACCOUNTING )
+        } finally {
+            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
+        }
+    }
+
+    /**
      * Test case method to find last sequence number generated for request code.
      */
     @Test
     public void testGetLastSequenceNumberByRequestCode() {
         def lastSequence = requisitionAccountingService.getLastSequenceNumberByRequestCode( 'RSED0003', 0 )
         assertTrue(lastSequence > 0 )
+    }
+
+    /**
+     * Test case method to find last sequence number generated for request code.
+     */
+    @Test
+    public void testGetLastSequenceNumberByEmptyRequestCode() {
+        def lastSequence = requisitionAccountingService.getLastSequenceNumberByRequestCode( null, 0 )
+        assertTrue(lastSequence == 0 )
     }
 
     /**
@@ -142,6 +169,14 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
         assertTrue( lastItem > 0 )
     }
 
+    /**
+     * Test case method to find last item number generated for request code.
+     */
+    @Test
+    public void testGetLastItemNumberByEmptyRequestCode() {
+        def lastItem = requisitionAccountingService.getLastItemNumberByRequestCode(null)
+        assertTrue( lastItem == 0 )
+    }
 
     @Test
     public void accountingExists() {

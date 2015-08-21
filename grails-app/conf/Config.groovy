@@ -23,6 +23,7 @@ def locationAdder = ConfigFinder.&addLocation.curry(grails.config.locations)
 
 [bannerGrailsAppConfig: "${userHome}/.grails/banner_configuration.groovy",
         customRepresentationConfig: "grails-app/conf/CustomRepresentationConfig.groovy",
+        BANNER_FINANCE_PROCUREMENT_SSB_CONFIG: "${userHome}/.grails/BannerFinanceProcurementSSB_configuration.groovy",
 ].each { envName, defaultFileName -> locationAdder(envName, defaultFileName) }
 
 grails.databinding.useSpringBinder=true

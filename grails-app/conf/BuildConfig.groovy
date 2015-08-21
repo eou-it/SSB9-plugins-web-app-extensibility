@@ -21,6 +21,7 @@ grails.plugin.location.'banner-finance-validation'="../banner_finance_validation
 grails.plugin.location.'banner-finance-validation_common'="../banner_finance_validation_common.git"
 grails.plugin.location.'banner_general_validation_common'="../banner_general_validation_common.git"
 grails.plugin.location.'banner_general_person'="../banner_general_person.git"
+grails.plugin.location.'banner_document_management'="../banner_document_management.git"
 
 grails.war.resources = { stagingDir ->
     delete(file: "${stagingDir}/WEB-INF/lib/ojdbc6.jar")

@@ -208,6 +208,25 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
      * Test search Requisitions for specified search param and status
      */
     @Test
+    void searchPurchaseRequisitionWithInvalidLoggedInUser() {
+        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
+        springSecurityService.getAuthentication().user.oracleUserName = ''
+        try {
+            def pagingParams = [max: 500, offset: 0]
+            def searchParams = [convertValue: 'RSED0001', isDateString: false]
+            def requisitions = requisitionListingCompositeService.searchPurchaseRequisition( searchParams, null, pagingParams, 'institutionBaseCcy' )
+            assertNotNull requisitions
+            assert requisitions.size() > 0
+        }
+        finally {
+            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
+        }
+    }
+
+    /**
+     * Test search Requisitions for specified search param and status
+     */
+    @Test
     void searchPurchaseRequisitionWithSearchParamAsDate() {
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
         springSecurityService.getAuthentication().user.oracleUserName = 'GRAILS'
