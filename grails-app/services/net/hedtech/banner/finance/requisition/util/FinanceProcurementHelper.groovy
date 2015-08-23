@@ -20,7 +20,7 @@ class FinanceProcurementHelper {
      * @param requisitionHeader
      */
     static def checkCompleteRequisition( requisitionHeader ) {
-        if (true == requisitionHeader.completeIndicator) {
+        if (requisitionHeader.completeIndicator) {
             throw new ApplicationException(
                     FinanceProcurementHelper,
                     new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_REQUISITION_ALREADY_COMPLETED, [requisitionHeader.requestCode] ) )
