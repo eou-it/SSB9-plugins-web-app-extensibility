@@ -46,11 +46,11 @@ class RequisitionDetailsCompositeService {
      */
     def createPurchaseRequisitionDetail( map ) {
         RequisitionDetail requisitionDetailRequest = map.requisitionDetail
-        def user = springSecurityService.getAuthentication()?.user
+        def user = springSecurityService.getAuthentication().user
         if (user.oracleUserName) {
             def requestCode = requisitionDetailRequest.requestCode
             FinanceProcurementHelper.checkCompleteRequisition( requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ) )
-            requisitionDetailRequest.userId = user?.oracleUserName
+            requisitionDetailRequest.userId = user.oracleUserName
             requisitionDetailRequest.item = requisitionDetailService.getLastItem( requestCode ).next()
             // Set all data with business logic.
             requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
@@ -92,7 +92,7 @@ class RequisitionDetailsCompositeService {
      */
     def updateRequisitionDetail( detailDomainModel ) {
         def requestCode = detailDomainModel.requisitionDetail.requestCode
-        def user = springSecurityService.getAuthentication()?.user
+        def user = springSecurityService.getAuthentication().user
         if (!user.oracleUserName) {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
             throw new ApplicationException( RequisitionDetailsCompositeService,

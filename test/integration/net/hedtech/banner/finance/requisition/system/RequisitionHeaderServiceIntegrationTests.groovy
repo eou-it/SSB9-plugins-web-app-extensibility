@@ -117,7 +117,15 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testRecallRequisition() {
-        requisitionHeaderService.recallRequisition('RSED0007')
+        requisitionHeaderService.recallRequisition( 'RSED0007' )
+    }
+
+    /**
+     * Test case to test recall requisition.
+     */
+    @Test
+    public void testRecallRequisitionHavingNoApprovalHistory() {
+        requisitionHeaderService.recallRequisition( 'RSED0012' )
     }
 
     /**

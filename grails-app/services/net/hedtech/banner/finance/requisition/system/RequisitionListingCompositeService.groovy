@@ -33,7 +33,7 @@ class RequisitionListingCompositeService {
      */
     def listRequisitionsByBucket( buckets, pagingParams, baseCcy ) {
         institutionCcy = baseCcy
-        def user = springSecurityService.getAuthentication()?.user
+        def user = springSecurityService.getAuthentication().user
         if (!user.oracleUserName) {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
             throw new ApplicationException( RequisitionListingCompositeService, new BusinessLogicValidationException(
@@ -164,7 +164,7 @@ class RequisitionListingCompositeService {
      * @param searchParam as String
      */
     private def searchRequisitionsBySearchParam( searchParam, pagingParams, isDateString, baseCcy ) {
-        def user = springSecurityService.getAuthentication()?.user
+        def user = springSecurityService.getAuthentication().user
         institutionCcy = baseCcy
         if (!user.oracleUserName) {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
@@ -190,7 +190,7 @@ class RequisitionListingCompositeService {
      */
     def searchRequisitionsByStatusAndSearchParam( bucket, searchParam, pagingParams, isDateString, baseCcy ) {
         def dataMap = [:]
-        def user = springSecurityService.getAuthentication()?.user
+        def user = springSecurityService.getAuthentication().user
         if (!user.oracleUserName) {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
             throw new ApplicationException( RequisitionListingCompositeService, new BusinessLogicValidationException(

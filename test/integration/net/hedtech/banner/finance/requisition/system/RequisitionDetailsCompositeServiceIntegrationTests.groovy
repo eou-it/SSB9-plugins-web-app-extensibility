@@ -47,7 +47,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
         def reqDetailDomainModel = getRequisitionDetails()
         reqDetailDomainModel.privateComment = 'Testing Private comment.'
         def domainModelMap = [requisitionDetail: reqDetailDomainModel]
-        def requestCode = requisitionDetailsCompositeService.createPurchaseRequisitionDetail(domainModelMap)
+        def requestCode = requisitionDetailsCompositeService.createPurchaseRequisitionDetail( domainModelMap )
         assertTrue requestCode?.requestCode == requestHeaderCode
     }
 
@@ -57,7 +57,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void testCreatePurchaseRequisitionDetailWithNoTaxProcessing() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def financeSystemControlServiceMeta = requisitionDetailsCompositeService.financeSystemControlService.metaClass
         try {
             requisitionDetailsCompositeService.financeSystemControlService.metaClass.findActiveFinanceSystemControl {
@@ -66,7 +66,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
             def reqDetailDomainModel = getRequisitionDetails()
             reqDetailDomainModel.publicComment = 'Testing Public comment.'
             def domainModelMap = [requisitionDetail: reqDetailDomainModel]
-            def requestCode = requisitionDetailsCompositeService.createPurchaseRequisitionDetail(domainModelMap)
+            def requestCode = requisitionDetailsCompositeService.createPurchaseRequisitionDetail( domainModelMap )
             assertTrue requestCode?.requestCode == requestHeaderCode
         } finally {
             requisitionDetailsCompositeService.financeSystemControlService.metaClass = financeSystemControlServiceMeta
@@ -82,7 +82,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
         def reqDetailDomainModel = getRequisitionDetails()
         reqDetailDomainModel.publicComment = 'Testing Public comment.'
         def domainModelMap = [requisitionDetail: reqDetailDomainModel]
-        requisitionDetailsCompositeService.createPurchaseRequisitionDetail(domainModelMap)
+        requisitionDetailsCompositeService.createPurchaseRequisitionDetail( domainModelMap )
     }
 
     /**
@@ -94,7 +94,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
         reqDetailDomainModel.requestCode = 'R0000129182991'
         reqDetailDomainModel.privateComment = 'Testing Private comment.'
         def domainModelMap = [requisitionDetail: reqDetailDomainModel]
-        requisitionDetailsCompositeService.createPurchaseRequisitionDetail(domainModelMap)
+        requisitionDetailsCompositeService.createPurchaseRequisitionDetail( domainModelMap )
     }
 
     /**
@@ -103,16 +103,16 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void testCreatePurchaseRequisitionDetailInvalidUser() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
         springSecurityService.getAuthentication().user.oracleUserName = ''
         def reqDetailDomainModel = getRequisitionDetails()
         reqDetailDomainModel.privateComment = 'Testing Private comment.'
         def domainModelMap = [requisitionDetail: reqDetailDomainModel]
         try {
-            requisitionDetailsCompositeService.createPurchaseRequisitionDetail(domainModelMap)
+            requisitionDetailsCompositeService.createPurchaseRequisitionDetail( domainModelMap )
         } catch (ApplicationException ae) {
-            assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID)
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
         } finally {
             springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
         }
@@ -124,9 +124,9 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void testDeletePurchaseRequisitionDetail() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        requisitionDetailsCompositeService.deletePurchaseRequisitionDetail('RSED0003', 1)
+        requisitionDetailsCompositeService.deletePurchaseRequisitionDetail( 'RSED0003', 1 )
         try {
-            requisitionDetailService.getRequisitionDetailByRequestCodeAndItem('RSED0003', 1)
+            requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'RSED0003', 1 )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL
         }
         catch (ApplicationException ae) {
@@ -140,9 +140,9 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void testDeletePurchaseRequisitionDetailForCommodityLvlAcc() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        requisitionDetailsCompositeService.deletePurchaseRequisitionDetail('RSED0004', 1)
+        requisitionDetailsCompositeService.deletePurchaseRequisitionDetail( 'RSED0004', 1 )
         try {
-            requisitionDetailService.getRequisitionDetailByRequestCodeAndItem('RSED0004', 1)
+            requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'RSED0004', 1 )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL
         }
         catch (ApplicationException ae) {
@@ -156,13 +156,13 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void updatePurchaseDetail() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def detailDomainModel = getRequisitionDetails()
         detailDomainModel.item = 1
         detailDomainModel.privateComment = 'Testing Private comment.'
         def domainModelMap = [requisitionDetail: detailDomainModel]
-        def detail = requisitionDetailsCompositeService.updateRequisitionDetail(domainModelMap)
-        assertTrue(detail.requestCode == requestHeaderCode)
+        def detail = requisitionDetailsCompositeService.updateRequisitionDetail( domainModelMap )
+        assertTrue( detail.requestCode == requestHeaderCode )
     }
 
     /**
@@ -171,8 +171,8 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void findByRequestCode() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        assert requisitionDetailsCompositeService.findByRequestCode('RSED0003').commodityDescription != null
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        assert requisitionDetailsCompositeService.findByRequestCode( 'RSED0003' ).commodityDescription != null
     }
 
     /**
@@ -181,9 +181,9 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void findByRequestCodeInvalidCode() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         try {
-            requisitionDetailsCompositeService.findByRequestCode('INVALID')
+            requisitionDetailsCompositeService.findByRequestCode( 'INVALID' )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL
         } catch (ApplicationException e) {
             assertApplicationException e, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL
@@ -195,7 +195,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void updatePurchaseDetailInvalidUser() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         //
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
         springSecurityService.getAuthentication().user.oracleUserName = ''
@@ -204,9 +204,9 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
         detailDomainModel.publicComment = 'Testing Public comment.'
         def domainModelMap = [requisitionDetail: detailDomainModel]
         try {
-            requisitionDetailsCompositeService.updateRequisitionDetail(domainModelMap)
+            requisitionDetailsCompositeService.updateRequisitionDetail( domainModelMap )
         } catch (ApplicationException ae) {
-            assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID)
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID )
         } finally {
             springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
         }
@@ -218,13 +218,13 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void updatePurchaseDetailWithEmptyList() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def detailDomainModel = getRequisitionDetails()
         detailDomainModel.item = 0
         detailDomainModel.privateComment = 'Testing Private comment.'
         def domainModelMap = [requisitionDetail: detailDomainModel]
         try {
-            requisitionDetailsCompositeService.updateRequisitionDetail(domainModelMap)
+            requisitionDetailsCompositeService.updateRequisitionDetail( domainModelMap )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_ITEM_IS_REQUIRED
         } catch (ApplicationException e) {
             assertApplicationException e, FinanceProcurementConstants.ERROR_MESSAGE_ITEM_IS_REQUIRED
@@ -235,11 +235,22 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
      * The test case is to test find requisition by code with all required information.
      */
     @Test
+    void testFindByRequestCodeAndItemWithOnlyCommodityDescription() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def reqDetailInfo = requisitionDetailsCompositeService.findByRequestCodeAndItem( 'RSED0011', 1 )
+        assertTrue( reqDetailInfo.requisitionDetail.requestCode == 'RSED0011' )
+    }
+
+    /**
+     * The test case is to test find requisition by code with all required information.
+     */
+    @Test
     void testFindByRequestCodeAndItem() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def reqDetailInfo = requisitionDetailsCompositeService.findByRequestCodeAndItem('RSED0004', 1)
-        assertTrue(reqDetailInfo.requisitionDetail.requestCode == 'RSED0004')
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def reqDetailInfo = requisitionDetailsCompositeService.findByRequestCodeAndItem( 'RSED0004', 1 )
+        assertTrue( reqDetailInfo.requisitionDetail.requestCode == 'RSED0004' )
     }
 
     /**
@@ -248,9 +259,9 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void testListCommodityWithAccounting() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def listCommoityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting('RSED0004')
-        assertTrue(listCommoityWithAccounting.size() > 0)
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def listCommoityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting( 'RSED0004' )
+        assertTrue( listCommoityWithAccounting.size() > 0 )
     }
 
     /**
@@ -259,14 +270,15 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void testListCommodityWithDocumentLevelAccounting() {
         def date = new Date()
-        def list = requisitionDetailsCompositeService.listCommodityWithDocumentLevelAccounting('RSED0004', date)
-        assertTrue(list.size() > 0)
+        def list = requisitionDetailsCompositeService.listCommodityWithDocumentLevelAccounting( 'RSED0004', date )
+        assertTrue( list.size() > 0 )
     }
+
 
     @Test
     void testListCommodityWithCommodityLevelAccounting() {
-        def listCommodityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting('RSED0003')
-        assertTrue(listCommodityWithAccounting.size() > 0)
+        def listCommodityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting( 'RSED0003' )
+        assertTrue( listCommodityWithAccounting.size() > 0 )
     }
 
     /**

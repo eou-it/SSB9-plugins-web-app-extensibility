@@ -61,7 +61,7 @@ class DocumentManagementCompositeService {
         documentAttributes.put( FinanceProcurementConstants.BDM_BANNER_DOC_TYPE, docType )
         documentAttributes.put( FinanceProcurementConstants.BDM_DOCUMENT_TYPE, docType )
         documentAttributes.put( FinanceProcurementConstants.BDM_TRANSACTION_DATE, requisition.transactionDate )
-        documentAttributes.put( FinanceProcurementConstants.BDM_VENDOR_ID, requisition?.vendorPidm ? requisition.vendorPidm : FinanceProcurementConstants.EMPTY_STRING )
+        documentAttributes.put( FinanceProcurementConstants.BDM_VENDOR_ID, requisition.vendorPidm ? requisition.vendorPidm : FinanceProcurementConstants.EMPTY_STRING )
         documentAttributes.put( FinanceProcurementConstants.BDM_VENDOR_NAME, PersonIdentificationName.findByPidm( ownerPidm )?.fullName )
         documentAttributes.put( FinanceProcurementConstants.BDM_FIRST_NAME, fileName )
         documentAttributes.put( FinanceProcurementConstants.BDM_PIDM, ownerPidm )

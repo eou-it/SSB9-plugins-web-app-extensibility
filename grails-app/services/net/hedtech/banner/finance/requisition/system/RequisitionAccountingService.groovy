@@ -80,8 +80,8 @@ class RequisitionAccountingService extends ServiceBase {
      * @return List of RequisitionAccounting.
      */
     def findRequisitionAccountingListByUser( paginationParam, providedUser = null ) {
-        def loggedInUser = springSecurityService.getAuthentication()?.user
-        if (loggedInUser?.oracleUserName) {
+        def loggedInUser = springSecurityService.getAuthentication().user
+        if (loggedInUser.oracleUserName) {
             def requisitionAccountingList = RequisitionAccounting.fetchByUserId( providedUser ? providedUser : loggedInUser.oracleUserName, paginationParam ).list
             if (!requisitionAccountingList) {
                 LoggerUtility.error( LOGGER, 'Requisition Accounting Information are empty for User : ' + providedUser ? providedUser : loggedInUser.oracleUserName )

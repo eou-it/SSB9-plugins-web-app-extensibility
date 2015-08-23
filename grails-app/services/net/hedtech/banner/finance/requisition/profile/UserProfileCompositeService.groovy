@@ -31,7 +31,7 @@ class UserProfileCompositeService {
     def getUserProfileDetail( user, effectiveDate ) {
         def coa = [:], shipToCode = [:], org = [:], userProfile = [:]
 
-        def userProfileObj = financeUserProfileService.getUserProfileByUserId( user?.oracleUserName )
+        def userProfileObj = financeUserProfileService.getUserProfileByUserId( user.oracleUserName )
         userProfile = [userId           : userProfileObj.userId, requesterName: userProfileObj.requesterName, requesterOrgCode: userProfileObj.requesterOrgCode,
                        requesterShipCode: userProfileObj.requesterShipCode, requesterCaosCode: userProfileObj.requesterCaosCode]
         if (userProfile.requesterShipCode) {

@@ -31,12 +31,12 @@ class FinanceTextCompositeService {
             financeTextService.delete( listToDelete, true )
         }
         if (map?.privateComment) {
-            splitAndGetTextList( map?.privateComment ).eachWithIndex {def textPart, int index ->
+            splitAndGetTextList( map.privateComment ).eachWithIndex {def textPart, int index ->
                 prepareTextList( textPart, FinanceValidationConstants.REQUISITION_INDICATOR_NO, null, header, user, listToSave )
             }
         }
         if (map?.publicComment) {
-            splitAndGetTextList( map?.publicComment ).eachWithIndex {def textPart, int index ->
+            splitAndGetTextList( map.publicComment ).eachWithIndex {def textPart, int index ->
                 prepareTextList( textPart, FinanceValidationConstants.REQUISITION_INDICATOR_YES, null, header, user, listToSave )
             }
         }
@@ -62,12 +62,12 @@ class FinanceTextCompositeService {
         }
         financeTextService.delete( listToDelete, true )
         if (map?.privateComment) {
-            splitAndGetTextList( map?.privateComment ).eachWithIndex {def textPart, int index ->
+            splitAndGetTextList( map.privateComment ).eachWithIndex {def textPart, int index ->
                 prepareTextList( textPart, FinanceValidationConstants.REQUISITION_INDICATOR_NO, item, detail, user, listToSave )
             }
         }
         if (map?.publicComment) {
-            splitAndGetTextList( map?.publicComment ).eachWithIndex {def textPart, int index ->
+            splitAndGetTextList( map.publicComment ).eachWithIndex {def textPart, int index ->
                 prepareTextList( textPart, FinanceValidationConstants.REQUISITION_INDICATOR_YES, item, detail, user, listToSave )
             }
         }

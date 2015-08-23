@@ -147,7 +147,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
      * Test Delete Completed Requisition Header for a specified request code
      */
     @Test
-    void testCompleteRequisition() {
+    void testCompleteRequisitionInvalidReq() {
         try {
             requisitionHeaderService.completeRequisition( 'INVALID', 'no' )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
@@ -169,6 +169,15 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         catch (ApplicationException ae) {
             assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_REQUISITION_ALREADY_COMPLETED
         }
+    }
+
+    /**
+     * Test Completed Requisition Header for a specified request code
+     */
+    @Test
+    void testCompleteRequisition() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        assertTrue requisitionHeaderService.completeRequisition( 'RSED0010', 'yes' ).completeIndicator
     }
 
     /**
@@ -310,7 +319,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
                 'vendorContact'            : 'Bangalore',
                 'vendorEmailAddress'       : 'vendor@vendorgroup.com',
                 'requisitionOrigination'   : FinanceProcurementConstants.DEFAULT_REQUISITION_ORIGIN,
-                'deliveryDate'             : new Date(  ) +1
+                'deliveryDate'             : new Date() + 1
         ]
     }
 }

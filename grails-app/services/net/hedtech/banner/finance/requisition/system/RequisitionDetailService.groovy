@@ -44,8 +44,8 @@ class RequisitionDetailService extends ServiceBase {
      * @return List of RequisitionDetail.
      */
     def fetchRequisitionDetailListByUser( paginationParam ) {
-        def loggedInUser = springSecurityService.getAuthentication()?.user
-        if (loggedInUser?.oracleUserName) {
+        def loggedInUser = springSecurityService.getAuthentication().user
+        if (loggedInUser.oracleUserName) {
             def requisitionDetailList = RequisitionDetail.fetchByUserId( loggedInUser.oracleUserName, paginationParam ).list
             if (!requisitionDetailList) {
                 throw new ApplicationException(

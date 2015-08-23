@@ -44,12 +44,12 @@ class RequisitionAccountingCompositeService {
      */
     def createPurchaseRequisitionAccounting( map ) {
         RequisitionAccounting requisitionAccountingRequest = map.requisitionAccounting
-        def user = springSecurityService.getAuthentication()?.user
-        if (user?.oracleUserName) {
+        def user = springSecurityService.getAuthentication().user
+        if (user.oracleUserName) {
             requisitionAccountingRequest.userId = user.oracleUserName
             def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionAccountingRequest.requestCode )
             FinanceProcurementHelper.checkCompleteRequisition( header )
-            if (header?.isDocumentLevelAccounting) {
+            if (header.isDocumentLevelAccounting) {
                 requisitionAccountingRequest.item = 0
             }
             requisitionAccountingRequest.sequenceNumber = requisitionAccountingService.getLastSequenceNumberByRequestCode( requisitionAccountingRequest.requestCode, requisitionAccountingRequest.item ).next()
@@ -86,7 +86,7 @@ class RequisitionAccountingCompositeService {
      */
     def updateRequisitionAccounting( accountingDomainModel ) {
         // Null or empty check for item number and sequence number.
-        def user = springSecurityService.getAuthentication()?.user
+        def user = springSecurityService.getAuthentication().user
         if (!user.oracleUserName) {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
             throw new ApplicationException( RequisitionAccountingCompositeService,

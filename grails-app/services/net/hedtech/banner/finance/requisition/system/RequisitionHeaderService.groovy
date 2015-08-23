@@ -29,7 +29,7 @@ class RequisitionHeaderService extends ServiceBase {
      */
     def findRequisitionHeaderByRequestCode( requestCode ) {
         LoggerUtility.debug( LOGGER, 'Input parameters for findRequisitionHeaderByRequestCode :' + requestCode )
-        def retRequisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode, springSecurityService.getAuthentication()?.user?.oracleUserName )
+        def retRequisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode, springSecurityService.getAuthentication().user.oracleUserName )
 
         if (!retRequisitionHeader) {
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
@@ -41,10 +41,10 @@ class RequisitionHeaderService extends ServiceBase {
      * Find the requisition Header for Logged-in user
      */
     def listRequisitionHeaderForLoggedInUser( pagingParams ) {
-        def user = springSecurityService.getAuthentication()?.user
-        if (user?.oracleUserName) {
+        def user = springSecurityService.getAuthentication().user
+        if (user.oracleUserName) {
             def requisitionHeaderList = RequisitionHeader.fetchByUser( user.oracleUserName, pagingParams )
-            if (requisitionHeaderList?.list?.size() == 0) {
+            if (!requisitionHeaderList?.list) {
                 throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
             }
             return requisitionHeaderList.list;
@@ -60,7 +60,7 @@ class RequisitionHeaderService extends ServiceBase {
      */
     def completeRequisition( requestCode, forceComplete ) {
         LoggerUtility.debug( LOGGER, 'Input parameters for completeRequisition :' + requestCode )
-        def requisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode, springSecurityService.getAuthentication()?.user?.oracleUserName )
+        def requisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode, springSecurityService.getAuthentication().user.oracleUserName )
         if (!requisitionHeader) {
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }
@@ -76,13 +76,13 @@ class RequisitionHeaderService extends ServiceBase {
      */
     def recallRequisition( requestCode ) {
         def requestHeader = findRequisitionHeaderByRequestCode( requestCode )
-        def user = springSecurityService.getAuthentication()?.user.oracleUserName
-        if (requestHeader && requestHeader.completeIndicator && !requestHeader.approvalIndicator) {
+        def user = springSecurityService.getAuthentication().user.oracleUserName
+        if (requestHeader.completeIndicator && !requestHeader.approvalIndicator) {
             requestHeader.completeIndicator = false
             RequisitionHeader requestHeaderUpdated = update( [domainModel: requestHeader], true )
             // Insert FOBAPPH Approval History table with queueId = DENY and queueLevel = 0.
             def approvalHistoryList = financeApprovalHistoryService.findByDocumentCode( requestHeaderUpdated.requestCode )
-            if (approvalHistoryList.size() > 0) {
+            if (approvalHistoryList) {
                 approvalHistoryList.each {FinanceApprovalHistory approvalHistory ->
                     approvalHistory.documentCode = requestHeaderUpdated.requestCode
                     approvalHistory.queueId = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_ID_DENY

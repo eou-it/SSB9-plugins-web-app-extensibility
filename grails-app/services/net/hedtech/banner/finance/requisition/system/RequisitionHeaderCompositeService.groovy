@@ -36,9 +36,9 @@ class RequisitionHeaderCompositeService {
      */
     def createPurchaseRequisitionHeader( map ) {
         RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
-        def user = springSecurityService.getAuthentication()?.user
+        def user = springSecurityService.getAuthentication().user
         if (user.oracleUserName) {
-            def oracleUserName = user?.oracleUserName
+            def oracleUserName = user.oracleUserName
             requisitionHeaderRequest.userId = oracleUserName
             // Check for tax group
             if (financeSystemControlService.findActiveFinanceSystemControl()?.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_NO) {
@@ -79,8 +79,8 @@ class RequisitionHeaderCompositeService {
     @Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
     def updateRequisitionHeader( map, requestCode, baseCcy ) {
         // Update header
-        def user = springSecurityService.getAuthentication()?.user
-        if (map?.requisitionHeader && user?.oracleUserName) {
+        def user = springSecurityService.getAuthentication().user
+        if (map?.requisitionHeader && user.oracleUserName) {
             def existingHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
             if (!checkHeaderUpdateEligibility( map, existingHeader, baseCcy )) {
                 LoggerUtility.debug( LOGGER, 'Modification not required' )
@@ -101,7 +101,7 @@ class RequisitionHeaderCompositeService {
                 }
             }
             requisitionHeaderRequest.requestDate = existingHeader.requestDate
-            requisitionHeaderRequest.userId = user?.oracleUserName
+            requisitionHeaderRequest.userId = user.oracleUserName
             def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
             LoggerUtility.debug LOGGER, "Requisition Header updated " + requisitionHeader
             financeTextCompositeService.saveTextForHeader( requisitionHeader,
@@ -184,8 +184,8 @@ class RequisitionHeaderCompositeService {
             }
         }
         def requestHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
-        if (requestHeader && ((!requestHeader?.completeIndicator)
-                || (requestHeader?.completeIndicator == null && !requestHeader?.approvalIndicator))) {
+        if (requestHeader && ((!requestHeader.completeIndicator)
+                || (requestHeader.completeIndicator == null && !requestHeader.approvalIndicator))) {
             // Delete Accounting
             requisitionAccountingService.delete( requisitionAccountingService.findAccountingByRequestCode( requestCode ) )
             // Delete Detail
