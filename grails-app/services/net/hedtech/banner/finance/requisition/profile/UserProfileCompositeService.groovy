@@ -53,13 +53,11 @@ class UserProfileCompositeService {
                 LoggerUtility.error( LOGGER, FinanceCommonUtility.maskErrorMessage( ae ) )
             }
         }
-        if (userProfile.requesterCaosCode) {
-            try {
-                def coaObj = chartOfAccountsService.getChartOfAccountByCode( userProfile.requesterCaosCode, effectiveDate )
-                coa = [title: coaObj.title, chartOfAccountsCode: coaObj.chartOfAccountsCode]
-            } catch (ApplicationException ae) {
-                LoggerUtility.error( LOGGER, FinanceCommonUtility.maskErrorMessage( ae ) )
-            }
+        try {
+            def coaObj = chartOfAccountsService.getChartOfAccountByCode( userProfile.requesterCaosCode, effectiveDate )
+            coa = [title: coaObj.title, chartOfAccountsCode: coaObj.chartOfAccountsCode]
+        } catch (ApplicationException ae) {
+            LoggerUtility.error( LOGGER, FinanceCommonUtility.maskErrorMessage( ae ) )
         }
         return [baseUserProfile: userProfile, shipTo: shipToCode, organization: org, coa: coa];
 

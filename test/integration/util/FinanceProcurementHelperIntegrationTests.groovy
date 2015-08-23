@@ -51,6 +51,16 @@ class FinanceProcurementHelperIntegrationTests extends BaseIntegrationTestCase {
     }
 
     /**
+     * The test case to test checkCompleteRequisition.
+     */
+    @Test
+    public void testCheckCompleteRequisitionForComplete() {
+        def header = new RequisitionHeader()
+        header.completeIndicator = false
+        FinanceProcurementHelper.checkCompleteRequisition( header )
+    }
+
+    /**
      * This method is used to get the JSON Object for Requisition Header.
      * @return JSONObject.
      */
