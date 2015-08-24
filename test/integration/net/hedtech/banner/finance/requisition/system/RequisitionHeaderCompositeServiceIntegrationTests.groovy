@@ -68,20 +68,20 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     /**
      * Test delete requisition No force delete, bdm installed
      */
-    /*@Test
+    @Test
     void deletePurchaseRequisitionNoForceDeleteBDMInstalled() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         requisitionHeaderCompositeService.deletePurchaseRequisition( 'RSED0005', false, 'MEP', true )
-    }*/
+    }
 
     /**
      * Test delete requisition. Bdm not installed
      */
-    /*@Test
+    @Test
     void deletePurchaseRequisitionNoForceDeleteBDMNotInstalled() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         requisitionHeaderCompositeService.deletePurchaseRequisition( 'RSED0005', false, 'MEP', false )
-    }*/
+    }
 
     /**
      * Test delete requisition
