@@ -71,7 +71,16 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     @Test
     void deletePurchaseRequisitionNoForceDeleteBDMInstalled() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        requisitionHeaderCompositeService.deletePurchaseRequisition( 'RSED0005', false, 'MEP', true )
+        try {
+            requisitionHeaderCompositeService.deletePurchaseRequisition( 'RSED0005', false, 'MEP', true )
+        } catch (ApplicationException ae) {
+            if (ae.message.contains( 'WARNING' )) {
+                assertApplicationException( ae, 'WARNING' )
+            } else {
+                assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR )
+            }
+
+        }
     }
 
     /**
@@ -80,7 +89,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     @Test
     void deletePurchaseRequisitionNoForceDeleteBDMNotInstalled() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        requisitionHeaderCompositeService.deletePurchaseRequisition( 'RSED0005', false, 'MEP', false )
+        requisitionHeaderCompositeService.deletePurchaseRequisition( 'RSED0001', false, 'MEP', false )
     }
 
     /**

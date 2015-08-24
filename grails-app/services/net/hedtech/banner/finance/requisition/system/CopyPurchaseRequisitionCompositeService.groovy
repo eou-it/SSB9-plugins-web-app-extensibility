@@ -27,7 +27,7 @@ class CopyPurchaseRequisitionCompositeService {
      */
     def copyRequisition(requestCode,defaultQuery = null) {
         def header = requisitionHeaderService.findRequisitionHeaderByRequestCode(requestCode)
-        if (header && header.completeIndicator) {
+        if (header.completeIndicator) {
             Session session
             try {
                 session = sessionFactory.getCurrentSession()
