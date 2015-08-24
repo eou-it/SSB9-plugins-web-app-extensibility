@@ -72,7 +72,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
         try {
             dataMap = documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0001', "INVOICE", pidm, null, true )
             assertTrue( dataMap.size() > 0 )
-            dataMap = documentManagementCompositeService.deleteDocumentsByRequisitionCode( dataMap.documentList.docAttributes[0]?.DOCID, null, true, 'RSED0003' )
+            dataMap = documentManagementCompositeService.deleteDocumentsByRequisitionCode( dataMap.documentList[0]?.docAttributes?.DOCID, null, true, 'RSED0003' )
             assertTrue( dataMap.size() > 0 )
         } catch (WebServiceException e) {
             assertNotNull( e.getMessage() )
@@ -87,7 +87,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
         try {
             dataMap = documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0001', "CHECK", pidm, null, true )
             assertTrue( dataMap.size() > 0 )
-            dataMap =  documentManagementCompositeService.deleteDocumentsByRequisitionCode( dataMap.documentList.docAttributes[0]?.DOCID, null, false, 'RSED0004' )
+            dataMap =  documentManagementCompositeService.deleteDocumentsByRequisitionCode( dataMap.documentList[0]?.docAttributes?.DOCID, null, false, 'RSED0004' )
             assertTrue( dataMap.size() > 0 )
         } catch (ApplicationException ae) {
             assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED )
