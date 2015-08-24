@@ -46,8 +46,6 @@ class DocumentManagementCompositeService {
             listDocumentsByRequisitionCode( requisitionCode, vpdiCode, bdmInstalled )
         } catch (FileNotFoundException e) {
             throw new ApplicationException( DocumentManagementCompositeService, new BusinessLogicValidationException( e.getMessage(), [] ) )
-        } catch (ApplicationException ae) {
-            throw ae
         }
     }
 
@@ -68,7 +66,13 @@ class DocumentManagementCompositeService {
         documentAttributes.put( FinanceProcurementConstants.BDM_ROUTING_STATUS, FinanceProcurementConstants.EMPTY_STRING )
         documentAttributes.put( FinanceProcurementConstants.BDM_ACTIVITY_DATE, dateFormat.format( new Date() ) )
         documentAttributes.put( FinanceProcurementConstants.BDM_DISPOSITION_DATE, FinanceProcurementConstants.EMPTY_STRING )
-        bdmAttachmentService.createDocument( getBdmParams(), absoluteFileName, documentAttributes, vpdiCode )
+        try {
+            bdmAttachmentService.createDocument( getBdmParams(), absoluteFileName, documentAttributes, vpdiCode )
+        } catch (ApplicationException ae) {
+            LoggerUtility.error( LOGGER, 'Error while uploading document' + ae.message )
+            throw new ApplicationException( DocumentManagementCompositeService,
+                                            new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR, [] ) )
+        }
     }
 
     /**
@@ -90,7 +94,9 @@ class DocumentManagementCompositeService {
             bdmAttachmentService.deleteDocument( getBdmParams(), docIds, vpdiCode )
             listDocumentsByRequisitionCode( requisitionCode, vpdiCode, bdmInstalled )
         } catch (ApplicationException ae) {
-            throw ae
+            LoggerUtility.error( LOGGER, 'Error while Deleting document' + ae.message )
+            throw new ApplicationException( DocumentManagementCompositeService,
+                                            new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR, [] ) )
         }
     }
 
