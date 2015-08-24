@@ -41,7 +41,7 @@ class RequisitionHeaderCompositeService {
             def oracleUserName = user.oracleUserName
             requisitionHeaderRequest.userId = oracleUserName
             // Check for tax group
-            if (financeSystemControlService.findActiveFinanceSystemControl()?.taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_NO) {
+            if (financeSystemControlService.findActiveFinanceSystemControl().taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_NO) {
                 requisitionHeaderRequest.taxGroup = null
             }
             def requisitionHeader = requisitionHeaderService.create( [domainModel: requisitionHeaderRequest] )
@@ -127,6 +127,45 @@ class RequisitionHeaderCompositeService {
     }
 
     /**
+     * Delete Purchase requisition
+     * @param requestCode
+     * @param forceDelete
+     * @param mep
+     * @param isBDMInstalled
+     * @return
+     */
+    def deletePurchaseRequisition( requestCode, boolean forceDelete, mep, boolean isBDMInstalled ) {
+        if (!forceDelete && isBDMInstalled) {
+            if (documentManagementCompositeService.listDocumentsByRequisitionCode( requestCode, mep, isBDMInstalled )?.documentList?.size() > 0) {
+                LoggerUtility.info( LOGGER, "Documents are present for this requisition. You may need to remove them before deleting this requisition" + requestCode )
+                throw new ApplicationException(
+                        RequisitionHeaderCompositeService,
+                        new BusinessLogicValidationException( 'WARNING', [] ) )
+            }
+        }
+        def requestHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
+        if ((!requestHeader.completeIndicator)
+                || (requestHeader.completeIndicator == null && !requestHeader.approvalIndicator)) {
+            // Delete Accounting
+            requisitionAccountingService.delete( requisitionAccountingService.findAccountingByRequestCode( requestCode ) )
+            // Delete Detail
+            try {
+                requisitionDetailService.delete( requisitionDetailService.findByRequestCode( requestCode ) )
+            } catch (ApplicationException ae) {
+                LoggerUtility.debug LOGGER, "No requisition details to delete for request code=$requestCode"
+            }
+            // Delete Header
+            requisitionHeaderService.delete( requestHeader )
+            return requestCode
+        } else {
+            LoggerUtility.error( LOGGER, "Only Draft/Disapproved requisition can be deleted = $requestCode" )
+            throw new ApplicationException(
+                    RequisitionHeaderCompositeService,
+                    new BusinessLogicValidationException(
+                            FinanceProcurementConstants.ERROR_MESSAGE_DELETE_REQUISITION_DRAFT_OR_DISAPPROVED_REQ_IS_REQUIRED, [] ) )
+        }
+    }
+    /**
      * Check if header's text is modified and save to db is required
      *
      * @param privateComment
@@ -171,38 +210,5 @@ class RequisitionHeaderCompositeService {
                 newHeader.discount == existingHeader.discount &&
                 ((newHeader.currency == baseCcy && existingHeader.currency == null) || newHeader.currency == existingHeader.currency) &&
                 isCommentUnChanged( map.requisitionHeader.privateComment, map.requisitionHeader.publicComment, newHeader.requestCode ))
-    }
-
-
-    def deletePurchaseRequisition( requestCode, boolean forceDelete, mep, boolean isBDMInstalled ) {
-        if (!forceDelete && isBDMInstalled) {
-            if (documentManagementCompositeService.listDocumentsByRequisitionCode( requestCode, mep, isBDMInstalled )?.documentList?.size() > 0) {
-                LoggerUtility.info( LOGGER, "Documents are present for this requisition. You may need to remove them before deleting this requisition" + requestCode )
-                throw new ApplicationException(
-                        RequisitionHeaderCompositeService,
-                        new BusinessLogicValidationException( 'WARNING', [] ) )
-            }
-        }
-        def requestHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
-        if (requestHeader && ((!requestHeader.completeIndicator)
-                || (requestHeader.completeIndicator == null && !requestHeader.approvalIndicator))) {
-            // Delete Accounting
-            requisitionAccountingService.delete( requisitionAccountingService.findAccountingByRequestCode( requestCode ) )
-            // Delete Detail
-            try {
-                requisitionDetailService.delete( requisitionDetailService.findByRequestCode( requestCode ) )
-            } catch (ApplicationException ae) {
-                LoggerUtility.debug LOGGER, "No requisition details to delete for request code=$requestCode"
-            }
-            // Delete Header
-            requisitionHeaderService.delete( requestHeader )
-            return requestCode
-        } else {
-            LoggerUtility.error( LOGGER, "Only Draft/Disapproved requisition can be deleted = $requestCode" )
-            throw new ApplicationException(
-                    RequisitionHeaderCompositeService,
-                    new BusinessLogicValidationException(
-                            FinanceProcurementConstants.ERROR_MESSAGE_DELETE_REQUISITION_DRAFT_OR_DISAPPROVED_REQ_IS_REQUIRED, [] ) )
-        }
     }
 }

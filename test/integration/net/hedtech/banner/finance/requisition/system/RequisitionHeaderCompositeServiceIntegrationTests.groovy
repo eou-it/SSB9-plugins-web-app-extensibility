@@ -7,6 +7,7 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.hibernate.Session
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -48,6 +49,92 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def requestCode = requisitionHeaderCompositeService.createPurchaseRequisitionHeader( domainModelMap )
         assertTrue requestCode != FinanceProcurementConstants.DEFAULT_REQUEST_CODE
+    }
+
+    /**
+     * Test create where Tax processing Off
+     */
+    @Test
+    void createPurchaseRequisitionWhereTaxProcessingOff() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        Session session = sessionFactory.getCurrentSession()
+        session.createSQLQuery( "UPDATE FOBSYSC set FOBSYSC_TAX_PROCESSING_IND = 'N' WHERE FOBSYSC_STATUS_IND='A' " ).executeUpdate()
+        def headerDomainModel = newRequisitionHeader()
+        def domainModelMap = [requisitionHeader: headerDomainModel]
+        def requestCode = requisitionHeaderCompositeService.createPurchaseRequisitionHeader( domainModelMap )
+        assertTrue requestCode != FinanceProcurementConstants.DEFAULT_REQUEST_CODE
+    }
+
+    /**
+     * Test delete requisition No force delete, bdm installed
+     */
+    @Test
+    void deletePurchaseRequisitionNoForceDeleteBDMInstalled() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        try {
+            requisitionHeaderCompositeService.deletePurchaseRequisition( 'RSED0005', false, 'MEP', true )
+        } catch (ApplicationException ae) {
+            if (ae.message.contains( 'WARNING' )) {
+                assertApplicationException( ae, 'WARNING' )
+            } else {
+                assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR )
+            }
+
+        }
+    }
+
+    /**
+     * Test delete requisition. Bdm not installed
+     */
+    @Test
+    void deletePurchaseRequisitionNoForceDeleteBDMNotInstalled() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        requisitionHeaderCompositeService.deletePurchaseRequisition( 'RSED0001', false, 'MEP', false )
+    }
+
+    /**
+     * Test delete requisition
+     */
+    @Test
+    void deletePurchaseRequisitionForceDeleteCompleteReq() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        try {
+            requisitionHeaderCompositeService.deletePurchaseRequisition( 'RSED0005', true, 'MEP', false )
+        } catch (ApplicationException ae) {
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_DELETE_REQUISITION_DRAFT_OR_DISAPPROVED_REQ_IS_REQUIRED )
+        }
+
+    }
+
+    /**
+     * Test delete requisition
+     */
+    @Test
+    void deletePurchaseRequisitionForceDeletePendingReq() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        try {
+            requisitionHeaderCompositeService.deletePurchaseRequisition( 'RSED0007', true, 'MEP', false )
+        } catch (ApplicationException ae) {
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_DELETE_REQUISITION_DRAFT_OR_DISAPPROVED_REQ_IS_REQUIRED )
+        }
+    }
+
+    /**
+     * Test delete requisition for draft req
+     */
+    @Test
+    void deletePurchaseRequisitionForceDeleteDraftReq() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        requisitionHeaderCompositeService.deletePurchaseRequisition( 'RSED0001', true, 'MEP', false )
+    }
+
+    /**
+     * Test delete requisition for dis-approved req
+     */
+    @Test
+    void deletePurchaseRequisitionForceDeleteDisapprovedReq() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        requisitionHeaderCompositeService.deletePurchaseRequisition( 'RSED0006', true, 'MEP', false )
     }
 
     /**
@@ -249,6 +336,18 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     }
 
     /**
+     * Test update to test invalid user.
+     */
+    @Test
+    void updatePurchaseRequisitionWithText() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def headerDomainModel = newRequisitionHeader()
+        def domainModelMap = [requisitionHeader: headerDomainModel]
+        def requestCode = requisitionHeaderCompositeService.createPurchaseRequisitionHeader( domainModelMap )
+        assert requestCode == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, requestCode, 'USD' ).requestCode
+    }
+
+    /**
      * Test update
      */
     @Test
@@ -271,7 +370,18 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
      */
     @Test
     void testGetCurrencyDetailByReqCode() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def currency = requisitionHeaderCompositeService.getCurrencyDetailByReqCode( 'RSED0001', 'USD' );
+        assertNotNull( currency )
+    }
+
+    /**
+     * Test case to get currency by requisition code which have currency.
+     */
+    @Test
+    void testGetCurrencyDetailByReqCodeWithNonDefaultCcy() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def currency = requisitionHeaderCompositeService.getCurrencyDetailByReqCode( 'RSED0010', 'USD' );
         assertNotNull( currency )
     }
 
