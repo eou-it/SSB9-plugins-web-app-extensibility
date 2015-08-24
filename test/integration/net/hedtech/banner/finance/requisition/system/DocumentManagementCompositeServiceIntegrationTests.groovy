@@ -96,7 +96,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
         def dataMap
         dataMap = documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0003', "CHECK", pidm, null, true )
         assertTrue( dataMap.size() > 0 )
-        dataMap = documentManagementCompositeService.listDocumentsByRequisitionCode( 'RSED0003', null, true)
+        dataMap = documentManagementCompositeService.listDocumentsByRequisitionCode( 'RSED0003',null, true)
         assertTrue( dataMap.size() > 0 )
     }
 
