@@ -42,16 +42,35 @@ class RequisitionSummaryServiceIntegrationTests extends BaseIntegrationTestCase 
      */
     @Test
     void testFetchRequisitionSummaryForRequestCode() {
-        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode('RSED0003', 'USD')
+        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'RSED0003', 'USD' )
         assertTrue headers.size() > 0
     }
+
+    /**
+     * test Listing Summary with PDF
+     */
+    @Test
+    void testFetchRequisitionSummaryForRequestCodeWithPdf() {
+        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'RSED0005', 'USD', false )
+        assertTrue headers.size() > 0
+    }
+
+    /**
+         * test Listing Summary with PDF and Text
+         */
+        @Test
+        void testFetchRequisitionSummaryForRequestCodeWithPdfAndText() {
+            def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'RSED0003', 'USD', false )
+            assertTrue headers.size() > 0
+        }
+
 
     /**
      * test Listing Summary
      */
     @Test
     void testFetchRequisitionSummaryForRequestCodeForCommodityLevelAccounting() {
-        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode('RSED0005','USD')
+        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'RSED0005', 'USD' )
         assertTrue headers.size() > 0
     }
 
@@ -61,7 +80,7 @@ class RequisitionSummaryServiceIntegrationTests extends BaseIntegrationTestCase 
     @Test
     void testFetchRequisitionSummaryForRequestCodeInvalidCode() {
         try {
-            requisitionSummaryService.fetchRequisitionSummaryForRequestCode('INVALID', 'USD')
+            requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'INVALID', 'USD' )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
         }
         catch (ApplicationException ae) {
