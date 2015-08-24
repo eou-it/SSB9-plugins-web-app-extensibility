@@ -117,7 +117,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
             testFile = new File( tempPath, "BDMTestFile.txt" )
             if (!testFile.exists()) {
                 testFile.createNewFile()
-                FileWriter fileWritter = new FileWriter( testFile.getName(), true )
+                FileWriter fileWritter = new FileWriter( testFile, true )
                 BufferedWriter bufferWritter = new BufferedWriter( fileWritter )
                 bufferWritter.write( data )
                 bufferWritter.close()
