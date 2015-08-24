@@ -39,7 +39,6 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
     /**
      * Test create Requisition Accounting.
      */
-    // TODO Correct later
     @Test
     void testCreateRequisitionAccounting() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
@@ -53,6 +52,24 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
         assertTrue requestCode?.item == reqAccountingDomainModel.item
         assertTrue requestCode?.sequenceNumber == reqAccountingDomainModel.sequenceNumber
     }
+
+    /**
+        * Test create Requisition Accounting for CLA.
+        */
+       @Test
+       void testCreateRequisitionAccountingForCLA() {
+           super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                   FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+           def reqAccountingDomainModel = getRequestAccounting()
+           reqAccountingDomainModel.requisitionAmount = null
+           reqAccountingDomainModel.requestCode = 'RSED0004'
+           reqAccountingDomainModel.item=1
+           def domainModelMap = [requisitionAccounting: reqAccountingDomainModel]
+           def requestCode = requisitionAccountingCompositeService.createPurchaseRequisitionAccounting(domainModelMap)
+           assertTrue requestCode?.requestCode == reqAccountingDomainModel.requestCode
+           assertTrue requestCode?.item == reqAccountingDomainModel.item
+           assertTrue requestCode?.sequenceNumber == reqAccountingDomainModel.sequenceNumber
+       }
 
     /**
      * Test create Requisition Accounting by passing wrong user.
