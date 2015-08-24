@@ -14,6 +14,8 @@ import org.junit.Test
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.web.multipart.MultipartFile
 
+import javax.xml.ws.WebServiceException
+
 class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     def documentManagementCompositeService
@@ -43,13 +45,19 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
         assertTrue( true )
     }
 
+
     @Test
     void testUploadDocument() {
-        Integer pidm = 2510
-        MockMultipartFile multipartFile = formFileObject()
-        def dataMap = documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0001', "REQUISITION", pidm, null, true )
-        assertTrue( dataMap.size() > 0 )
+        try {
+            Integer pidm = 2510
+            MockMultipartFile multipartFile = formFileObject()
+            def dataMap = documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0001', "REQUISITION", pidm, null, true )
+            assertTrue( dataMap.size() > 0 )
+        } catch (WebServiceException e) {
+            assertNotNull( e.getMessage() )
+        }
     }
+
 
     @Test
     void testUploadDocumentWithOutBDM() {
@@ -68,10 +76,14 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
         Integer pidm = 2510
         MockMultipartFile multipartFile = formFileObject()
         def dataMap
-        dataMap = documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0003', "REQUISITION", pidm, null, true )
-        assertTrue( dataMap.size() > 0 )
-        dataMap = documentManagementCompositeService.deleteDocumentsByRequisitionCode( dataMap[0].DOCID, null, true, 'RSED0003' )
-        assertTrue( dataMap.size() > 0 )
+        try {
+            dataMap = documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0003', "REQUISITION", pidm, null, true )
+            assertTrue( dataMap.size() > 0 )
+            dataMap = documentManagementCompositeService.deleteDocumentsByRequisitionCode( dataMap[0].DOCID, null, true, 'RSED0003' )
+            assertTrue( dataMap.size() > 0 )
+        } catch (WebServiceException e) {
+            assertNotNull( e.getMessage() )
+        }
     }
 
 
@@ -80,34 +92,43 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
         Integer pidm = 2510
         MockMultipartFile multipartFile = formFileObject()
         def dataMap
-        dataMap = documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0003', "REQUISITION", pidm, null, true )
-        assertTrue( dataMap.size() > 0 )
         try {
+            dataMap = documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0003', "REQUISITION", pidm, null, true )
+            assertTrue( dataMap.size() > 0 )
             documentManagementCompositeService.deleteDocumentsByRequisitionCode( dataMap[0].DOCID, null, false, 'RSED0003' )
         } catch (ApplicationException ae) {
             assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED )
+        } catch (WebServiceException e) {
+            assertNotNull( e.getMessage() )
         }
     }
+
 
     @Test
     void testListDocumentsByRequisitionCode() {
         Integer pidm = 2510
         MockMultipartFile multipartFile = formFileObject()
         def dataMap
-        dataMap = documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0003', "CHECK", pidm, null, true )
-        assertTrue( dataMap.size() > 0 )
-        dataMap = documentManagementCompositeService.listDocumentsByRequisitionCode( 'RSED0003',null, true)
-        assertTrue( dataMap.size() > 0 )
+        try {
+            dataMap = documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0003', "CHECK", pidm, null, true )
+            assertTrue( dataMap.size() > 0 )
+            dataMap = documentManagementCompositeService.listDocumentsByRequisitionCode( 'RSED0003', null, true )
+            assertTrue( dataMap.size() > 0 )
+        } catch (WebServiceException e) {
+            assertNotNull( e.getMessage() )
+        }
     }
+
 
     @Test
     void testListDocumentsByRequisitionCodeWithOutBDM() {
         try {
-            documentManagementCompositeService.listDocumentsByRequisitionCode( 'RSED0003', null, false)
+            documentManagementCompositeService.listDocumentsByRequisitionCode( 'RSED0003', null, false )
         } catch (ApplicationException ae) {
             assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR )
         }
     }
+
 
     private MockMultipartFile formFileObject() {
         File testFile
