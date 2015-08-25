@@ -135,11 +135,11 @@ class RequisitionDetailsCompositeService {
      */
     private def deleteAccountingForCommodity( requestCode, item ) {
         def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
-        if (header.isDocumentLevelAccounting == FinanceProcurementConstants.TRUE && requisitionDetailService.findByRequestCode( requestCode )?.size() == 1) {
+        if (header.isDocumentLevelAccounting && requisitionDetailService.findByRequestCode( requestCode )?.size() == 1) {
             requisitionAccountingService.findAccountingByRequestCode( requestCode )?.each() {
                 requisitionAccountingService.delete( [domainModel: it] )
             }
-        } else if (header.isDocumentLevelAccounting == FinanceProcurementConstants.FALSE) {
+        } else if (!header.isDocumentLevelAccounting) {
             requisitionAccountingService.findAccountingByRequestCode( requestCode ).findAll() {
                 it.item == item
             }?.each() {

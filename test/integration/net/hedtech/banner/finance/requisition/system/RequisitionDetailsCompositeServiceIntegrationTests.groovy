@@ -52,6 +52,20 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     }
 
     /**
+     * Test create Requisition Detail Having discount code
+     */
+    @Test
+    void testCreatePurchaseRequisitionDetailWithDiscountCode() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def reqDetailDomainModel = getRequisitionDetails()
+        reqDetailDomainModel.requestCode = 'RSED0011'
+        reqDetailDomainModel.privateComment = 'Testing Private comment.'
+        def domainModelMap = [requisitionDetail: reqDetailDomainModel]
+        def requestCode = requisitionDetailsCompositeService.createPurchaseRequisitionDetail( domainModelMap )
+        assertTrue requestCode?.requestCode == 'RSED0011'
+    }
+
+    /**
      * Test create Requisition Detail
      */
     @Test
@@ -151,6 +165,38 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     }
 
     /**
+     * Test case to test delete purchase requisition detail for commodity level accounting.
+     */
+    @Test
+    void testDeletePurchaseRequisitionDetailForCommodityLvlAccHavingAccount() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        requisitionDetailsCompositeService.deletePurchaseRequisitionDetail( 'RSED0011', 1 )
+        try {
+            requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'RSED0011', 1 )
+            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL
+        }
+        catch (ApplicationException ae) {
+            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL
+        }
+    }
+
+/**
+ * Test case to test delete purchase requisition detail for commodity level accounting.
+ */
+    @Test
+    void testDeletePurchaseRequisitionDetailHavingOneAccounting() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        requisitionDetailsCompositeService.deletePurchaseRequisitionDetail( 'RSED0011', 1 )
+        try {
+            requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'RSED0011', 1 )
+            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL
+        }
+        catch (ApplicationException ae) {
+            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL
+        }
+    }
+
+    /**
      * Test update
      */
     @Test
@@ -163,6 +209,22 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
         def domainModelMap = [requisitionDetail: detailDomainModel]
         def detail = requisitionDetailsCompositeService.updateRequisitionDetail( domainModelMap )
         assertTrue( detail.requestCode == requestHeaderCode )
+    }
+
+    /**
+     * Test update
+     */
+    @Test
+    void updatePurchaseDetailWithDiscountCode() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def detailDomainModel = getRequisitionDetails()
+        detailDomainModel.item = 1
+        detailDomainModel.requestCode='RSED0011'
+        detailDomainModel.privateComment = 'Testing Private comment.'
+        def domainModelMap = [requisitionDetail: detailDomainModel]
+        def detail = requisitionDetailsCompositeService.updateRequisitionDetail( domainModelMap )
+        assertTrue detail.requestCode == 'RSED0011'
     }
 
     /**
