@@ -121,8 +121,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
             assertTrue( dataMap.size() > 0 )
             dataMap = documentManagementCompositeService.listDocumentsByRequisitionCode( 'RSED0004', null, true )
             assertTrue( dataMap.size() > 0 )
-            dataMap = documentManagementCompositeService.deleteDocumentsByRequisitionCode( dataMap.documentList[0]?.docAttributes?.DOCID, null, true, 'RSED0006' )
-            assertTrue( dataMap.size() == 0 )
+            documentManagementCompositeService.deleteDocumentsByRequisitionCode( dataMap.documentList[0]?.docAttributes?.DOCID, null, true, 'RSED0006' )
         } catch (ApplicationException ae) {
             assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR )
         } catch (WebServiceException e) {
