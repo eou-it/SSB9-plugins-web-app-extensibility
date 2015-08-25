@@ -28,7 +28,7 @@ class RequisitionDetailService extends ServiceBase {
         LoggerUtility.debug( LOGGER, 'Input parameter for findByRequestCodeAndItem :' + requisitionCode )
         def inputMap = [requisitionCode: requisitionCode, item: item]
         def requisitionDetails = RequisitionDetail.fetchByRequestCodeAndItem( inputMap.requisitionCode, inputMap.item ).list
-        if (requisitionDetails.isEmpty()) {
+        if (!requisitionDetails) {
             LoggerUtility.error( LOGGER, 'Requisition Commodity Details are empty for requestCode=' + requisitionCode )
             throw new ApplicationException(
                     RequisitionDetailService,
@@ -97,7 +97,7 @@ class RequisitionDetailService extends ServiceBase {
     def findByRequestCode( requisitionCode ) {
         LoggerUtility.debug( LOGGER, 'Input parameter for findByDocumentCode :' + requisitionCode )
         def requisitionDetails = RequisitionDetail.fetchByRequestCode( requisitionCode ).list
-        if (requisitionDetails.isEmpty()) {
+        if (!requisitionDetails) {
             LoggerUtility.error( LOGGER, 'Requisition Commodity Details are empty for requestCode=' + requisitionCode )
             throw new ApplicationException(
                     RequisitionDetailService,

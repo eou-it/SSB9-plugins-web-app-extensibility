@@ -40,7 +40,7 @@ class RequisitionAccountingService extends ServiceBase {
     def findByRequestCodeItemAndSeq( requisitionCode, Integer item, Integer sequenceNumber ) {
         LoggerUtility.debug( LOGGER, 'Input parameter for findByRequestCodeItemAndSeq :' + requisitionCode )
         def requisitionAccounting = RequisitionAccounting.fetchByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber ).list
-        if (requisitionAccounting.isEmpty()) {
+        if (!requisitionAccounting) {
             LoggerUtility.error( LOGGER, 'Requisition Accounting Information are empty for requestCode='
                     + requisitionCode + ', Item: ' + item + ' and Sequence: ' + sequenceNumber )
             throw new ApplicationException(

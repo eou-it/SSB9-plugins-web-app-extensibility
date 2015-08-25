@@ -102,20 +102,9 @@ class RequisitionAccountingCompositeService {
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_ITEM_SEQUENCE_REQUIRED, [] ) )
         }
-        Integer item = 0
-        if (!accountingDomainModel.requisitionAccounting.item instanceof Integer) {
-            item = Integer.parseInt( accountingDomainModel.requisitionAccounting.item )
-        } else {
-            item = accountingDomainModel.requisitionAccounting.item
-        }
-        Integer sequenceNumber = 0
-        if (!accountingDomainModel.requisitionAccounting.sequenceNumber instanceof Integer) {
-            sequenceNumber = Integer.parseInt( accountingDomainModel.requisitionAccounting.sequenceNumber )
-        } else {
-            sequenceNumber = accountingDomainModel.requisitionAccounting.sequenceNumber
-        }
 
-        def existingAccountingInfo = requisitionAccountingService.findByRequestCodeItemAndSeq( accountingDomainModel.requisitionAccounting.requestCode, item, sequenceNumber )
+        def existingAccountingInfo = requisitionAccountingService.findByRequestCodeItemAndSeq( accountingDomainModel.requisitionAccounting.requestCode,
+                                                                                               accountingDomainModel.requisitionAccounting.item, accountingDomainModel.requisitionAccounting.sequenceNumber )
         RequisitionAccounting requisitionAccountingRequest = accountingDomainModel.requisitionAccounting
         requisitionAccountingRequest.id = existingAccountingInfo.id
         requisitionAccountingRequest.version = existingAccountingInfo.version
@@ -222,7 +211,7 @@ class RequisitionAccountingCompositeService {
     private def findCompleteAccountingByRequestCodeItemAndSeq( requisitionCode, Integer item, Integer sequenceNumber ) {
         LoggerUtility.debug( LOGGER, 'Input parameter for findCompleteAccountingByRequestCodeItemAndSeq :' + requisitionCode )
         def requisitionAccounting = requisitionAccountingService.findBasicAccountingByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber )
-        if (requisitionAccounting.isEmpty()) {
+        if (!requisitionAccounting) {
             LoggerUtility.error( LOGGER, 'Requisition Accounting Information are empty for requestCode='
                     + requisitionCode + ', Item: ' + item + ' and Sequence: ' + sequenceNumber )
             throw new ApplicationException(

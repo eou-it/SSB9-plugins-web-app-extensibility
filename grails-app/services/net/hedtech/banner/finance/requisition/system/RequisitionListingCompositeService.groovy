@@ -39,7 +39,7 @@ class RequisitionListingCompositeService {
             throw new ApplicationException( RequisitionListingCompositeService, new BusinessLogicValidationException(
                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
-        if (buckets?.isEmpty()) {
+        if (!buckets) {
             buckets = [FinanceProcurementConstants.REQUISITION_LIST_BUCKET_ALL]
         } else {
             buckets = new ArrayList( buckets ).unique()
