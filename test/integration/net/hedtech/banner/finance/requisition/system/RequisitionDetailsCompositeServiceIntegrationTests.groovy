@@ -170,9 +170,9 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void testDeletePurchaseRequisitionDetailForCommodityLvlAccHavingAccount() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        requisitionDetailsCompositeService.deletePurchaseRequisitionDetail( 'RSED0011', 1 )
+        requisitionDetailsCompositeService.deletePurchaseRequisitionDetail( 'RSED0013', 1 )
         try {
-            requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'RSED0011', 1 )
+            requisitionDetailService.getRequisitionDetailByRequestCodeAndItem( 'RSED0013', 1 )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL
         }
         catch (ApplicationException ae) {
@@ -180,9 +180,9 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
         }
     }
 
-/**
- * Test case to test delete purchase requisition detail for commodity level accounting.
- */
+    /**
+     * Test case to test delete purchase requisition detail for commodity level accounting.
+     */
     @Test
     void testDeletePurchaseRequisitionDetailHavingOneAccounting() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
