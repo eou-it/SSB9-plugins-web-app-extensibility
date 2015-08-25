@@ -7,11 +7,17 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.apache.commons.io.IOUtils
+import org.codehaus.groovy.grails.commons.ConfigurationHolder
 import org.hibernate.Session
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.springframework.mock.web.MockMultipartFile
 import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.web.multipart.MultipartFile
+
+import javax.xml.ws.WebServiceException
 
 /**
  * Test class for Requisition Header Composite Service
@@ -22,6 +28,8 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     def requisitionHeaderCompositeService
     def requisitionHeaderService
     def springSecurityService
+    def financeTextService
+    def documentManagementCompositeService
     /**
      * Super class setup
      */
@@ -69,7 +77,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
      * Test delete requisition No force delete, bdm installed
      */
     @Test
-    void deletePurchaseRequisitionNoForceDeleteBDMInstalled() {
+    void deletePurchaseRequisitionWithUploadedDocuments() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         try {
             requisitionHeaderCompositeService.deletePurchaseRequisition( 'RSED0005', false, 'MEP', true )
@@ -315,6 +323,49 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     }
 
     /**
+     * Test update
+     */
+    @Test
+    void updatePurchaseRequisitionWithNoChange() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def headerDomainModel = newRequisitionHeader()
+        def domainModelMap = [requisitionHeader: headerDomainModel]
+        assertEquals headerDomainModel.currency, requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0001', 'USD' ).currency
+    }
+
+    /**
+     * Test update
+     */
+    @Test
+    void updatePurchaseRequisitionWithAccountingChange() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        try {
+            def headerDomainModel = newRequisitionHeader()
+            headerDomainModel.isDocumentLevelAccounting = false
+            def domainModelMap = [requisitionHeader: headerDomainModel]
+            requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0003', 'USD' )
+        }
+        catch (ApplicationException ae) {
+            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_DOCUMENT_CHANGE
+        }
+    }
+
+    /**
+     * Test update
+     */
+    @Test
+    void updatePurchaseRequisitionWithCommentsChange() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def headerDomainModel = newRequisitionHeader()
+        headerDomainModel.privateComment = 'changed private comment'
+        headerDomainModel.publicComment = 'changed public comment'
+        def domainModelMap = [requisitionHeader: headerDomainModel]
+        def requisitionHeader = requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0009', 'USD' )
+        assert 'changed private comment' == financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd(requisitionHeader.requestCode,FinanceValidationConstants.REQUISITION_INDICATOR_NO)[0].text
+        assert 'changed public comment' == financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd(requisitionHeader.requestCode,FinanceValidationConstants.REQUISITION_INDICATOR_YES)[0].text
+    }
+
+    /**
      * Test update to test invalid user.
      */
     @Test
@@ -431,5 +482,27 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
                 'requisitionOrigination'   : FinanceProcurementConstants.DEFAULT_REQUISITION_ORIGIN,
                 'deliveryDate'             : new Date() + 1
         ]
+    }
+
+    private MockMultipartFile formFileObject() {
+        File testFile
+        try {
+            String data = " Test data for integration testing"
+            String tempPath = ConfigurationHolder.config.bdm.file.location
+            testFile = new File( tempPath, "BDMTestFile.txt" )
+            if (!testFile.exists()) {
+                testFile.createNewFile()
+                FileWriter fileWritter = new FileWriter( testFile, true )
+                BufferedWriter bufferWritter = new BufferedWriter( fileWritter )
+                bufferWritter.write( data )
+                bufferWritter.close()
+            }
+        } catch (IOException e) {
+            throw e
+        }
+        FileInputStream input = new FileInputStream( testFile );
+        MultipartFile multipartFile = new MockMultipartFile( "file",
+                                                             testFile.getName(), "text/plain", IOUtils.toByteArray( input ) )
+        multipartFile
     }
 }
