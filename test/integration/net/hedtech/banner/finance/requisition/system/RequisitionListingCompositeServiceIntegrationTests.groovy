@@ -205,6 +205,27 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
     }
 
     /**
+        * Test search Requisitions for specified search param and status
+        */
+       @Test
+       void searchPurchaseRequisitionWithSearchParamAndInvalidBucket() {
+           def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
+           springSecurityService.getAuthentication().user.oracleUserName = 'GRAILS'
+           try {
+               def pagingParams = [max: 500, offset: 0]
+               def searchParams = [convertValue: 'RSED0001', isDateString: false]
+               def requisitions = requisitionListingCompositeService.searchPurchaseRequisition( searchParams, ['INVALID'], pagingParams, 'institutionBaseCcy' )
+               assertNotNull requisitions
+               assert requisitions.size() > 0
+           }catch (ApplicationException e) {
+               assertApplicationException( e, FinanceProcurementConstants.ERROR_MESSAGE_INVALID_BUCKET_TYPE )
+           }
+           finally {
+               springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
+           }
+       }
+
+    /**
      * Test search Requisitions for specified search param and status
      */
     @Test

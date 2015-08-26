@@ -46,6 +46,34 @@ class RequisitionSummaryServiceIntegrationTests extends BaseIntegrationTestCase 
         assertTrue headers.size() > 0
     }
 
+
+    /**
+     * test Listing Summary
+     */
+    @Test
+    void testFetchRequisitionSummaryForRequestCodeWithPublicComment() {
+        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'RSED0009', 'USD' ,true )
+        assertTrue headers.size() > 0
+    }
+
+    /**
+     * test Listing Summary
+     */
+    @Test
+    void testFetchRequisitionSummaryForRequestCodeWithCommodityDescription() {
+        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'RSED0013', 'USD' ,true )
+        assertTrue headers.size() > 0
+    }
+
+    /**
+     * test Listing Summary
+     */
+    @Test
+    void testFetchRequisitionSummaryForRequestCodeWithDocumentLevelAccounting() {
+        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'RSED0001', 'USD' ,true )
+        assertTrue headers.size() > 0
+    }
+
     /**
      * test Listing Summary with PDF
      */

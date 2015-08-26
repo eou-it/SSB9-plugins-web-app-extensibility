@@ -95,4 +95,17 @@ class FinanceTextCompositeServiceIntegrationTests extends BaseIntegrationTestCas
         def list = financeTextCompositeService.saveTextForCommodity(details, commentsMap, user, details.item)
         assertTrue(list.size() > 2)
     }
+
+    /**
+     * Test case to test save text for commodity level.
+     */
+    @Test
+    public void testSaveTextForHeaderAlreadyHavingComments() {
+        def commentsMap = [privateComment: 'This is header level private comment.',
+                           publicComment : 'This is header level public comment.']
+        def user = springSecurityService.getAuthentication()?.user.oracleUserName
+        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode('RSED0009')
+        def list = financeTextCompositeService.saveTextForHeader(header, commentsMap, user)
+        assertTrue(list.size() == 2)
+    }
 }

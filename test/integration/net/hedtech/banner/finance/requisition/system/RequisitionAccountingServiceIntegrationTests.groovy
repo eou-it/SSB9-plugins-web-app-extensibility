@@ -150,9 +150,8 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
         springSecurityService.getAuthentication().user.oracleUserName = 'TESTUSER'
         def pagingParams = [max: 500, offset: 0]
-        def providedUser = 'testProvider'
         try {
-            requisitionAccountingService.findRequisitionAccountingListByUser( pagingParams,providedUser )
+            requisitionAccountingService.findRequisitionAccountingListByUser( pagingParams)
         } catch (ApplicationException ae) {
             assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_ACCOUNTING )
         } finally {
