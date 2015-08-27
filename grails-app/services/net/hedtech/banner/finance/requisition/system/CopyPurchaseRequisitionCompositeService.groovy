@@ -16,7 +16,7 @@ import org.hibernate.Session
  * The service class which is used to have methods for copy purchase requisition.
  */
 class CopyPurchaseRequisitionCompositeService {
-    private static final def LOGGER = Logger.getLogger(this.getClass())
+    private static final def LOGGER = Logger.getLogger( this.getClass() )
     boolean transactional = true
 
     def sessionFactory
@@ -25,29 +25,32 @@ class CopyPurchaseRequisitionCompositeService {
     /**
      * This method is used to copy the requisition.
      */
-    def copyRequisition(requestCode,defaultQuery = null) {
-        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode(requestCode)
+    def copyRequisition( requestCode, defaultQuery = null ) {
+        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         if (header.completeIndicator) {
             Session session
             try {
-                session = sessionFactory.getCurrentSession()
-                session.createSQLQuery(FinanceProcurementSQLConstants.QUERY_UPDATE_NEXT_REQ_SEQUENCE).executeUpdate()
-                def nextDocCode = session.createSQLQuery(FinanceProcurementSQLConstants.QUERY_NEXT_REQ_NUMBER).list()[0]
-                session.createSQLQuery(defaultQuery? defaultQuery :FinanceProcurementSQLConstants.QUERY_COPY_REQUISITION)
-                        .setParameter(FinanceProcurementConstants.NEXT_DOC_CODE, nextDocCode)
-                        .setParameter(FinanceProcurementConstants.OLD_DOC_CODE, requestCode)
+                session = sessionFactory.openSession()
+                session.createSQLQuery( FinanceProcurementSQLConstants.QUERY_UPDATE_NEXT_REQ_SEQUENCE ).executeUpdate()
+                def nextDocCode = session.createSQLQuery( FinanceProcurementSQLConstants.QUERY_NEXT_REQ_NUMBER ).list()[0]
+                session.createSQLQuery( defaultQuery ? defaultQuery : FinanceProcurementSQLConstants.QUERY_COPY_REQUISITION )
+                        .setParameter( FinanceProcurementConstants.NEXT_DOC_CODE, nextDocCode )
+                        .setParameter( FinanceProcurementConstants.OLD_DOC_CODE, requestCode )
                         .executeUpdate()
                 return nextDocCode
             } catch (HibernateException e) {
-                LoggerUtility.error(LOGGER, "Error While Copy Requisition $header.requestCode")
-                throw new ApplicationException(CopyPurchaseRequisitionCompositeService, e)
+                LoggerUtility.error( LOGGER, "Error While Copy Requisition $header.requestCode" )
+                throw new ApplicationException( CopyPurchaseRequisitionCompositeService, e )
+            }
+            finally {
+                session?.close()
             }
         } else {
-            LoggerUtility.error(LOGGER, "Only completed requisition can be copied = $header.requestCode")
+            LoggerUtility.error( LOGGER, "Only completed requisition can be copied = $header.requestCode" )
             throw new ApplicationException(
                     CopyPurchaseRequisitionCompositeService,
                     new BusinessLogicValidationException(
-                            FinanceProcurementConstants.ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED, []))
+                            FinanceProcurementConstants.ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED, [] ) )
         }
     }
 }
