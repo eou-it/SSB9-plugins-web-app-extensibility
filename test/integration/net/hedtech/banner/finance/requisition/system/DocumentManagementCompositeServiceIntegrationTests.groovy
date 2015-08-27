@@ -83,20 +83,33 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
     }
 
     /**
-     * Tests Delete document requisition by code Without BDM
+     * Tests Delete document requisition by code Second case
      */
     @Test
-    void testDeleteDocumentsByRequisitionCodeWithOutBDM() {
+    void testDeleteDocumentsByRequisitionCodeSecondCase() {
         Integer pidm = 2510
-        MockMultipartFile multipartFile = formFileObject()
         def dataMap
         try {
             dataMap = documentManagementCompositeService.listDocumentsByRequisitionCode( 'RSED0005', null, true )
             assertTrue( dataMap.size() > 0 )
-            dataMap = documentManagementCompositeService.deleteDocumentsByRequisitionCode( dataMap.documentList[0]?.docAttributes?.DOCID, null, false, 'RSED0004' )
+            dataMap = documentManagementCompositeService.deleteDocumentsByRequisitionCode( dataMap.documentList[0]?.docAttributes?.DOCID, null, true, 'RSED0004' )
             assertTrue( dataMap.size() > 0 )
         } catch (ApplicationException ae) {
             assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR )
+        } catch (WebServiceException e) {
+            assertNotNull( e.getMessage() )
+        }
+    }
+
+    /**
+     * Tests Delete document requisition by code Without BDM
+     */
+    @Test
+    void testDeleteDocumentsByRequisitionCodeWithOutBDM() {
+        try {
+            documentManagementCompositeService.deleteDocumentsByRequisitionCode( '', null, false, 'RSED0004' )
+        } catch (ApplicationException ae) {
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED )
         } catch (WebServiceException e) {
             assertNotNull( e.getMessage() )
         }
@@ -108,7 +121,6 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void testDeleteDocumentsByRequisitionCode() {
         Integer pidm = 2510
-        MockMultipartFile multipartFile = formFileObject()
         def dataMap
         try {
             dataMap = documentManagementCompositeService.listDocumentsByRequisitionCode( 'RSED0005', null, true )
