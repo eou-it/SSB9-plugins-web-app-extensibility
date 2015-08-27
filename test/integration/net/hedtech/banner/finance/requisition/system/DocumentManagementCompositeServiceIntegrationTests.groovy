@@ -39,7 +39,9 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
         super.tearDown()
     }
 
-
+    /**
+     * Tests Upload Document Without BDM
+     */
     @Test
     void testUploadDocumentWithOutBDM() {
         Integer pidm = 2510
@@ -51,7 +53,9 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
         }
     }
 
-
+    /**
+     * Tests Upload Document
+     */
     @Test
     void testUploadDocument() {
         try {
@@ -64,7 +68,23 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
         }
     }
 
+    /**
+     * Tests Upload Document with Empty content
+     */
+    @Test
+    void testUploadDocumentEmptyContent() {
+        try {
+            Integer pidm = 2510
+            MockMultipartFile multipartFile = formEmptyFileObject()
+            documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0005', "REQUISITION", pidm, null, true )
+        } catch (ApplicationException e) {
+            assertNotNull( e.getMessage() )
+        }
+    }
 
+    /**
+     * Tests Delete document requisition by code Without BDM
+     */
     @Test
     void testDeleteDocumentsByRequisitionCodeWithOutBDM() {
         Integer pidm = 2510
@@ -82,7 +102,9 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
         }
     }
 
-
+    /**
+     * Tests Delete document requisition By code
+     */
     @Test
     void testDeleteDocumentsByRequisitionCode() {
         Integer pidm = 2510
@@ -100,17 +122,21 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
         }
     }
 
-
+    /**
+     * Tests List documents requisition by code Without BDM
+     */
     @Test
     void testListDocumentsByRequisitionCodeWithOutBDM() {
         try {
             documentManagementCompositeService.listDocumentsByRequisitionCode( 'RSED0006', null, false )
         } catch (ApplicationException ae) {
-            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR )
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED )
         }
     }
 
-
+    /**
+     * Tests List documents requisition by code
+     */
     @Test
     void testListDocumentsByRequisitionCode() {
         Integer pidm = 2510
@@ -129,7 +155,9 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
         }
     }
 
-
+    /**
+     * Form file Object
+     */
     private MockMultipartFile formFileObject() {
         File testFile
         try {
@@ -142,6 +170,27 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
                 BufferedWriter bufferWritter = new BufferedWriter( fileWritter )
                 bufferWritter.write( data )
                 bufferWritter.close()
+            }
+        } catch (IOException e) {
+            throw e
+        }
+        FileInputStream input = new FileInputStream( testFile );
+        MultipartFile multipartFile = new MockMultipartFile( "file",
+                                                             testFile.getName(), "text/plain", IOUtils.toByteArray( input ) )
+        multipartFile
+    }
+
+    /**
+     * Form empty file Object
+     * @return
+     */
+    private MockMultipartFile formEmptyFileObject() {
+        File testFile
+        try {
+            String tempPath = ConfigurationHolder.config.bdm.file.location
+            testFile = new File( tempPath, "BDMTestFileEmpty.txt" )
+            if (!testFile.exists()) {
+                testFile.createNewFile()
             }
         } catch (IOException e) {
             throw e
