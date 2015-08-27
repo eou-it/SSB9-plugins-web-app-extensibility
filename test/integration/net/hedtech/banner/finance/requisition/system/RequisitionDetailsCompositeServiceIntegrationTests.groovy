@@ -220,7 +220,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
                     FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def detailDomainModel = getRequisitionDetails()
         detailDomainModel.item = 1
-        detailDomainModel.requestCode='RSED0011'
+        detailDomainModel.requestCode = 'RSED0011'
         detailDomainModel.privateComment = 'Testing Private comment.'
         def domainModelMap = [requisitionDetail: detailDomainModel]
         def detail = requisitionDetailsCompositeService.updateRequisitionDetail( domainModelMap )
@@ -327,12 +327,33 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     }
 
     /**
+     * The test case to list commodity with accounting.
+     */
+    @Test
+    void testListCommodityWithAccountingWithCommodityAndAccounting() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def listCommoityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting( 'RSED0013' )
+        assertTrue( listCommoityWithAccounting.size() > 0 )
+    }
+
+    /**
      * The test case to list commodity with document level accounting.
      */
     @Test
     void testListCommodityWithDocumentLevelAccounting() {
         def date = new Date()
         def list = requisitionDetailsCompositeService.listCommodityWithDocumentLevelAccounting( 'RSED0004', date )
+        assertTrue( list.size() > 0 )
+    }
+
+    /**
+     * The test case to list commodity with document level accounting with No Commoditity.
+     */
+    @Test
+    void testListCommodityWithDocumentLevelAccountingNoDetails() {
+        def date = new Date()
+        def list = requisitionDetailsCompositeService.listCommodityWithDocumentLevelAccounting( 'RSED0001', date )
         assertTrue( list.size() > 0 )
     }
 

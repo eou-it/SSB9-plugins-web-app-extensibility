@@ -9,6 +9,7 @@ import net.hedtech.banner.finance.util.FinanceCommonUtility
 import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.service.ServiceBase
 import org.apache.log4j.Logger
+import org.hibernate.HibernateException
 import org.hibernate.Session
 import org.springframework.transaction.annotation.Transactional
 
@@ -30,7 +31,7 @@ class FinanceProcurementDocumentTypeService extends ServiceBase {
      * @return
      */
     @Transactional(readOnly = true)
-    def getCommonMatchingDocs( filterText, max, offset ) {
+    def getCommonMatchingDocs( filterText, max, offset, defaultSQL = null ) {
         def inputMap = [filterText: filterText?.toUpperCase()]
         LoggerUtility.debug( LOGGER, 'inputMap ' + inputMap )
         FinanceCommonUtility.applyWildCard( inputMap, true, true )
@@ -38,7 +39,7 @@ class FinanceProcurementDocumentTypeService extends ServiceBase {
         Session session
         try {
             session = sessionFactory.openSession()
-            def documentResult = session.createSQLQuery( FinanceProcurementConstants.COMMON_MATCH_SQL )
+            def documentResult = session.createSQLQuery( defaultSQL ? defaultSQL : FinanceProcurementConstants.COMMON_MATCH_SQL )
                     .setString( FinanceProcurementConstants.BDM_DOC_TYPE_CODE, inputMap.filterText )
                     .setString( FinanceProcurementConstants.BDM_DOC_TYPE_DESC, inputMap.filterText )
                     .setMaxResults( max )
@@ -48,7 +49,7 @@ class FinanceProcurementDocumentTypeService extends ServiceBase {
                 documents << [code: document[0], description: document[1]]
             }
         }
-        catch (SQLException ae) {
+        catch (HibernateException ae) {
             throw new ApplicationException( FinanceProcurementDocumentTypeService, ae )
         }
         finally {
