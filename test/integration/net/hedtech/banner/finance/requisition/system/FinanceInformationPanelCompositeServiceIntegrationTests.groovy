@@ -21,7 +21,7 @@ class FinanceInformationPanelCompositeServiceIntegrationTests extends BaseIntegr
     @Before
     public void setUp() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         formContext = ['GUAGMNU']
         super.setUp()
     }
@@ -40,7 +40,16 @@ class FinanceInformationPanelCompositeServiceIntegrationTests extends BaseIntegr
     @Test
     public void testGetInformationPanelDataForDisapproved() {
         assert (financeInformationPanelCompositeService.getInformationPanelData(
-                FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED, 'RSED0006') != null)
+                FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED, 'RSED0006' ) != null)
+    }
+
+    /**
+     * Get information panel data for disapproved status No comment.
+     */
+    @Test
+    public void testGetInformationPanelDataForDisapprovedNoComment() {
+        assert (financeInformationPanelCompositeService.getInformationPanelData(
+                FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED, 'RSED000X' ) != null)
     }
 
     /**
@@ -49,7 +58,16 @@ class FinanceInformationPanelCompositeServiceIntegrationTests extends BaseIntegr
     @Test
     public void testGetInformationPanelDataForPending() {
         assert (financeInformationPanelCompositeService.getInformationPanelData(
-                FinanceProcurementConstants.REQUISITION_INFO_STATUS_PENDING, 'RSED0001').isEmpty())
+                FinanceProcurementConstants.REQUISITION_INFO_STATUS_PENDING, 'RSED0001' ).isEmpty())
+    }
+
+    /**
+     * Get information panel data for pending status No Comment .
+     */
+    @Test
+    public void testGetInformationPanelDataForPendingNoComment() {
+        assert (financeInformationPanelCompositeService.getInformationPanelData(
+                FinanceProcurementConstants.REQUISITION_INFO_STATUS_PENDING, 'RSED000X' ).isEmpty())
     }
 
     /**
@@ -58,7 +76,16 @@ class FinanceInformationPanelCompositeServiceIntegrationTests extends BaseIntegr
     @Test
     public void testGetInformationPanelDataForAssignedToBuyer() {
         assert (!financeInformationPanelCompositeService.getInformationPanelData(
-                FinanceProcurementConstants.REQUISITION_INFO_STATUS_ASSIGNED_TO_BUYER, 'RSED0007').isEmpty())
+                FinanceProcurementConstants.REQUISITION_INFO_STATUS_ASSIGNED_TO_BUYER, 'RSED0007' ).isEmpty())
+    }
+
+    /**
+     * Get information panel data for assigned to buyer status No Comment.
+     */
+    @Test
+    public void testGetInformationPanelDataForAssignedToBuyerNoComment() {
+        assert (financeInformationPanelCompositeService.getInformationPanelData(
+                FinanceProcurementConstants.REQUISITION_INFO_STATUS_ASSIGNED_TO_BUYER, 'RSED000X' ).isEmpty())
     }
 
     /**
@@ -67,6 +94,24 @@ class FinanceInformationPanelCompositeServiceIntegrationTests extends BaseIntegr
     @Test
     public void testGetInformationPanelDataForConvertedToPO() {
         assert (!financeInformationPanelCompositeService.getInformationPanelData(
-                FinanceProcurementConstants.REQUISITION_INFO_STATUS_CONVERTED_TO_PO, 'RSED0008').isEmpty())
+                FinanceProcurementConstants.REQUISITION_INFO_STATUS_CONVERTED_TO_PO, 'RSED0008' ).isEmpty())
     }
+
+    /**
+     * Get information panel data for converted to PO status No Comment.
+     */
+    @Test
+    public void testGetInformationPanelDataForConvertedToPONoComment() {
+        assert (financeInformationPanelCompositeService.getInformationPanelData(
+                FinanceProcurementConstants.REQUISITION_INFO_STATUS_CONVERTED_TO_PO, 'RSED000X' ).isEmpty())
+    }
+
+    /**
+         * Get information panel data .Empty List.
+         */
+        @Test
+        public void testGetInformationPanelDataEmptyList() {
+            assert (financeInformationPanelCompositeService.getInformationPanelData(
+                    'INVALID', 'RSED000X' ).isEmpty())
+        }
 }

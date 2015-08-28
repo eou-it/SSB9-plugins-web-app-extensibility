@@ -365,6 +365,17 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     }
 
     /**
+     * Test listing with No commodity
+     */
+    @Test
+    void testListCommodityWithNoCommodity() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def listCommodityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting( 'RSED0014' )
+        assertTrue( listCommodityWithAccounting.size() > 0 )
+    }
+
+    /**
      * The method is used to get the RequisitionDetail object with all required values to insert/update.
      * @return RequisitionDetail.
      */
