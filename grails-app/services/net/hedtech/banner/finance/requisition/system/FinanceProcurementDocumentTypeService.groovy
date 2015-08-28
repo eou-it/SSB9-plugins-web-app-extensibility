@@ -13,8 +13,6 @@ import org.hibernate.HibernateException
 import org.hibernate.Session
 import org.springframework.transaction.annotation.Transactional
 
-import java.sql.SQLException
-
 /**
  * This service helps to get document type for BDM attachments
  */
