@@ -39,10 +39,10 @@ class RequisitionListingCompositeService {
             throw new ApplicationException( RequisitionListingCompositeService, new BusinessLogicValidationException(
                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
-        if (!buckets) {
-            buckets = [FinanceProcurementConstants.REQUISITION_LIST_BUCKET_ALL]
-        } else {
+        if (buckets) {
             buckets = new ArrayList( buckets ).unique()
+        } else {
+            buckets = [FinanceProcurementConstants.REQUISITION_LIST_BUCKET_ALL]
         }
         def wrapperList = [];
         buckets.each() {bucket ->
