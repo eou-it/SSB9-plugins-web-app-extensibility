@@ -44,9 +44,18 @@ class RequisitionInformationServiceIntegrationTests extends BaseIntegrationTestC
     @Test
     void fetchRequisitionsCountByStatus() {
         def count = requisitionInformationService.fetchRequisitionsCountByStatus( [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT], null )
-        assertTrue count.get(FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT) > 0
+        assertTrue count.get( FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT ) > 0
     }
 
+    /**
+     * test fetch count with oracle User
+     */
+    @Test
+    void fetchRequisitionsCountByStatusWithOraleUser() {
+        def count = requisitionInformationService.fetchRequisitionsCountByStatus( [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT],
+                                                                                  FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME )
+        assertTrue count.get( FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT ) > 0
+    }
     /**
      * test fetch count with invalid user
      */
@@ -82,6 +91,17 @@ class RequisitionInformationServiceIntegrationTests extends BaseIntegrationTestC
     void listRequisitionsByStatus() {
         def pagingParams = [max: 500, offset: 0]
         def result = requisitionInformationService.listRequisitionsByStatus( [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT], pagingParams, null )
+        assertTrue result.count > 0
+    }
+
+    /**
+     * test fetch requisitions With oracle user
+     */
+    @Test
+    void listRequisitionsByStatusWithOracleUser() {
+        def pagingParams = [max: 500, offset: 0]
+        def result = requisitionInformationService.listRequisitionsByStatus( [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT], pagingParams,
+                                                                             FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME )
         assertTrue result.count > 0
     }
 
@@ -167,7 +187,7 @@ class RequisitionInformationServiceIntegrationTests extends BaseIntegrationTestC
     }
 
     /**
-     * Test Fetch Requisitions for specified status
+     * Test Fetch Requisitions for specified status with null user
      */
     @Test
     void searchRequisitionsByStatusAndSearchParamAsDate() {
