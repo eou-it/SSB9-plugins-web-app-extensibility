@@ -84,7 +84,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
             Integer pidm = 2510
             MockMultipartFile multipartFile = formFileObject()
             documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0005', "REQUISITION", pidm, null, true )
-            requisitionHeaderCompositeService.deletePurchaseRequisition( 'RSED0005', false, 'MEP', true )
+            requisitionHeaderCompositeService.deletePurchaseRequisition( 'RSED0005', false, null, true )
         } catch (ApplicationException ae) {
             if (ae.message.contains( 'WARNING' )) {
                 assertApplicationException( ae, 'WARNING' )
