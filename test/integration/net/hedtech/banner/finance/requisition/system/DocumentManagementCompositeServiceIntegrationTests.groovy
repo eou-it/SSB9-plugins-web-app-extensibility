@@ -63,7 +63,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
             MockMultipartFile multipartFile = formFileObject()
             def dataMap = documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0005', "REQUISITION", pidm, null, true )
             assertTrue( dataMap.size() > 0 )
-        } catch (WebServiceException e) {
+        } catch (ApplicationException e) {
             assertNotNull( e.getMessage() )
         }
     }

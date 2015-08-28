@@ -29,6 +29,8 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     def requisitionHeaderService
     def springSecurityService
     def financeTextService
+    def documentManagementCompositeService
+
     /**
      * Super class setup
      */
@@ -73,12 +75,15 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     }
 
     /**
-     * Test delete requisition No force delete, bdm installed
+     * Test delete requisition No force delete, bdm installed, with bdm document present
      */
     @Test
     void deletePurchaseRequisitionWithUploadedDocuments() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         try {
+            Integer pidm = 2510
+            MockMultipartFile multipartFile = formFileObject()
+            documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0005', "REQUISITION", pidm, null, true )
             requisitionHeaderCompositeService.deletePurchaseRequisition( 'RSED0005', false, 'MEP', true )
         } catch (ApplicationException ae) {
             if (ae.message.contains( 'WARNING' )) {
@@ -86,7 +91,6 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
             } else {
                 assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR )
             }
-
         }
     }
 
@@ -322,7 +326,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     }
 
     /**
-     * Test update
+     * Test update. No Change
      */
     @Test
     void updatePurchaseRequisitionNoUpdate() {
@@ -334,6 +338,207 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
         def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+            existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
+        }
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+            existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
+        }
+        headerDomainModel.privateComment = existingPrivateComment
+        headerDomainModel.publicComment = existingPublicComment
+        assert 'RSED0003' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0003', 'USD' ).requestCode
+    }
+
+    /**
+     * Test update. Only Transaction Date change
+     */
+    @Test
+    void updatePurchaseRequisitionOnlyTransactionDateChange() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        RequisitionHeader header = requisitionHeaderService.findRequisitionHeaderByRequestCode( 'RSED0003' )
+        header.transactionDate = header.transactionDate + 1
+        header.deliveryDate = header.deliveryDate + 1
+        def headerDomainModel = header.class.declaredFields.findAll {
+            it.modifiers == java.lang.reflect.Modifier.PRIVATE
+        }.collectEntries {[it.name, header[it.name]]}
+        def domainModelMap = [requisitionHeader: headerDomainModel]
+        def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
+        def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+            existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
+        }
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+            existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
+        }
+        headerDomainModel.privateComment = existingPrivateComment
+        headerDomainModel.publicComment = existingPublicComment
+        assert 'RSED0003' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0003', 'USD' ).requestCode
+    }
+
+    /**
+     * Test update. Only requester name change
+     */
+    @Test
+    void updatePurchaseRequisitionOnlyRequesterNameChange() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        RequisitionHeader header = requisitionHeaderService.findRequisitionHeaderByRequestCode( 'RSED0003' )
+        header.requesterName = 'Modified'
+        def headerDomainModel = header.class.declaredFields.findAll {
+            it.modifiers == java.lang.reflect.Modifier.PRIVATE
+        }.collectEntries {[it.name, header[it.name]]}
+        def domainModelMap = [requisitionHeader: headerDomainModel]
+        def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
+        def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+            existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
+        }
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+            existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
+        }
+        headerDomainModel.privateComment = existingPrivateComment
+        headerDomainModel.publicComment = existingPublicComment
+        assert 'RSED0003' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0003', 'USD' ).requestCode
+    }
+
+    /**
+     * Test update. Only ship Code change
+     */
+    @Test
+    void updatePurchaseRequisitionOnlyShipCodeChange() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        RequisitionHeader header = requisitionHeaderService.findRequisitionHeaderByRequestCode( 'RSED0003' )
+        header.ship = 'GOLF'
+        def headerDomainModel = header.class.declaredFields.findAll {
+            it.modifiers == java.lang.reflect.Modifier.PRIVATE
+        }.collectEntries {[it.name, header[it.name]]}
+        def domainModelMap = [requisitionHeader: headerDomainModel]
+        def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
+        def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+            existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
+        }
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+            existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
+        }
+        headerDomainModel.privateComment = existingPrivateComment
+        headerDomainModel.publicComment = existingPublicComment
+        assert 'RSED0003' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0003', 'USD' ).requestCode
+    }
+
+    /**
+     * Test update. Only Delivery Date change
+     */
+    @Test
+    void updatePurchaseRequisitionOnlyDeliveryDateChange() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        RequisitionHeader header = requisitionHeaderService.findRequisitionHeaderByRequestCode( 'RSED0003' )
+        header.deliveryDate = header.deliveryDate + 1
+        def headerDomainModel = header.class.declaredFields.findAll {
+            it.modifiers == java.lang.reflect.Modifier.PRIVATE
+        }.collectEntries {[it.name, header[it.name]]}
+        def domainModelMap = [requisitionHeader: headerDomainModel]
+        def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
+        def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+            existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
+        }
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+            existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
+        }
+        headerDomainModel.privateComment = existingPrivateComment
+        headerDomainModel.publicComment = existingPublicComment
+        assert 'RSED0003' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0003', 'USD' ).requestCode
+    }
+
+    /**
+     * Test update. Only PIDM change
+     */
+    @Test
+    void updatePurchaseRequisitionOnlyVendorPidmChange() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        RequisitionHeader header = requisitionHeaderService.findRequisitionHeaderByRequestCode( 'RSED0003' )
+        header.vendorPidm = 206
+        def headerDomainModel = header.class.declaredFields.findAll {
+            it.modifiers == java.lang.reflect.Modifier.PRIVATE
+        }.collectEntries {[it.name, header[it.name]]}
+        def domainModelMap = [requisitionHeader: headerDomainModel]
+        def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
+        def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+            existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
+        }
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+            existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
+        }
+        headerDomainModel.privateComment = existingPrivateComment
+        headerDomainModel.publicComment = existingPublicComment
+        assert 'RSED0003' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0003', 'USD' ).requestCode
+    }
+
+    /**
+     * Test update. Only Delivery comment change
+     */
+    @Test
+    void updatePurchaseRequisitionOnlyDeliveryComment() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        RequisitionHeader header = requisitionHeaderService.findRequisitionHeaderByRequestCode( 'RSED0003' )
+        header.deliveryComment = 'Modified'
+        def headerDomainModel = header.class.declaredFields.findAll {
+            it.modifiers == java.lang.reflect.Modifier.PRIVATE
+        }.collectEntries {[it.name, header[it.name]]}
+        def domainModelMap = [requisitionHeader: headerDomainModel]
+        def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
+        def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+            existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
+        }
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+            existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
+        }
+        headerDomainModel.privateComment = existingPrivateComment
+        headerDomainModel.publicComment = existingPublicComment
+        assert 'RSED0003' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0003', 'USD' ).requestCode
+    }
+
+    /**
+     * Test update. Only private text change
+     */
+    @Test
+    void updatePurchaseRequisitionOnlyPrivateCommentChange() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        RequisitionHeader header = requisitionHeaderService.findRequisitionHeaderByRequestCode( 'RSED0003' )
+        header.deliveryDate = header.deliveryDate + 1
+        def headerDomainModel = header.class.declaredFields.findAll {
+            it.modifiers == java.lang.reflect.Modifier.PRIVATE
+        }.collectEntries {[it.name, header[it.name]]}
+        def domainModelMap = [requisitionHeader: headerDomainModel]
+        def existingPrivateComment = 'Modified'
+        def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+            existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
+        }
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+            existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
+        }
+        headerDomainModel.privateComment = existingPrivateComment
+        headerDomainModel.publicComment = existingPublicComment
+        assert 'RSED0003' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0003', 'USD' ).requestCode
+    }
+
+    /**
+     * Test update. Only Public text change
+     */
+    @Test
+    void updatePurchaseRequisitionOnlyPublicCommentChange() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        RequisitionHeader header = requisitionHeaderService.findRequisitionHeaderByRequestCode( 'RSED0003' )
+        header.deliveryDate = header.deliveryDate + 1
+        def headerDomainModel = header.class.declaredFields.findAll {
+            it.modifiers == java.lang.reflect.Modifier.PRIVATE
+        }.collectEntries {[it.name, header[it.name]]}
+        def domainModelMap = [requisitionHeader: headerDomainModel]
+        def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
+        def existingPublicComment = 'Modified'
         financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
             existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
@@ -507,7 +712,10 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         ]
     }
 
-
+    /**
+     * Forms file Object
+     * @return
+     */
     private MockMultipartFile formFileObject() {
         File testFile
         try {

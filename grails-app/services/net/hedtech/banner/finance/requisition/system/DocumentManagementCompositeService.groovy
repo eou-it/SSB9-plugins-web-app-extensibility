@@ -12,6 +12,7 @@ import net.hedtech.bdm.exception.BdmsException
 import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
+import javax.xml.ws.WebServiceException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
@@ -158,7 +159,7 @@ class DocumentManagementCompositeService {
         documentAttributes.put( FinanceProcurementConstants.BDM_DISPOSITION_DATE, FinanceProcurementConstants.EMPTY_STRING )
         try {
             bdmAttachmentService.createDocument( getBdmParams(), absoluteFileName, documentAttributes, vpdiCode )
-        } catch (ApplicationException ae) {
+        } catch (ApplicationException | WebServiceException ae) {
             LoggerUtility.error( LOGGER, 'Error while uploading document' + ae.message )
             throw new ApplicationException( DocumentManagementCompositeService,
                                             new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR, [] ) )
