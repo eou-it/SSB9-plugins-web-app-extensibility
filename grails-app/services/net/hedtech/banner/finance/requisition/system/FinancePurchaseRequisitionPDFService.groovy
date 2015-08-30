@@ -9,8 +9,8 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.i18n.MessageHelper
-import net.hedtech.banner.pdf.exceptions.PdfGeneratorException
-import net.hedtech.banner.pdf.impl.PdfGenerator
+import net.hedtech.banner.pdf.exceptions.BannerPDFGeneratorException
+import net.hedtech.banner.pdf.impl.BannerPDFGenerator
 import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.web.context.ServletContextHolder
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
@@ -51,11 +51,11 @@ class FinancePurchaseRequisitionPDFService {
     private generateByteStream( summaryModel ) {
         try {
             def fopBasePath = getFopBasePath()
-            PdfGenerator pdfGenerator = PdfGenerator.getInstance();
+            BannerPDFGenerator pdfGenerator = new BannerPDFGenerator()
             return pdfGenerator.generatePdfFromXmlString( pdfGenerator.toXmlString( (toPDFModel( summaryModel ) as JSON).toString() )
                                                                   .replaceAll( FinanceProcurementConstants.PDF_NULL_VALUE, FinanceProcurementConstants.PDF_NULL_REPLACE_VALUE ),
-                                                          getXslFilePath( fopBasePath ), getConfigFilePath( fopBasePath ), [:] )
-        } catch (PdfGeneratorException e) {
+                                                          getXslFilePath( fopBasePath ), getConfigFilePath( fopBasePath ))
+        } catch (BannerPDFGeneratorException e) {
             LoggerUtility.error( LOGGER, 'Error while generating PDF' + e )
             throw new ApplicationException( FinancePurchaseRequisitionPDFService, "generatorError" )
         }
