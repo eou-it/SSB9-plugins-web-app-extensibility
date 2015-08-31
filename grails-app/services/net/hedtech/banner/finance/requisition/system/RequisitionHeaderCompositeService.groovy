@@ -82,6 +82,7 @@ class RequisitionHeaderCompositeService {
         def user = springSecurityService.getAuthentication().user
         if (map?.requisitionHeader && user.oracleUserName) {
             def existingHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
+            map.requisitionHeader.requestCode = existingHeader.requestCode
             if (!checkHeaderUpdateEligibility( map, existingHeader, baseCcy )) {
                 LoggerUtility.debug( LOGGER, 'Modification not required' )
                 return existingHeader
