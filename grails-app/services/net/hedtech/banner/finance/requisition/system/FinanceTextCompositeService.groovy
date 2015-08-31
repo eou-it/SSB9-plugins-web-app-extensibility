@@ -30,6 +30,7 @@ class FinanceTextCompositeService {
         if (listToDelete.size() > 0) {
             financeTextService.delete( listToDelete, true )
         }
+        financeTextService.flush()
         if (map?.privateComment) {
             splitAndGetTextList( map.privateComment ).eachWithIndex {def textPart, int index ->
                 prepareTextList( textPart, FinanceValidationConstants.REQUISITION_INDICATOR_NO, null, header, user, listToSave )
@@ -43,7 +44,10 @@ class FinanceTextCompositeService {
         listToSave.eachWithIndex {FinanceText entry, int i ->
             entry.sequenceNumber = (i + 1) * FinanceProcurementConstants.FINANCE_TEXT_SEQUENCE_NUMBER_INCREMENT
         }
-        financeTextService.create( listToSave )
+        listToSave.each {it ->
+            financeTextService.create( [domainModel: it] )
+            financeTextService.flush()
+        }
     }
 
     /**
@@ -61,6 +65,7 @@ class FinanceTextCompositeService {
             listToDelete << financeTextToDelete
         }
         financeTextService.delete( listToDelete, true )
+        financeTextService.flush()
         if (map?.privateComment) {
             splitAndGetTextList( map.privateComment ).eachWithIndex {def textPart, int index ->
                 prepareTextList( textPart, FinanceValidationConstants.REQUISITION_INDICATOR_NO, item, detail, user, listToSave )
@@ -74,7 +79,10 @@ class FinanceTextCompositeService {
         listToSave.eachWithIndex {FinanceText entry, int i ->
             entry.sequenceNumber = (i + 1) * FinanceProcurementConstants.FINANCE_TEXT_SEQUENCE_NUMBER_INCREMENT
         }
-        financeTextService.create( listToSave )
+        listToSave.each {it ->
+            financeTextService.create( [domainModel: it] )
+            financeTextService.flush()
+        }
     }
 
     /**
@@ -87,7 +95,7 @@ class FinanceTextCompositeService {
      * @param listToSave List of finance text to save.
      */
     private void prepareTextList( textPart, printOptionIndicator, textItem, headerOrDetail, user, listToSave ) {
-        FinanceText financeText = prepareFinanceTextForSave( headerOrDetail, user )
+        def financeText = prepareFinanceTextForSave( headerOrDetail, user )
         financeText.text = textPart
         financeText.printOptionIndicator = printOptionIndicator
         financeText.textItem = textItem
@@ -101,15 +109,14 @@ class FinanceTextCompositeService {
      * @return
      */
     private FinanceText prepareFinanceTextForSave( headerOrDetail, user ) {
-        FinanceText financeText = new FinanceText()
-        financeText.textCode = headerOrDetail.requestCode
-        financeText.activityDate = headerOrDetail.lastModified
-        financeText.changeSequenceNumber = null
-        financeText.lastModifiedBy = user
-        financeText.dataOrigin = headerOrDetail.dataOrigin
-        financeText.documentTypeSequenceNumber = FinanceProcurementConstants.FINANCE_TEXT_DOCUMENT_TYPE_SEQ_NUMBER_REQUISITION
-        financeText.pidm = headerOrDetail.vendorPidm
-        financeText
+        return [textCode                  : headerOrDetail.requestCode,
+                textCode                  : headerOrDetail.requestCode,
+                activityDate              : headerOrDetail.lastModified,
+                changeSequenceNumber      : null,
+                lastModifiedBy            : user,
+                dataOrigin                : headerOrDetail.dataOrigin,
+                documentTypeSequenceNumber: FinanceProcurementConstants.FINANCE_TEXT_DOCUMENT_TYPE_SEQ_NUMBER_REQUISITION,
+                pidm                      : headerOrDetail.vendorPidm]
     }
 
     /**
