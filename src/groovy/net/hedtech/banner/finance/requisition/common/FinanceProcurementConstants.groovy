@@ -570,6 +570,8 @@ class FinanceProcurementConstants {
     static final String BDM_OWNER_PIDM ='OWNER_PIDM'
     static final String BDM_DOC_TYPE_CODE='docTypeCode'
     static final String BDM_DOC_TYPE_DESC='docTypeDesc'
+    static final String BDM_DOCUMENT_NAME = 'DOCUMENT NAME'
+    static final String BDM_CREATE_NAME = 'CREATE NAME'
     static final String COMMON_MATCH_SQL = "SELECT e.ETVDTYP_CODE AS code, e.ETVDTYP_DESC AS DESCRIPTION \
                           FROM ETVDTYP e, otgmgr.ul506_2 \
                           WHERE e.ETVDTYP_CODE = otgmgr.ul506_2.item \
