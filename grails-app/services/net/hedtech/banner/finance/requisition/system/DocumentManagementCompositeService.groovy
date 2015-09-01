@@ -151,11 +151,18 @@ class DocumentManagementCompositeService {
         documentAttributes.put( FinanceProcurementConstants.BDM_DOCUMENT_TYPE, docType )
         documentAttributes.put( FinanceProcurementConstants.BDM_TRANSACTION_DATE, requisition.transactionDate )
         documentAttributes.put( FinanceProcurementConstants.BDM_VENDOR_ID, requisition.vendorPidm ? requisition.vendorPidm : FinanceProcurementConstants.EMPTY_STRING )
-        documentAttributes.put( FinanceProcurementConstants.BDM_VENDOR_NAME, PersonIdentificationName.findByPidm( ownerPidm )?.fullName )
-        documentAttributes.put( FinanceProcurementConstants.BDM_FIRST_NAME, FinanceProcurementConstants.EMPTY_STRING )
+
+        def lastName = FinanceProcurementConstants.EMPTY_STRING, firstName = FinanceProcurementConstants.EMPTY_STRING
+        if (requisition.vendorPidm) {
+            def obj = PersonIdentificationName.findByPidm( requisition.vendorPidm )
+            lastName = obj.lastName
+            firstName = obj.firstName
+        }
+        documentAttributes.put( FinanceProcurementConstants.BDM_VENDOR_NAME, lastName )
+        documentAttributes.put( FinanceProcurementConstants.BDM_FIRST_NAME, firstName )
         documentAttributes.put( FinanceProcurementConstants.BDM_PIDM, ownerPidm )
         documentAttributes.put( FinanceProcurementConstants.BDM_DOCUMENT_NAME, fileName )
-        documentAttributes.put( FinanceProcurementConstants.BDM_CREATE_NAME, PersonIdentificationName.findByPidm( ownerPidm )?.fullName)
+        documentAttributes.put( FinanceProcurementConstants.BDM_CREATE_NAME, PersonIdentificationName.findByPidm( ownerPidm )?.fullName )
         documentAttributes.put( FinanceProcurementConstants.BDM_ROUTING_STATUS, FinanceProcurementConstants.EMPTY_STRING )
         documentAttributes.put( FinanceProcurementConstants.BDM_ACTIVITY_DATE, dateFormat.format( new Date() ) )
         documentAttributes.put( FinanceProcurementConstants.BDM_DISPOSITION_DATE, FinanceProcurementConstants.EMPTY_STRING )
