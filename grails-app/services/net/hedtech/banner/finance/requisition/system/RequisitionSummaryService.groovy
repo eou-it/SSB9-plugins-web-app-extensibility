@@ -241,13 +241,13 @@ class RequisitionSummaryService extends ServiceBase {
                 retJSON['allAccountingTotalDisplay'] = FinanceProcurementHelper.getLocaleBasedFormattedNumber( getAllAccountingTotal( accountingList ), FinanceValidationConstants.TWO )
                 retJSON['allCommodityTotal'] = getAllCommodityTotal( commodityList )
                 retJSON['allCommodityTotalDisplay'] = FinanceProcurementHelper.getLocaleBasedFormattedNumber( getAllCommodityTotal( commodityList ), FinanceValidationConstants.TWO )
-                retJSON['balanced'] = retJSON['distributionPercentage'] == FinanceValidationConstants.HUNDRED
+                retJSON['balanced'] = headerRecord.deliveryDate && retJSON['distributionPercentage'] == FinanceValidationConstants.HUNDRED
                 retJSON['commodity'].each { // Clean unnecessary keys for commodity
                     it.remove( 'accounting' )
                     it.remove( 'itemBalanced' )
                 }
             } else {
-                retJSON['balanced'] = checkIfAllItemBalanced( commodityList, accountingList.size() > 0 )
+                retJSON['balanced'] = headerRecord.deliveryDate && checkIfAllItemBalanced( commodityList, accountingList.size() > 0 )
                 retJSON['grandCommodityTotal'] = FinanceProcurementHelper.getLocaleBasedFormattedNumber( getAllCommodityTotal( commodityList ), FinanceValidationConstants.TWO )
                 retJSON['grandAccountingTotal'] = FinanceProcurementHelper.getLocaleBasedFormattedNumber( getAllAccountingTotal( accountingList ), FinanceValidationConstants.TWO )
                 retJSON['grandCommodityTotalDisplay'] = FinanceProcurementHelper.getLocaleBasedFormattedNumber( getAllCommodityTotal( commodityList ), FinanceValidationConstants.TWO )
