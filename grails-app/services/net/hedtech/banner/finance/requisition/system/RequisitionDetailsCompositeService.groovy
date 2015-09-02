@@ -281,8 +281,8 @@ class RequisitionDetailsCompositeService {
                                                                       FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
             publicComment = publicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
-        requisitionDetail.commodityDescription = requisitionDetail.commodityDescription ? requisitionDetail.commodityDescription : commodity.description
         return [requisitionDetail            : requisitionDetail,
+                commodityDescription         : requisitionDetail.commodityDescription ? requisitionDetail.commodityDescription : commodity.description,
                 quantityDisplay              : FinanceProcurementHelper.getLocaleBasedFormattedNumber( requisitionDetail.quantity, FinanceValidationConstants.TWO ),
                 unitPriceDisplay             : FinanceProcurementHelper.getLocaleBasedFormattedNumber( requisitionDetail.unitPrice, FinanceValidationConstants.FOUR ),
                 extendedAmountDisplay        : FinanceProcurementHelper.getLocaleBasedFormattedNumber( (requisitionDetail.quantity * requisitionDetail.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ), FinanceValidationConstants.TWO ),
