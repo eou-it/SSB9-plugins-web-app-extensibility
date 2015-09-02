@@ -27,7 +27,9 @@ class FinanceTextCompositeService {
         financeTextService.listHeaderLevelTextByCode( header.requestCode ).each {FinanceText financeTextToDelete ->
             listToDelete << financeTextToDelete
         }
-        deleteText( listToDelete )
+        if (listToDelete.size() > 0) {
+            financeTextService.delete( listToDelete, true )
+        }
         if (map?.privateComment) {
             splitAndGetTextList( map.privateComment ).eachWithIndex {def textPart, int index ->
                 prepareTextList( textPart, FinanceValidationConstants.REQUISITION_INDICATOR_NO, null, header, user, listToSave )
@@ -41,23 +43,7 @@ class FinanceTextCompositeService {
         listToSave.eachWithIndex {FinanceText entry, int i ->
             entry.sequenceNumber = (i + 1) * FinanceProcurementConstants.FINANCE_TEXT_SEQUENCE_NUMBER_INCREMENT
         }
-        insertText( listToSave )
-    }
-
-
-    private deleteText( listToDelete ) {
-        listToDelete.each {domain ->
-            def map = [domainModel: domain]
-            financeTextService.delete( map )
-        }
-    }
-
-
-    private insertText( listToSave ) {
-        listToSave.each {domain ->
-            def map = [domainModel: domain]
-            financeTextService.create( map )
-        }
+        financeTextService.create( listToSave )
     }
 
     /**
@@ -74,7 +60,7 @@ class FinanceTextCompositeService {
         financeTextService.getFinanceTextByCodeAndItemNumber( detail.requestCode, item ).each {FinanceText financeTextToDelete ->
             listToDelete << financeTextToDelete
         }
-        deleteText( listToDelete )
+        financeTextService.delete( listToDelete, true )
         if (map?.privateComment) {
             splitAndGetTextList( map.privateComment ).eachWithIndex {def textPart, int index ->
                 prepareTextList( textPart, FinanceValidationConstants.REQUISITION_INDICATOR_NO, item, detail, user, listToSave )
@@ -88,7 +74,7 @@ class FinanceTextCompositeService {
         listToSave.eachWithIndex {FinanceText entry, int i ->
             entry.sequenceNumber = (i + 1) * FinanceProcurementConstants.FINANCE_TEXT_SEQUENCE_NUMBER_INCREMENT
         }
-        insertText( listToSave )
+        financeTextService.create( listToSave )
     }
 
     /**
@@ -101,7 +87,7 @@ class FinanceTextCompositeService {
      * @param listToSave List of finance text to save.
      */
     private void prepareTextList( textPart, printOptionIndicator, textItem, headerOrDetail, user, listToSave ) {
-        def financeText = prepareFinanceTextForSave( headerOrDetail, user )
+        FinanceText financeText = prepareFinanceTextForSave( headerOrDetail, user )
         financeText.text = textPart
         financeText.printOptionIndicator = printOptionIndicator
         financeText.textItem = textItem
@@ -115,14 +101,15 @@ class FinanceTextCompositeService {
      * @return
      */
     private FinanceText prepareFinanceTextForSave( headerOrDetail, user ) {
-        return [textCode                  : headerOrDetail.requestCode,
-                textCode                  : headerOrDetail.requestCode,
-                activityDate              : headerOrDetail.lastModified,
-                changeSequenceNumber      : null,
-                lastModifiedBy            : user,
-                dataOrigin                : headerOrDetail.dataOrigin,
-                documentTypeSequenceNumber: FinanceProcurementConstants.FINANCE_TEXT_DOCUMENT_TYPE_SEQ_NUMBER_REQUISITION,
-                pidm                      : headerOrDetail.vendorPidm]
+        FinanceText financeText = new FinanceText()
+        financeText.textCode = headerOrDetail.requestCode
+        financeText.activityDate = headerOrDetail.lastModified
+        financeText.changeSequenceNumber = null
+        financeText.lastModifiedBy = user
+        financeText.dataOrigin = headerOrDetail.dataOrigin
+        financeText.documentTypeSequenceNumber = FinanceProcurementConstants.FINANCE_TEXT_DOCUMENT_TYPE_SEQ_NUMBER_REQUISITION
+        financeText.pidm = headerOrDetail.vendorPidm
+        financeText
     }
 
     /**
