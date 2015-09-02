@@ -152,14 +152,12 @@ class DocumentManagementCompositeService {
         documentAttributes.put( FinanceProcurementConstants.BDM_TRANSACTION_DATE, requisition.transactionDate )
         documentAttributes.put( FinanceProcurementConstants.BDM_VENDOR_ID, requisition.vendorPidm ? requisition.vendorPidm : FinanceProcurementConstants.EMPTY_STRING )
 
-        def lastName = FinanceProcurementConstants.EMPTY_STRING, firstName = FinanceProcurementConstants.EMPTY_STRING
+        def personObj
         if (requisition.vendorPidm) {
-            def obj = PersonIdentificationName.findByPidm( requisition.vendorPidm )
-            lastName = obj.lastName
-            firstName = obj.firstName
+            personObj = PersonIdentificationName.findByPidm( requisition.vendorPidm )
         }
-        documentAttributes.put( FinanceProcurementConstants.BDM_VENDOR_NAME, lastName )
-        documentAttributes.put( FinanceProcurementConstants.BDM_FIRST_NAME, firstName )
+        documentAttributes.put( FinanceProcurementConstants.BDM_VENDOR_NAME, personObj?.lastName ? personObj.lastName :FinanceProcurementConstants.EMPTY_STRING )
+        documentAttributes.put( FinanceProcurementConstants.BDM_FIRST_NAME, personObj?.lastName ? personObj.lastName :FinanceProcurementConstants.EMPTY_STRING )
         documentAttributes.put( FinanceProcurementConstants.BDM_PIDM, ownerPidm )
         documentAttributes.put( FinanceProcurementConstants.BDM_DOCUMENT_NAME, fileName )
         documentAttributes.put( FinanceProcurementConstants.BDM_CREATE_NAME, PersonIdentificationName.findByPidm( ownerPidm )?.fullName )
