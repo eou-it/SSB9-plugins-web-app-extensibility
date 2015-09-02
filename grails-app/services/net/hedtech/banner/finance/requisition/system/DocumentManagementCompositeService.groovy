@@ -157,7 +157,7 @@ class DocumentManagementCompositeService {
             personObj = PersonIdentificationName.findByPidm( requisition.vendorPidm )
         }
         documentAttributes.put( FinanceProcurementConstants.BDM_VENDOR_NAME, personObj?.lastName ? personObj.lastName :FinanceProcurementConstants.EMPTY_STRING )
-        documentAttributes.put( FinanceProcurementConstants.BDM_FIRST_NAME, personObj?.lastName ? personObj.lastName :FinanceProcurementConstants.EMPTY_STRING )
+        documentAttributes.put( FinanceProcurementConstants.BDM_FIRST_NAME, personObj?.firstName ? personObj.firstName :FinanceProcurementConstants.EMPTY_STRING )
         documentAttributes.put( FinanceProcurementConstants.BDM_PIDM, ownerPidm )
         documentAttributes.put( FinanceProcurementConstants.BDM_DOCUMENT_NAME, fileName )
         documentAttributes.put( FinanceProcurementConstants.BDM_CREATE_NAME, PersonIdentificationName.findByPidm( ownerPidm )?.fullName )
