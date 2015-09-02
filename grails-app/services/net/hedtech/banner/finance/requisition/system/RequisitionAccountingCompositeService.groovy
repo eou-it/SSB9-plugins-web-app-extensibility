@@ -49,6 +49,7 @@ class RequisitionAccountingCompositeService {
             requisitionAccountingRequest.userId = user.oracleUserName
             def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionAccountingRequest.requestCode )
             FinanceProcurementHelper.checkCompleteRequisition( header )
+            reValidateAccountingFOAP( requisitionAccountingRequest, header.transactionDate )
             if (header.isDocumentLevelAccounting) {
                 requisitionAccountingRequest.item = 0
             }
@@ -93,8 +94,8 @@ class RequisitionAccountingCompositeService {
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
-        FinanceProcurementHelper.checkCompleteRequisition(
-                requisitionHeaderService.findRequisitionHeaderByRequestCode( accountingDomainModel.requisitionAccounting.requestCode ) )
+        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( accountingDomainModel.requisitionAccounting.requestCode )
+        FinanceProcurementHelper.checkCompleteRequisition( header )
 
         if (accountingDomainModel.requisitionAccounting.item == null || accountingDomainModel.requisitionAccounting.sequenceNumber == null) {
             LoggerUtility.error( LOGGER, 'Item and Sequence number are required to update the Requisition Accounting information.' )
@@ -102,7 +103,7 @@ class RequisitionAccountingCompositeService {
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_ITEM_SEQUENCE_REQUIRED, [] ) )
         }
-
+        reValidateAccountingFOAP( accountingDomainModel.requisitionAccounting, header.transactionDate )
         def existingAccountingInfo = requisitionAccountingService.findByRequestCodeItemAndSeq( accountingDomainModel.requisitionAccounting.requestCode,
                                                                                                accountingDomainModel.requisitionAccounting.item, accountingDomainModel.requisitionAccounting.sequenceNumber )
         RequisitionAccounting requisitionAccountingRequest = accountingDomainModel.requisitionAccounting
@@ -298,6 +299,31 @@ class RequisitionAccountingCompositeService {
      */
     private def setNSFOverride( requisitionAccounting ) {
         requisitionAccounting.insufficientFundsOverrideIndicator = FinanceProcurementConstants.FALSE
-        // Populate always false from XE as Requestd by BA Mark/Kumar
+        // Populate always false from XE as Requested by BA Mark/Kumar
+    }
+
+    /**
+     * Re-validates FOAP
+     * @param requisitionAccount
+     * @param tnxDate
+     * @return
+     */
+    private def reValidateAccountingFOAP( requisitionAccount, tnxDate ) {
+        financeOrganizationCompositeService.findOrganizationListByEffectiveDateAndSearchParam( [searchParam  : requisitionAccount.organization,
+                                                                                                effectiveDate: tnxDate, coaCode: requisitionAccount.chartOfAccount],
+                                                                                               [offset: FinanceProcurementConstants.ZERO, max: FinanceProcurementConstants.ONE] )
+
+        financeFundCompositeService.findFundListByEffectiveDateAndFundCode( [codeTitle    : requisitionAccount.fund,
+                                                                             effectiveDate: tnxDate, coaCode: requisitionAccount.chartOfAccount],
+                                                                            [offset: FinanceProcurementConstants.ZERO, max: FinanceProcurementConstants.ONE] )
+
+
+        financeAccountCompositeService.getListByAccountOrChartOfAccAndEffectiveDate( [searchParam  : requisitionAccount.account,
+                                                                                      effectiveDate: tnxDate, coaCode: requisitionAccount.chartOfAccount],
+                                                                                     [offset: FinanceProcurementConstants.ZERO, max: FinanceProcurementConstants.ONE] )
+
+        programService.findByCoaProgramAndEffectiveDate( [coa: requisitionAccount.chartOfAccount, effectiveDate: tnxDate, programCodeDesc: requisitionAccount.program],
+                                                         [offset: FinanceProcurementConstants.ZERO, max: FinanceProcurementConstants.ONE] )
+
     }
 }

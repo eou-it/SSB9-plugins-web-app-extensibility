@@ -108,6 +108,7 @@ class RequisitionHeaderCompositeService {
             financeTextCompositeService.saveTextForHeader( requisitionHeader,
                                                            [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
                                                            user.oracleUserName )
+            reCalculateCommodities()
             return requisitionHeader
         } else {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
@@ -117,6 +118,10 @@ class RequisitionHeaderCompositeService {
         }
     }
 
+
+    def reCalculateCommodities() {
+
+    }
     /**
      * Get Filtered CCY information
      * @param ccyCode
