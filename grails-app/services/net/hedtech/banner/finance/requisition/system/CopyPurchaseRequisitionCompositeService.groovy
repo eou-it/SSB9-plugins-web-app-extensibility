@@ -39,7 +39,7 @@ class CopyPurchaseRequisitionCompositeService {
                         .executeUpdate()
                 return nextDocCode
             } catch (HibernateException e) {
-                LoggerUtility.error( LOGGER, "Error While Copy Requisition $header.requestCode" )
+                LoggerUtility.error( LOGGER, "Error While Copy Requisition $header.requestCode" + e)
                 throw new ApplicationException( CopyPurchaseRequisitionCompositeService, e )
             }
             finally {
