@@ -324,7 +324,7 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
                 'fiscalYearCode'                    : fiscalCode,
                 'period'                            : period,
                 'ruleClass'                         : ruleClassCode,
-                'chartOfAccounts'                   : chartOfAccountsCode,
+                'chartOfAccount'                   : chartOfAccountsCode,
                 'accountIndex'                      : indexCode,
                 'fund'                              : fundCode,
                 'organization'                      : orgnCode,

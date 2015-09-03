@@ -8,7 +8,6 @@ import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.general.person.PersonIdentificationName
-import net.hedtech.bdm.exception.BdmsException
 import org.apache.log4j.Logger
 import org.codehaus.groovy.grails.commons.ConfigurationHolder
 
@@ -96,7 +95,7 @@ class DocumentManagementCompositeService {
         def documentList
         try {
             documentList = bdmAttachmentService.viewDocument( getBdmParams(), criteria, vpdiCode )
-        } catch (BdmsException ae) {
+        } catch (ApplicationException ae) {
             throw new ApplicationException( DocumentManagementCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR, [] ) )

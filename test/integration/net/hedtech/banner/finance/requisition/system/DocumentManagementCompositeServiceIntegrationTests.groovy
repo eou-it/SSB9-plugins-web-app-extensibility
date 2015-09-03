@@ -116,6 +116,20 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
     }
 
     /**
+     * Tests Delete document requisition by code Without BDM
+     */
+    @Test
+    void testDeleteDocumentsByRequisitionCodeWithWrongDocID() {
+        try {
+            documentManagementCompositeService.deleteDocumentsByRequisitionCode( 'test', null, true, 'RSED0004' )
+        } catch (ApplicationException ae) {
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR )
+        } catch (WebServiceException e) {
+            assertNotNull( e.getMessage() )
+        }
+    }
+
+    /**
      * Tests Delete document requisition By code
      */
     @Test
@@ -143,6 +157,18 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
             documentManagementCompositeService.listDocumentsByRequisitionCode( 'RSED0006', null, false )
         } catch (ApplicationException ae) {
             assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED )
+        }
+    }
+
+    /**
+     * Tests List documents requisition by code Without BDM
+     */
+    @Test
+    void testListDocumentsByRequisitionCodeWithInvalidReqId() {
+        try {
+            documentManagementCompositeService.listDocumentsByRequisitionCode( 'test', 'test', true )
+        } catch (ApplicationException ae) {
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR )
         }
     }
 
