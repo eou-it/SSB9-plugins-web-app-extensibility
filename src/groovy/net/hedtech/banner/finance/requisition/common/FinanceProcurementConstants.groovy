@@ -388,6 +388,8 @@ class FinanceProcurementConstants {
     static final String OLD_DOC_CODE = 'oldDocCode'
     static
     final String ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED = 'missing.requisition.complemented.requisition.required'
+    static
+        final String ERROR_MESSAGE_ERROR_WHILE_COPY = 'error.copy.requisition'
     static final String COPY_REQUISITION_HEADER_COPIED_FROM = 'COPIED FROM '
     static
     final String SUCCESS_MESSAGE_COPY_REQUISITION_HEADER = 'net.hedtech.banner.finance.requisition.copy.requisition.header.success'

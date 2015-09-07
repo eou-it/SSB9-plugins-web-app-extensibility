@@ -37,10 +37,11 @@ class CopyPurchaseRequisitionCompositeService {
                         .setParameter( FinanceProcurementConstants.NEXT_DOC_CODE, nextDocCode )
                         .setParameter( FinanceProcurementConstants.OLD_DOC_CODE, requestCode )
                         .executeUpdate()
-                return nextDocCode
+                nextDocCode
             } catch (HibernateException e) {
                 LoggerUtility.error( LOGGER, "Error While Copy Requisition $header.requestCode" + e)
-                throw new ApplicationException( CopyPurchaseRequisitionCompositeService, e )
+                throw new ApplicationException( CopyPurchaseRequisitionCompositeService, new BusinessLogicValidationException(
+                                            FinanceProcurementConstants.ERROR_MESSAGE_ERROR_WHILE_COPY, [requestCode] )  )
             }
             finally {
                 session?.close()
