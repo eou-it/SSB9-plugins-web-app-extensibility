@@ -28,6 +28,7 @@ class RequisitionHeaderCompositeService {
     def financeTextCompositeService
     def requisitionDetailService
     def documentManagementCompositeService
+    def requisitionDetailsCompositeService
 
     /**
      * Create purchase requisition Header
@@ -89,6 +90,8 @@ class RequisitionHeaderCompositeService {
             }
             FinanceProcurementHelper.checkCompleteRequisition( existingHeader )
             RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
+            boolean isDiscountChanged = requisitionHeaderRequest.discount && requisitionHeaderRequest.discount != existingHeader.discount
+            boolean isCcyChanged = requisitionHeaderRequest.currency != existingHeader.currency
             requisitionHeaderRequest.id = existingHeader.id
             requisitionHeaderRequest.version = existingHeader.version
             requisitionHeaderRequest.requestCode = existingHeader.requestCode
@@ -108,7 +111,9 @@ class RequisitionHeaderCompositeService {
             financeTextCompositeService.saveTextForHeader( requisitionHeader,
                                                            [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
                                                            user.oracleUserName )
-            reCalculateCommodities()
+            if (isDiscountChanged || isCcyChanged) {
+                reCalculateCommodities( requisitionHeader, isDiscountChanged, isCcyChanged )
+            }
             return requisitionHeader
         } else {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
@@ -118,10 +123,6 @@ class RequisitionHeaderCompositeService {
         }
     }
 
-
-    def reCalculateCommodities() {
-
-    }
     /**
      * Get Filtered CCY information
      * @param ccyCode
@@ -216,5 +217,29 @@ class RequisitionHeaderCompositeService {
                 newHeader.discount == existingHeader.discount &&
                 ((newHeader.currency == baseCcy && existingHeader.currency == null) || newHeader.currency == existingHeader.currency) &&
                 isCommentUnChanged( map.requisitionHeader.privateComment, map.requisitionHeader.publicComment, newHeader.requestCode ))
+    }
+
+    /**
+     * Recalculate the discount and converted amount if discount code or ccy changed
+     * @param requisitionHeader
+     * @param isDiscountChanged
+     * @param isCcyChanged
+     * @return
+     */
+    private def reCalculateCommodities( RequisitionHeader requisitionHeader, isDiscountChanged, isCcyChanged ) {
+        def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionHeader.requestCode )
+        requisitionDetails.each {item ->
+            def requisitionDetailModel = item.class.declaredFields.findAll {
+                it.modifiers == java.lang.reflect.Modifier.PRIVATE
+            }.collectEntries {[it.name, item[it.name]]}
+            if (isDiscountChanged) {
+                requisitionDetailModel.discountAmount = null
+            }
+            if (isCcyChanged) {
+                requisitionDetailModel.convertedDiscountAmount = null
+            }
+            def detailDomainModel = [requisitionDetail:requisitionDetailModel]
+            requisitionDetailsCompositeService.updateRequisitionDetail( detailDomainModel )
+        }
     }
 }
