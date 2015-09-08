@@ -326,6 +326,20 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     }
 
     /**
+      * Test update
+      */
+     @Test
+     void updatePurchaseRequisitionwithDiscountAndCurrency() {
+         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+         def headerDomainModel = newRequisitionHeader()
+         headerDomainModel.requesterName = 'Modified'
+         headerDomainModel.discount = 30
+         headerDomainModel.currency = 'USD'
+         def domainModelMap = [requisitionHeader: headerDomainModel]
+         assert 'Modified' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0011', 'USD' ).requesterName
+     }
+
+    /**
      * Test update. No Change
      */
     @Test
