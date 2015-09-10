@@ -55,24 +55,4 @@ class CopyPurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegr
             assertApplicationException e, (FinanceProcurementConstants.ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED)
         }
     }
-
-    /**
-     * Test case to test fail case for copy requisition.
-     */
-    @Test
-    public void testCopyRequisitionFailCaseWithHibernateException() {
-        try {
-            def defaultQuery = 'testQuery'
-            copyPurchaseRequisitionCompositeService.copyRequisition( 'RSED0005', defaultQuery )
-        } catch (ApplicationException e) {
-            assertApplicationException e, (e.getMessage())
-        }
-    }
-
-
-    @Test
-    public void testCopyRequisitionNew() {
-        def retReqNumber = copyPurchaseRequisitionCompositeService.copyRequisitionNew( 'RSED0005' )
-        assert retReqNumber != 'RSED0005'
-    }
 }

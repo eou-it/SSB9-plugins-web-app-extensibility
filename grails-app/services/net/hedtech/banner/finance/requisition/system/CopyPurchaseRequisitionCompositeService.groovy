@@ -55,32 +55,25 @@ class CopyPurchaseRequisitionCompositeService {
      * @param requestCode
      */
     private void copyRequisitionHeader( RequisitionHeader header, nextRequisitionNumber, requestCode ) {
-        try {
-            def headerForCopy = RequisitionHeaderForCopy.newInstance( header.properties )
-            headerForCopy.requestCode = nextRequisitionNumber
-            headerForCopy.documentCopiedFrom = requestCode // Old requisition number
-            headerForCopy.transactionDate = new Date()
-            headerForCopy.requestDate = new Date()
-            headerForCopy.deliveryDate = null
-            headerForCopy.completeIndicator = FinanceProcurementConstants.FALSE
-            headerForCopy.printIndicator = null
-            headerForCopy.encumbranceIndicator = null
-            headerForCopy.suspenseIndicator = FinanceProcurementConstants.TRUE
-            headerForCopy.cancelIndicator = null
-            headerForCopy.cancellationDate = null
-            headerForCopy.postingDate = null
-            headerForCopy.approvalIndicator = FinanceProcurementConstants.FALSE
-            headerForCopy.deferEditIndicator = FinanceProcurementConstants.FALSE
-            headerForCopy.nsfOnOffIndicator = FinanceProcurementConstants.TRUE
-            headerForCopy.closedIndicator = null
-            headerForCopy.closedDate = null
-            requisitionHeaderForCopyService.create( [domainModel: headerForCopy] )
-        }
-        catch (Exception e) {
-            LoggerUtility.error( LOGGER, "Error While Copy Requisition $header.requestCode" + e )
-            throw new ApplicationException( CopyPurchaseRequisitionCompositeService, new BusinessLogicValidationException(
-                    FinanceProcurementConstants.ERROR_MESSAGE_ERROR_WHILE_COPY, [requestCode] ) )
-        }
+        def headerForCopy = RequisitionHeaderForCopy.newInstance( header.properties )
+        headerForCopy.requestCode = nextRequisitionNumber
+        headerForCopy.documentCopiedFrom = requestCode // Old requisition number
+        headerForCopy.transactionDate = new Date()
+        headerForCopy.requestDate = new Date()
+        headerForCopy.deliveryDate = null
+        headerForCopy.completeIndicator = FinanceProcurementConstants.FALSE
+        headerForCopy.printIndicator = null
+        headerForCopy.encumbranceIndicator = null
+        headerForCopy.suspenseIndicator = FinanceProcurementConstants.TRUE
+        headerForCopy.cancelIndicator = null
+        headerForCopy.cancellationDate = null
+        headerForCopy.postingDate = null
+        headerForCopy.approvalIndicator = FinanceProcurementConstants.FALSE
+        headerForCopy.deferEditIndicator = FinanceProcurementConstants.FALSE
+        headerForCopy.nsfOnOffIndicator = FinanceProcurementConstants.TRUE
+        headerForCopy.closedIndicator = null
+        headerForCopy.closedDate = null
+        requisitionHeaderForCopyService.create( [domainModel: headerForCopy] )
     }
 
     /**
@@ -91,26 +84,20 @@ class CopyPurchaseRequisitionCompositeService {
      */
     private copyRequisitionDetail( nextRequisitionNumber, requestCode ) {
         def requisitionDetailList = RequisitionDetailForCopy.findAllByRequestCode( requestCode )
+        def detailForCopy
         requisitionDetailList.each {RequisitionDetailForCopy requisitionDetail ->
-            try {
-                def detailForCopy = RequisitionDetailForCopy.newInstance( requisitionDetail.properties )
-                detailForCopy.requestCode = nextRequisitionNumber
-                detailForCopy.purchaseOrder = null
-                detailForCopy.purchaseOrderItem = null
-                detailForCopy.bid = null
-                detailForCopy.completeIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_NO
-                detailForCopy.suspenseIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_YES
-                detailForCopy.cancellationIndicator = null
-                detailForCopy.cancellationDate = null
-                detailForCopy.closedIndicator = null
-                detailForCopy.postDate = null
-                requisitionDetailForCopyService.create( [domainModel: detailForCopy] )
-            } catch (Exception e) {
-                e.printStackTrace()
-                LoggerUtility.error( LOGGER, "Error While Copy Requisition $requestCode" + e )
-                throw new ApplicationException( CopyPurchaseRequisitionCompositeService, new BusinessLogicValidationException(
-                        FinanceProcurementConstants.ERROR_MESSAGE_ERROR_WHILE_COPY, [requestCode] ) )
-            }
+            detailForCopy = RequisitionDetailForCopy.newInstance( requisitionDetail.properties )
+            detailForCopy.requestCode = nextRequisitionNumber
+            detailForCopy.purchaseOrder = null
+            detailForCopy.purchaseOrderItem = null
+            detailForCopy.bid = null
+            detailForCopy.completeIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_NO
+            detailForCopy.suspenseIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_YES
+            detailForCopy.cancellationIndicator = null
+            detailForCopy.cancellationDate = null
+            detailForCopy.closedIndicator = null
+            detailForCopy.postDate = null
+            requisitionDetailForCopyService.create( [domainModel: detailForCopy] )
         }
 
     }
@@ -124,25 +111,19 @@ class CopyPurchaseRequisitionCompositeService {
     private copyRequisitionAccounting( nextRequisitionNumber, requestCode ) {
 
         def requisitionAccountingList = RequisitionAccountingForCopy.findAllByRequestCode( requestCode )
+        def accountingForCopy
         requisitionAccountingList.each {RequisitionAccountingForCopy requisitionAccounting ->
-            try {
-                def accountingForCopy = RequisitionAccountingForCopy.newInstance( requisitionAccounting.properties )
-                accountingForCopy.requestCode = nextRequisitionNumber
-                accountingForCopy.suspenseIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_YES
-                accountingForCopy.nsfSuspInd = FinanceProcurementConstants.DEFAULT_INDICATOR_YES
-                accountingForCopy.cancelIndicator = null
-                accountingForCopy.cancellationDate = null
-                accountingForCopy.approvalIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_NO
-                accountingForCopy.insufficientFundsOverrideIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_NO
-                accountingForCopy.availableBudgetOverride = null
-                accountingForCopy.closedIndicator = null
-                requisitionAccountingForCopyService.create( [domainModel: accountingForCopy] )
-            }
-            catch (Exception e) {
-                LoggerUtility.error( LOGGER, "Error While Copy Requisition $requestCode" + e )
-                throw new ApplicationException( CopyPurchaseRequisitionCompositeService, new BusinessLogicValidationException(
-                        FinanceProcurementConstants.ERROR_MESSAGE_ERROR_WHILE_COPY, [requestCode] ) )
-            }
+            accountingForCopy = RequisitionAccountingForCopy.newInstance( requisitionAccounting.properties )
+            accountingForCopy.requestCode = nextRequisitionNumber
+            accountingForCopy.suspenseIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_YES
+            accountingForCopy.nsfSuspInd = FinanceProcurementConstants.DEFAULT_INDICATOR_YES
+            accountingForCopy.cancelIndicator = null
+            accountingForCopy.cancellationDate = null
+            accountingForCopy.approvalIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_NO
+            accountingForCopy.insufficientFundsOverrideIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_NO
+            accountingForCopy.availableBudgetOverride = null
+            accountingForCopy.closedIndicator = null
+            requisitionAccountingForCopyService.create( [domainModel: accountingForCopy] )
         }
     }
 
@@ -155,16 +136,9 @@ class CopyPurchaseRequisitionCompositeService {
     private copyRequisitionTax( nextRequisitionNumber, requestCode ) {
         def requisitionTaxList = RequisitionTaxForCopy.findAllByRequestCode( requestCode )
         requisitionTaxList.each {RequisitionTaxForCopy requisitionTax ->
-            try {
-                def taxForCopy = RequisitionTaxForCopy.newInstance( requisitionTax.properties )
-                taxForCopy.requestCode = nextRequisitionNumber
-                requisitionTaxForCopyService.create( [domainModel: taxForCopy] )
-            }
-            catch (Exception e) {
-                LoggerUtility.error( LOGGER, "Error While Copy Requisition $requestCode" + e )
-                throw new ApplicationException( CopyPurchaseRequisitionCompositeService, new BusinessLogicValidationException(
-                        FinanceProcurementConstants.ERROR_MESSAGE_ERROR_WHILE_COPY, [requestCode] ) )
-            }
+            def taxForCopy = RequisitionTaxForCopy.newInstance( requisitionTax.properties )
+            taxForCopy.requestCode = nextRequisitionNumber
+            requisitionTaxForCopyService.create( [domainModel: taxForCopy] )
         }
     }
 
@@ -176,15 +150,9 @@ class CopyPurchaseRequisitionCompositeService {
     private void copyFinanceText( nextRequisitionNumber, requestCode ) {
         def textList = financeTextService.listAllFinanceTextByCode( requestCode )
         textList.each {FinanceText financeText ->
-            try {
-                def textForCopy = FinanceText.newInstance( financeText.properties )
-                textForCopy.textCode = nextRequisitionNumber
-                financeTextService.create( [domainModel: textForCopy] )
-            } catch (Exception e) {
-                LoggerUtility.error( LOGGER, "Error While Copy Requisition $requestCode" + e )
-                throw new ApplicationException( CopyPurchaseRequisitionCompositeService, new BusinessLogicValidationException(
-                        FinanceProcurementConstants.ERROR_MESSAGE_ERROR_WHILE_COPY, [requestCode] ) )
-            }
+            def textForCopy = FinanceText.newInstance( financeText.properties )
+            textForCopy.textCode = nextRequisitionNumber
+            financeTextService.create( [domainModel: textForCopy] )
         }
     }
 }
