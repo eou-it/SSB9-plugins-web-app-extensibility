@@ -83,8 +83,7 @@ class RequisitionHeaderCompositeService {
         def user = springSecurityService.getAuthentication().user
         if (map?.requisitionHeader && user.oracleUserName) {
             def existingHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
-            RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
-            /*map.requisitionHeader.requestCode = existingHeader.requestCode
+            map.requisitionHeader.requestCode = existingHeader.requestCode
             if (!checkHeaderUpdateEligibility( map, existingHeader, baseCcy )) {
                 LoggerUtility.debug( LOGGER, 'Modification not required' )
                 return existingHeader
@@ -107,17 +106,16 @@ class RequisitionHeaderCompositeService {
                 }
             }
             requisitionHeaderRequest.requestDate = existingHeader.requestDate
-            requisitionHeaderRequest.userId = user.oracleUserName*/
-            existingHeader.deliveryDate=requisitionHeaderRequest.deliveryDate
-            /*def requisitionHeader = requisitionHeaderService.update( [domainModel: existingHeader] )
+            requisitionHeaderRequest.userId = user.oracleUserName
+            def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
             LoggerUtility.debug LOGGER, "Requisition Header updated " + requisitionHeader
             financeTextCompositeService.saveTextForHeader( requisitionHeader,
                                                            [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
                                                            user.oracleUserName )
             if (isDiscountChanged || isCcyChanged) {
                 reCalculateCommodities( requisitionHeader, isDiscountChanged, isCcyChanged )
-            }*/
-            return existingHeader
+            }
+            return requisitionHeader
         } else {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
             throw new ApplicationException( RequisitionHeaderCompositeService,

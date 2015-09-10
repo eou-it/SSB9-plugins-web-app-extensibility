@@ -6,11 +6,8 @@ package net.hedtech.banner.finance.requisition.system
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
-import net.hedtech.banner.finance.requisition.common.FinanceProcurementSQLConstants
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
-import org.hibernate.HibernateException
-import org.hibernate.Session
 
 /**
  * The service class which is used to have methods for copy purchase requisition.
@@ -28,43 +25,11 @@ class CopyPurchaseRequisitionCompositeService {
     def requisitionAccountingForCopyService
     def requisitionTaxForCopyService
     def financeTextService
-    /**
-     * This method is used to copy the requisition.
-     */
-    def copyRequisition( requestCode, defaultQuery = null ) {
-        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
-        if (header.completeIndicator) {
-            Session session
-            try {
-                session = sessionFactory.openSession()
-                session.createSQLQuery( FinanceProcurementSQLConstants.QUERY_UPDATE_NEXT_REQ_SEQUENCE ).executeUpdate()
-                def nextDocCode = session.createSQLQuery( FinanceProcurementSQLConstants.QUERY_NEXT_REQ_NUMBER ).list()[0]
-                session.createSQLQuery( defaultQuery ? defaultQuery : FinanceProcurementSQLConstants.QUERY_COPY_REQUISITION )
-                        .setParameter( FinanceProcurementConstants.NEXT_DOC_CODE, nextDocCode )
-                        .setParameter( FinanceProcurementConstants.OLD_DOC_CODE, requestCode )
-                        .executeUpdate()
-                nextDocCode
-            } catch (HibernateException e) {
-                LoggerUtility.error( LOGGER, "Error While Copy Requisition $header.requestCode" + e )
-                throw new ApplicationException( CopyPurchaseRequisitionCompositeService, new BusinessLogicValidationException(
-                        FinanceProcurementConstants.ERROR_MESSAGE_ERROR_WHILE_COPY, [requestCode] ) )
-            }
-            finally {
-                session?.close()
-            }
-        } else {
-            LoggerUtility.error( LOGGER, "Only completed requisition can be copied = $header.requestCode" )
-            throw new ApplicationException(
-                    CopyPurchaseRequisitionCompositeService,
-                    new BusinessLogicValidationException(
-                            FinanceProcurementConstants.ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED, [] ) )
-        }
-    }
 
     /**
      * This method is used to copy the requisition.
      */
-    def copyRequisitionNew( requestCode ) {
+    def copyRequisition( requestCode ) {
         def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         if (header?.completeIndicator) {
             def nextRequisitionNumber = financeObjectSequenceService.findNextSequenceNumber()
@@ -83,7 +48,12 @@ class CopyPurchaseRequisitionCompositeService {
         }
     }
 
-
+    /**
+     * Copy Header
+     * @param header
+     * @param nextRequisitionNumber
+     * @param requestCode
+     */
     private void copyRequisitionHeader( RequisitionHeader header, nextRequisitionNumber, requestCode ) {
         try {
             def headerForCopy = RequisitionHeaderForCopy.newInstance( header.properties )
@@ -113,7 +83,12 @@ class CopyPurchaseRequisitionCompositeService {
         }
     }
 
-
+    /**
+     * Copy commodities
+     * @param nextRequisitionNumber
+     * @param requestCode
+     * @return
+     */
     private copyRequisitionDetail( nextRequisitionNumber, requestCode ) {
         def requisitionDetailList = RequisitionDetailForCopy.findAllByRequestCode( requestCode )
         requisitionDetailList.each {RequisitionDetailForCopy requisitionDetail ->
@@ -131,7 +106,7 @@ class CopyPurchaseRequisitionCompositeService {
                 detailForCopy.postDate = null
                 requisitionDetailForCopyService.create( [domainModel: detailForCopy] )
             } catch (Exception e) {
-                e.printStackTrace(  )
+                e.printStackTrace()
                 LoggerUtility.error( LOGGER, "Error While Copy Requisition $requestCode" + e )
                 throw new ApplicationException( CopyPurchaseRequisitionCompositeService, new BusinessLogicValidationException(
                         FinanceProcurementConstants.ERROR_MESSAGE_ERROR_WHILE_COPY, [requestCode] ) )
@@ -140,7 +115,12 @@ class CopyPurchaseRequisitionCompositeService {
 
     }
 
-
+    /**
+     * Copy accounting
+     * @param nextRequisitionNumber
+     * @param requestCode
+     * @return
+     */
     private copyRequisitionAccounting( nextRequisitionNumber, requestCode ) {
 
         def requisitionAccountingList = RequisitionAccountingForCopy.findAllByRequestCode( requestCode )
@@ -166,7 +146,12 @@ class CopyPurchaseRequisitionCompositeService {
         }
     }
 
-
+    /**
+     * Copy Tax details
+     * @param nextRequisitionNumber
+     * @param requestCode
+     * @return
+     */
     private copyRequisitionTax( nextRequisitionNumber, requestCode ) {
         def requisitionTaxList = RequisitionTaxForCopy.findAllByRequestCode( requestCode )
         requisitionTaxList.each {RequisitionTaxForCopy requisitionTax ->
@@ -183,7 +168,11 @@ class CopyPurchaseRequisitionCompositeService {
         }
     }
 
-
+    /**
+     * Copy text information
+     * @param nextRequisitionNumber
+     * @param requestCode
+     */
     private void copyFinanceText( nextRequisitionNumber, requestCode ) {
         def textList = financeTextService.listAllFinanceTextByCode( requestCode )
         textList.each {FinanceText financeText ->

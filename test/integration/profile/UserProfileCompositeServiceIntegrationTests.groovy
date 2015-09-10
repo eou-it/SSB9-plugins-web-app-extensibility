@@ -4,7 +4,6 @@
 package profile
 
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
-import net.hedtech.banner.finance.requisition.common.FinanceProcurementSQLConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.hibernate.Session
 import org.junit.After
