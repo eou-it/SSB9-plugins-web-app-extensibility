@@ -83,7 +83,8 @@ class RequisitionHeaderCompositeService {
         def user = springSecurityService.getAuthentication().user
         if (map?.requisitionHeader && user.oracleUserName) {
             def existingHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
-            map.requisitionHeader.requestCode = existingHeader.requestCode
+            RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
+            /*map.requisitionHeader.requestCode = existingHeader.requestCode
             if (!checkHeaderUpdateEligibility( map, existingHeader, baseCcy )) {
                 LoggerUtility.debug( LOGGER, 'Modification not required' )
                 return existingHeader
@@ -95,6 +96,7 @@ class RequisitionHeaderCompositeService {
             requisitionHeaderRequest.id = existingHeader.id
             requisitionHeaderRequest.version = existingHeader.version
             requisitionHeaderRequest.requestCode = existingHeader.requestCode
+            requisitionHeaderRequest.documentCopiedFrom= existingHeader.documentCopiedFrom
             if (requisitionHeaderRequest.isDocumentLevelAccounting != existingHeader.isDocumentLevelAccounting) {
 
                 if (requisitionAccountingService.findAccountingSizeByRequestCode( existingHeader.requestCode ) > 0) {
@@ -105,16 +107,17 @@ class RequisitionHeaderCompositeService {
                 }
             }
             requisitionHeaderRequest.requestDate = existingHeader.requestDate
-            requisitionHeaderRequest.userId = user.oracleUserName
-            def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
+            requisitionHeaderRequest.userId = user.oracleUserName*/
+            existingHeader.deliveryDate=requisitionHeaderRequest.deliveryDate
+            /*def requisitionHeader = requisitionHeaderService.update( [domainModel: existingHeader] )
             LoggerUtility.debug LOGGER, "Requisition Header updated " + requisitionHeader
             financeTextCompositeService.saveTextForHeader( requisitionHeader,
                                                            [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
                                                            user.oracleUserName )
             if (isDiscountChanged || isCcyChanged) {
                 reCalculateCommodities( requisitionHeader, isDiscountChanged, isCcyChanged )
-            }
-            return requisitionHeader
+            }*/
+            return existingHeader
         } else {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
             throw new ApplicationException( RequisitionHeaderCompositeService,

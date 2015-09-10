@@ -14,32 +14,32 @@ class FinanceObjectSequenceServiceIntegrationTests extends BaseIntegrationTestCa
 
     def financeObjectSequenceService
 
-        /**
-         * Super class setup
-         */
-        @Before
-        void setUp() {
-            super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                        FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-            formContext = ['GUAGMNU']
-            super.setUp()
-        }
-
-        /**
-         * Tear Down actions
-         */
-        @After
-        void tearDown() {
-            super.tearDown()
-        }
     /**
-     *
+     * Super class setup
+     */
+    @Before
+    void setUp() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        formContext = ['GUAGMNU']
+        super.setUp()
+    }
+
+    /**
+     * Tear Down actions
+     */
+    @After
+    void tearDown() {
+        super.tearDown()
+    }
+
+    /**
+     * Test findNextSequenceNumber
      */
     @Test
-    void testFindBySequenceType() {
-        def record = financeObjectSequenceService.findBySequenceType()
-        println record
-        assertNotNull( record )
+    void findNextSequenceNumber() {
+        def record = financeObjectSequenceService.findNextSequenceNumber()
+        assertNotNull record
     }
 
 }

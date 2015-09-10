@@ -16,7 +16,9 @@ class FinanceProcurementConstants {
     static final String DEFAULT_INDICATOR_YES = 'Y'
     static final String DEFAULT_INDICATOR_NO = 'N'
     static final int ZERO = 0
+    static final String ZERO_STRING = '0'
     static final int HUNDRED = 100
+    static final int EIGHT = 8
     static final int ONE = 1
     static final String EMPTY_STRING = ''
 
@@ -678,4 +680,31 @@ class FinanceProcurementConstants {
     static final String FINANCE_GENERAL_TICKLER_GURTKLR_VPDI_CODE = 'GURTKLR_VPDI_CODE'
     static final String FINANCE_GENERAL_TICKLER_QUERY_PARAM_ITEM_REF_NO = 'itemReferenceNo'
 
+    /** Constants for Finance object sequence Table FOBSEQN **/
+    static final String FINANCE_OBJECT_SEQ='FOBSEQN'
+    static final String FINANCE_OBJECT_SEQ_SEQ_GENERATOR='FOBSEQN_SEQ_GEN'
+    static final String FINANCE_OBJECT_SEQ_SEQ_FOBSEQN_SURROGATE_ID_SEQUENCE='FOBSEQN_SURROGATE_ID_SEQUENCE'
+    static final String FINANCE_OBJECT_SEQ_FIELD_FOBSEQN_SURROGATE_ID ='FOBSEQN_SURROGATE_ID'
+    static final String FINANCE_OBJECT_SEQ_FIELD_FOBSEQN_SEQNO_TYPE ='FOBSEQN_SEQNO_TYPE'
+    static final String FINANCE_OBJECT_SEQ_FIELD_FOBSEQN_SEQNO_PREFIX ='FOBSEQN_SEQNO_PREFIX'
+    static final String FINANCE_OBJECT_SEQ_FIELD_FOBSEQN_MAXSEQNO_7 ='FOBSEQN_MAXSEQNO_7'
+    static final String FINANCE_OBJECT_SEQ_FIELD_FOBSEQN_VERSION ='FOBSEQN_VERSION'
+    static final String FINANCE_OBJECT_SEQ_FOBSEQN_SEQNO_TYPE ='R'
+
+    /** Constants for Finance object sequence Table FPRRQTX **/
+    static final String FPRRQTX_TABLE = 'FPRRQTX'
+    static final String FIELD_FPRRQTX_SURROGATE_ID = 'FPRRQTX_SURROGATE_ID'
+    static final String FIELD_FPRRQTX_SEQ_GEN = 'FPRRQTX_SEQ_GEN'
+    static final String FIELD_FPRRQTX_SURROGATE_ID_SEQUENCE = 'FPRRQTX_SURROGATE_ID_SEQUENCE'
+    static final String FIELD_FPRRQTX_REQH_CODE = 'FPRRQTX_REQH_CODE'
+    static final String FIELD_FPRRQTX_ITEM = 'FPRRQTX_ITEM'
+    static final String FIELD_FPRRQTX_PRIORITY_NUM= 'FPRRQTX_PRIORITY_NUM'
+    static final String FIELD_FPRRQTX_TRAT_CODE= 'FPRRQTX_TRAT_CODE'
+    static final String FIELD_FPRRQTX_TAX_AMT= 'FPRRQTX_TAX_AMT'
+    static final String FIELD_FPRRQTX_TAXABLE_AMT= 'FPRRQTX_TAXABLE_AMT'
+    static final String FIELD_FPRRQTX_PAY_TAX_TO= 'FPRRQTX_PAY_TAX_TO'
+    static final String FIELD_FPRRQTX_ACTIVITY_DATE= 'FPRRQTX_ACTIVITY_DATE'
+    static final String FIELD_FPRRQTX_USER_ID= 'FPRRQTX_USER_ID'
+    static final String FIELD_FPRRQTX_DATA_ORIGIN= 'FPRRQTX_DATA_ORIGIN'
+    static final String FIELD_FPRRQTX_VERSION= 'FPRRQTX_VERSION'
 }

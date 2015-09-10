@@ -41,7 +41,7 @@ class CopyPurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegr
      */
     @Test
     public void testCopyRequisition() {
-        assertNotNull(copyPurchaseRequisitionCompositeService.copyRequisition('RSED0005'))
+        assertNotNull( copyPurchaseRequisitionCompositeService.copyRequisition( 'RSED0005' ) )
     }
 
     /**
@@ -50,7 +50,7 @@ class CopyPurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegr
     @Test
     public void testCopyRequisitionFailCase() {
         try {
-            copyPurchaseRequisitionCompositeService.copyRequisition('RSED0001')
+            copyPurchaseRequisitionCompositeService.copyRequisition( 'RSED0001' )
         } catch (ApplicationException e) {
             assertApplicationException e, (FinanceProcurementConstants.ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED)
         }
@@ -63,9 +63,16 @@ class CopyPurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegr
     public void testCopyRequisitionFailCaseWithHibernateException() {
         try {
             def defaultQuery = 'testQuery'
-            copyPurchaseRequisitionCompositeService.copyRequisition('RSED0005',defaultQuery)
+            copyPurchaseRequisitionCompositeService.copyRequisition( 'RSED0005', defaultQuery )
         } catch (ApplicationException e) {
             assertApplicationException e, (e.getMessage())
         }
+    }
+
+
+    @Test
+    public void testCopyRequisitionNew() {
+        def retReqNumber = copyPurchaseRequisitionCompositeService.copyRequisitionNew( 'RSED0005' )
+        assert retReqNumber != 'RSED0005'
     }
 }
