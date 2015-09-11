@@ -33,7 +33,7 @@ class RequisitionTaxForCopyServiceIntegrationTests extends BaseIntegrationTestCa
      * Test case to test pre delete method which will throw the ApplicationException.
      */
     @Test(expected = ApplicationException.class)
-    public void testPreDeleteFailCase() {
+    void testPreDeleteFailCase() {
         def map = [:]
         requisitionTaxForCopyService.delete( map )
     }
@@ -42,8 +42,9 @@ class RequisitionTaxForCopyServiceIntegrationTests extends BaseIntegrationTestCa
      * Test case to test pre update method which will throw the ApplicationException.
      */
     @Test(expected = ApplicationException.class)
-    public void testPreUpdateFailCase() {
-        def map = [:]
+    void testPreUpdateFailCase() {
+        def map = RequisitionTaxForCopy.findByRequestCode('RSED0005')
+        map.requestCode = 'RSED0001'
         requisitionTaxForCopyService.update( map )
     }
 
