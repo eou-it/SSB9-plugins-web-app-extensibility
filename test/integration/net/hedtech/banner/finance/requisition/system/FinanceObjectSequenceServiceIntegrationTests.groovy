@@ -37,7 +37,7 @@ class FinanceObjectSequenceServiceIntegrationTests extends BaseIntegrationTestCa
      * Test case to test pre create method which will throw the ApplicationException.
      */
     @Test(expected = ApplicationException.class)
-    public void testPreCreateFailCase() {
+    void testPreCreateFailCase() {
         def map = [:]
         financeObjectSequenceService.create( map )
     }
@@ -46,7 +46,7 @@ class FinanceObjectSequenceServiceIntegrationTests extends BaseIntegrationTestCa
      * Test case to test pre delete method which will throw the ApplicationException.
      */
     @Test(expected = ApplicationException.class)
-    public void testPreDeleteFailCase() {
+     void testPreDeleteFailCase() {
         def map = [:]
         financeObjectSequenceService.delete( map )
     }
