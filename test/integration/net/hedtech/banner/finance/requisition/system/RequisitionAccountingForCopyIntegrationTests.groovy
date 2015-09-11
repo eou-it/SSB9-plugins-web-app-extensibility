@@ -4,23 +4,19 @@
 package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.exceptions.ApplicationException
-import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-class FinanceObjectSequenceServiceIntegrationTests extends BaseIntegrationTestCase {
+class RequisitionAccountingForCopyIntegrationTests extends BaseIntegrationTestCase {
 
-    def financeObjectSequenceService
-
+    def requisitionAccountingForCopyService
     /**
      * Super class setup
      */
     @Before
     void setUp() {
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         formContext = ['GUAGMNU']
         super.setUp()
     }
@@ -34,30 +30,20 @@ class FinanceObjectSequenceServiceIntegrationTests extends BaseIntegrationTestCa
     }
 
     /**
-     * Test case to test pre create method which will throw the ApplicationException.
-     */
-    @Test(expected = ApplicationException.class)
-    public void testPreCreateFailCase() {
-        def map = [:]
-        financeObjectSequenceService.create( map )
-    }
-
-    /**
      * Test case to test pre delete method which will throw the ApplicationException.
      */
     @Test(expected = ApplicationException.class)
     public void testPreDeleteFailCase() {
         def map = [:]
-        financeObjectSequenceService.delete( map )
+        requisitionAccountingForCopyService.delete( map )
     }
 
     /**
-     * Test findNextSequenceNumber
+     * Test case to test pre update method which will throw the ApplicationException.
      */
-    @Test
-    void findNextSequenceNumber() {
-        def record = financeObjectSequenceService.findNextSequenceNumber()
-        assertNotNull record
+    @Test(expected = ApplicationException.class)
+    public void testPreUpdateFailCase() {
+        def map = [:]
+        requisitionAccountingForCopyService.update( map )
     }
-
 }
