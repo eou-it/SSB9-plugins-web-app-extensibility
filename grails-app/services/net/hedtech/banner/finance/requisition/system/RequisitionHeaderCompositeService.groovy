@@ -105,7 +105,6 @@ class RequisitionHeaderCompositeService {
                                                             FinanceProcurementConstants.ERROR_MESSAGE_DOCUMENT_CHANGE, [] ) )
                 }
             }
-            requisitionHeaderRequest.requestDate = existingHeader.requestDate
             requisitionHeaderRequest.userId = user.oracleUserName
             def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
             LoggerUtility.debug LOGGER, "Requisition Header updated " + requisitionHeader
@@ -210,7 +209,6 @@ class RequisitionHeaderCompositeService {
                 newHeader.vendorAddressTypeSequence == existingHeader.vendorAddressTypeSequence &&
                 newHeader.chartOfAccount == existingHeader.chartOfAccount &&
                 newHeader.organization == existingHeader.organization &&
-                newHeader.deliveryDate == existingHeader.deliveryDate &&
                 newHeader.attentionTo == existingHeader.attentionTo &&
                 newHeader.isDocumentLevelAccounting == existingHeader.isDocumentLevelAccounting &&
                 newHeader.deliveryComment == existingHeader.deliveryComment &&
