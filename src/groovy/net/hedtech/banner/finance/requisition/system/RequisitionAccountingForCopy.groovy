@@ -15,7 +15,7 @@ import javax.persistence.*
  *  Request Accounting Table
  */
 @Entity
-@Table(name = 'FPRREQA')
+@Table(name = FinanceProcurementConstants.FPRREQA_TABLE)
 @EqualsAndHashCode(includeFields = true)
 @ToString(includeNames = true, ignoreNulls = true)
 class RequisitionAccountingForCopy implements Serializable {

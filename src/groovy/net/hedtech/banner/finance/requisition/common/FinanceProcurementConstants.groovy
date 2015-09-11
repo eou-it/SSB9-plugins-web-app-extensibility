@@ -691,6 +691,10 @@ class FinanceProcurementConstants {
     static final String FINANCE_OBJECT_SEQ_FIELD_FOBSEQN_VERSION ='FOBSEQN_VERSION'
     static final String FINANCE_OBJECT_SEQ_FOBSEQN_SEQNO_TYPE ='R'
 
+    /** Table name constants for tables **/
+    static final String FPBREQH_TABLE = 'FPBREQH'
+    static final String FPRREQA_TABLE = 'FPRREQA'
+
     /** Constants for Finance object sequence Table FPRRQTX **/
     static final String FPRRQTX_TABLE = 'FPRRQTX'
     static final String FIELD_FPRRQTX_SURROGATE_ID = 'FPRRQTX_SURROGATE_ID'

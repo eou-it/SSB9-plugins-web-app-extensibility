@@ -16,7 +16,7 @@ import javax.persistence.*
  */
 
 @Entity
-@Table(name = 'FPBREQH')
+@Table(name = FinanceProcurementConstants.FPBREQH_TABLE)
 @EqualsAndHashCode(includeFields = true)
 @ToString(includeNames = true, ignoreNulls = true)
 class RequisitionHeaderForCopy implements Serializable {
