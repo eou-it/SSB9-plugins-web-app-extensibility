@@ -43,7 +43,12 @@ class RequisitionTaxForCopyServiceIntegrationTests extends BaseIntegrationTestCa
      */
     @Test(expected = ApplicationException.class)
     void testPreUpdateFailCase() {
-        def map = RequisitionTaxForCopy.findByRequestCode('RSED0005')
+        RequisitionTaxForCopy copy = new RequisitionTaxForCopy(
+                requestCode: 'RSED0005', item: 1, proximityNumber: 1, taxRateCode: 1, taxAmount: 1, taxableAmount: 1, payTaxTo: 'me'
+
+        )
+        copy = requisitionTaxForCopyService.create( [domainModel: copy] )
+        def map = RequisitionTaxForCopy.findByRequestCode( 'RSED0005' )
         map.requestCode = 'RSED0001'
         requisitionTaxForCopyService.update( map )
     }
