@@ -69,7 +69,7 @@ public class FinanceApprovalHistory implements Serializable {
      * @param documentCode document code.
      * @return list of FinanceApprovalHistory.
      */
-    static def findByDocumentCode(documentCode) {
+    static def fetchByDocumentCode(documentCode) {
         def list = FinanceUnapprovedDocument.withSession { session ->
             session.getNamedQuery(FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_NAME_FIND_BY_DOCUMENT_CODE)
                     .setString(FinanceProcurementConstants.FINANCE_QUERY_PARAM_DOCUMENT_CODE, documentCode)

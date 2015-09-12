@@ -423,7 +423,7 @@ class FinanceProcurementConstants {
     static final String FINANCE_UNAPPROVED_DOCUMENT_FOBUAPP_VERSION = 'FOBUAPP_VERSION'
     static final String FINANCE_UNAPPROVED_DOCUMENT_FOBUAPP_VPDI_CODE = 'FOBUAPP_VPDI_CODE'
     static
-    final String FINANCE_UNAPPROVED_DOCUMENT_QUERY_NAME_FIND_BY_DOCUMENT_CODE = 'FinanceUnapprovedDocument.findByDocumentCode'
+    final String FINANCE_UNAPPROVED_DOCUMENT_QUERY_NAME_FIND_BY_DOCUMENT_CODE = 'FinanceUnapprovedDocument.fetchByDocumentCode'
     static final String FINANCE_QUERY_PARAM_DOCUMENT_CODE = 'documentCode'
 
     /** Constant variable for Domain class for Unapproved Documents Table FOBAPPH **/
@@ -443,7 +443,7 @@ class FinanceProcurementConstants {
     static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_VERSION = 'FOBAPPH_VERSION'
     static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_VPDI_CODE = 'FOBAPPH_VPDI_CODE'
     static
-    final String FINANCE_APPROVAL_HISTORY_QUERY_NAME_FIND_BY_DOCUMENT_CODE = 'FinanceApprovalHistory.findByDocumentCode'
+    final String FINANCE_APPROVAL_HISTORY_QUERY_NAME_FIND_BY_DOCUMENT_CODE = 'FinanceApprovalHistory.fByDocumentCode'
     static final String FINANCE_APPROVAL_HISTORY_QUERY_ID_DENY = 'DENY'
     static final int FINANCE_APPROVAL_HISTORY_QUERY_LEVEL_ZERO = 0
 
@@ -518,7 +518,7 @@ class FinanceProcurementConstants {
     /** Constants for Domain FinanceRequestPOVerification **/
     static final String FTVRQPO_TABLE = 'FTVRQPO'
     static
-    final String FINANCE_REQUEST_PO_VERIFICATION_NAMED_QUERY_FIND_BY_REQ_CODE = 'FinanceRequestPOVerification.findByRequestCode'
+    final String FINANCE_REQUEST_PO_VERIFICATION_NAMED_QUERY_FIND_BY_REQ_CODE = 'FinanceRequestPOVerification.fetchByRequestCode'
     static final String FINANCE_REQUEST_PO_VERIFICATION_FTVRQPO_SURROGATE_ID = 'FTVRQPO_SURROGATE_ID'
     static final String FINANCE_REQUEST_PO_VERIFICATION_FTVRQPO_REQD_CODE = 'FTVRQPO_REQD_CODE'
     static final String FINANCE_REQUEST_PO_VERIFICATION_FTVRQPO_POHD_CODE = 'FTVRQPO_POHD_CODE'
@@ -659,7 +659,7 @@ class FinanceProcurementConstants {
 
     /** Constants for General Tickler Table GURTKLR **/
     static final String GURTKLR_TABLE = 'GURTKLR'
-    static final String GURTKLR_NAMED_QUERY_FIND_BY_ITEM_REFERENCE = 'FinanceGeneralTickler.findByReferenceNumber'
+    static final String GURTKLR_NAMED_QUERY_FIND_BY_ITEM_REFERENCE = 'FinanceGeneralTickler.fetchByReferenceNumber'
     static final String FINANCE_GENERAL_TICKLER_GURTKLR_SURROGATE_ID = 'GURTKLR_SURROGATE_ID'
     static final String FINANCE_GENERAL_TICKLER_GURTKLR_USER_ID = 'GURTKLR_USER_ID'
     static final String FINANCE_GENERAL_TICKLER_GURTKLR_CREATOR = 'GURTKLR_CREATOR'

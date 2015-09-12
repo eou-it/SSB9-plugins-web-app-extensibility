@@ -13,6 +13,6 @@ class FinanceRequestPOVerificationService {
      * @return list of FinanceRequestPOVerification.
      */
     def findByRequestCode(requestCode) {
-        return FinanceRequestPOVerification.findByRequestCode(requestCode)
+        return FinanceRequestPOVerification.fetchByRequestCode(requestCode)
     }
 }

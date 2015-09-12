@@ -18,6 +18,6 @@ class FinanceUnapprovedDocumentService extends ServiceBase {
      */
     @Transactional(readOnly = true)
     def findByDocumentCode(documentCode) {
-        return FinanceUnapprovedDocument.findByDocumentCode(documentCode)
+        return FinanceUnapprovedDocument.fetchByDocumentCode(documentCode)
     }
 }

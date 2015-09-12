@@ -41,7 +41,7 @@ class FinanceRequestPOVerificationIntegrationTests extends BaseIntegrationTestCa
      */
     @Test
     public void testFindByRequestCode() {
-        assert (!FinanceRequestPOVerification.findByRequestCode('RSED0008').isEmpty())
+        assert (!FinanceRequestPOVerification.fetchByRequestCode('RSED0008').isEmpty())
     }
 
     /**
@@ -49,6 +49,6 @@ class FinanceRequestPOVerificationIntegrationTests extends BaseIntegrationTestCa
      */
     @Test
     public void testFindByInvalidRequestCode() {
-        assert (FinanceRequestPOVerification.findByRequestCode('INVALID_REQ').isEmpty())
+        assert (FinanceRequestPOVerification.fetchByRequestCode('INVALID_REQ').isEmpty())
     }
 }

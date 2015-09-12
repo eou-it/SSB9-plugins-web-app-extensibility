@@ -15,6 +15,6 @@ class FinanceGeneralTicklerService extends ServiceBase {
      * @return list of FinanceGeneralTickler.s
      */
     def findByReferenceNumber( itemReferenceNo ) {
-        return FinanceGeneralTickler.findByReferenceNumber( itemReferenceNo )
+        return FinanceGeneralTickler.fetchByReferenceNumber( itemReferenceNo )
     }
 }

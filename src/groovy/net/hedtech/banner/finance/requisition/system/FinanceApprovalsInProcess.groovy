@@ -69,7 +69,7 @@ public class FinanceApprovalsInProcess implements Serializable {
      * @param documentCode document code.
      * @return list of FinanceApprovalsInProcess.
      */
-    static def findByDocumentNumber(documentNumber) {
+    static def fetchByDocumentNumber(documentNumber) {
         def list = FinanceApprovalsInProcess.withSession { session ->
             session.getNamedQuery(FinanceProcurementConstants.FINANCE_APPROVAL_IN_PROCESS_QUERY_NAME_FIND_BY_DOCUMENT_NUMBER)
                     .setString(FinanceProcurementConstants.FINANCE_APPROVAL_IN_PROCESS_QUERY_PARAM_DOCUMENT_NUMBER, documentNumber)

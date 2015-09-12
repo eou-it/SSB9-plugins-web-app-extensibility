@@ -44,7 +44,7 @@ public class FinanceRequestPOVerification implements Serializable {
      * @param requestCode Requisition code.
      * @return list of FinanceRequestPOVerification.
      */
-    static def findByRequestCode(requestCode) {
+    static def fetchByRequestCode(requestCode) {
         def list = FinanceRequestPOVerification.withSession { Session session ->
             session.getNamedQuery(FinanceProcurementConstants.FINANCE_REQUEST_PO_VERIFICATION_NAMED_QUERY_FIND_BY_REQ_CODE)
                     .setString(FinanceProcurementConstants.FINANCE_REQUEST_PO_VERIFICATION_QUERY_PARAM_REQUEST_CODE, requestCode)

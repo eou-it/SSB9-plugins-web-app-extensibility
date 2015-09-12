@@ -86,7 +86,7 @@ public class FinanceGeneralTickler implements Serializable {
      * @param itemReferenceNo item reference number.
      * @return list of FinanceGeneralTickler.s
      */
-    static def findByReferenceNumber( itemReferenceNo ) {
+    static def fetchByReferenceNumber( itemReferenceNo ) {
         def list = FinanceGeneralTickler.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.GURTKLR_NAMED_QUERY_FIND_BY_ITEM_REFERENCE )
                     .setString( FinanceProcurementConstants.FINANCE_GENERAL_TICKLER_QUERY_PARAM_ITEM_REF_NO, itemReferenceNo )

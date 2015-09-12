@@ -72,7 +72,7 @@ class FinanceUnapprovedDocument implements Serializable {
      * @param documentCode document code.
      * @return list of FinanceUnapprovedDocument.
      */
-    static def findByDocumentCode(documentCode) {
+    static def fetchByDocumentCode(documentCode) {
         def list = FinanceUnapprovedDocument.withSession { session ->
             session.getNamedQuery(FinanceProcurementConstants.FINANCE_UNAPPROVED_DOCUMENT_QUERY_NAME_FIND_BY_DOCUMENT_CODE)
                     .setString(FinanceProcurementConstants.FINANCE_QUERY_PARAM_DOCUMENT_CODE, documentCode)
