@@ -443,7 +443,7 @@ class FinanceProcurementConstants {
     static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_VERSION = 'FOBAPPH_VERSION'
     static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_VPDI_CODE = 'FOBAPPH_VPDI_CODE'
     static
-    final String FINANCE_APPROVAL_HISTORY_QUERY_NAME_FIND_BY_DOCUMENT_CODE = 'FinanceApprovalHistory.fByDocumentCode'
+    final String FINANCE_APPROVAL_HISTORY_QUERY_NAME_FIND_BY_DOCUMENT_CODE = 'FinanceApprovalHistory.fetchByDocumentCode'
     static final String FINANCE_APPROVAL_HISTORY_QUERY_ID_DENY = 'DENY'
     static final int FINANCE_APPROVAL_HISTORY_QUERY_LEVEL_ZERO = 0
 
