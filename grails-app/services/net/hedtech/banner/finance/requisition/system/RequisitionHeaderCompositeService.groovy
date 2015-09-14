@@ -95,15 +95,12 @@ class RequisitionHeaderCompositeService {
             requisitionHeaderRequest.id = existingHeader.id
             requisitionHeaderRequest.version = existingHeader.version
             requisitionHeaderRequest.requestCode = existingHeader.requestCode
-            requisitionHeaderRequest.documentCopiedFrom= existingHeader.documentCopiedFrom
-            if (requisitionHeaderRequest.isDocumentLevelAccounting != existingHeader.isDocumentLevelAccounting) {
-
-                if (requisitionAccountingService.findAccountingSizeByRequestCode( existingHeader.requestCode ) > 0) {
-                    LoggerUtility.error( LOGGER, 'Document type cannot be modified once accounting associated with this' )
-                    throw new ApplicationException( RequisitionHeaderCompositeService,
-                                                    new BusinessLogicValidationException(
-                                                            FinanceProcurementConstants.ERROR_MESSAGE_DOCUMENT_CHANGE, [] ) )
-                }
+            requisitionHeaderRequest.documentCopiedFrom = existingHeader.documentCopiedFrom
+            if (requisitionHeaderRequest.isDocumentLevelAccounting != existingHeader.isDocumentLevelAccounting && requisitionAccountingService.findAccountingSizeByRequestCode( existingHeader.requestCode ) > 0) {
+                LoggerUtility.error( LOGGER, 'Document type cannot be modified once accounting associated with this' )
+                throw new ApplicationException( RequisitionHeaderCompositeService,
+                                                new BusinessLogicValidationException(
+                                                        FinanceProcurementConstants.ERROR_MESSAGE_DOCUMENT_CHANGE, [] ) )
             }
             requisitionHeaderRequest.userId = user.oracleUserName
             def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
@@ -226,10 +223,8 @@ class RequisitionHeaderCompositeService {
      * @return
      */
     private def reCalculateCommodities( RequisitionHeader requisitionHeader, isDiscountChanged, isCcyChanged ) {
-        try{
-            def requisitionDetails = requisitionDetailService.findByRequestCode( requisitionHeader.requestCode )
-
-            requisitionDetails.each {item ->
+        try {
+            requisitionDetailService.findByRequestCode( requisitionHeader.requestCode ).each {item ->
                 def requisitionDetailModel = item.class.declaredFields.findAll {
                     it.modifiers == java.lang.reflect.Modifier.PRIVATE
                 }.collectEntries {[it.name, item[it.name]]}
@@ -239,11 +234,11 @@ class RequisitionHeaderCompositeService {
                 if (isCcyChanged) {
                     requisitionDetailModel.convertedDiscountAmount = null
                 }
-                def detailDomainModel = [requisitionDetail:requisitionDetailModel]
+                def detailDomainModel = [requisitionDetail: requisitionDetailModel]
                 requisitionDetailsCompositeService.updateRequisitionDetail( detailDomainModel )
             }
-        }catch(ApplicationException e){
-            LoggerUtility.error( LOGGER, 'Requisition Commodity Details are empty for requestCode=' + requisitionHeader.requestCode + ' and commodity recalculation is not performed')
+        } catch (ApplicationException e) {
+            LoggerUtility.error( LOGGER, 'Requisition Commodity Details are empty for requestCode=' + requisitionHeader.requestCode + ' and commodity recalculation is not performed' )
         }
     }
 }
