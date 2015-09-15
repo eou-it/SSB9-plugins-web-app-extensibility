@@ -696,6 +696,7 @@ class FinanceProcurementConstants {
     static final String FPRREQA_TABLE = 'FPRREQA'
 
     /** Constants for Finance object sequence Table FPRRQTX **/
+    static final String FPRREQD_TABLE = 'FPRREQD'
     static final String FPRRQTX_TABLE = 'FPRRQTX'
     static final String FIELD_FPRRQTX_SURROGATE_ID = 'FPRRQTX_SURROGATE_ID'
     static final String FIELD_FPRRQTX_SEQ_GEN = 'FPRRQTX_SEQ_GEN'

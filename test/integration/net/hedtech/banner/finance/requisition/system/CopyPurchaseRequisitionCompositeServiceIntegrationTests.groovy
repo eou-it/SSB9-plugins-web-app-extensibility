@@ -18,6 +18,10 @@ import org.junit.Test
  */
 class CopyPurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     def copyPurchaseRequisitionCompositeService
+    def requisitionHeaderService
+    def requisitionDetailService
+    def requisitionAccountingService
+    def financeTextService
     /**
      * Super class setup
      */
@@ -41,7 +45,24 @@ class CopyPurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegr
      */
     @Test
     public void testCopyRequisition() {
-        assertNotNull( copyPurchaseRequisitionCompositeService.copyRequisition( 'RSED0005' ) )
+
+        def requistionNumber = copyPurchaseRequisitionCompositeService.copyRequisition( 'RSED0005' )
+        assertNotNull( requistionNumber )
+
+        def copiedHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode(requistionNumber)
+        assertEquals( copiedHeader.requestCode,requistionNumber)
+        assertEquals( copiedHeader.documentCopiedFrom,'RSED0005')
+        assertEquals(copiedHeader.completeIndicator,false)
+        assertNotNull copiedHeader
+
+        def copiedDetail = requisitionDetailService.findByRequestCode(requistionNumber)
+        assertEquals( copiedDetail[0].requestCode,requistionNumber)
+        assertEquals( copiedDetail[0].purchaseOrder,null)
+        assertEquals( copiedDetail[0].completeIndicator,FinanceProcurementConstants.DEFAULT_INDICATOR_NO)
+
+        def copiedAccounting =  requisitionAccountingService.findAccountingByRequestCode( requistionNumber )
+        assertEquals( copiedAccounting[0].requestCode,requistionNumber)
+        assertEquals(copiedAccounting[0].insufficientFundsOverrideIndicator,true )
     }
 
     /**

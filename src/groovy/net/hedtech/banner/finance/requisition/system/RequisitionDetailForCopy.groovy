@@ -16,7 +16,7 @@ import javax.persistence.*
  *  Persistence class for Requisition Detail (FPVREQD).
  */
 @Entity
-@Table(name = 'FPRREQD')
+@Table(name = FinanceProcurementConstants.FPRREQD_TABLE)
 @EqualsAndHashCode(includeFields = true)
 @ToString(includeNames = true, ignoreNulls = true)
 class RequisitionDetailForCopy implements Serializable {
