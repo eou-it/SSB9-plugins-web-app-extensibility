@@ -3,6 +3,7 @@
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
+import grails.transaction.Transactional
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.LoggerUtility
@@ -31,9 +32,14 @@ class RequisitionInformationCompositeService {
      * Fetches Requisition Information
      * @param requestCode
      */
+    @Transactional(readOnly = true)
     def fetchPurchaseRequisition( requestCode, baseCcy ) {
         def privateComment, publicComment
         def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
+        def status = requisitionInformationService.fetchRequisitionsByReqNumber( requestCode )?.status
+        if(!header.deliveryDate && status == FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT ){
+            header.transactionDate = new Date()
+        }
         LoggerUtility.debug( LOGGER, 'Header: ' + header )
         def shipTo = shipToCodeService.findShipToCodesByCode( header.ship, header.transactionDate )
         LoggerUtility.debug( LOGGER, 'shipTo: ' + shipTo )
@@ -84,6 +90,6 @@ class RequisitionInformationCompositeService {
                 currency            : currency,
                 headerPrivateComment: privateComment,
                 headerPublicComment : publicComment,
-                status              : requisitionInformationService.fetchRequisitionsByReqNumber( requestCode )?.status]
+                status              : status]
     }
 }
