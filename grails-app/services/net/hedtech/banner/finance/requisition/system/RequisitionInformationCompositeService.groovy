@@ -37,33 +37,34 @@ class RequisitionInformationCompositeService {
         def privateComment, publicComment
         def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         def status = requisitionInformationService.fetchRequisitionsByReqNumber( requestCode )?.status
+        def originalTransDate = header.transactionDate
         if(!header.deliveryDate && status == FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT ){
             header.transactionDate = new Date()
         }
         LoggerUtility.debug( LOGGER, 'Header: ' + header )
-        def shipTo = shipToCodeService.findShipToCodesByCode( header.ship, header.transactionDate )
+        def shipTo = shipToCodeService.findShipToCodesByCode( header.ship, originalTransDate )
         LoggerUtility.debug( LOGGER, 'shipTo: ' + shipTo )
         def organization = financeOrganizationCompositeService.
-                findOrganizationListByEffectiveDateAndSearchParam( [searchParam: header.organization, effectiveDate: header.transactionDate, coaCode: header.chartOfAccount], [offset: 0, max: 1] )
+                findOrganizationListByEffectiveDateAndSearchParam( [searchParam: header.organization, effectiveDate: originalTransDate, coaCode: header.chartOfAccount], [offset: 0, max: 1] )
         LoggerUtility.debug( LOGGER, 'organization: ' + organization )
-        def coa = chartOfAccountsService.getChartOfAccountByCode( header.chartOfAccount, header.transactionDate )
+        def coa = chartOfAccountsService.getChartOfAccountByCode( header.chartOfAccount, originalTransDate )
         LoggerUtility.debug( LOGGER, 'coa: ' + coa )
         def taxGroup, vendor, discount = [], currency = []
         if (header.taxGroup) {
-            taxGroup = financeTaxGroupService.findTaxGroupsByTaxGroupCode( header.taxGroup, header.transactionDate )
+            taxGroup = financeTaxGroupService.findTaxGroupsByTaxGroupCode( header.taxGroup, originalTransDate )
         }
         if (header.vendorPidm) {
-            vendor = financeVendorService.fetchFinanceVendor( [vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence, effectiveDate: header.transactionDate] )
+            vendor = financeVendorService.fetchFinanceVendor( [vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence, effectiveDate: originalTransDate] )
         }
         if (header.discount) {
-            def discountObj = financeDiscountService.findDiscountByDiscountCode( header.discount, header.transactionDate )
+            def discountObj = financeDiscountService.findDiscountByDiscountCode( header.discount, originalTransDate )
             discount = [discountCode: discountObj.discountCode, discountDescription: discountObj.discountDescription]
         }
         if (header.currency) {
-            def currencyObj = financeCurrencyService.findCurrencyByCurrencyCode( header.currency, header.transactionDate )
+            def currencyObj = financeCurrencyService.findCurrencyByCurrencyCode( header.currency, originalTransDate )
             currency = [currencyCode: currencyObj.currencyCode, title: currencyObj.title]
         } else {
-            currency = financeCurrencyCompositeService.getFilteredCurrencyDetail( baseCcy, header.transactionDate )
+            currency = financeCurrencyCompositeService.getFilteredCurrencyDetail( baseCcy, originalTransDate )
         }
         privateComment = FinanceProcurementConstants.EMPTY_STRING
         publicComment = FinanceProcurementConstants.EMPTY_STRING
