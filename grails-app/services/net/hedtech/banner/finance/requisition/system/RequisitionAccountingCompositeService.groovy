@@ -3,6 +3,7 @@
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
+import grails.transaction.Transactional
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
@@ -11,6 +12,7 @@ import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
 import net.hedtech.banner.finance.util.FinanceCommonUtility
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
+import org.springframework.transaction.annotation.Propagation
 
 /**
  * Class for Purchase Requisition Accounting Composite
@@ -128,16 +130,68 @@ class RequisitionAccountingCompositeService {
      * @param sequenceNumber Sequence number.
      * @return RequisitionAccounting information.
      */
+    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
     def findByRequestCodeItemAndSeq( requisitionCode, Integer item, Integer sequenceNumber ) {
         LoggerUtility.debug( LOGGER, String.format( 'Input parameter for findByRequestCodeItemAndSeq :%1s , %2d ,%3d', requisitionCode, item, sequenceNumber ) )
         def dummyPaginationParam = [max: 1, offset: 0]
         def headerTnxDate = requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionCode ).transactionDate
         def requisitionAccounting = findCompleteAccountingByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber )
-        def financeAccountIndex = requisitionAccounting.accountIndex ? financeAccountIndexService.listByIndexCodeOrTitleAndEffectiveDate( [coaCode: requisitionAccounting.chartOfAccount, effectiveDate: headerTnxDate, indexCodeTitle: requisitionAccounting.accountIndex], dummyPaginationParam )?.get( 0 ) : null
-        def financeFund = financeFundCompositeService.findFundListByEffectiveDateAndFundCode( [effectiveDate: headerTnxDate, codeTitle: requisitionAccounting.fund, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )
-        def financeOrganization = financeOrganizationCompositeService.findOrganizationListByEffectiveDateAndSearchParam( [searchParam  : requisitionAccounting.organization,
+        def financeAccountIndex
+        try {
+            financeAccountIndex = requisitionAccounting.accountIndex ? financeAccountIndexService.listByIndexCodeOrTitleAndEffectiveDate( [coaCode: requisitionAccounting.chartOfAccount, effectiveDate: headerTnxDate, indexCodeTitle: requisitionAccounting.accountIndex], dummyPaginationParam )?.get( 0 ) : null
+        } catch (ApplicationException e) {
+            LoggerUtility.warn( LOGGER, e.getMessage() )
+        }
+
+        def financeFund
+        try {
+            financeFund = financeFundCompositeService.findFundListByEffectiveDateAndFundCode( [effectiveDate: headerTnxDate, codeTitle: requisitionAccounting.fund, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )
+        } catch (ApplicationException e) {
+            LoggerUtility.warn( LOGGER, e.getMessage() )
+        }
+
+        def financeOrganization
+        try {
+            financeOrganization = financeOrganizationCompositeService.findOrganizationListByEffectiveDateAndSearchParam( [searchParam  : requisitionAccounting.organization,
                                                                                                                           effectiveDate: headerTnxDate,
                                                                                                                           coaCode      : requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )
+
+        } catch (ApplicationException e) {
+            LoggerUtility.warn( LOGGER, e.getMessage() )
+        }
+
+        def accountingTitle
+        try {
+            accountingTitle = requisitionAccounting.account ? financeAccountCompositeService.getListByAccountOrChartOfAccAndEffectiveDate(
+                    [searchParam: requisitionAccounting.account, effectiveDate: headerTnxDate, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )?.title : null
+        } catch (ApplicationException e) {
+            LoggerUtility.warn( LOGGER, e.getMessage() )
+        }
+
+        def programTitle
+        try {
+            programTitle = requisitionAccounting.program ? programService.findByCoaProgramAndEffectiveDate( [coa: requisitionAccounting.chartOfAccount, effectiveDate: headerTnxDate, programCodeDesc: requisitionAccounting.program], dummyPaginationParam )?.get( 0 )?.title : null
+        } catch (ApplicationException e) {
+            LoggerUtility.warn( LOGGER, e.getMessage() )
+        }
+        def activityTitle
+        try {
+            activityTitle = requisitionAccounting.activity ? activityService.getListByActivityCodeTitleAndEffectiveDate( [activityCodeTitle: requisitionAccounting.activity, coaCode: requisitionAccounting.chartOfAccount], headerTnxDate, dummyPaginationParam )?.get( 0 )?.title : null
+        } catch (ApplicationException e) {
+            LoggerUtility.warn( LOGGER, e.getMessage() )
+        }
+        def locationTitle
+        try {
+            locationTitle = requisitionAccounting.location ? locationService.getLocationByCodeTitleAndEffectiveDate( [codeTitle: requisitionAccounting.location, coaCode: requisitionAccounting.chartOfAccount], headerTnxDate, dummyPaginationParam )?.get( 0 )?.title : null
+        } catch (ApplicationException e) {
+            LoggerUtility.warn( LOGGER, e.getMessage() )
+        }
+        def projectTitle
+        try {
+            projectTitle = requisitionAccounting.project ? financeProjectCompositeService.getListByProjectAndEffectiveDate( [projectCodeDesc: requisitionAccounting.project, coaCode: requisitionAccounting.chartOfAccount, effectiveDate: headerTnxDate], dummyPaginationParam )?.get( 0 )?.longDescription : null
+        } catch (ApplicationException e) {
+            LoggerUtility.warn( LOGGER, e.getMessage() )
+        }
 
         [status    : requisitionInformationService.fetchRequisitionsByReqNumber( requisitionCode )?.status,
          accounting: requisitionAccounting, cifoapalp: [
@@ -194,12 +248,11 @@ class RequisitionAccountingCompositeService {
                         defaultLocationCode : financeOrganization?.defaultLocationCode,
                         defaultLocationTitle: financeOrganization?.defaultLocationTitle
                 ],
-                account       : [code: requisitionAccounting.account, title: requisitionAccounting.account ? financeAccountCompositeService.getListByAccountOrChartOfAccAndEffectiveDate(
-                        [searchParam: requisitionAccounting.account, effectiveDate: headerTnxDate, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )?.title : null],
-                program       : [code: requisitionAccounting.program, title: requisitionAccounting.program ? programService.findByCoaProgramAndEffectiveDate( [coa: requisitionAccounting.chartOfAccount, effectiveDate: headerTnxDate, programCodeDesc: requisitionAccounting.program], dummyPaginationParam )?.get( 0 )?.title : null],
-                activity      : [code: requisitionAccounting.activity, title: requisitionAccounting.activity ? activityService.getListByActivityCodeTitleAndEffectiveDate( [activityCodeTitle: requisitionAccounting.activity, coaCode: requisitionAccounting.chartOfAccount], headerTnxDate, dummyPaginationParam )?.get( 0 )?.title : null],
-                location      : [code: requisitionAccounting.location, title: requisitionAccounting.location ? locationService.getLocationByCodeTitleAndEffectiveDate( [codeTitle: requisitionAccounting.location, coaCode: requisitionAccounting.chartOfAccount], headerTnxDate, dummyPaginationParam )?.get( 0 )?.title : null],
-                project       : [code: requisitionAccounting.project, title: requisitionAccounting.project ? financeProjectCompositeService.getListByProjectAndEffectiveDate( [projectCodeDesc: requisitionAccounting.project, coaCode: requisitionAccounting.chartOfAccount, effectiveDate: headerTnxDate], dummyPaginationParam )?.get( 0 )?.longDescription : null]]]
+                account       : [code: requisitionAccounting.account, title: accountingTitle],
+                program       : [code: requisitionAccounting.program, title: programTitle],
+                activity      : [code: requisitionAccounting.activity, title: activityTitle],
+                location      : [code: requisitionAccounting.location, title: locationTitle],
+                project       : [code: requisitionAccounting.project, title: projectTitle]]]
     }
 
     /**
