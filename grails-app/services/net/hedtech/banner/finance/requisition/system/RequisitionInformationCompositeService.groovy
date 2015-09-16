@@ -4,6 +4,7 @@
 package net.hedtech.banner.finance.requisition.system
 
 import grails.transaction.Transactional
+import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.LoggerUtility
@@ -38,17 +39,28 @@ class RequisitionInformationCompositeService {
         def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         def status = requisitionInformationService.fetchRequisitionsByReqNumber( requestCode )?.status
         def originalTransDate = header.transactionDate
-        if(!header.deliveryDate && status == FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT ){
+        if (!header.deliveryDate && status == FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT) {
             header.transactionDate = new Date()
         }
         LoggerUtility.debug( LOGGER, 'Header: ' + header )
         def shipTo = shipToCodeService.findShipToCodesByCode( header.ship, originalTransDate )
         LoggerUtility.debug( LOGGER, 'shipTo: ' + shipTo )
-        def organization = financeOrganizationCompositeService.
-                findOrganizationListByEffectiveDateAndSearchParam( [searchParam: header.organization, effectiveDate: originalTransDate, coaCode: header.chartOfAccount], [offset: 0, max: 1] )
-        LoggerUtility.debug( LOGGER, 'organization: ' + organization )
-        def coa = chartOfAccountsService.getChartOfAccountByCode( header.chartOfAccount, originalTransDate )
-        LoggerUtility.debug( LOGGER, 'coa: ' + coa )
+
+        def organization
+        try {
+             organization = financeOrganizationCompositeService.
+                    findOrganizationListByEffectiveDateAndSearchParam( [searchParam: header.organization, effectiveDate: originalTransDate, coaCode: header.chartOfAccount], [offset: 0, max: 1] )
+            LoggerUtility.debug( LOGGER, 'organization: ' + organization )
+        } catch (ApplicationException e) {
+            LoggerUtility.warn( LOGGER, e.getMessage() )
+        }
+        def coa
+        try {
+            coa = chartOfAccountsService.getChartOfAccountByCode( header.chartOfAccount, originalTransDate )
+            LoggerUtility.debug( LOGGER, 'coa: ' + coa )
+        } catch (ApplicationException e) {
+            LoggerUtility.warn( LOGGER, e.getMessage() )
+        }
         def taxGroup, vendor, discount = [], currency = []
         if (header.taxGroup) {
             taxGroup = financeTaxGroupService.findTaxGroupsByTaxGroupCode( header.taxGroup, originalTransDate )
@@ -82,9 +94,9 @@ class RequisitionInformationCompositeService {
                                        shipCode    : shipTo.shipCode, addressLine1: shipTo.addressLine1,
                                        addressLine2: shipTo.addressLine2, addressLine3: shipTo.addressLine3,
                                        contact     : shipTo.contact],
-                organization        : [coaCode  : organization[0].coaCode, orgnCode: organization[0].orgnCode,
-                                       orgnTitle: organization[0].orgnTitle],
-                coa                 : [title: coa.title, chartOfAccountsCode: coa.chartOfAccountsCode],
+                organization        : [coaCode  : header.chartOfAccount, orgnCode: header.organization,
+                                       orgnTitle: organization[0]?.orgnTitle],
+                coa                 : [title: coa?.title, chartOfAccountsCode: header.chartOfAccount],
                 taxGroup            : [taxGroupCode: taxGroup?.taxGroupCode, taxGroupTitle: taxGroup?.taxGroupTitle],
                 vendor              : vendor,
                 discount            : discount,

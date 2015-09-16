@@ -130,7 +130,7 @@ class RequisitionAccountingCompositeService {
      * @param sequenceNumber Sequence number.
      * @return RequisitionAccounting information.
      */
-    @Transactional(readOnly = true,propagation = Propagation.SUPPORTS)
+    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     def findByRequestCodeItemAndSeq( requisitionCode, Integer item, Integer sequenceNumber ) {
         LoggerUtility.debug( LOGGER, String.format( 'Input parameter for findByRequestCodeItemAndSeq :%1s , %2d ,%3d', requisitionCode, item, sequenceNumber ) )
         def dummyPaginationParam = [max: 1, offset: 0]
@@ -192,10 +192,16 @@ class RequisitionAccountingCompositeService {
         } catch (ApplicationException e) {
             LoggerUtility.warn( LOGGER, e.getMessage() )
         }
+        def chartOfAccountTitle
+        try {
+            chartOfAccountTitle = requisitionAccounting.chartOfAccount ? chartOfAccountsService.getChartOfAccountByCode( requisitionAccounting.chartOfAccount, headerTnxDate )?.title : null
+        } catch (ApplicationException e) {
+            LoggerUtility.warn( LOGGER, e.getMessage() )
+        }
 
         [status    : requisitionInformationService.fetchRequisitionsByReqNumber( requisitionCode )?.status,
          accounting: requisitionAccounting, cifoapalp: [
-                chartOfAccount: [code: requisitionAccounting.chartOfAccount, title: requisitionAccounting.chartOfAccount ? chartOfAccountsService.getChartOfAccountByCode( requisitionAccounting.chartOfAccount, headerTnxDate )?.title : null],
+                chartOfAccount: [code: requisitionAccounting.chartOfAccount, title:chartOfAccountTitle],
                 index         : [
                         code                       : requisitionAccounting.accountIndex,
                         title                      : requisitionAccounting.accountIndex ? financeAccountIndex?.title : null,
