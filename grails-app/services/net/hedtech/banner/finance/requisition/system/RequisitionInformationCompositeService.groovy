@@ -48,7 +48,7 @@ class RequisitionInformationCompositeService {
 
         def organization
         try {
-             organization = financeOrganizationCompositeService.
+            organization = financeOrganizationCompositeService.
                     findOrganizationListByEffectiveDateAndSearchParam( [searchParam: header.organization, effectiveDate: originalTransDate, coaCode: header.chartOfAccount], [offset: 0, max: 1] )
             LoggerUtility.debug( LOGGER, 'organization: ' + organization )
         } catch (ApplicationException e) {
@@ -66,18 +66,28 @@ class RequisitionInformationCompositeService {
             taxGroup = financeTaxGroupService.findTaxGroupsByTaxGroupCode( header.taxGroup, originalTransDate )
         }
         if (header.vendorPidm) {
-            vendor = financeVendorService.fetchFinanceVendor( [vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence, effectiveDate: originalTransDate] )
+            try {
+                vendor = financeVendorService.fetchFinanceVendor( [vendorPidm: header.vendorPidm, vendorAddressType: header.vendorAddressType, vendorAddressTypeSequence: header.vendorAddressTypeSequence, effectiveDate: originalTransDate] )
+            } catch (ApplicationException e) {
+                LoggerUtility.warn( LOGGER, e.getMessage() )
+            }
         }
         if (header.discount) {
             def discountObj = financeDiscountService.findDiscountByDiscountCode( header.discount, originalTransDate )
             discount = [discountCode: discountObj.discountCode, discountDescription: discountObj.discountDescription]
         }
         if (header.currency) {
-            def currencyObj = financeCurrencyService.findCurrencyByCurrencyCode( header.currency, originalTransDate )
-            currency = [currencyCode: currencyObj.currencyCode, title: currencyObj.title]
+            def currencyObj
+            try {
+                currencyObj = financeCurrencyService.findCurrencyByCurrencyCode( header.currency, originalTransDate )
+            } catch (ApplicationException e) {
+                LoggerUtility.warn( LOGGER, e.getMessage() )
+            }
+            currency = [currencyCode: header.currency, title: currencyObj?.title]
         } else {
             currency = financeCurrencyCompositeService.getFilteredCurrencyDetail( baseCcy, originalTransDate )
         }
+
         privateComment = FinanceProcurementConstants.EMPTY_STRING
         publicComment = FinanceProcurementConstants.EMPTY_STRING
         financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( header.requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
