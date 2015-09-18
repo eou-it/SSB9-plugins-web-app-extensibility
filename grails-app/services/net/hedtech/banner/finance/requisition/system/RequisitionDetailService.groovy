@@ -98,7 +98,6 @@ class RequisitionDetailService extends ServiceBase {
         LoggerUtility.debug( LOGGER, 'Input parameter for findByDocumentCode :' + requisitionCode )
         def requisitionDetails = RequisitionDetail.fetchByRequestCode( requisitionCode ).list
         if (!requisitionDetails) {
-            LoggerUtility.error( LOGGER, 'Requisition Commodity Details are empty for requestCode=' + requisitionCode )
             throw new ApplicationException(
                     RequisitionDetailService,
                     new BusinessLogicValidationException(
