@@ -48,7 +48,7 @@ class RequisitionDetailForCopyServiceIntegrationTests extends BaseIntegrationTes
 
         )
         copy = requisitionDetailForCopyService.create( [domainModel: copy] )
-        def map = RequisitionTaxForCopy.findByRequestCode( 'RSED0005' )
+        def map = RequisitionDetailForCopy.findByRequestCode( 'RSED0005' )
         map.requestCode = 'RSED0001'
         requisitionDetailForCopyService.update( map )
     }
