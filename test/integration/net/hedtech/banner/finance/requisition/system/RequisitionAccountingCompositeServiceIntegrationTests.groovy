@@ -6,6 +6,7 @@ package net.hedtech.banner.finance.requisition.system
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.hibernate.Session
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -259,6 +260,28 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
 
     /**
      * Test case method to find Requisition Accounting by request code, item and sequence number.
+     * Invalidate key details
+     */
+    @Test
+    public void testFindByRequestCodeItemAndSeqInvalidKeyDetails() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        Session session = sessionFactory.getCurrentSession()
+        def requisitionAccounting = requisitionAccountingService.findByRequestCodeItemAndSeq( 'RSED0003', 0, 2 )
+        session.createSQLQuery( "UPDATE FTVACCI set FTVACCI_ACCI_CODE = 'INVALI' WHERE FTVACCI_ACCI_CODE='" + requisitionAccounting.accountIndex + "' " ).executeUpdate()
+        assertNull requisitionAccountingCompositeService.findByRequestCodeItemAndSeq( 'RSED0003', 0, 2 ).cifoapalp.index.title
+        session.createSQLQuery( "UPDATE FTVFUND set FTVFUND_FUND_CODE = 'INVALI' WHERE FTVFUND_FUND_CODE='" + requisitionAccounting.fund + "' " ).executeUpdate()
+        assertNull requisitionAccountingCompositeService.findByRequestCodeItemAndSeq( 'RSED0003', 0, 2 ).cifoapalp.fund.title
+        session.createSQLQuery( "UPDATE FTVORGN set FTVORGN_ORGN_CODE = 'INVALI' WHERE FTVORGN_ORGN_CODE='" + requisitionAccounting.organization + "' " ).executeUpdate()
+        assertNull requisitionAccountingCompositeService.findByRequestCodeItemAndSeq( 'RSED0003', 0, 2 ).cifoapalp.organization.title
+        session.createSQLQuery( "UPDATE FTVACCT set ftvacct_acct_code = 'INVALI' WHERE ftvacct_acct_code='" + requisitionAccounting.account + "' " ).executeUpdate()
+        assertNull requisitionAccountingCompositeService.findByRequestCodeItemAndSeq( 'RSED0003', 0, 2 ).cifoapalp.account.accountingTitle
+        session.createSQLQuery( "UPDATE FTVPROG set ftvprog_prog_code = 'INVALI' WHERE ftvprog_prog_code='" + requisitionAccounting.program + "' " ).executeUpdate()
+        assertNull requisitionAccountingCompositeService.findByRequestCodeItemAndSeq( 'RSED0003', 0, 2 ).cifoapalp.program.programTitle
+    }
+
+    /**
+     * Test case method to find Requisition Accounting by request code, item and sequence number.
      */
     @Test
     public void testFindByRequestCodeItemAndSeqFailCase() {
@@ -324,7 +347,7 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
                 'fiscalYearCode'                    : fiscalCode,
                 'period'                            : period,
                 'ruleClass'                         : ruleClassCode,
-                'chartOfAccount'                   : chartOfAccountsCode,
+                'chartOfAccount'                    : chartOfAccountsCode,
                 'accountIndex'                      : indexCode,
                 'fund'                              : fundCode,
                 'organization'                      : orgnCode,

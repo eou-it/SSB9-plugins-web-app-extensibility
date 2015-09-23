@@ -34,7 +34,6 @@ class RequisitionAccountingCompositeService {
     def financeProjectCompositeService
     def financeAccountIndexService
     def financeFundCompositeService
-    def financeUserProfileService
     def requisitionDetailsAcctCommonCompositeService
     def requisitionInformationService
 
