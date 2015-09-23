@@ -4,6 +4,7 @@
 package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
@@ -41,16 +42,21 @@ class RequisitionTaxForCopyServiceIntegrationTests extends BaseIntegrationTestCa
     /**
      * Test case to test pre update method which will throw the ApplicationException.
      */
-    @Test(expected = ApplicationException.class)
+    @Test
     void testPreUpdateFailCase() {
-        RequisitionTaxForCopy copy = new RequisitionTaxForCopy(
-                requestCode: 'RSED0005', item: 1, proximityNumber: 1, taxRateCode: 1, taxAmount: 1, taxableAmount: 1, payTaxTo: 'me'
 
-        )
-        copy = requisitionTaxForCopyService.create( [domainModel: copy] )
-        def map = RequisitionTaxForCopy.findByRequestCode( 'RSED0005' )
-        map.requestCode = 'RSED0001'
-        requisitionTaxForCopyService.update( map )
+        try {
+            RequisitionTaxForCopy copy = new RequisitionTaxForCopy(
+                    requestCode: 'RSED0005', item: 1, proximityNumber: 1, taxRateCode: 'A', taxAmount: 1, taxableAmount: 1, payTaxTo: 'A',userId: FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME
+
+            )
+            copy = requisitionTaxForCopyService.create( [domainModel: copy] )
+            def map = RequisitionTaxForCopy.findByRequestCode( 'RSED0005' )
+            map.requestCode = 'RSED0001'
+            requisitionTaxForCopyService.update( map )
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "unsupported.operation"
+        }
     }
 
 }

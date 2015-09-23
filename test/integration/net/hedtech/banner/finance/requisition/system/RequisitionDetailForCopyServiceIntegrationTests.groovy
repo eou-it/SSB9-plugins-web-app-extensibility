@@ -4,6 +4,7 @@
 package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.exceptions.ApplicationException
+import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
@@ -41,15 +42,23 @@ class RequisitionDetailForCopyServiceIntegrationTests extends BaseIntegrationTes
     /**
      * Test case to test pre update method which will throw the ApplicationException.
      */
-    @Test(expected = ApplicationException.class)
+    @Test
     void testPreUpdateFailCase() {
-        RequisitionDetailForCopy copy = new RequisitionDetailForCopy(
-                requestCode: 'RSED0005',item:1
 
-        )
-        copy = requisitionDetailForCopyService.create( [domainModel: copy] )
-        def map = RequisitionDetailForCopy.findByRequestCode( 'RSED0005' )
-        map.requestCode = 'RSED0001'
-        requisitionDetailForCopyService.update( map )
+        try {
+            RequisitionDetailForCopy copy = new RequisitionDetailForCopy(
+                    requestCode: 'RSED0100', item: 1, textUsageIndicator: 'A',userId: FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME
+
+            )
+            copy = requisitionDetailForCopyService.create( [domainModel: copy] )
+            def map = RequisitionDetailForCopy.findByRequestCode( 'RSED0005' )
+            map.requestCode = 'RSED0001'
+            requisitionDetailForCopyService.update( map )
+        } catch (ApplicationException ae) {
+            assertApplicationException ae, "unsupported.operation"
+        }
+
     }
+
+
 }
