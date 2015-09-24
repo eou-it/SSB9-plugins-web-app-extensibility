@@ -238,7 +238,7 @@ class RequisitionHeaderCompositeService {
                 requisitionDetailsCompositeService.updateRequisitionDetail( detailDomainModel )
             }
         } catch (ApplicationException e) {
-            LoggerUtility.error( LOGGER, 'Requisition Commodity Details are empty for requestCode=' + requisitionHeader.requestCode + ' and commodity recalculation is not performed' )
+            LoggerUtility.warn( LOGGER, 'Requisition Commodity Details are empty for requestCode=' + requisitionHeader.requestCode + ' and commodity recalculation is not performed' )
         }
     }
 }

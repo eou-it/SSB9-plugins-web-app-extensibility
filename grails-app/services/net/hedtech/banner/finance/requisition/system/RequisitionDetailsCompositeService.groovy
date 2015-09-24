@@ -81,7 +81,7 @@ class RequisitionDetailsCompositeService {
         /** Delete last accounting if present */
         deleteAccountingForCommodity requestCode, requisitionDetail.item
         requisitionDetailService.delete( [domainModel: requisitionDetail] )
-        reBalanceRequisitionAccounting requestCode, item
+        reBalanceRequisitionAccounting (requestCode, item)
         financeTextService.delete( financeTextService.getFinanceTextByCodeAndItemNumber( requestCode, item ) )
     }
 
@@ -121,7 +121,7 @@ class RequisitionDetailsCompositeService {
         RequisitionDetail requisitionDetail = requisitionDetailService.update( [domainModel: requisitionDetailRequest] )
         LoggerUtility.debug LOGGER, "Requisition Detail updated " + requisitionDetail
         /** Re-balance associated accounting information*/
-        reBalanceRequisitionAccounting requestCode, requisitionDetail.item
+        reBalanceRequisitionAccounting (requestCode, requisitionDetail.item)
         financeTextCompositeService.saveTextForCommodity( requisitionDetail,
                                                           [privateComment: detailDomainModel.requisitionDetail.privateComment, publicComment: detailDomainModel.requisitionDetail.publicComment],
                                                           user.oracleUserName, requisitionDetail.item )
