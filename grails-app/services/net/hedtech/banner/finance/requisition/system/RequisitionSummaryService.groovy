@@ -35,6 +35,7 @@ class RequisitionSummaryService extends ServiceBase {
         LoggerUtility.debug( LOGGER, 'Input parameters for fetchRequisitionSummaryForRequestCode :' + requestCode )
         def requisitionSummary = RequisitionSummary.fetchRequisitionSummaryForRequestCode( requestCode, springSecurityService.getAuthentication().user.oracleUserName )
         if (!requisitionSummary) {
+            LoggerUtility.error( LOGGER, 'Missing requisition header ' + requestCode )
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }
         processSummaryInformation( requisitionSummary, baseCcy, requestCode, doesNotNeedPdf )

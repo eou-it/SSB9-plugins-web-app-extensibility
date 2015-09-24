@@ -40,6 +40,7 @@ class DocumentManagementCompositeService {
             throw new ApplicationException( DocumentManagementCompositeService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED, [] ) )
         }
         if (file?.isEmpty()) {
+            LoggerUtility.error( LOGGER, 'Document File to upload for requisition ' + requisitionCode + ' Doc type ' + docType + ' and PIDM ' + ownerPidm + ' is empty' )
             throw new ApplicationException( DocumentManagementCompositeService, new BusinessLogicValidationException( FinanceProcurementConstants.BDM_FILE_UPLOAD_ERROR_MESSAGE, [] ) )
         }
         try {
@@ -49,6 +50,7 @@ class DocumentManagementCompositeService {
             map.userDir.deleteDir()
             listDocumentsByRequisitionCode( requisitionCode, vpdiCode, bdmInstalled )
         } catch (FileNotFoundException e) {
+            LoggerUtility.error( LOGGER, 'File Not found' )
             throw new ApplicationException( DocumentManagementCompositeService, new BusinessLogicValidationException( e.getMessage(), [] ) )
         }
     }

@@ -62,6 +62,7 @@ class RequisitionHeaderService extends ServiceBase {
         LoggerUtility.debug( LOGGER, 'Input parameters for completeRequisition :' + requestCode )
         def requisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode, springSecurityService.getAuthentication().user.oracleUserName )
         if (!requisitionHeader) {
+            LoggerUtility.error( LOGGER, 'Header not found for ' + requestCode )
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }
         FinanceProcurementHelper.checkCompleteRequisition( requisitionHeader )
