@@ -9,18 +9,22 @@
     border: 1px solid #CCC;
     padding: 0;
     border-radius: 6px;
-    -webkit-box-shadow: 0px 2px 2px 0px #a3a3a3;
-    -moz-box-shadow: 0px 2px 2px 0px #a3a3a3;
     box-shadow: 0px 2px 2px 0px #a3a3a3;
+    z-index: 2 !important;
+}
+
+.xe-extensions-editor .ui-dialog-titlebar-close {
+    display: none;
 }
 
 #extensions-edit-input {
-    width: 98%;
+    width: 99%;
     height: 98%;
     min-height: 250px;
     overflow: auto;
     resize: none;
     font-family: "Courier New", Courier, monospace;
+    font-size: 12px;
 }
 
 .xe-placeholder {
@@ -33,13 +37,27 @@ div.ui-dialog.ui-widget.ui-widget-content.ui-corner-all.xe-extensions-editor.ui-
     background: -moz-linear-gradient(49.9999% -0% -90deg, rgba(109, 166, 202, 1) 0%, rgba(61, 130, 171, 1) 100%);
     background: -webkit-gradient(linear,49.9999% -0%,49.9999% 102.5%, color-stop(0, rgba(109, 166, 202, 1)), color-stop(1, rgba(60, 129, 170, 1)));
     background: linear-gradient(rgba(109, 166, 202, 1), rgba(60, 129, 170, 1));
-    -moz-box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.4);
-    -webkit-box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.4);
 }
 
-div.ui-dialog.ui-widget.ui-widget-content.ui-corner-all.xe-extensions-editor.ui-draggable.ui-resizable > div.ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix {
-    background: url('../../../images/popup-button-bar-bg.png') repeat-x;
-    padding:  10px;
+.xe-extensions-editor.ui-dialog .ui-dialog-title {
+    color: #FFF;
+    float: none;
+}
+
+.xe-extensions-editor.ui-dialog .ui-dialog-content {
+    padding: inherit;
+}
+
+.xe-extensions-editor.ui-dialog .ui-dialog-buttonpane {
+    margin: 0;
+}
+
+.xe-extensions-editor.ui-corner-all {
+    border-radius: 6px;
+}
+
+.xe-extensions-editor.ui-dialog .ui-dialog-titlebar {
+    padding: 0.1em 1em;
 }
 
 .xe-extensions-editor.ui-dialog .ui-dialog-titlebar-close {
@@ -50,9 +68,4 @@ div.ui-dialog.ui-widget.ui-widget-content.ui-corner-all.xe-extensions-editor.ui-
 .xe-extensions-editor.ui-dialog .ui-resizable-se {
     left: auto;
     right: 3px;
-}
-
-div.ui-dialog.ui-widget.ui-widget-content.ui-corner-all.xe-extensions-editor.ui-draggable.ui-resizable > div.ui-dialog-titlebar.ui-widget-header span {
-    color: #FFF;
-    font-weight: bold;
 }

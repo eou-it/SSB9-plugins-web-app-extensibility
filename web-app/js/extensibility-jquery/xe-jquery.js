@@ -1,10 +1,11 @@
 /*******************************************************************************
  Copyright 2015 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
-
 // jquery/backbone-specific extensibility code
+/* global xe */
+/* global _ */
 xe.jq = (function(xe) {
-
+    'use strict';
 	var jq = xe.jq || {};
 
     /***************************************************************************************************
@@ -12,13 +13,15 @@ xe.jq = (function(xe) {
     ***************************************************************************************************/
     jq.extendTemplates = function(rootElement) {
 
-        if ( xe.enableExtensions() ) {
+        if ( xe.extensionsFound && xe.enableExtensions() ) {
             var templates = $('script[type="text/x-handlebars-template"]',rootElement);
-            templates.each(function (template){
-                var rootElement =  $('<div>'+template.text+'</div>');
-                $(rootElement[0].firstElementChild).addClass('xe-extended'); // prevent duplicate application
-                xe.extend( rootElement );
-                template.text=rootElement[0].innerHTML;
+            templates.each(function (i){
+                var newRoot =  $('<div xe-dynamic>'+templates[i].innerHTML+'</div>');
+                if (!$(newRoot[0].firstElementChild).hasClass('xe-extended')) {
+                    xe.extend($(newRoot[0].firstElementChild));
+                    $(newRoot[0].firstElementChild).addClass('xe-extended'); // prevent duplicate application
+                    templates[i].innerHTML = newRoot[0].innerHTML;
+                }
             });
         }
     };
@@ -30,37 +33,44 @@ xe.jq = (function(xe) {
     ***************************************************************************************************/
     jq.extend = function( rootElement ) {
 
-        if (xe.extensionsFound) {
-            if ( xe.enableExtensions() ) {
-                xe.extend( rootElement );
-                xe.jq.extendTemplates( rootElement );
-            }
+        if (xe.extensionsFound && xe.enableExtensions()) {
+            xe.extend( rootElement );
         }
     };
 
 
     $( function() {
         xe.jq.extend( $('body') );
+        /* Do not call extend templates - In next release see if it can make the calls like xe.jq.extend(this);
+           in sidePanel.js redundant.
+           Advantages template:
+            - do it once at startup
+            - no mods to application
+            - can change the unexpanded template (so can replace {{interpolate me}} expressions
+           Disadvantage:
+            - don't know where in dom the template comes, so cannot access fields when the xe-section is not in the template
+
+        xe.jq.extendTemplates(null);
+        */
     });
 
     return jq;
-})(xe||{});
+}(xe||{}));
 
 xe.extendFunctions = function () {
+    'use strict';
     //Reordering of Tabs
     $.fn.tabs = _.wrap($.fn.tabs, function expandTabs(org) {
-        var self = this;
         var sections = xe.extensions.orderedSections;
         var list = this.find("ol,ul").eq(0);
         $.each( sections, function(key, section  ) {   //Iterate through array of JSON objects (extensions)
-            if(typeof section.nextSibling!=='undefined') {
+            if( section.nextSibling!==undefined ) {
                 var listItemToBeMoved = list.children(xe.selectorFor(section.name));
-                if (listItemToBeMoved.length != 0) {
+                if (listItemToBeMoved.length) {
                     if (section.nextSibling) {   // If nextSibling is not null
                         var listItemTo = list.children(xe.selectorFor(section.nextSibling));
-                        if (listItemTo.length == 0) {    // If nextSibling not found
+                        if (listItemTo.length === 0) {    // If nextSibling not found
                             xe.errors.push('Unable to find target element. ' + JSON.stringify(section));
-                            return null;
                         } else {           //If nextSibling found, add a class to moved element and perform insertBefore operation
                             listItemToBeMoved.addClass('xe-moved');
                             listItemToBeMoved.insertBefore(listItemTo);
@@ -68,7 +78,6 @@ xe.extendFunctions = function () {
                     } else {  // If nextSibling is null
                         if (!list) {
                             xe.errors.push('Unable to find element section. ' + section.name);
-                            return null;
                         } else {
                             // nextSibling specified as null so becomes last element.
                             list.append(listItemToBeMoved);
@@ -86,11 +95,11 @@ xe.extendFunctions = function () {
     $.fn.layout = _.wrap($.fn.layout, function extendLayout(origLayout) {
         var args = Array.prototype.slice.call(arguments, 1);
         var layouts = xe.extensions.layouts;
+        var i;
         if (layouts) {
-            for (var i = 0; i < layouts.length; i++) {
+            for (i = 0; i < layouts.length; i++) {
                 if (xe.extensions.layouts[i][this.selector]) {
-                    var newargs = $.extend(true, {}, args[0], xe.extensions.layouts[i][this.selector]);
-                    args[0] = newargs;
+                    args[0] = $.extend(true, {}, args[0], xe.extensions.layouts[i][this.selector]);
                 }
             }
         }
@@ -100,11 +109,11 @@ xe.extendFunctions = function () {
     function getExtensions(xeFieldType, section, component) {
 
         var extensions = null, sectionExtensions = section;
-        if (xeFieldType == xe.attr.section && (sectionExtensions == undefined || null == sectionExtensions)) {
+        if (xeFieldType === xe.attr.section && !sectionExtensions ) {
             // fetch the xe section extensions if any
             var sectionName = component.closest(xe.selector(xe.type.section)).attr(xe.typePrefix + xe.type.section);
             extensions = sectionName && _.findWhere(xe.extensions.sections, {name: sectionName});
-        } else if (xeFieldType == xe.attr.field && typeof sectionExtensions == "object") {
+        } else if (xeFieldType === xe.attr.field && typeof sectionExtensions === "object") {
             // fetch the xe field extensions if any
             var fieldName = component.closest(xe.selector(xe.type.field)).attr(xe.attr.field);
             if (sectionExtensions.fields) {

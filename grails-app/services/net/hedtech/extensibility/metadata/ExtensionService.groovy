@@ -8,19 +8,23 @@ import net.hedtech.banner.i18n.MessageHelper
 import org.codehaus.groovy.grails.web.converters.exceptions.ConverterException
 import grails.util.Environment
 import org.apache.log4j.Logger
+import net.hedtech.extensibility.ExtensionUtility
 
 class ExtensionService {
     static transactional = false
     def static extensionsPath = grails.util.Holders.getConfig().webAppExtensibility.locations.extensions
     private static final Logger log = Logger.getLogger( this.getClass() )
-    def localizerService = { mapToLocalize ->
+    def static localizerService = { mapToLocalize ->
         new MessageHelper().message(mapToLocalize)
     }
     //Pages don't have a unique id, have to query by application and page name
     def list(params) {
         def md = []
         if (params.application && params.page) {
-            md = loadFromFile(params.application,params.page)
+            def result = loadFromFile(params.application,params.page)
+            if (result) {
+                md << result
+            }
         }
         return md
     }
@@ -41,6 +45,9 @@ class ExtensionService {
     }
 
     private def saveToFile(application, page, metadata){
+        if ( !extensionsPath ) {
+            throw new Exception(localizerService(code: "extension.service.save.missing.extensionsPath"))
+        }
         def json = new JSON(metadata)
         def jsonStr = json.toString(true)
         def file = new File("${extensionsPath}/${application}")
@@ -52,8 +59,8 @@ class ExtensionService {
     }
 
     private def loadFromFile(application,page){
-        def result = []
-        def file = new File("${extensionsPath}/${application}/${page}.json")
+        def result = "{}"
+        def file = extensionsPath?new File("${extensionsPath}/${application}/${page}.json"):null
         def jsonStr = null
         if (file?.exists()) {
             try {
@@ -77,5 +84,47 @@ class ExtensionService {
         }
         result
     }
+
+    private static def loadJSONStringFromFile(application,page){
+        def result, emptyJSON= "{}"
+        def file = new File("${extensionsPath}/${application}/${page}.json")
+        def jsonStr = null
+        if (file?.exists()) {
+            try {
+                jsonStr = file.text
+            }
+            catch (IOException ioe) {
+                log.error "Error reading extensions json file ${file.path}: " + ioe.stackTrace
+            }
+            if (jsonStr) {
+                 //handle compatibility with older version where extensions were defined in an array
+                if (jsonStr[0].equals("[") && jsonStr[jsonStr.length()-1].equals("]")) {
+                    jsonStr = jsonStr.substring(1,jsonStr.length()-1)
+                }
+                try {
+                    JSON.use("deep") {
+                        result = JSON.parse(jsonStr)
+                    }
+                }
+                catch (ConverterException ce) {
+                    def parseError = ce.getCause().getMessage()
+                    log.error "Error parsing extensions json from ${file.path}: " + parseError
+                    throw new Exception(localizerService(code: "xe.extensions.json.load.error",args: [parseError]))
+                }
+                return jsonStr
+            } else {
+                log.error "error loading extensions from ${file.path}"
+            }
+        }
+        emptyJSON
+    }
+
+    static def loadExtensionsJSON(requestUri) {
+        String pageUrl = requestUri.toString()
+        String applicationName = ExtensionUtility.deriveApplicationName(pageUrl)
+        String pageName = ExtensionUtility.derivePageName(pageUrl)
+        return loadJSONStringFromFile(applicationName,pageName)
+    }
+
 
 }
