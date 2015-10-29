@@ -25,8 +25,8 @@ class WebAppExtensibilityConfig extends Script {
                 '/webadmin/**' : adminRoles,
                 '/templates/**': ['IS_AUTHENTICATED_ANONYMOUSLY']
         ]
-        interceptUrlMap << grails.plugins.springsecurity.interceptUrlMap
-        grails.plugins.springsecurity.interceptUrlMap = interceptUrlMap
+        interceptUrlMap << grails.plugin.springsecurity.interceptUrlMap
+        grails.plugin.springsecurity.interceptUrlMap = interceptUrlMap
 
         //Add Rest configuration if not already added in the main config file.
         if (!restfulApi) {

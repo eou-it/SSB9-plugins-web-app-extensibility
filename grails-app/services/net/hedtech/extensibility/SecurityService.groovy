@@ -4,7 +4,7 @@
 
 package net.hedtech.extensibility
 
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import grails.plugin.springsecurity.SpringSecurityUtils
 
 class SecurityService {
     static transactional = false
