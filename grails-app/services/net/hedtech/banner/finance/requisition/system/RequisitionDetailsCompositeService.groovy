@@ -81,7 +81,7 @@ class RequisitionDetailsCompositeService {
         /** Delete last accounting if present */
         deleteAccountingForCommodity requestCode, requisitionDetail.item
         requisitionDetailService.delete( [domainModel: requisitionDetail] )
-        reBalanceRequisitionAccounting (requestCode, item)
+        reBalanceRequisitionAccounting( requestCode, item )
         financeTextService.delete( financeTextService.getFinanceTextByCodeAndItemNumber( requestCode, item ) )
     }
 
@@ -121,7 +121,7 @@ class RequisitionDetailsCompositeService {
         RequisitionDetail requisitionDetail = requisitionDetailService.update( [domainModel: requisitionDetailRequest] )
         LoggerUtility.debug LOGGER, "Requisition Detail updated " + requisitionDetail
         /** Re-balance associated accounting information*/
-        reBalanceRequisitionAccounting (requestCode, requisitionDetail.item)
+        reBalanceRequisitionAccounting( requestCode, requisitionDetail.item )
         financeTextCompositeService.saveTextForCommodity( requisitionDetail,
                                                           [privateComment: detailDomainModel.requisitionDetail.privateComment, publicComment: detailDomainModel.requisitionDetail.publicComment],
                                                           user.oracleUserName, requisitionDetail.item )
@@ -230,8 +230,8 @@ class RequisitionDetailsCompositeService {
         }
     }
 
-    /**Lists Commodity and accounting for specified requisition Code. If provided requisition is of document level accounting, it will first
-     * list all commodities for requisition and then all accounting. If provided requisition is of commodity level accounting, it will first
+    /**Lists Commodity and accounting for specified requisition Code. If provided requisition is of document level accounting, accountObj will first
+     * list all commodities for requisition and then all accounting. If provided requisition is of commodity level accounting, accountObj will first
      * list one commodity and its corresponding list of accounting.
      *
      * @param requisitionCode
@@ -300,6 +300,63 @@ class RequisitionDetailsCompositeService {
     }
 
     /**
+     * Gets Common Commodity details
+     * @param commodityObj
+     * @return
+     */
+    def getCommonCommodityDetails( commodityObj ) {
+        [currency                   : commodityObj.currency,
+         discountAmount             : commodityObj.discountAmount,
+         discountAmountDisplay      : FinanceProcurementHelper.getLocaleBasedFormattedNumber( commodityObj.discountAmount, FinanceValidationConstants.TWO ),
+         item                       : commodityObj.item,
+         quantity                   : commodityObj.quantity,
+         quantityDisplay            : FinanceProcurementHelper.getLocaleBasedFormattedNumber( commodityObj.quantity, FinanceValidationConstants.TWO ),
+         taxAmount                  : commodityObj.taxAmount,
+         taxAmountDisplay           : FinanceProcurementHelper.getLocaleBasedFormattedNumber( commodityObj.taxAmount, FinanceValidationConstants.TWO ),
+         extendedAmount             : (commodityObj.quantity * commodityObj.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ),
+         extendedAmountDisplay      : FinanceProcurementHelper.getLocaleBasedFormattedNumber( (commodityObj.quantity * commodityObj.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ), FinanceValidationConstants.TWO ),
+         commodityTotalAmount       : (commodityObj.quantity * commodityObj.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + FinanceCommonUtility.nullToZero( commodityObj.taxAmount ) + FinanceCommonUtility.nullToZero( commodityObj.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( commodityObj.discountAmount ),
+         commodityTotalAmountDisplay: FinanceProcurementHelper.getLocaleBasedFormattedNumber( (commodityObj.quantity * commodityObj.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + FinanceCommonUtility.nullToZero( commodityObj.taxAmount ) + FinanceCommonUtility.nullToZero( commodityObj.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( commodityObj.discountAmount ), FinanceValidationConstants.TWO ),
+         taxGroup                   : commodityObj.taxGroup,
+         unitOfMeasure              : commodityObj.unitOfMeasure,
+         unitPrice                  : commodityObj.unitPrice,
+         unitPriceDisplay           : FinanceProcurementHelper.getLocaleBasedFormattedNumber( commodityObj.unitPrice, FinanceValidationConstants.FOUR )]
+    }
+
+    /**
+     * Gets Common Accounting details
+     * @param accountObj
+     * @return
+     */
+    def getCommonAccountingDetails( accountObj ) {
+        [item                         : accountObj.item,
+         sequenceNumber               : accountObj.sequenceNumber,
+         percentage                   : accountObj.percentage,
+         requisitionAmount            : accountObj.requisitionAmount,
+         requisitionAmountDisplay     : FinanceProcurementHelper.getLocaleBasedFormattedNumber( accountObj.requisitionAmount, FinanceValidationConstants.TWO ),
+         chartOfAccount               : accountObj.chartOfAccount,
+         accountIndex                 : accountObj.accountIndex,
+         fund                         : accountObj.fund,
+         organization                 : accountObj.organization,
+         account                      : accountObj.account,
+         program                      : accountObj.program,
+         activity                     : accountObj.activity,
+         location                     : accountObj.location,
+         project                      : accountObj.project,
+         discountAmount               : accountObj.discountAmount,
+         discountAmountDisplay        : FinanceProcurementHelper.getLocaleBasedFormattedNumber( accountObj.discountAmount, FinanceValidationConstants.TWO ),
+         taxAmount                    : accountObj.taxAmount,
+         taxAmountDisplay             : FinanceProcurementHelper.getLocaleBasedFormattedNumber( accountObj.taxAmount, FinanceValidationConstants.TWO ),
+         accountingTotalAmount        : accountObj.requisitionAmount + FinanceCommonUtility.nullToZero( accountObj.taxAmount ) + FinanceCommonUtility.nullToZero( accountObj.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( accountObj.discountAmount ),
+         accountingTotalAmountDisplay : FinanceProcurementHelper.getLocaleBasedFormattedNumber( accountObj.requisitionAmount + FinanceCommonUtility.nullToZero( accountObj.taxAmount ) + FinanceCommonUtility.nullToZero( accountObj.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( accountObj.discountAmount ), FinanceValidationConstants.TWO ),
+         additionalChargeAmount       : accountObj.additionalChargeAmount,
+         additionalChargeAmountDisplay: FinanceProcurementHelper.getLocaleBasedFormattedNumber( accountObj.additionalChargeAmount, FinanceValidationConstants.TWO ),
+         discountAmountPercent        : accountObj.discountAmountPercent,
+         additionalChargeAmountPct    : accountObj.additionalChargeAmountPct,
+         taxAmountPercent             : accountObj.taxAmountPercent]
+    }
+
+    /**
      *
      * @param requisitionCode
      * @return
@@ -329,50 +386,11 @@ class RequisitionDetailsCompositeService {
              amt                          : it.amt,
              commodity                    : [commodity           : it.commodity,
                                              commodityDescription: it.commodityDescription ? it.commodityDescription : getCommodityDescription( commodityCodeDescMap, it.commodity )],
-             currency                     : it.currency,
-             discountAmount               : it.discountAmount,
-             discountAmountDisplay        : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.discountAmount, FinanceValidationConstants.TWO ),
-             item                         : it.item,
-             quantity                     : it.quantity,
-             quantityDisplay              : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.quantity, FinanceValidationConstants.TWO ),
-             taxAmount                    : it.taxAmount,
-             taxAmountDisplay             : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.taxAmount, FinanceValidationConstants.TWO ),
-             extendedAmount               : (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ),
-             extendedAmountDisplay        : FinanceProcurementHelper.getLocaleBasedFormattedNumber( (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ), FinanceValidationConstants.TWO ),
-             commodityTotalAmount         : (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + FinanceCommonUtility.nullToZero( it.taxAmount ) + FinanceCommonUtility.nullToZero( it.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( it.discountAmount ),
-             commodityTotalAmountDisplay  : FinanceProcurementHelper.getLocaleBasedFormattedNumber( (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + FinanceCommonUtility.nullToZero( it.taxAmount ) + FinanceCommonUtility.nullToZero( it.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( it.discountAmount ), FinanceValidationConstants.TWO ),
-             taxGroup                     : it.taxGroup,
-             unitOfMeasure                : it.unitOfMeasure,
-             unitPrice                    : it.unitPrice,
-             unitPriceDisplay             : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.unitPrice, FinanceValidationConstants.FOUR )]
+            ] << getCommonCommodityDetails( it )
         },
          accounting                   : accounting.collect() {
-             [requestCode                  : it.requestCode,
-              item                         : it.item,
-              sequenceNumber               : it.sequenceNumber,
-              percentage                   : it.percentage,
-              requisitionAmount            : it.requisitionAmount,
-              requisitionAmountDisplay     : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.requisitionAmount, FinanceValidationConstants.TWO ),
-              chartOfAccount               : it.chartOfAccount,
-              accountIndex                 : it.accountIndex,
-              fund                         : it.fund,
-              organization                 : it.organization,
-              account                      : it.account,
-              program                      : it.program,
-              activity                     : it.activity,
-              location                     : it.location,
-              project                      : it.project,
-              discountAmount               : it.discountAmount,
-              discountAmountDisplay        : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.discountAmount, FinanceValidationConstants.TWO ),
-              taxAmount                    : it.taxAmount,
-              taxAmountDisplay             : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.taxAmount, FinanceValidationConstants.TWO ),
-              accountingTotalAmount        : it.requisitionAmount + FinanceCommonUtility.nullToZero( it.taxAmount ) + FinanceCommonUtility.nullToZero( it.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( it.discountAmount ),
-              accountingTotalAmountDisplay : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.requisitionAmount + FinanceCommonUtility.nullToZero( it.taxAmount ) + FinanceCommonUtility.nullToZero( it.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( it.discountAmount ), FinanceValidationConstants.TWO ),
-              additionalChargeAmount       : it.additionalChargeAmount,
-              additionalChargeAmountDisplay: FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.additionalChargeAmount, FinanceValidationConstants.TWO ),
-              discountAmountPercent        : it.discountAmountPercent,
-              additionalChargeAmountPct    : it.additionalChargeAmountPct,
-              taxAmountPercent             : it.taxAmountPercent]
+             [requestCode: it.requestCode,
+             ] << getCommonAccountingDetails( it )
          },
          commodityTotal               : fetchSumOfCommodityTotal( requisitionDetails ),
          commodityTotalDisplay        : FinanceProcurementHelper.getLocaleBasedFormattedNumber( fetchSumOfCommodityTotal( requisitionDetails ), FinanceValidationConstants.TWO ),
@@ -403,32 +421,11 @@ class RequisitionDetailsCompositeService {
             [it.commodityCode, it.description]
         }
         Map accountingMap = requisitionAccountingService.findAccountingByRequestCode( requisitionCode ).collectEntries {
-            [it.item + FinanceValidationConstants.COLON + it.sequenceNumber, [requestCode                  : it.requestCode,
-                                                                              item                         : it.item,
-                                                                              sequenceNumber               : it.sequenceNumber,
-                                                                              percentage                   : it.percentage,
-                                                                              requisitionAmount            : it.requisitionAmount,
-                                                                              requisitionAmountDisplay     : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.requisitionAmount, FinanceValidationConstants.TWO ),
-                                                                              chartOfAccount               : it.chartOfAccount,
-                                                                              accountIndex                 : it.accountIndex,
-                                                                              fund                         : it.fund,
-                                                                              organization                 : it.organization,
-                                                                              account                      : it.account,
-                                                                              program                      : it.program,
-                                                                              activity                     : it.activity,
-                                                                              location                     : it.location,
-                                                                              project                      : it.project,
-                                                                              discountAmount               : it.discountAmount,
-                                                                              discountAmountDisplay        : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.discountAmount, FinanceValidationConstants.TWO ),
-                                                                              taxAmount                    : it.taxAmount,
-                                                                              taxAmountDisplay             : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.taxAmount, FinanceValidationConstants.TWO ),
-                                                                              accountingTotalAmount        : it.requisitionAmount + FinanceCommonUtility.nullToZero( it.taxAmount ) + FinanceCommonUtility.nullToZero( it.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( it.discountAmount ),
-                                                                              accountingTotalAmountDisplay : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.requisitionAmount + FinanceCommonUtility.nullToZero( it.taxAmount ) + FinanceCommonUtility.nullToZero( it.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( it.discountAmount ), FinanceValidationConstants.TWO ),
-                                                                              additionalChargeAmount       : it.additionalChargeAmount,
-                                                                              additionalChargeAmountDisplay: FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.additionalChargeAmount, FinanceValidationConstants.TWO ),
-                                                                              discountAmountPercent        : it.discountAmountPercent,
-                                                                              additionalChargeAmountPct    : it.additionalChargeAmountPct,
-                                                                              taxAmountPercent             : it.taxAmountPercent]]
+            [it.item + FinanceValidationConstants.COLON + it.sequenceNumber,
+             [
+                     requestCode: it.requestCode
+             ] << getCommonAccountingDetails( it )
+            ]
         }
 
         def getAccountingForCommodityItem = {commodityItem ->
@@ -468,24 +465,8 @@ class RequisitionDetailsCompositeService {
                                                        effectiveDate: headerTxnDate], [max: 1, offset: 0] )?.get( 0 )?.title
                                                       : null
               ],
-              currency                     : it.currency,
-              discountAmount               : it.discountAmount,
-              discountAmountDisplay        : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.discountAmount, FinanceValidationConstants.TWO ),
-              item                         : it.item,
-              quantity                     : it.quantity,
-              quantityDisplay              : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.quantity, FinanceValidationConstants.TWO ),
-              taxAmount                    : it.taxAmount,
-              taxAmountDisplay             : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.taxAmount, FinanceValidationConstants.TWO ),
-              extendedAmount               : (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ),
-              extendedAmountDisplay        : FinanceProcurementHelper.getLocaleBasedFormattedNumber( (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ), FinanceValidationConstants.TWO ),
-              commodityTotalAmount         : (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + FinanceCommonUtility.nullToZero( it.taxAmount ) + FinanceCommonUtility.nullToZero( it.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( it.discountAmount ),
-              commodityTotalAmountDisplay  : FinanceProcurementHelper.getLocaleBasedFormattedNumber( (it.quantity * it.unitPrice).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + FinanceCommonUtility.nullToZero( it.taxAmount ) + FinanceCommonUtility.nullToZero( it.additionalChargeAmount ) - FinanceCommonUtility.nullToZero( it.discountAmount ), FinanceValidationConstants.TWO ),
-              taxGroup                     : it.taxGroup,
-              unitOfMeasure                : it.unitOfMeasure,
-              unitPrice                    : it.unitPrice,
-              unitPriceDisplay             : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.unitPrice, FinanceValidationConstants.FOUR ),
               accounting                   : []
-             ]
+             ] << getCommonCommodityDetails( it )
          }.each() {
              it.accounting = getAccountingForCommodityItem( it.item )
              it.commodityTotal = it.commodityTotalAmount
