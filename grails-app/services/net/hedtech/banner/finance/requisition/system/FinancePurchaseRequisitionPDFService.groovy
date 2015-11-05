@@ -12,7 +12,7 @@ import net.hedtech.banner.i18n.MessageHelper
 import net.hedtech.banner.pdf.exceptions.BannerPDFGeneratorException
 import net.hedtech.banner.pdf.impl.BannerPDFGenerator
 import org.apache.log4j.Logger
-import org.codehaus.groovy.grails.web.context.ServletContextHolder
+import grails.util.Holders
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.springframework.context.ApplicationContext
 import org.springframework.context.i18n.LocaleContextHolder
@@ -76,7 +76,7 @@ class FinancePurchaseRequisitionPDFService {
      * @return
      */
     private ApplicationContext getApplicationContext() {
-        return (ApplicationContext) ServletContextHolder.getServletContext().getAttribute( GrailsApplicationAttributes.APPLICATION_CONTEXT )
+        return (ApplicationContext) Holders.getServletContext().getAttribute( GrailsApplicationAttributes.APPLICATION_CONTEXT )
     }
 
     /**

@@ -8,7 +8,7 @@ import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.apache.commons.io.IOUtils
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import grails.util.Holders
 import org.hibernate.Session
 import org.junit.After
 import org.junit.Before
@@ -734,7 +734,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         File testFile
         try {
             String data = " Test data for integration testing"
-            String tempPath = ConfigurationHolder.config.bdm.file.location
+            String tempPath = Holders.config.bdm.file.location
             testFile = new File( tempPath, "BDMTestFile.txt" )
             if (!testFile.exists()) {
                 testFile.createNewFile()

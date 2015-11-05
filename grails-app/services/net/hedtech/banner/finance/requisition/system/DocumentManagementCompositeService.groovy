@@ -9,7 +9,7 @@ import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.general.person.PersonIdentificationName
 import org.apache.log4j.Logger
-import org.codehaus.groovy.grails.commons.ConfigurationHolder
+import grails.util.Holders
 
 import javax.xml.ws.WebServiceException
 import java.text.DateFormat
@@ -124,7 +124,7 @@ class DocumentManagementCompositeService {
      */
     private Map getBdmParams() {
         Map bdmParams = new HashMap()
-        ConfigurationHolder.config.bdmserver.each {k, v ->
+        Holders.config.bdmserver.each {k, v ->
             bdmParams.put( k, v )
         }
         LoggerUtility.debug( LOGGER, "BDMParams :: " + bdmParams )

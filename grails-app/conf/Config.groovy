@@ -3,7 +3,7 @@
  *******************************************************************************/
 
 import net.hedtech.banner.configuration.ApplicationConfigurationUtils as ConfigFinder
-import grails.plugins.springsecurity.SecurityConfigType
+import grails.plugin.springsecurity.SecurityConfigType
 
 // ******************************************************************************
 //
@@ -130,16 +130,9 @@ environments {
 // specified here:
 dataOrigin = "Banner"
 
-grails.plugins.springsecurity.useRequestMapDomainClass = false
-grails.plugins.springsecurity.providerNames = ['bannerAuthenticationProvider']
-//grails.plugins.springsecurity.rejectIfNoRule = true
+grails.plugin.springsecurity.useRequestMapDomainClass = false
 
-grails.plugins.springsecurity.filterChain.chainMap = [
-    '/api/**': 'authenticationProcessingFilter,basicAuthenticationFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,basicExceptionTranslationFilter,filterInvocationInterceptor',
-    '/**': 'securityContextPersistenceFilter,logoutFilter,authenticationProcessingFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor'
-]
-
-grails.plugins.springsecurity.securityConfigType = SecurityConfigType.InterceptUrlMap
+grails.plugin.springsecurity.securityConfigType = SecurityConfigType.InterceptUrlMap
 
 
 // ******************************************************************************
@@ -148,8 +141,9 @@ grails.plugins.springsecurity.securityConfigType = SecurityConfigType.InterceptU
 //
 // ******************************************************************************
 
-grails.plugins.springsecurity.interceptUrlMap = [
+grails.plugin.springsecurity.interceptUrlMap = [
         '/': ['IS_AUTHENTICATED_ANONYMOUSLY'],
+        '/ssb/menu/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
         '/zkau/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
         '/zkau**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
         '/login/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
