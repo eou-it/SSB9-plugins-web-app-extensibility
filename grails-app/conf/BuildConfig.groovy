@@ -31,11 +31,14 @@ grails.project.dependency.resolution = {
     inherits "global" // inherit Grails' default dependencies
     log "warn"        // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
 
-    repositories {
-        if (System.properties['PROXY_SERVER_NAME']) {
-            mavenRepo "${System.properties['PROXY_SERVER_NAME']}"
-        }
-    }
+	repositories {
+		if ( System.properties[ 'PROXY_SERVER_NAME' ] ) {
+		mavenRepo "${System.properties['PROXY_SERVER_NAME']}"
+		}
+		grailsCentral()
+		mavenCentral()
+		mavenRepo "http://repository.jboss.org/maven2/"
+	}
 
     plugins {
         compile ':resources:1.2.8' // If the functional-test plugin is being used
