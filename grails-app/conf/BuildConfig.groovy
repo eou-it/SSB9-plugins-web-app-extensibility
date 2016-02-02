@@ -41,7 +41,6 @@ grails.project.dependency.resolution = {
 	}
 
     plugins {
-        compile ':resources:1.2.8' // If the functional-test plugin is being used
     }
 
 
