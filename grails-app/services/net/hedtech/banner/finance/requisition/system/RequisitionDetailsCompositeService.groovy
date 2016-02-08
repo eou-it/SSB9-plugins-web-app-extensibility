@@ -305,7 +305,7 @@ class RequisitionDetailsCompositeService {
      * @return
      */
     @Transactional(propagation = Propagation.SUPPORTS)
-    def private listCommodityWithDocumentLevelAccounting( requisitionCode, headerTnxDate ) {
+    def listCommodityWithDocumentLevelAccounting( requisitionCode, headerTnxDate ) {
 
         def requisitionDetails = []
         try {
