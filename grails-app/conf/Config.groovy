@@ -5,7 +5,7 @@
 // configuration for plugin testing - will not be included in the plugin zip
 
 import net.hedtech.banner.configuration.ApplicationConfigurationUtils as ConfigFinder
-import grails.plugins.springsecurity.SecurityConfigType
+import grails.plugin.springsecurity.SecurityConfigType
 
 // ******************************************************************************
 //
@@ -33,15 +33,8 @@ grails.config.locations.each {
     println "configuration: " + it
 }
 
-grails.plugins.springsecurity.useRequestMapDomainClass = false
-//grails.plugins.springsecurity.providerNames = ['casBannerAuthenticationProvider', 'selfServiceBannerAuthenticationProvider', 'bannerAuthenticationProvider']
-//grails.plugins.springsecurity.rejectIfNoRule = true
-
-grails.plugins.springsecurity.filterChain.chainMap = [
-        '/**': 'securityContextPersistenceFilter,logoutFilter,authenticationProcessingFilter,securityContextHolderAwareRequestFilter,anonymousProcessingFilter,exceptionTranslationFilter,filterInvocationInterceptor'
-]
-
-grails.plugins.springsecurity.securityConfigType = SecurityConfigType.InterceptUrlMap
+grails.plugin.springsecurity.useRequestMapDomainClass = false
+grails.plugin.springsecurity.securityConfigType = SecurityConfigType.InterceptUrlMap
 
 // Configuration for a Banner self service application
 ssbEnabled = true
