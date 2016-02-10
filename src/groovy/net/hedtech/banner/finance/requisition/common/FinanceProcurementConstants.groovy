@@ -15,6 +15,8 @@ class FinanceProcurementConstants {
 
     static final String DEFAULT_INDICATOR_YES = 'Y'
     static final String DEFAULT_INDICATOR_NO = 'N'
+    static final String SECURITY_HEADER_OPTION = 'X-Frame-Options'
+    static final String SECURITY_HEADER_OPTION_DENY = 'DENY'
     static final int ZERO = 0
     static final String ZERO_STRING = '0'
     static final int HUNDRED = 100
