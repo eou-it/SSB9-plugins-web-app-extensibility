@@ -155,15 +155,12 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     void createPurchaseRequisitionWithNoTax() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                     FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def financeSystemControlServiceMeta = requisitionHeaderCompositeService.financeSystemControlService.metaClass
         def requisitionHeaderServiceMeta = requisitionHeaderCompositeService.requisitionHeaderService.metaClass
         def requisitionHeaderMeta = RequisitionHeader.metaClass
+        Session session = sessionFactory.getCurrentSession()
+        session.createSQLQuery("UPDATE FOBSYSC SET FOBSYSC_TAX_PROCESSING_IND = 'N' WHERE FOBSYSC_EFF_DATE <= SYSDATE AND FOBSYSC_STATUS_IND='A' AND (FOBSYSC_TERM_DATE >= SYSDATE OR FOBSYSC_TERM_DATE IS NULL) AND (FOBSYSC_NCHG_DATE IS NULL OR FOBSYSC_NCHG_DATE > SYSDATE )").executeUpdate()
         try {
             def headerDomainModel = newRequisitionHeader()
-            requisitionHeaderCompositeService.financeSystemControlService.metaClass.findActiveFinanceSystemControl = {
-                def map = [taxProcessingIndicator: FinanceValidationConstants.REQUISITION_INDICATOR_NO]
-                return map
-            }
             requisitionHeaderCompositeService.requisitionHeaderService.metaClass.create = {
                 return [id: 1]
             }
@@ -174,7 +171,6 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
             def requestCode = requisitionHeaderCompositeService.createPurchaseRequisitionHeader( domainModelMap )
             assertTrue requestCode != FinanceProcurementConstants.DEFAULT_REQUEST_CODE
         } finally {
-            requisitionHeaderCompositeService.financeSystemControlService.metaClass = financeSystemControlServiceMeta
             requisitionHeaderCompositeService.requisitionHeaderService.metaClass = requisitionHeaderServiceMeta
             RequisitionHeader.metaClass = requisitionHeaderMeta
         }

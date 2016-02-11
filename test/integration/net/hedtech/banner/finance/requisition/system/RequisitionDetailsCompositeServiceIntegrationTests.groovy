@@ -7,6 +7,7 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import org.hibernate.Session
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -72,19 +73,13 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
     void testCreatePurchaseRequisitionDetailWithNoTaxProcessing() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                     FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def financeSystemControlServiceMeta = requisitionDetailsCompositeService.financeSystemControlService.metaClass
-        try {
-            requisitionDetailsCompositeService.financeSystemControlService.metaClass.findActiveFinanceSystemControl {
-                return [taxProcessingIndicator: FinanceValidationConstants.REQUISITION_INDICATOR_NO]
-            }
+        Session session = sessionFactory.getCurrentSession()
+        session.createSQLQuery("UPDATE FOBSYSC SET FOBSYSC_TAX_PROCESSING_IND = 'N' WHERE FOBSYSC_EFF_DATE <= SYSDATE AND FOBSYSC_STATUS_IND='A' AND (FOBSYSC_TERM_DATE >= SYSDATE OR FOBSYSC_TERM_DATE IS NULL) AND (FOBSYSC_NCHG_DATE IS NULL OR FOBSYSC_NCHG_DATE > SYSDATE )").executeUpdate()
             def reqDetailDomainModel = getRequisitionDetails()
             reqDetailDomainModel.publicComment = 'Testing Public comment.'
             def domainModelMap = [requisitionDetail: reqDetailDomainModel]
             def requestCode = requisitionDetailsCompositeService.createPurchaseRequisitionDetail( domainModelMap )
             assertTrue requestCode?.requestCode == requestHeaderCode
-        } finally {
-            requisitionDetailsCompositeService.financeSystemControlService.metaClass = financeSystemControlServiceMeta
-        }
     }
 
     /**
