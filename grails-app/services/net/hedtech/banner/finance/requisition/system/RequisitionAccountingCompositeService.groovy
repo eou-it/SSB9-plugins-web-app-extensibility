@@ -200,7 +200,7 @@ class RequisitionAccountingCompositeService {
 
         [status    : requisitionInformationService.fetchRequisitionsByReqNumber( requisitionCode )?.status,
          accounting: requisitionAccounting, cifoapalp: [
-                chartOfAccount: [code: requisitionAccounting.chartOfAccount, title:chartOfAccountTitle],
+                chartOfAccount: [code: requisitionAccounting.chartOfAccount, title: chartOfAccountTitle],
                 index         : [
                         code                       : requisitionAccounting.accountIndex,
                         title                      : requisitionAccounting.accountIndex ? financeAccountIndex?.title : null,
@@ -311,41 +311,21 @@ class RequisitionAccountingCompositeService {
             }
         }
         return requisitionAccounting.collect() {
-            [id                                  : it.id,
-             version                             : it.version,
-             requestCode                         : it.requestCode,
-             item                                : it.item,
-             sequenceNumber                      : sequenceNumber,
-             chartOfAccount                      : it.chartOfAccount,
-             accountIndex                        : it.accountIndex,
-             fund                                : it.fund,
-             organization                        : it.organization,
-             account                             : it.account,
-             program                             : it.program,
-             activity                            : it.activity,
-             location                            : it.location,
-             project                             : it.project,
-             percentage                          : it.percentage,
-             requisitionAmount                   : it.requisitionAmount,
-             additionalChargeAmount              : it.additionalChargeAmount,
-             discountAmount                      : it.discountAmount,
-             taxAmount                           : it.taxAmount,
-             userId                              : it.userId,
-             accountTotal                        : it.requisitionAmount + it.additionalChargeAmount + it.taxAmount - it.discountAmount,
-             renamingAmount                      : (commodityTotalExtendedAmount + commodityTotalCommodityTaxAmount + commodityTotalAdditionalChargeAmount - commodityTotalDiscountAmount) - allAccountingAmount,
-             remaingingPercentage                : FinanceProcurementConstants.HUNDRED - totalPercentage,
-             commodityTotalExtendedAmount        : commodityTotalExtendedAmount,
-             commodityTotalCommodityTaxAmount    : commodityTotalCommodityTaxAmount,
-             commodityTotalAdditionalChargeAmount: commodityTotalAdditionalChargeAmount,
-             commodityTotalDiscountAmount        : commodityTotalDiscountAmount,
-             percentageDisplay                   : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.percentage, FinanceValidationConstants.TWO ),
-             requisitionAmountDisplay            : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.requisitionAmount, FinanceValidationConstants.TWO ),
-             additionalChargeAmountDisplay       : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.additionalChargeAmount, FinanceValidationConstants.TWO ),
-             discountAmountDisplay               : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.discountAmount, FinanceValidationConstants.TWO ),
-             taxAmountDisplay                    : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.taxAmount, FinanceValidationConstants.TWO ),
-             accountTotalDisplay                 : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.requisitionAmount + it.additionalChargeAmount + it.taxAmount - it.discountAmount, FinanceValidationConstants.TWO ),
-             renamingAmountDisplay               : FinanceProcurementHelper.getLocaleBasedFormattedNumber( (commodityTotalExtendedAmount + commodityTotalCommodityTaxAmount + commodityTotalAdditionalChargeAmount - commodityTotalDiscountAmount) - allAccountingAmount, FinanceValidationConstants.TWO )
-            ]
+            [
+                    renamingAmount                      : (commodityTotalExtendedAmount + commodityTotalCommodityTaxAmount + commodityTotalAdditionalChargeAmount - commodityTotalDiscountAmount) - allAccountingAmount,
+                    remaingingPercentage                : FinanceProcurementConstants.HUNDRED - totalPercentage,
+                    commodityTotalExtendedAmount        : commodityTotalExtendedAmount,
+                    commodityTotalCommodityTaxAmount    : commodityTotalCommodityTaxAmount,
+                    commodityTotalAdditionalChargeAmount: commodityTotalAdditionalChargeAmount,
+                    commodityTotalDiscountAmount        : commodityTotalDiscountAmount,
+                    percentageDisplay                   : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.percentage, FinanceValidationConstants.TWO ),
+                    requisitionAmountDisplay            : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.requisitionAmount, FinanceValidationConstants.TWO ),
+                    additionalChargeAmountDisplay       : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.additionalChargeAmount, FinanceValidationConstants.TWO ),
+                    discountAmountDisplay               : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.discountAmount, FinanceValidationConstants.TWO ),
+                    taxAmountDisplay                    : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.taxAmount, FinanceValidationConstants.TWO ),
+                    accountTotalDisplay                 : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.requisitionAmount + it.additionalChargeAmount + it.taxAmount - it.discountAmount, FinanceValidationConstants.TWO ),
+                    renamingAmountDisplay               : FinanceProcurementHelper.getLocaleBasedFormattedNumber( (commodityTotalExtendedAmount + commodityTotalCommodityTaxAmount + commodityTotalAdditionalChargeAmount - commodityTotalDiscountAmount) - allAccountingAmount, FinanceValidationConstants.TWO )
+            ] << requisitionAccountingService.getBaseAccountingInformation( it, sequenceNumber )
         }.getAt( 0 )
     }
 

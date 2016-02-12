@@ -24,7 +24,6 @@ class RequisitionListingCompositeService {
     def springSecurityService
     def requisitionInformationService
     def currencyFormatService
-    def private static institutionCcy
 
     /**
      * Returns list of Requisitions in defined data structure
@@ -32,7 +31,6 @@ class RequisitionListingCompositeService {
      * @param pagingParams
      */
     def listRequisitionsByBucket( buckets, pagingParams, baseCcy ) {
-        institutionCcy = baseCcy
         def user = springSecurityService.getAuthentication().user
         if (!user.oracleUserName) {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
@@ -46,7 +44,7 @@ class RequisitionListingCompositeService {
         }
         def wrapperList = [];
         buckets.each() {bucket ->
-            processBucket( wrapperList, bucket, pagingParams, user.oracleUserName )
+            processBucket( wrapperList, bucket, pagingParams, user.oracleUserName, baseCcy )
         }
         return wrapperList
     }
@@ -78,7 +76,7 @@ class RequisitionListingCompositeService {
      * @param pagingParams
      * @return
      */
-    private def processBucket( wrapperList, bucket, pagingParams, user ) {
+    private def processBucket( wrapperList, bucket, pagingParams, user, baseCcy ) {
         def draftStatus = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT,
                            FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
 
@@ -92,23 +90,23 @@ class RequisitionListingCompositeService {
             case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_ALL:
                 countMap = requisitionInformationService.fetchRequisitionsCountByStatus( draftStatus + completedStatus + pendingStatus, user )
                 wrapperList.add( groupResult( countMap, draftStatus, FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT,
-                                              listRequisitions( user, pagingParams, draftStatus ) ) )
+                                              listRequisitions( user, pagingParams, draftStatus, baseCcy ) ) )
                 wrapperList.add( groupResult( countMap, pendingStatus, FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING,
-                                              listRequisitions( user, pagingParams, pendingStatus ) ) )
+                                              listRequisitions( user, pagingParams, pendingStatus, baseCcy ) ) )
                 wrapperList.add( groupResult( countMap, completedStatus, FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE,
-                                              listRequisitions( user, pagingParams, completedStatus ) ) )
+                                              listRequisitions( user, pagingParams, completedStatus, baseCcy ) ) )
                 break
             case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT:
                 countMap = requisitionInformationService.fetchRequisitionsCountByStatus( draftStatus, user )
-                wrapperList.add( groupResult( countMap, draftStatus, bucket, listRequisitions( user, pagingParams, draftStatus ) ) )
+                wrapperList.add( groupResult( countMap, draftStatus, bucket, listRequisitions( user, pagingParams, draftStatus, baseCcy ) ) )
                 break
             case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING:
                 countMap = requisitionInformationService.fetchRequisitionsCountByStatus( pendingStatus, user )
-                wrapperList.add( groupResult( countMap, pendingStatus, bucket, listRequisitions( user, pagingParams, pendingStatus ) ) )
+                wrapperList.add( groupResult( countMap, pendingStatus, bucket, listRequisitions( user, pagingParams, pendingStatus, baseCcy ) ) )
                 break
             case FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE:
                 countMap = requisitionInformationService.fetchRequisitionsCountByStatus( completedStatus, user )
-                wrapperList.add( groupResult( countMap, completedStatus, bucket, listRequisitions( user, pagingParams, completedStatus ) ) )
+                wrapperList.add( groupResult( countMap, completedStatus, bucket, listRequisitions( user, pagingParams, completedStatus, baseCcy ) ) )
                 break
             default:
                 LoggerUtility.error( LOGGER, 'Group Type not valid' )
@@ -123,9 +121,9 @@ class RequisitionListingCompositeService {
      * @param status
      * @return
      */
-    private listRequisitions( oracleUserName, pagingParams, status ) {
+    private listRequisitions( oracleUserName, pagingParams, status, baseCcy ) {
         def ret = requisitionInformationService.listRequisitionsByStatus( status, pagingParams, oracleUserName )
-        ret.list = processResult( ret, institutionCcy )
+        ret.list = processResult( ret, baseCcy )
         ret
     }
 
@@ -165,7 +163,6 @@ class RequisitionListingCompositeService {
      */
     private def searchRequisitionsBySearchParam( searchParam, pagingParams, isDateString, baseCcy ) {
         def user = springSecurityService.getAuthentication().user
-        institutionCcy = baseCcy
         if (!user.oracleUserName) {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
             throw new ApplicationException( RequisitionListingCompositeService, new BusinessLogicValidationException(
@@ -176,7 +173,7 @@ class RequisitionListingCompositeService {
             FinanceCommonUtility.applyWildCard( inputMap, true, true )
         }
         def searchResult = requisitionInformationService.searchRequisitionsBySearchParam( user.oracleUserName, inputMap.searchParam, pagingParams, isDateString )
-        filterRequisitionDataMap( searchResult, institutionCcy )
+        filterRequisitionDataMap( searchResult, baseCcy )
         return [searchResult: searchResult]
     }
 
@@ -229,13 +226,12 @@ class RequisitionListingCompositeService {
      */
     private
     def fetchRequisitionsByStatusAndSearchParam( user, searchParam, pagingParams, status, isDateString, baseCcy ) {
-        institutionCcy = baseCcy
         def inputMap = [searchParam: (isDateString) ? searchParam : searchParam?.toUpperCase()]
         if (!isDateString) {
             FinanceCommonUtility.applyWildCard( inputMap, true, true )
         }
         def searchResult = requisitionInformationService.searchRequisitionsByStatusAndSearchParam( user, inputMap.searchParam, pagingParams, status, isDateString )
-        filterRequisitionDataMap( searchResult, institutionCcy )
+        filterRequisitionDataMap( searchResult, baseCcy )
         return [searchResult: searchResult]
     }
 

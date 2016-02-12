@@ -30,6 +30,36 @@ class RequisitionAccountingService extends ServiceBase {
         LoggerUtility.debug( LOGGER, 'Input parameter for findBasicAccountingByRequestCodeItemAndSeq :' + requisitionCode )
         RequisitionAccounting.fetchByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber ).list
     }
+
+    /**
+     * Get Base Accounting information from accounting object
+     * @param accountObj
+     * @return
+     */
+    def getBaseAccountingInformation( accountObj, sequenceNumber ) {
+        [id                    : accountObj.id,
+         version               : accountObj.version,
+         requestCode           : accountObj.requestCode,
+         item                  : accountObj.item,
+         sequenceNumber        : sequenceNumber,
+         chartOfAccount        : accountObj.chartOfAccount,
+         accountIndex          : accountObj.accountIndex,
+         fund                  : accountObj.fund,
+         organization          : accountObj.organization,
+         account               : accountObj.account,
+         program               : accountObj.program,
+         activity              : accountObj.activity,
+         location              : accountObj.location,
+         project               : accountObj.project,
+         percentage            : accountObj.percentage,
+         requisitionAmount     : accountObj.requisitionAmount,
+         additionalChargeAmount: accountObj.additionalChargeAmount,
+         discountAmount        : accountObj.discountAmount,
+         taxAmount             : accountObj.taxAmount,
+         userId                : accountObj.userId,
+         accountTotal          : accountObj.requisitionAmount + FinanceCommonUtility.nullToZero( accountObj.additionalChargeAmount ) + FinanceCommonUtility.nullToZero( accountObj.taxAmount ) - FinanceCommonUtility.nullToZero( accountObj.discountAmount )
+        ]
+    }
     /**
      * This method is used to find RequisitionAccounting by requisition code, item number and sequence number.
      * @param requisitionCode Requisition code.
@@ -49,28 +79,7 @@ class RequisitionAccountingService extends ServiceBase {
                             FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_ACCOUNTING, [] ) )
         }
         return requisitionAccounting.collect() {
-            [id                    : it.id,
-             version               : it.version,
-             requestCode           : it.requestCode,
-             item                  : it.item,
-             sequenceNumber        : sequenceNumber,
-             chartOfAccount        : it.chartOfAccount,
-             accountIndex          : it.accountIndex,
-             fund                  : it.fund,
-             organization          : it.organization,
-             account               : it.account,
-             program               : it.program,
-             activity              : it.activity,
-             location              : it.location,
-             project               : it.project,
-             percentage            : it.percentage,
-             requisitionAmount     : it.requisitionAmount,
-             additionalChargeAmount: it.additionalChargeAmount,
-             discountAmount        : it.discountAmount,
-             taxAmount             : it.taxAmount,
-             userId                : it.userId,
-             accountTotal          : it.requisitionAmount + FinanceCommonUtility.nullToZero( it.additionalChargeAmount ) + FinanceCommonUtility.nullToZero( it.taxAmount ) - FinanceCommonUtility.nullToZero( it.discountAmount )
-            ]
+            [:] << getBaseAccountingInformation( it, sequenceNumber )
         }.getAt( 0 )
     }
 
