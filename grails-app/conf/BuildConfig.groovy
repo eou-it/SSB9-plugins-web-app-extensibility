@@ -34,6 +34,7 @@ grails.project.dependency.resolution = {
     repositories {
         if (System.properties['PROXY_SERVER_NAME']) {
             mavenRepo "${System.properties['PROXY_SERVER_NAME']}"
+            mavenRepo "${System.properties['RELEASE_REPO_NAME']}"
         }
         grailsCentral()
         mavenCentral()
