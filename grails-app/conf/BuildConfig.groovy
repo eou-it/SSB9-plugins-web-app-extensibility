@@ -5,7 +5,7 @@
 tomcat.deploy.username = "manager"
 tomcat.deploy.password = "manager!"
 grails.project.class.dir = "target/classes"
-//grails.project.lib.dir = "lib"
+grails.project.lib.dir = "lib"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 
@@ -14,15 +14,16 @@ grails.project.test.reports.dir = "target/test-reports"
 // "Cannot cast object 'oracle.jdbc.driver.T4CConnection@6469adc7'... to class 'oracle.jdbc.OracleConnection'
 
 grails.plugin.location.'banner-codenarc' = "../banner_codenarc.git"
+grails.plugin.location.'banner_core' = "../banner_core.git"
 grails.plugin.location.'banner-finance-validation' = "../banner_finance_validation.git"
 grails.plugin.location.'banner-finance-validation_common' = "../banner_finance_validation_common.git"
 grails.plugin.location.'banner_general_validation_common' = "../banner_general_validation_common.git"
 grails.plugin.location.'banner_general_person' = "../banner_general_person.git"
 grails.plugin.location.'banner_document_management' = "../banner_document_management.git"
 
-/*grails.war.resources = {stagingDir ->
+grails.war.resources = {stagingDir ->
     delete( file: "${stagingDir}/WEB-INF/lib/ojdbc6.jar" )
-}*/
+}
 
 grails.project.dependency.resolver = "maven"
 
