@@ -5,7 +5,7 @@
 tomcat.deploy.username = "manager"
 tomcat.deploy.password = "manager!"
 grails.project.class.dir = "target/classes"
-grails.project.lib.dir = "lib"
+//grails.project.lib.dir = "lib"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 
@@ -20,9 +20,9 @@ grails.plugin.location.'banner_general_validation_common' = "../banner_general_v
 grails.plugin.location.'banner_general_person' = "../banner_general_person.git"
 grails.plugin.location.'banner_document_management' = "../banner_document_management.git"
 
-grails.war.resources = {stagingDir ->
+/*grails.war.resources = {stagingDir ->
     delete( file: "${stagingDir}/WEB-INF/lib/ojdbc6.jar" )
-}
+}*/
 
 grails.project.dependency.resolver = "maven"
 
