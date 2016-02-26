@@ -57,7 +57,7 @@ grails.project.dependency.resolution = {
                 "org.apache.xmlgraphics:fop:1.1"
 
         ) {
-            excludes 'xml-apis:xml-apis:1.4.01'
+            excludes 'xml-apis'
         }
         /*test (  "net.hedtech.banner.pdf:banner_pdf_generator:1.0",
               "org.apache.xmlgraphics:fop:1.1",
