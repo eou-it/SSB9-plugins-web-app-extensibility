@@ -42,6 +42,8 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
+        runtime ":hibernate:3.6.10.10"
+        test ':code-coverage:1.2.5'
     }
 
 
