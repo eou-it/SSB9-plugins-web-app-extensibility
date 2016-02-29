@@ -717,7 +717,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         File testFile
         try {
             String data = " Test data for integration testing"
-            String tempPath = Holders?.getConfig().bdm.file.location
+            String tempPath = Holders?.config.bdm.file.location
             testFile = new File( tempPath, "BDMTestFile.txt" )
             if (!testFile.exists()) {
                 testFile.createNewFile()
