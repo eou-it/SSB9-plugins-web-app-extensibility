@@ -200,7 +200,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
         File testFile
         try {
             String data = " Test data for integration testing"
-            String tempPath = Holders?.grailsApplication.config.bdm.file.location
+            String tempPath = Holders?.getConfig().bdm.file.location
             testFile = new File( tempPath, "BDMTestFile.txt" )
             if (!testFile.exists()) {
                 testFile.createNewFile()
@@ -225,7 +225,8 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
     private MockMultipartFile formEmptyFileObject() {
         File testFile
         try {
-            String tempPath = Holders?.grailsApplication.config.bdm.file.location
+            String tempPath = Holders?.getConfig().bdm.file.location
+            println "tempPath::"+ tempPath
             testFile = new File( tempPath, "BDMTestFileEmpty.txt" )
             if (!testFile.exists()) {
                 testFile.createNewFile()
