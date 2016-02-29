@@ -717,7 +717,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         File testFile
         try {
             String data = " Test data for integration testing"
-            String tempPath = Holders.config.bdm.file.location
+            String tempPath = Holders?.grailsApplication.config.bdm.file.location
             LoggerUtility.debug( "BDM PATH :::" + tempPath )
             testFile = new File( tempPath, "BDMTestFile.txt" )
             if (!testFile.exists()) {
