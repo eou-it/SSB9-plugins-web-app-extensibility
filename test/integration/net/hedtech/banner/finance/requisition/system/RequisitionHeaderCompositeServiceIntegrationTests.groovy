@@ -9,7 +9,6 @@ import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.apache.commons.io.IOUtils
 import grails.util.Holders
-import org.apache.log4j.Logger
 import org.hibernate.Session
 import org.junit.After
 import org.junit.Before
@@ -32,7 +31,6 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     def financeTextService
     def documentManagementCompositeService
 
-    private static final def LOGGER = Logger.getLogger( this.getClass() )
     /**
      * Super class setup
      */
@@ -90,7 +88,6 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         } catch (ApplicationException ae) {
             if (ae.message.contains( 'WARNING' )) {
                 assertApplicationException( ae, 'WARNING' )
-
             } else {
                 assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR )
             }
@@ -720,8 +717,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         File testFile
         try {
             String data = " Test data for integration testing"
-            String tempPath = Holders.config.bdm.file.location
-            LoggerUtility.debug( "BDM PATH :::" + tempPath )
+            String tempPath = Holders?.config.bdm.file.location
             testFile = new File( tempPath, "BDMTestFile.txt" )
             if (!testFile.exists()) {
                 testFile.createNewFile()
