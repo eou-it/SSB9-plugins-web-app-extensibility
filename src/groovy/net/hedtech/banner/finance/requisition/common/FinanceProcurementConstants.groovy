@@ -681,6 +681,9 @@ class FinanceProcurementConstants {
     static final String FINANCE_PROCUREMENT_PDF_CONTENT_TYPE = 'application/pdf'
     static final String FINANCE_PROCUREMENT_PDF_CONTENT = 'Content-disposition'
     static final String FINANCE_PROCUREMENT_PDF_INLINE = 'inline;filename='
+    static final String FINANCE_PROCUREMENT_USER_AGENT = 'User-Agent'
+    static final String FINANCE_PROCUREMENT_ANDROID_DEVICE = 'Android'
+    static final String FINANCE_PROCUREMENT_PDF_ATTACHMENT = 'attachment;filename='
     static final String FINANCE_PROCUREMENT_PDF_HEADER_EXPIRES = 'Expires'
     static final String FINANCE_PROCUREMENT_PDF_HEADER_PRAGMA = 'Pragma'
     static final int HTTP_ERROR = 404
