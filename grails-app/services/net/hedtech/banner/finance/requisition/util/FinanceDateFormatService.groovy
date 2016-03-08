@@ -10,6 +10,8 @@ import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.i18n.DateConverterService
 import org.apache.log4j.Logger
 
+import java.text.ParseException
+
 /**
  * Finance Date Format Service. It derives all methods of DataConverter Service with override methods
  */
@@ -52,7 +54,7 @@ class FinanceDateFormatService extends DateConverterService {
                 return toCalendar.getTime()
             }
             return arabicToDecimal( toDateFormat.format( toCalendar ) )
-        } catch (Exception exception) {
+        } catch (ParseException exception) {
             LoggerUtility.warn( LOGGER, 'Unable to perform conversion --  date: ' + fromDateValue + ', fromULocaleString: ' +
                     fromULocaleString + ', toULocaleString: ' + toULocaleString + ', fromDateFormatString: ' +
                     fromDateFormatString + ', toDateFormatString: ' + toDateFormatString )
