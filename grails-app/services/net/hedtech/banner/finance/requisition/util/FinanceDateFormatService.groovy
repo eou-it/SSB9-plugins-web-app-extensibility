@@ -62,12 +62,4 @@ class FinanceDateFormatService extends DateConverterService {
         }
     }
 
-    /**
-     * Parse Date
-     * @param value
-     * @return
-     */
-    public parseDefaultCalendarToGregorian( value ) {
-        super.parseDefaultCalendarToGregorian( value )
-    }
 }
