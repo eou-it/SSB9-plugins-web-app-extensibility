@@ -723,6 +723,7 @@ class FinanceProcurementConstants {
     static final String USER_NAME = 'USER_NAME'
     static final String BDM_DISPOSITION_DATE = 'DISPOSITION DATE'
     static final String IS_BDM_INSTALLED = 'isBdmInstalled'
+    static final String BDM_ERROR_MESSAGE = 'isBdmInstalled'
     static final String BDM_FILE = 'file'
     static final String BDM_FILE_UPLOAD_ERROR_MESSAGE = 'uploaded.document.is.empty'
     static final String BDM_MEP = 'mep'

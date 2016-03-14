@@ -174,5 +174,11 @@ class DocumentManagementCompositeService {
         }
     }
 
-
+    /*To check if BDM is installed*/
+    def checkIfBDMInstalled(bdmInstalled){
+        if (!bdmInstalled) {
+            throw new ApplicationException( DocumentManagementCompositeService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED, [] ) )
+        }
+        return bdmInstalled
+    }
 }
