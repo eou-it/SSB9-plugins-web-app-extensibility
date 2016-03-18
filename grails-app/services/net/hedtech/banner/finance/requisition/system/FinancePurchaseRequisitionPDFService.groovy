@@ -12,7 +12,6 @@ import net.hedtech.banner.i18n.MessageHelper
 import net.hedtech.banner.pdf.exceptions.BannerPDFGeneratorException
 import net.hedtech.banner.pdf.impl.BannerPDFGenerator
 import org.apache.log4j.Logger
-import grails.util.Holders
 import org.codehaus.groovy.grails.web.servlet.GrailsApplicationAttributes
 import org.springframework.context.ApplicationContext
 import org.springframework.context.i18n.LocaleContextHolder
