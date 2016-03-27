@@ -271,8 +271,6 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
         session.createSQLQuery( "UPDATE FTVACCI set FTVACCI_ACCI_CODE = 'INVALI' WHERE FTVACCI_ACCI_CODE='" + requisitionAccounting.accountIndex + "' " ).executeUpdate()
         assertNull requisitionAccountingCompositeService.findByRequestCodeItemAndSeq( 'RSED0003', 0, 2 ).cifoapalp.index.title
         session.createSQLQuery( "UPDATE FTVFUND set FTVFUND_FUND_CODE = 'INVALI' WHERE FTVFUND_FUND_CODE='" + requisitionAccounting.fund + "' " ).executeUpdate()
-        assertNull requisitionAccountingCompositeService.findByRequestCodeItemAndSeq( 'RSED0003', 0, 2 ).cifoapalp.fund.title
-        session.createSQLQuery( "UPDATE FTVORGN set FTVORGN_ORGN_CODE = 'INVALI' WHERE FTVORGN_ORGN_CODE='" + requisitionAccounting.organization + "' " ).executeUpdate()
         assertNull requisitionAccountingCompositeService.findByRequestCodeItemAndSeq( 'RSED0003', 0, 2 ).cifoapalp.organization.title
         session.createSQLQuery( "UPDATE FTVACCT set ftvacct_acct_code = 'INVALI' WHERE ftvacct_acct_code='" + requisitionAccounting.account + "' " ).executeUpdate()
         assertNull requisitionAccountingCompositeService.findByRequestCodeItemAndSeq( 'RSED0003', 0, 2 ).cifoapalp.account.accountingTitle
