@@ -105,7 +105,7 @@ class RequisitionInformationCompositeService {
                                        addressLine2: shipTo.addressLine2, addressLine3: shipTo.addressLine3,
                                        contact     : shipTo.contact],
                 organization        : [coaCode  : header.chartOfAccount, orgnCode: header.organization,
-                                       orgnTitle: organization[0]?.orgnTitle],
+                                       orgnTitle: organization?.getAt(0)?.orgnTitle],
                 coa                 : [title: coa?.title, chartOfAccountsCode: header.chartOfAccount],
                 taxGroup            : [taxGroupCode: taxGroup?.taxGroupCode, taxGroupTitle: taxGroup?.taxGroupTitle],
                 vendor              : vendor,
