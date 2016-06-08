@@ -357,6 +357,9 @@ var xe = (function (xe) {
                 var labelTextNode = labelElement.contents().filter(function() { return this.nodeType === 3;})[0];
                 if ( labelTextNode ) {
                     labelTextNode.nodeValue = xe.i18n(fieldExtension.attributes.label);
+                }else if( $(labelElement)[0].hasAttribute( "ng-bind" )){
+                    $(labelElement).removeAttr("ng-bind");
+                    $(labelElement).html(xe.i18n(fieldExtension.attributes.label));
                 }
             } else {
                 xe.errors.push('Unable to find and replace label for '+ fieldExtension.name);
