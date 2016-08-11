@@ -28,7 +28,7 @@ import javax.persistence.*
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_FINDER_BY_CODE_USER,
                 query = """FROM RequisitionInformation reqInfo
                                            WHERE reqInfo.requisitionCode = :requisitionCode
-                                           AND reqInfo.lastModifiedBy = :userId """),
+                                           AND (:userId is null or reqInfo.lastModifiedBy = :userId) """),
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_INFO_FINDER_BY_SEARCH_PARAM,
                 query = """FROM RequisitionInformation reqInfo
                             WHERE (UPPER(reqInfo.requisitionCode) LIKE :searchParam

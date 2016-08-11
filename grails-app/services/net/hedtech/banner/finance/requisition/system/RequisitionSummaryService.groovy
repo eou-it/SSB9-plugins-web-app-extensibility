@@ -56,12 +56,17 @@ class RequisitionSummaryService extends ServiceBase {
         processSummaryInformation( requisitionSummary, RequestContextHolder?.currentRequestAttributes().getServletContext()[FinanceProcurementConstants.INSTITUTION_BASE_CCY], requestCode, false )
     }
 
+
+    private def processSummaryInformation( requisitionSummary, baseCcy, requestCode, boolean doesNotNeedPdf ) {
+        processSummaryInformation( requisitionSummary, baseCcy, requestCode, doesNotNeedPdf, false )
+    }
     /**
      * Process and topologies Requisition Summary
      * @param requisitionSummary
      * @param requestCode
      */
-    private def processSummaryInformation( requisitionSummary, baseCcy, requestCode, boolean doesNotNeedPdf ) {
+    private
+    def processSummaryInformation( requisitionSummary, baseCcy, requestCode, boolean doesNotNeedPdf, boolean isUserIndependent ) {
         def retJSON = [:]
         def processComment = {list ->
             def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
@@ -93,7 +98,7 @@ class RequisitionSummaryService extends ServiceBase {
             }
             headerTextMap[headerRecord.requestCode] = processComment( financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( headerRecord.requestCode,
                                                                                                                                      FinanceValidationConstants.REQUISITION_INDICATOR_YES ) )
-            statusMap[headerRecord.requestCode] = MessageHelper.message( 'purchaseRequisition.status.' + requisitionInformationService.fetchRequisitionsByReqNumber( headerRecord.requestCode ).status )
+            statusMap[headerRecord.requestCode] = MessageHelper.message( 'purchaseRequisition.status.' + isUserIndependent ? requisitionInformationService.fetchRequisitionsByReqNumber( headerRecord.requestCode, null ).status : requisitionInformationService.fetchRequisitionsByReqNumber( headerRecord.requestCode ).status )
         }
         requisitionSummary.collectEntries() {
             [it.requestCode, [
