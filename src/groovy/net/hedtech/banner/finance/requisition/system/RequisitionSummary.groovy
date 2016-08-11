@@ -202,20 +202,6 @@ class RequisitionSummary implements Serializable {
                     .list()
         }
     }
-
-    /**
-     * This method is used to fetch requisition detail by requisition code.
-     * @param requestCode Requisition code.
-     * @return requisition Summary.
-     */
-    static def fetchRequisitionSummaryForRequestCode( requestCode) {
-        RequisitionSummary.withSession {session ->
-            session.getNamedQuery( FinanceProcurementConstants.REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE )
-                    .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
-                    .setString( FinanceProcurementConstants.QUERY_PARAM_USER_ID, null )
-                    .list()
-        }
-    }
 }
 
 /**

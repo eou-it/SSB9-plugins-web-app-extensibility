@@ -114,6 +114,14 @@ class RequisitionInformationServiceIntegrationTests extends BaseIntegrationTestC
     }
 
     /**
+     * test fetch requisitions with invalid user No User Restriction
+     */
+    @Test
+    void fetchRequisitionsByReqNumberNoUserRestriction() {
+        assertTrue requisitionInformationService.fetchRequisitionsByReqNumber( 'RSED0001', null ) != null
+    }
+
+    /**
      * test fetch requisitions with invalid user
      */
     @Test

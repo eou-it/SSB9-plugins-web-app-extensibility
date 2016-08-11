@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -81,9 +81,15 @@ class RequisitionInformationService extends ServiceBase {
         fetchRequisitionsByReqNumber( requestNo, getOracleUserNameForLoggedInUser() )
     }
 
+    /**
+     * Fetch Requisition for specified requisition no and user id
+     * @param requestNo
+     * @param user
+     * @return
+     */
     def fetchRequisitionsByReqNumber( requestNo, user ) {
-            RequisitionInformation.fetchRequisitionsByReqNumber( user, requestNo )
-        }
+        RequisitionInformation.fetchRequisitionsByReqNumber( user, requestNo )
+    }
 
     /**
      * Gets oracle user name for Logged In user

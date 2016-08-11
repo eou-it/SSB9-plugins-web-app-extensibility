@@ -46,13 +46,21 @@ class RequisitionSummaryServiceIntegrationTests extends BaseIntegrationTestCase 
         assertTrue headers.size() > 0
     }
 
+    /**
+     * test Listing Summary. No Ccy param
+     */
+    @Test
+    void testFetchRequisitionSummaryForRequestCodeNoCurrencyParam() {
+        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'RSED0003' )
+        assertTrue headers.size() > 0
+    }
 
     /**
      * test Listing Summary
      */
     @Test
     void testFetchRequisitionSummaryForRequestCodeWithPublicComment() {
-        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'RSED0009', 'USD' ,true )
+        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'RSED0009', 'USD', true )
         assertTrue headers.size() > 0
     }
 
@@ -61,7 +69,7 @@ class RequisitionSummaryServiceIntegrationTests extends BaseIntegrationTestCase 
      */
     @Test
     void testFetchRequisitionSummaryForRequestCodeWithCommodityDescription() {
-        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'RSED0013', 'USD' ,true )
+        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'RSED0013', 'USD', true )
         assertTrue headers.size() > 0
     }
 
@@ -70,7 +78,7 @@ class RequisitionSummaryServiceIntegrationTests extends BaseIntegrationTestCase 
      */
     @Test
     void testFetchRequisitionSummaryForRequestCodeWithDocumentLevelAccounting() {
-        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'RSED0001', 'USD' ,true )
+        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'RSED0001', 'USD', true )
         assertTrue headers.size() > 0
     }
 
@@ -84,14 +92,13 @@ class RequisitionSummaryServiceIntegrationTests extends BaseIntegrationTestCase 
     }
 
     /**
-         * test Listing Summary with PDF and Text
-         */
-        @Test
-        void testFetchRequisitionSummaryForRequestCodeWithPdfAndText() {
-            def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'RSED0003', 'USD', false )
-            assertTrue headers.size() > 0
-        }
-
+     * test Listing Summary with PDF and Text
+     */
+    @Test
+    void testFetchRequisitionSummaryForRequestCodeWithPdfAndText() {
+        def headers = requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'RSED0003', 'USD', false )
+        assertTrue headers.size() > 0
+    }
 
     /**
      * test Listing Summary
@@ -109,6 +116,19 @@ class RequisitionSummaryServiceIntegrationTests extends BaseIntegrationTestCase 
     void testFetchRequisitionSummaryForRequestCodeInvalidCode() {
         try {
             requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'INVALID', 'USD' )
+            fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
+        }
+        catch (ApplicationException ae) {
+            assertApplicationException ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
+        }
+    }
+    /**
+     * test Listing Summary With Invalid Code. No CCY Param
+     */
+    @Test
+    void testFetchRequisitionSummaryForRequestCodeInvalidCodeNoCCYParam() {
+        try {
+            requisitionSummaryService.fetchRequisitionSummaryForRequestCode( 'INVALID' )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
         }
         catch (ApplicationException ae) {
