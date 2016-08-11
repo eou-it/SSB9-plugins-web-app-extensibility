@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 
 package net.hedtech.banner.finance.requisition.system
@@ -19,7 +19,7 @@ import javax.persistence.*
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE,
                 query = """FROM RequisitionSummary summary
                             WHERE summary.requestCode = :requestCode
-                            AND summary.userId = :userId""")
+                            AND (:userId IS NULL OR summary.userId = :userId)""")
 ])
 @Entity
 @Table(name = FinanceProcurementConstants.REQUISITION_SUMMARY_VIEW)
@@ -199,6 +199,20 @@ class RequisitionSummary implements Serializable {
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_USER_ID, userName )
+                    .list()
+        }
+    }
+
+    /**
+     * This method is used to fetch requisition detail by requisition code.
+     * @param requestCode Requisition code.
+     * @return requisition Summary.
+     */
+    static def fetchRequisitionSummaryForRequestCode( requestCode) {
+        RequisitionSummary.withSession {session ->
+            session.getNamedQuery( FinanceProcurementConstants.REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE )
+                    .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
+                    .setString( FinanceProcurementConstants.QUERY_PARAM_USER_ID, null )
                     .list()
         }
     }

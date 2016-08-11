@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -12,6 +12,7 @@ import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.i18n.MessageHelper
 import net.hedtech.banner.service.ServiceBase
 import org.apache.log4j.Logger
+import org.springframework.web.context.request.RequestContextHolder
 
 /**
  * Service class for RequisitionSummary.
@@ -28,7 +29,7 @@ class RequisitionSummaryService extends ServiceBase {
     def financeTextService
 
     /**
-     * Find the requisition summary for specified requestCode
+     * Find the requisition summary for specified requestCode and user name
      * @param requestCode
      */
     def fetchRequisitionSummaryForRequestCode( requestCode, baseCcy, doesNotNeedPdf = true ) {
@@ -39,6 +40,20 @@ class RequisitionSummaryService extends ServiceBase {
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }
         processSummaryInformation( requisitionSummary, baseCcy, requestCode, doesNotNeedPdf )
+    }
+
+    /**
+     * Find the requisition summary for specified requestCode
+     * @param requestCode
+     */
+    def fetchRequisitionSummaryForRequestCode( requestCode ) {
+        LoggerUtility.debug( LOGGER, 'Input parameters for fetchRequisitionSummaryForRequestCode :' + requestCode )
+        def requisitionSummary = RequisitionSummary.fetchRequisitionSummaryForRequestCode( requestCode )
+        if (!requisitionSummary) {
+            LoggerUtility.error( LOGGER, 'Missing requisition header ' + requestCode )
+            throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
+        }
+        processSummaryInformation( requisitionSummary, RequestContextHolder?.currentRequestAttributes().getServletContext()[FinanceProcurementConstants.INSTITUTION_BASE_CCY], requestCode, false )
     }
 
     /**
