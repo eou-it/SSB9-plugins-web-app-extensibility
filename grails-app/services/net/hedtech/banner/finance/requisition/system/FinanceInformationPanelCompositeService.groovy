@@ -4,7 +4,7 @@
 package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
-
+import net.hedtech.banner.i18n.MessageHelper
 /**
  * Composite service for Information panel.
  */
@@ -13,6 +13,7 @@ class FinanceInformationPanelCompositeService {
     def financePendingApproverListService
     def financeBuyerVerificationService
     def financeRequestPOVerificationService
+    def financePOStatusExtensionService
 
     /**
      * Method to get information panel data by requisition status and requisition code.
@@ -48,12 +49,38 @@ class FinanceInformationPanelCompositeService {
                 def list = financeRequestPOVerificationService.findByRequestCode(requestCode).collect {
                     [pohdCode: it]
                 }
+                def msgStr = getStatusExtension(list.get(0).pohdCode)
+                list.get(0).put('pohdCode',list.get(0).pohdCode + msgStr)
                 informationPanelData = (list ? list : [])
+
                 break
             default:
                 informationPanelData = []
 
         }
         return informationPanelData
+    }
+
+    def getStatusExtension(def pohdCode){
+
+        def msgrStr = ""
+
+        if(pohdCode == null || pohdCode.trim().equals("")){
+            return msgrStr;
+        }
+
+        def list = financePOStatusExtensionService.findByPOHDCode(pohdCode)
+
+        if((list?.get(0)[0]?.equals('N') || list?.get(0)[0]?.equals('n')) && (list?.get(0)[1]?.equals('N') || list?.get(0)[1]?.equals('n'))){
+            msgrStr = ' '+ MessageHelper.message( code:  FinanceProcurementConstants.FINANCE_PO_STATUS_EXTENSION_CONVERTED_TO_PO_DRAFT )
+        }else if((list?.get(0)[0]?.equals('N') || list?.get(0)[0]?.equals('n')) && (list?.get(0)[1]?.equals('Y') || list?.get(0)[1]?.equals('y'))){
+            msgrStr = ' '+ MessageHelper.message( code:  FinanceProcurementConstants.FINANCE_PO_STATUS_EXTENSION_CONVERTED_TO_PO_PENDING )
+        }else if((list?.get(0)[0]?.equals('Y') || list?.get(0)[0]?.equals('y')) && (list?.get(0)[1]?.equals('Y') || list?.get(0)[1]?.equals('y'))){
+            msgrStr = ' '+ MessageHelper.message( code:  FinanceProcurementConstants.FINANCE_PO_STATUS_EXTENSION_CONVERTED_TO_PO_COMPLETED )
+        }else{
+            msgrStr = ''
+        }
+
+        return msgrStr;
     }
 }
