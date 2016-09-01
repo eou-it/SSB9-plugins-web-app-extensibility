@@ -641,8 +641,11 @@ class FinanceProcurementConstants {
     static final String FINANCE_TEXT_FIELD_FOBTEXT_VERSION = 'FOBTEXT_VERSION'
     static final String FINANCE_TEXT_FIELD_FOBTEXT_VPDI_CODE = 'FOBTEXT_VPDI_CODE'
 
+    static final int FINANCE_DTYP_SEQ_NUM_COMMODITY = 14
+
     static
     final String FINANCE_TEXT_NAMED_QUERY_GET_FINANCE_TEXT_BY_CODE_AND_SEQUENCE_NO = 'FinanceText.getFinanceTextByCodeAndItemNumber'
+    static final String FINANCE_TEXT_QUERY_PARAM_DTYP_SEQ_NUM = 'dtypSeqNum'
     static final String FINANCE_TEXT_QUERY_PARAM_TEXT_CODE = 'textCode'
     static final String FINANCE_TEXT_QUERY_PARAM_TEXT_ITEM = 'textItem'
     static final String FINANCE_TEXT_QUERY_PARAM_PRINT_INDICATOR = 'printOptionIndicator'
@@ -653,6 +656,8 @@ class FinanceProcurementConstants {
     final String FINANCE_TEXT_NAMED_QUERY_LIST_HEADER_LEVEL_TEXT_BY_CODE_AND_PRINT_OPTION_IND = 'FinanceText.listHeaderLevelTextByCodeAndPrintOptionInd'
     static
     final String FINANCE_TEXT_NAMED_QUERY_LIST_HEADER_LEVEL_TEXT_BY_CODE = 'FinanceText.listHeaderLevelTextByCode'
+    public static
+    final String FINANCE_TEXT_NAMED_QUERY_GET_FINANCE_TEXT_BY_DTYP_SEQ_AND_CODE_AND_PRINT_IND ='FinanceText.getFinanceTextByDtypSeqAndCodeAndPrintInd'
 
     static final int FINANCE_TEXT_TEXT_LENGTH = 50
     static final int FINANCE_TEXT_SEQUENCE_NUMBER_INCREMENT = 10
