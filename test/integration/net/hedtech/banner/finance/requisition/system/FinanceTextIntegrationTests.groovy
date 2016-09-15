@@ -62,9 +62,9 @@ class FinanceTextIntegrationTests extends BaseIntegrationTestCase {
      * Test case method to test get finance text by document type for commodity, text code and print option.
      */
     @Test
-    public void getFinanceTextByDocumentTypeAndCodeAndPrintInd() {
-        def financeText = FinanceText.FinanceText.getFinanceTextByDocumentTypeAndCodeAndPrintInd( 14, '1122000000', FinanceProcurementConstants.DEFAULT_INDICATOR_YES  )[0]
-        assertTrue( financeTextList.size() > 0 )
+    public void testGetFinanceTextByDocumentTypeAndCodeAndPrintInd() {
+        def financeText = FinanceText.getFinanceTextByDocumentTypeAndCodeAndPrintInd( 14, '1122000000', FinanceProcurementConstants.DEFAULT_INDICATOR_YES  )[0]
+        assert 'Each chair has a weight capacity of 400 pounds' == financeText.text
     }
 
 

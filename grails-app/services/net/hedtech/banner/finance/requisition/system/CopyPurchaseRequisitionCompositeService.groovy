@@ -58,6 +58,7 @@ class CopyPurchaseRequisitionCompositeService {
         def headerForCopy = RequisitionHeaderForCopy.newInstance( header.properties )
         headerForCopy.requestCode = nextRequisitionNumber
         headerForCopy.documentCopiedFrom = requestCode // Old requisition number
+        headerForCopy.transactionDate = new Date()   // default to System Date
         headerForCopy.deliveryDate = null
         headerForCopy.completeIndicator = FinanceProcurementConstants.FALSE
         headerForCopy.printIndicator = null

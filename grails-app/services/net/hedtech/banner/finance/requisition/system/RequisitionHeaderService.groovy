@@ -22,6 +22,11 @@ class RequisitionHeaderService extends ServiceBase {
     def financeApprovalHistoryService
     def financeApprovalsInProcessService
     def financeUnapprovedDocumentService
+    def requisitionDetailsCompositeService
+    def requisitionAccountingCompositeService
+    def requisitionDetailService
+    def requisitionAccountingService
+
 
     /**
      * Find the requisition Header for specified requestCode
@@ -70,6 +75,36 @@ class RequisitionHeaderService extends ServiceBase {
         requisitionHeader.deliveryComment = forceComplete // Custom comment used only for complete
         update( [domainModel: requisitionHeader] )
     }
+
+    /**
+     * Validate the purchase requisition before completing it
+     * @param requestCode
+     */
+    def validateRequisitionBeforeComplete( requestCode ) {
+        LoggerUtility.debug(LOGGER, 'Input parameters for validate Requisition :' + requestCode)
+
+        def requisitionHeader = RequisitionHeader.fetchByRequestCode(requestCode, springSecurityService.getAuthentication().user.oracleUserName)
+        update([domainModel: requisitionHeader])
+
+        //Validate only if the Requisition is copied
+        if (requisitionHeader.documentCopiedFrom)
+        {
+           def requisitionAccountingList = requisitionAccountingService.findAccountingByRequestCode(requestCode)
+           requisitionAccountingList.each () {
+               it.fiscalYear=null
+               it.period=null
+               requisitionAccountingService.update( [domainModel: it] )
+           }
+
+            def requisitionDetailsList = requisitionDetailService.findByRequestCode( requestCode )
+            requisitionDetailsList.each () {
+                it.bid='aa'
+                it.bid=null
+                requisitionDetailService.update ( [domainModel: it] )
+            }
+        }
+    }
+
 
     /**
      * Service Method to recall a purchase requisition.

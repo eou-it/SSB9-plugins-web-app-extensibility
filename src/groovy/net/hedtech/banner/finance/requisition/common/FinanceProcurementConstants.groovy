@@ -21,6 +21,7 @@ class FinanceProcurementConstants {
     static final int EIGHT = 8
     static final int ONE = 1
     static final String EMPTY_STRING = ''
+    static final String SPACE_STRING = ' '
 
     static final int DECIMAL_PRECISION = 2
     static final int DECIMAL_PRECISION_PERCENTAGE = 8
