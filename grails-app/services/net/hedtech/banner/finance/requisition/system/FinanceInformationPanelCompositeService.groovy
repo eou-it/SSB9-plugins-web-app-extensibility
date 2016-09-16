@@ -49,8 +49,10 @@ class FinanceInformationPanelCompositeService {
                 def list = financeRequestPOVerificationService.findByRequestCode(requestCode).collect {
                     [pohdCode: it]
                 }
-                def msgStr = getStatusExtension(list.get(0).pohdCode)
-                list.get(0).put('pohdCode',list.get(0).pohdCode + msgStr)
+                if(list) {
+                    def msgStr = getStatusExtension(list.get(0).pohdCode)
+                    list.get(0).put('pohdCode', list.get(0).pohdCode + msgStr)
+                }
                 informationPanelData = (list ? list : [])
 
                 break
