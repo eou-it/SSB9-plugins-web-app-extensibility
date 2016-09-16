@@ -94,10 +94,8 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testGetFinanceTextByDocumentTypeAndCodeAndPrintOption() {
-        def financeText = FinanceTextService.getFinanceTextByDocumentTypeAndCodeAndPrintOption( '14', '1122000000', FinanceProcurementConstants.DEFAULT_INDICATOR_YES  )
-                                                     getFinanceTextByDocumentTypeAndCodeAndPrintOption
-       // assertTrue( financeTextList.size() > 0 )
-        assert 'Each chair has a weight capacity of 400 pounds ' == financeText
+        def financeText = financeTextService.getFinanceTextByDocumentTypeAndCodeAndPrintOption( 1, 'R0000010', FinanceProcurementConstants.DEFAULT_INDICATOR_YES  )
+        assertNotNull(financeText.comment)
     }
 
     /**
