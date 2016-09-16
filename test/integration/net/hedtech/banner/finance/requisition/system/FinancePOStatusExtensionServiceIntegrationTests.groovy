@@ -38,7 +38,7 @@ class FinancePOStatusExtensionServiceIntegrationTests extends BaseIntegrationTes
      */
     @Test
     public void testFindByPOHDCode() {
-        assert (!financePOStatusExtensionService.findByPOHDCode('R0001113').isEmpty())
+        assert (!financePOStatusExtensionService.findByPOHDCode('P0000001').isEmpty())
     }
 
     /**

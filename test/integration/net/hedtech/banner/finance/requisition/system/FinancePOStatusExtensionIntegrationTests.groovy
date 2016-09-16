@@ -31,7 +31,7 @@ class FinancePOStatusExtensionIntegrationTests  extends BaseIntegrationTestCase 
      */
     @Test
     public void testFindByPOHDCode() {
-        assert (!FinanceRequestPOVerification.fetchByRequestCode('R0001113').isEmpty())
+        assert (!FinanceRequestPOVerification.fetchByRequestCode('R0000013').isEmpty())
     }
 
     /**
