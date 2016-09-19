@@ -122,6 +122,8 @@ class CopyPurchaseRequisitionCompositeService {
             accountingForCopy.insufficientFundsOverrideIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_NO
             accountingForCopy.availableBudgetOverride = null
             accountingForCopy.closedIndicator = null
+            accountingForCopy.fiscalYear = null
+            accountingForCopy.period = null
             requisitionAccountingForCopyService.create( [domainModel: accountingForCopy] )
         }
     }
