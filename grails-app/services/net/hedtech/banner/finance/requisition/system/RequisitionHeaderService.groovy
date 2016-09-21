@@ -89,18 +89,18 @@ class RequisitionHeaderService extends ServiceBase {
         //Validate only if the Requisition is copied
         if (requisitionHeader.documentCopiedFrom)
         {
-           def requisitionAccountingList = requisitionAccountingService.findAccountingByRequestCode(requestCode)
-           requisitionAccountingList.each () {
-               it.fiscalYear=null
-               it.period=null
-               requisitionAccountingService.update( [domainModel: it] )
-           }
-
             def requisitionDetailsList = requisitionDetailService.findByRequestCode( requestCode )
             requisitionDetailsList.each () {
                 it.bid='aa'
                 it.bid=null
                 requisitionDetailService.update ( [domainModel: it] )
+            }
+            def requisitionAccountingList = requisitionAccountingService.findAccountingByRequestCode(requestCode)
+            requisitionAccountingList.each () {
+                //Making model as dirty, the will be update by DB API
+                it.fiscalYear="00"
+                it.period="00"
+                requisitionAccountingService.update( [domainModel: it] )
             }
         }
     }
