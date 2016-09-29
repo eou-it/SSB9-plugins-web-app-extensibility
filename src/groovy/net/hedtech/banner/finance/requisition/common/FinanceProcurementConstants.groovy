@@ -21,9 +21,10 @@ class FinanceProcurementConstants {
     static final int EIGHT = 8
     static final int ONE = 1
     static final String EMPTY_STRING = ''
+    static final String SPACE_STRING = ' '
 
     static final int DECIMAL_PRECISION = 2
-    static final int DECIMAL_PRECISION_PERCENTAGE = 4
+    static final int DECIMAL_PRECISION_PERCENTAGE = 8
 
     /* Constant for Requisition Header Domain*/
 
@@ -641,8 +642,11 @@ class FinanceProcurementConstants {
     static final String FINANCE_TEXT_FIELD_FOBTEXT_VERSION = 'FOBTEXT_VERSION'
     static final String FINANCE_TEXT_FIELD_FOBTEXT_VPDI_CODE = 'FOBTEXT_VPDI_CODE'
 
+    static final int FINANCE_DTYP_SEQ_NUM_COMMODITY = 14
+
     static
     final String FINANCE_TEXT_NAMED_QUERY_GET_FINANCE_TEXT_BY_CODE_AND_SEQUENCE_NO = 'FinanceText.getFinanceTextByCodeAndItemNumber'
+    static final String FINANCE_TEXT_QUERY_PARAM_DTYP_SEQ_NUM = 'dtypSeqNum'
     static final String FINANCE_TEXT_QUERY_PARAM_TEXT_CODE = 'textCode'
     static final String FINANCE_TEXT_QUERY_PARAM_TEXT_ITEM = 'textItem'
     static final String FINANCE_TEXT_QUERY_PARAM_PRINT_INDICATOR = 'printOptionIndicator'
@@ -653,6 +657,8 @@ class FinanceProcurementConstants {
     final String FINANCE_TEXT_NAMED_QUERY_LIST_HEADER_LEVEL_TEXT_BY_CODE_AND_PRINT_OPTION_IND = 'FinanceText.listHeaderLevelTextByCodeAndPrintOptionInd'
     static
     final String FINANCE_TEXT_NAMED_QUERY_LIST_HEADER_LEVEL_TEXT_BY_CODE = 'FinanceText.listHeaderLevelTextByCode'
+    public static
+    final String FINANCE_TEXT_NAMED_QUERY_GET_FINANCE_TEXT_BY_DTYP_SEQ_AND_CODE_AND_PRINT_IND ='FinanceText.getFinanceTextByDtypSeqAndCodeAndPrintInd'
 
     static final int FINANCE_TEXT_TEXT_LENGTH = 50
     static final int FINANCE_TEXT_SEQUENCE_NUMBER_INCREMENT = 10
@@ -669,10 +675,22 @@ class FinanceProcurementConstants {
     static final String FINANCE_BUYER_VERIFICATION_BUYER = 'buyer'
     static final String FINANCE_BUYER_VERIFICATION_QUERY_PARAM_REQUEST_CODE = 'requestCode'
 
+    /** Constants for Domain FinancePOStatusExtension **/
+    static final String FPBPOHD_TABLE = 'FPBPOHD'
+    static final String FINANCE_PO_STATUS_EXTENSION_NAMED_QUERY_FIND_BY_POHD_CODE = 'FinancePOStatusExtension.fetchByPOHDCode'
+    static final String FINANCE_PO_STATUS_EXTENSION_FPBPOHD_SURROGATE_ID = 'FPBPOHD_SURROGATE_ID'
+    static final String FINANCE_PO_STATUS_EXTENSION_FPBPOHD_APPR_IND = 'FPBPOHD_APPR_IND'
+    static final String FINANCE_PO_STATUS_EXTENSION_FPBPOHD_COMPLETE_IND = 'FPBPOHD_COMPLETE_IND'
+    static final String FINANCE_PO_STATUS_EXTENSION_FPBPOHD_POHD_CODE = 'FPBPOHD_CODE'
+    static final String FINANCE_PO_STATUS_EXTENSION_FPBPOHD_VERSION = 'FPBPOHD_VERSION'
+    static final String FINANCE_PO_STATUS_EXTENSION_QUERY_PARAM_POHD_CODE = 'pohdCode'
+    static final String FINANCE_PO_STATUS_EXTENSION_CONVERTED_TO_PO_PENDING = 'purchaseRequisition.status.convertedToPo.pendingApproval'
+    static final String FINANCE_PO_STATUS_EXTENSION_CONVERTED_TO_PO_COMPLETED = 'purchaseRequisition.status.convertedToPo.completed'
+    static final String FINANCE_PO_STATUS_EXTENSION_CONVERTED_TO_PO_DRAFT = 'purchaseRequisition.status.convertedToPo.draft'
     /** Constants for Domain FinanceRequestPOVerification **/
     static final String FTVRQPO_TABLE = 'FTVRQPO'
-    static
-    final String FINANCE_REQUEST_PO_VERIFICATION_NAMED_QUERY_FIND_BY_REQ_CODE = 'FinanceRequestPOVerification.fetchByRequestCode'
+
+    static final String FINANCE_REQUEST_PO_VERIFICATION_NAMED_QUERY_FIND_BY_REQ_CODE = 'FinanceRequestPOVerification.fetchByRequestCode'
     static final String FINANCE_REQUEST_PO_VERIFICATION_FTVRQPO_SURROGATE_ID = 'FTVRQPO_SURROGATE_ID'
     static final String FINANCE_REQUEST_PO_VERIFICATION_FTVRQPO_REQD_CODE = 'FTVRQPO_REQD_CODE'
     static final String FINANCE_REQUEST_PO_VERIFICATION_FTVRQPO_POHD_CODE = 'FTVRQPO_POHD_CODE'

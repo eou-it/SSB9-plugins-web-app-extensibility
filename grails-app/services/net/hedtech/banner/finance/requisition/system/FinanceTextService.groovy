@@ -4,7 +4,10 @@
 package net.hedtech.banner.finance.requisition.system
 
 import grails.transaction.Transactional
+import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.service.ServiceBase
+
+
 
 /**
  * Service class for FinanceText.
@@ -22,6 +25,25 @@ class FinanceTextService extends ServiceBase {
     def getFinanceTextByCodeAndItemAndPrintOption(textCode, item, printOptionIndicator) {
         return FinanceText.getFinanceTextByCodeAndItemNumberAndPrintInd(textCode, item, printOptionIndicator)
     }
+
+    /**
+     * Method is used to get FinanceText by text code and sequence number.
+     * @param dtypSeqNum
+     * @param textCode text code.
+     * @printOptionIndicator
+     * @return FinanceText concatenated
+     */
+    @Transactional(readOnly = true)
+    def getFinanceTextByDocumentTypeAndCodeAndPrintOption(dtypSeqNum, textCode, printOptionIndicator) {
+
+       def comment = FinanceProcurementConstants.EMPTY_STRING
+       FinanceText.getFinanceTextByDocumentTypeAndCodeAndPrintInd( dtypSeqNum,textCode, printOptionIndicator).each {
+           comment = comment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING) + FinanceProcurementConstants.SPACE_STRING
+       }
+        return ["comment": comment]
+
+    }
+
 
     /**
      * Method is used to get Header FinanceText by text code.

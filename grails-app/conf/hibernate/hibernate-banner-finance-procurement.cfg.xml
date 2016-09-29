@@ -35,5 +35,6 @@
         <mapping class="net.hedtech.banner.finance.requisition.system.FinanceRequestPOVerification"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.FinancePendingApproverList"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.FinanceGeneralTickler"/>
+        <mapping class="net.hedtech.banner.finance.requisition.system.FinancePOStatusExtension"/>
     </session-factory>
 </hibernate-configuration>
