@@ -752,10 +752,10 @@ class FinanceProcurementConstants {
     static final String BDM_DOC_TYPE_DESC = 'docTypeDesc'
     static final String BDM_DOCUMENT_NAME = 'DOCUMENT NAME'
     static final String BDM_CREATE_NAME = 'CREATE NAME'
-    static final String COMMON_MATCH_SQL = "SELECT e.FTVDTYP_CODE AS code, e.FTVDTYP_DESC AS DESCRIPTION \
-                          FROM FTVDTYP e, otgmgr.ul506_2 \
-                          WHERE e.FTVDTYP_CODE = otgmgr.ul506_2.item \
-                          AND (UPPER(e.FTVDTYP_CODE) LIKE :docTypeCode OR  UPPER(e.FTVDTYP_DESC) LIKE :docTypeDesc)"
+    static final String COMMON_MATCH_SQL = "SELECT e.ETVDTYP_CODE AS code, e.ETVDTYP_DESC AS DESCRIPTION \
+                          FROM ETVDTYP e, otgmgr.ul506_2 \
+                          WHERE e.ETVDTYP_CODE = otgmgr.ul506_2.item \
+                          AND (UPPER(e.ETVDTYP_CODE) LIKE :docTypeCode OR  UPPER(e.ETVDTYP_DESC) LIKE :docTypeDesc)"
 
     public static final String ERROR_MESSAGE_BDM_NOT_INSTALLED = 'bdm.not.installed'
 
