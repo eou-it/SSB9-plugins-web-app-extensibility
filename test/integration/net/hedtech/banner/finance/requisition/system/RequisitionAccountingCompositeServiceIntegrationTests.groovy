@@ -300,7 +300,7 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                     FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         try {
-            requisitionAccountingCompositeService.findByRequestCodeItemAndSeq( 'RSED0003', 0, 2 )
+            requisitionAccountingCompositeService.findByRequestCodeItemAndSeq( 'RSED0004', 0, 2 )
         } catch (ApplicationException ae) {
             assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_ACCOUNTING )
         }

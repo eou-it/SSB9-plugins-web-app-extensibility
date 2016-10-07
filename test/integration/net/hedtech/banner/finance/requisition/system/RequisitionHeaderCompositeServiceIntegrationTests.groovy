@@ -701,7 +701,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
                 'deliveryComment'          : 'test',
                 'taxGroup'                 : 'AU',
                 'discount'                 : 30,
-                'currency'                 : 'CAN',
+                'currency'                 : 'CAD',
                 'vendorContact'            : 'Bangalore',
                 'vendorEmailAddress'       : 'vendor@vendorgroup.com',
                 'requisitionOrigination'   : FinanceProcurementConstants.DEFAULT_REQUISITION_ORIGIN,
