@@ -281,6 +281,7 @@ class FinanceProcurementConstants {
 
     public static final String QUERY_PARAM_REQUEST_CODE = 'requestCode'
     public static final String QUERY_PARAM_REQUISITION_DETAIL_ITEM = 'item'
+    public static final String QUERY_PARAM_APPLY_FUND_ORG_SECURITY = 'applyFundOrgSecurity'
     public static final String QUERY_PARAM_USER_ID = 'userId'
     public static final String NAMED_QUERY_REQUEST_DETAIL_GET_LAST_ITEM = 'RequestDetail.getLastItem'
     public static final String REQ_ACC_NAMED_QUERY_GET_SUM_PERCENTAGE = 'RequestDetail.getSumOfDistributionPercentage'
