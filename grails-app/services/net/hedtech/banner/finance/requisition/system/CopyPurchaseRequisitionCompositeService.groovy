@@ -58,6 +58,7 @@ class CopyPurchaseRequisitionCompositeService {
         def headerForCopy = RequisitionHeaderForCopy.newInstance( header.properties )
         headerForCopy.requestCode = nextRequisitionNumber
         headerForCopy.documentCopiedFrom = requestCode // Old requisition number
+        headerForCopy.transactionDate = new Date()   // default to System Date
         headerForCopy.deliveryDate = null
         headerForCopy.completeIndicator = FinanceProcurementConstants.FALSE
         headerForCopy.printIndicator = null
@@ -121,6 +122,8 @@ class CopyPurchaseRequisitionCompositeService {
             accountingForCopy.insufficientFundsOverrideIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_NO
             accountingForCopy.availableBudgetOverride = null
             accountingForCopy.closedIndicator = null
+            accountingForCopy.fiscalYear = null
+            accountingForCopy.period = null
             requisitionAccountingForCopyService.create( [domainModel: accountingForCopy] )
         }
     }

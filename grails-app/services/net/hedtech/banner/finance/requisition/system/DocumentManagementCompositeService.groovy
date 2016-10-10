@@ -166,7 +166,7 @@ class DocumentManagementCompositeService {
         documentAttributes.put( FinanceProcurementConstants.BDM_ACTIVITY_DATE, dateFormat.format( new Date() ) )
         documentAttributes.put( FinanceProcurementConstants.BDM_DISPOSITION_DATE, FinanceProcurementConstants.EMPTY_STRING )
         try {
-            bdmAttachmentService.createDocument( getBdmParams(), absoluteFileName, documentAttributes, vpdiCode )
+            bdmAttachmentService.createDocument( getBdmParams(), absoluteFileName, encodeDocumentAttributes(documentAttributes), vpdiCode )
         } catch (ApplicationException | WebServiceException ae) {
             LoggerUtility.error( LOGGER, 'Error while uploading document' + ae.message )
             throw new ApplicationException( DocumentManagementCompositeService,
@@ -181,4 +181,14 @@ class DocumentManagementCompositeService {
         }
         return bdmInstalled
     }
+	
+	def encodeDocumentAttributes(documentAttributes){
+		documentAttributes.each {entry ->
+                if(entry.value && entry.value instanceof String){
+                    entry.value = entry.value.encodeAsHTML()
+                }
+            }
+		return documentAttributes	
+	}
+
 }

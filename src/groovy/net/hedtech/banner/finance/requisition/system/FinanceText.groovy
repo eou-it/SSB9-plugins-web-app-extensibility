@@ -44,7 +44,13 @@ import javax.persistence.*
                 query = """FROM FinanceText financeText
                             WHERE financeText.textCode = :textCode
                             AND financeText.textItem IS NULL
-                            AND financeText.documentTypeSequenceNumber = 1""")
+                            AND financeText.documentTypeSequenceNumber = 1"""),
+        @NamedQuery(name = FinanceProcurementConstants.FINANCE_TEXT_NAMED_QUERY_GET_FINANCE_TEXT_BY_DTYP_SEQ_AND_CODE_AND_PRINT_IND ,
+        query = """FROM FinanceText financeText
+                            WHERE financeText.documentTypeSequenceNumber = :dtypSeqNum
+                            AND financeText.textCode = :textCode
+                            AND financeText.printOptionIndicator = :printOptionIndicator
+                            ORDER BY financeText.sequenceNumber ASC""")
 ])
 @ToString(includeNames = true, ignoreNulls = true)
 @EqualsAndHashCode(includeFields = true)
@@ -152,6 +158,24 @@ class FinanceText implements Serializable {
         return list
     }
 
+    /**
+     * Method is used to get FinanceText by text code, commodity item number and print option indicator.
+     * @param textCode Text code.
+     * @param sequenceNumber Commodity Sequence number.
+     * @param printOptionIndicator Print option indicator.
+     * @return list of finance text.
+     */
+
+    static def getFinanceTextByDocumentTypeAndCodeAndPrintInd( Integer dtypSeqNum, textCode, printOptionIndicator ) {
+        def list = FinanceText.withSession {session ->
+            session.getNamedQuery( FinanceProcurementConstants.FINANCE_TEXT_NAMED_QUERY_GET_FINANCE_TEXT_BY_DTYP_SEQ_AND_CODE_AND_PRINT_IND )
+                    .setInteger( FinanceProcurementConstants.FINANCE_TEXT_QUERY_PARAM_DTYP_SEQ_NUM, dtypSeqNum )
+                    .setString( FinanceProcurementConstants.FINANCE_TEXT_QUERY_PARAM_TEXT_CODE, textCode )
+                    .setString( FinanceProcurementConstants.FINANCE_TEXT_QUERY_PARAM_PRINT_INDICATOR, printOptionIndicator )
+                    .list()
+        }
+        return list
+    }
     /**
      * Method is used to get Header FinanceText by text code and print option indicator.
      * @param textCode Text code.

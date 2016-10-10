@@ -90,6 +90,15 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
     }
 
     /**
+     * Test case to test get finance text by documentType, code and print option indicator.
+     */
+    @Test
+    public void testGetFinanceTextByDocumentTypeAndCodeAndPrintOption() {
+        def financeText = financeTextService.getFinanceTextByDocumentTypeAndCodeAndPrintOption( 1, 'R0000010', FinanceProcurementConstants.DEFAULT_INDICATOR_YES  )
+        assertNotNull(financeText.comment)
+    }
+
+    /**
      * Test case to test listing header level text by text code and print option indicator.
      */
     @Test
