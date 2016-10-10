@@ -8,7 +8,6 @@ import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
-import net.hedtech.banner.finance.system.FinanceSystemControlService
 import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.i18n.MessageHelper
 import net.hedtech.banner.service.ServiceBase
@@ -27,7 +26,6 @@ class RequisitionSummaryService extends ServiceBase {
     def requisitionInformationService
     def financeUserProfileService
     def financeOrganizationCompositeService
-    def financeSystemControlService
     def financeTextService
 
     /**
@@ -47,13 +45,10 @@ class RequisitionSummaryService extends ServiceBase {
     /**
      * Find the requisition summary for specified requestCode
      * @param requestCode
-     * @param applyFundOrgSecurity
      */
-    def fetchRequisitionSummaryForRequestCode( requestCode, boolean applyFundOrgSecurity = false ) {
+    def fetchRequisitionSummaryForRequestCode( requestCode ) {
         LoggerUtility.debug( LOGGER, 'Input parameters for fetchRequisitionSummaryForRequestCode :' + requestCode )
-        def requisitionSummary = RequisitionSummary.fetchRequisitionSummaryForRequestCode( requestCode,
-                                                                                           applyFundOrgSecurity ? springSecurityService.getAuthentication().user.oracleUserName : null,
-                                                                                           applyFundOrgSecurity ? financeSystemControlService.findActiveFinanceSystemControl().fundOrgSecurityIndicator : 'N' )
+        def requisitionSummary = RequisitionSummary.fetchRequisitionSummaryForRequestCode( requestCode, null )
         if (!requisitionSummary) {
             LoggerUtility.error( LOGGER, 'Missing requisition header ' + requestCode )
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )

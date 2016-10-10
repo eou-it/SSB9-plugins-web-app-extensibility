@@ -19,9 +19,7 @@ import javax.persistence.*
         @NamedQuery(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE,
                 query = """FROM RequisitionSummary summary
                             WHERE summary.requestCode = :requestCode
-                            AND (:userId IS NULL OR summary.userId = :userId)
-                            AND (:applyFundOrgSecurity ='N' OR
-                            'Y' = f_fund_org_security_fnc(summary.chartOfAccountCode,summary.accountingFundCode,summary.organizationCode,CURRENT_DATE, 'Q', :userId, null ))""")
+                            AND (:userId IS NULL OR summary.userId = :userId)""")
 ])
 @Entity
 @Table(name = FinanceProcurementConstants.REQUISITION_SUMMARY_VIEW)
@@ -194,15 +192,13 @@ class RequisitionSummary implements Serializable {
      * This method is used to fetch requisition detail by requisition code.
      * @param requestCode Requisition code.
      * @param userName
-     * @param applyFundOrgSecurity
      * @return requisition Summary.
      */
-    static def fetchRequisitionSummaryForRequestCode( requestCode, userName, applyFundOrgSecurity = 'N' ) {
+    static def fetchRequisitionSummaryForRequestCode( requestCode, userName ) {
         RequisitionSummary.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_USER_ID, userName )
-                    .setString( FinanceProcurementConstants.QUERY_PARAM_APPLY_FUND_ORG_SECURITY, applyFundOrgSecurity )
                     .list()
         }
     }
