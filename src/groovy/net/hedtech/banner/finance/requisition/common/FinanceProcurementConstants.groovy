@@ -648,6 +648,7 @@ class FinanceProcurementConstants {
 
     public static
     final String FINANCE_TEXT_NAMED_QUERY_GET_FINANCE_TEXT_BY_CODE_AND_SEQUENCE_NO = 'FinanceText.getFinanceTextByCodeAndItemNumber'
+    public static final String FINANCE_TEXT_QUERY_PARAM_DTYP_SEQ_NUM = 'dtypSeqNum'
     public static final String FINANCE_TEXT_QUERY_PARAM_TEXT_CODE = 'textCode'
     public static final String FINANCE_TEXT_QUERY_PARAM_TEXT_ITEM = 'textItem'
     public static final String FINANCE_TEXT_QUERY_PARAM_PRINT_INDICATOR = 'printOptionIndicator'
