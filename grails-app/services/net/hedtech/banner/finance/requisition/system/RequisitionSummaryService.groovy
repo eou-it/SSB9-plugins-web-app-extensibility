@@ -90,12 +90,13 @@ class RequisitionSummaryService extends ServiceBase {
                 [userId           : userProfileObj.userId, requesterName: userProfileObj.requesterName, requesterPhoneNumber: userProfileObj.requesterPhoneNumber,
                  requesterPhoneExt: userProfileObj.requesterPhoneExt, requesterEmailAddress: userProfileObj.requesterEmailAddress, phoneArea: userProfileObj.phoneArea]
             }
-            orgMap[headerRecord.requestCode] = financeOrganizationCompositeService.
+            orgMap[headerRecord.requestCode] = [orgnCode: headerRecord.organizationCode, orgnTitle: '']
+            orgMap[headerRecord.requestCode].orgnTitle = financeOrganizationCompositeService.
                     findOrganizationListByEffectiveDateAndSearchParam( [searchParam: headerRecord.organizationCode, effectiveDate: headerRecord.transactionDate,
                                                                         coaCode    : headerRecord.chartOfAccountCode],
-                                                                       [offset: FinanceProcurementConstants.ZERO, max: FinanceProcurementConstants.ONE] ).collect() {organization ->
+                                                                       [offset: FinanceProcurementConstants.ZERO, max: FinanceProcurementConstants.ONE], false ).collect() {organization ->
                 [orgnCode: organization.orgnCode, orgnTitle: organization.orgnTitle]
-            }
+            }?.orgnTitle
             headerTextMap[headerRecord.requestCode] = processComment( financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( headerRecord.requestCode,
                                                                                                                                      FinanceValidationConstants.REQUISITION_INDICATOR_YES ) )
             statusMap[headerRecord.requestCode] = MessageHelper.message( 'purchaseRequisition.status.' + isUserIndependent ? requisitionInformationService.fetchRequisitionsByReqNumber( headerRecord.requestCode, null ).status : requisitionInformationService.fetchRequisitionsByReqNumber( headerRecord.requestCode ).status )
