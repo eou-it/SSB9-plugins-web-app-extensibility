@@ -29,7 +29,7 @@ class FinanceApprovalsInProcessService extends ServiceBase {
      */
     @Transactional(readOnly = true)
     def findByDocumentNumberAndType( documentNumber, documentType ) {
-        return FinanceApprovalsInProcess.fetchByDocumentCodeAndDocType( documentNumber, documentType )
+        return FinanceApprovalsInProcess.fetchByDocumentCodeAndDocType( documentNumber, documentType as long )
     }
 
 }

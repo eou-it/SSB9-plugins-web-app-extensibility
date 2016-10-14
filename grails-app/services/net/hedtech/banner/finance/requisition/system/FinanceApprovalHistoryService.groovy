@@ -29,6 +29,6 @@ class FinanceApprovalHistoryService extends ServiceBase {
      */
     @Transactional(readOnly = true)
     def findByDocumentNumberAndType( documentCode, documentType ) {
-        return FinanceApprovalHistory.fetchByDocumentCodeAndDocType( documentCode, documentType )
+        return FinanceApprovalHistory.fetchByDocumentCodeAndDocType( documentCode, documentType as long )
     }
 }
