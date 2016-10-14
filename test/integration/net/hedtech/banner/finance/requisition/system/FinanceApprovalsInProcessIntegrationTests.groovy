@@ -34,6 +34,17 @@ class FinanceApprovalsInProcessIntegrationTests extends BaseIntegrationTestCase 
      */
     @Test
     public void testFindByDocumentNumber() {
-        assertNotNull(FinanceApprovalsInProcess.fetchByDocumentNumber('RSED0007')[0])
+        assertNotNull( FinanceApprovalsInProcess.fetchByDocumentNumber( 'RSED0007' )[0] )
     }
+
+    /**
+     * Test find by document number and document type
+     */
+    @Test
+    public void testFindByDocumentNumberAndDocumentType() {
+        def ret = FinanceApprovalsInProcess.fetchByDocumentCodeAndDocType( 'RSED0007', 1 )
+        assert ret.documentNumber == 'RSED0007'
+
+    }
+
 }

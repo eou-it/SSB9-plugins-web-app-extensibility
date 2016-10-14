@@ -17,9 +17,14 @@ import javax.persistence.*
 @Table(name = FinanceProcurementConstants.FOBAPPH)
 @EqualsAndHashCode(includeFields = true)
 @ToString(includeNames = true, ignoreNulls = true)
-@NamedQuery(name = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_NAME_FIND_BY_DOCUMENT_CODE,
-        query = """FROM FinanceApprovalHistory approvalHistory
-                    WHERE approvalHistory.documentCode = :documentCode""")
+@NamedQueries(value = [
+        @NamedQuery(name = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_NAME_FIND_BY_DOCUMENT_CODE,
+                query = """FROM FinanceApprovalHistory approvalHistory
+                    WHERE approvalHistory.documentCode = :documentCode"""),
+        @NamedQuery(name = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_NAME_FIND_BY_DOC_CODE_DOC_TYPE,
+                query = """FROM FinanceApprovalHistory  approvalHistory
+                    WHERE approvalHistory.documentCode = :documentCode AND approvalHistory.sequenceNumber = :documentType""")
+])
 public class FinanceApprovalHistory implements Serializable {
 
     @Id
@@ -49,7 +54,7 @@ public class FinanceApprovalHistory implements Serializable {
     BigDecimal queueLevel
 
     @Column(name = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_FOBAPPH_SEQ_NUM, nullable = false, precision = 2)
-    BigDecimal sequenceNumber
+    Long sequenceNumber
 
     @Column(name = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_FOBAPPH_SUBMISSION_NUMBER, precision = 2)
     BigDecimal submissionNumber
@@ -78,4 +83,19 @@ public class FinanceApprovalHistory implements Serializable {
         return list
     }
 
+    /**
+     * Method is used to get FinanceApprovalHistory by document code and documentTypeCode.
+     * @param documentCode document code.
+     * @param documentType
+     * @return list of FinanceApprovalHistory.
+     */
+    static def fetchByDocumentCodeAndDocType( documentCode, long documentType ) {
+        def list = FinanceUnapprovedDocument.withSession {session ->
+            session.getNamedQuery( FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_NAME_FIND_BY_DOC_CODE_DOC_TYPE )
+                    .setString( FinanceProcurementConstants.FINANCE_QUERY_PARAM_DOCUMENT_CODE, documentCode )
+                    .setLong( FinanceProcurementConstants.FINANCE_QUERY_PARAM_DOCUMENT_TYPE_CODE, documentType )
+                    .list()
+        }
+        return list
+    }
 }

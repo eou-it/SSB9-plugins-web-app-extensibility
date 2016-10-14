@@ -582,6 +582,7 @@ class FinanceProcurementConstants {
     public static
     final String FINANCE_UNAPPROVED_DOCUMENT_QUERY_NAME_FIND_BY_DOCUMENT_CODE = 'FinanceUnapprovedDocument.fetchByDocumentCode'
     public static final String FINANCE_QUERY_PARAM_DOCUMENT_CODE = 'documentCode'
+    public static final String FINANCE_QUERY_PARAM_DOCUMENT_TYPE_CODE = 'documentType'
 
     /** Constant variable for Domain class for Unapproved Documents Table FOBAPPH **/
     public static final String FOBAPPH = 'FOBAPPH'
@@ -601,6 +602,7 @@ class FinanceProcurementConstants {
     public static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_VPDI_CODE = 'FOBAPPH_VPDI_CODE'
     public static
     final String FINANCE_APPROVAL_HISTORY_QUERY_NAME_FIND_BY_DOCUMENT_CODE = 'FinanceApprovalHistory.fetchByDocumentCode'
+    public static final String FINANCE_APPROVAL_HISTORY_QUERY_NAME_FIND_BY_DOC_CODE_DOC_TYPE='FinanceApprovalHistory.fetchByDocumentCodeAndDocType'
     public static final String FINANCE_APPROVAL_HISTORY_QUERY_ID_DENY = 'DENY'
     public static final int FINANCE_APPROVAL_HISTORY_QUERY_LEVEL_ZERO = 0
 
@@ -621,6 +623,8 @@ class FinanceProcurementConstants {
     public static final String FINANCE_APPROVAL_IN_PROCESS_FOBAINP_VPDI_CODE = 'FOBAINP_VPDI_CODE'
     public static
     final String FINANCE_APPROVAL_IN_PROCESS_QUERY_NAME_FIND_BY_DOCUMENT_NUMBER = 'FinanceApprovalsInProcess.findByDocumentNumber'
+    public static
+    final String FINANCE_APPROVAL_IN_PROCESS_QUERY_NAME_FIND_BY_DOC_NUMBER_DOC_TYPE = 'FinanceApprovalInProcess.findByDocumentNumberAndDocumentType'
     public static final String FINANCE_APPROVAL_IN_PROCESS_QUERY_PARAM_DOCUMENT_NUMBER = 'documentNumber'
 
     /** FOBTEXT - FinanceText Domain constants **/

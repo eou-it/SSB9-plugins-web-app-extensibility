@@ -17,7 +17,18 @@ class FinanceApprovalHistoryService extends ServiceBase {
      * @return list of FinanceApprovalHistory.
      */
     @Transactional(readOnly = true)
-    def findByDocumentCode(documentCode) {
-        return FinanceApprovalHistory.fetchByDocumentCode(documentCode)
+    def findByDocumentCode( documentCode ) {
+        return FinanceApprovalHistory.fetchByDocumentCode( documentCode )
+    }
+
+    /**
+     * Finds document Approval history by document number and type
+     * @param documentNumber
+     * @param documentType
+     * @return
+     */
+    @Transactional(readOnly = true)
+    def findByDocumentNumberAndType( documentCode, documentType ) {
+        return FinanceApprovalHistory.fetchByDocumentCodeAndDocType( documentCode, documentType )
     }
 }

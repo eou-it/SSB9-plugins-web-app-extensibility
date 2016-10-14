@@ -17,9 +17,14 @@ import javax.persistence.*
 @Table(name = FinanceProcurementConstants.FOBAINP)
 @EqualsAndHashCode(includeFields = true)
 @ToString(includeNames = true, ignoreNulls = true)
-@NamedQuery(name = FinanceProcurementConstants.FINANCE_APPROVAL_IN_PROCESS_QUERY_NAME_FIND_BY_DOCUMENT_NUMBER,
-        query = """FROM FinanceApprovalsInProcess approvalsInProcess
-                    WHERE approvalsInProcess.documentNumber = :documentNumber""")
+@NamedQueries(value = [
+        @NamedQuery(name = FinanceProcurementConstants.FINANCE_APPROVAL_IN_PROCESS_QUERY_NAME_FIND_BY_DOCUMENT_NUMBER,
+                query = """FROM FinanceApprovalsInProcess approvalsInProcess
+                    WHERE approvalsInProcess.documentNumber = :documentNumber"""),
+        @NamedQuery(name = FinanceProcurementConstants.FINANCE_APPROVAL_IN_PROCESS_QUERY_NAME_FIND_BY_DOC_NUMBER_DOC_TYPE,
+                query = """FROM FinanceApprovalsInProcess  approvalsInProcess
+                    WHERE approvalsInProcess.documentNumber = :documentNumber AND approvalsInProcess.documentType = :documentType""")
+])
 public class FinanceApprovalsInProcess implements Serializable {
 
     @Id
@@ -43,7 +48,7 @@ public class FinanceApprovalsInProcess implements Serializable {
     String documentNumber
 
     @Column(name = FinanceProcurementConstants.FINANCE_APPROVAL_IN_PROCESS_FOBAINP_DOC_TYPE, nullable = false, precision = 2)
-    BigDecimal documentType
+    Long documentType
 
     @Column(name = FinanceProcurementConstants.FINANCE_APPROVAL_IN_PROCESS_FOBAINP_LEVEL, precision = 4)
     BigDecimal level
@@ -69,13 +74,28 @@ public class FinanceApprovalsInProcess implements Serializable {
      * @param documentCode document code.
      * @return list of FinanceApprovalsInProcess.
      */
-    static def fetchByDocumentNumber(documentNumber) {
-        def list = FinanceApprovalsInProcess.withSession { session ->
-            session.getNamedQuery(FinanceProcurementConstants.FINANCE_APPROVAL_IN_PROCESS_QUERY_NAME_FIND_BY_DOCUMENT_NUMBER)
-                    .setString(FinanceProcurementConstants.FINANCE_APPROVAL_IN_PROCESS_QUERY_PARAM_DOCUMENT_NUMBER, documentNumber)
+    static def fetchByDocumentNumber( documentNumber ) {
+        def list = FinanceApprovalsInProcess.withSession {session ->
+            session.getNamedQuery( FinanceProcurementConstants.FINANCE_APPROVAL_IN_PROCESS_QUERY_NAME_FIND_BY_DOCUMENT_NUMBER )
+                    .setString( FinanceProcurementConstants.FINANCE_APPROVAL_IN_PROCESS_QUERY_PARAM_DOCUMENT_NUMBER, documentNumber )
                     .list()
         }
         return list
     }
 
+    /**
+     * Method is used to get FinanceApprovals In process by document code and documentTypeCode.
+     * @param documentCode document code.
+     * @param documentType
+     * @return list of FinanceApprovalHistory.
+     */
+    static def fetchByDocumentCodeAndDocType( documentCode, long documentType ) {
+        def list = FinanceUnapprovedDocument.withSession {session ->
+            session.getNamedQuery( FinanceProcurementConstants.FINANCE_APPROVAL_IN_PROCESS_QUERY_NAME_FIND_BY_DOC_NUMBER_DOC_TYPE )
+                    .setString( FinanceProcurementConstants.FINANCE_APPROVAL_IN_PROCESS_QUERY_PARAM_DOCUMENT_NUMBER, documentCode )
+                    .setLong( FinanceProcurementConstants.FINANCE_QUERY_PARAM_DOCUMENT_TYPE_CODE, documentType )
+                    .list()
+        }
+        return list
+    }
 }

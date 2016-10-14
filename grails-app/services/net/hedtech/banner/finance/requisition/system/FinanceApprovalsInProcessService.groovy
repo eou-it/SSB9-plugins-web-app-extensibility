@@ -17,7 +17,19 @@ class FinanceApprovalsInProcessService extends ServiceBase {
      * @return List of FinanceApprovalInProcess.
      */
     @Transactional(readOnly = true)
-    def findByDocumentNumber(documentNumber) {
-        return FinanceApprovalsInProcess.fetchByDocumentNumber(documentNumber)
+    def findByDocumentNumber( documentNumber ) {
+        return FinanceApprovalsInProcess.fetchByDocumentNumber( documentNumber )
     }
+
+    /**
+     * Finds document Approval in process by document number and type
+     * @param documentNumber
+     * @param documentType
+     * @return
+     */
+    @Transactional(readOnly = true)
+    def findByDocumentNumberAndType( documentNumber, documentType ) {
+        return FinanceApprovalsInProcess.fetchByDocumentCodeAndDocType( documentNumber, documentType )
+    }
+
 }
