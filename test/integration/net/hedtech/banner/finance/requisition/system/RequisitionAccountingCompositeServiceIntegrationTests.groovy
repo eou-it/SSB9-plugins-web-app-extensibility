@@ -269,13 +269,20 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
         Session session = sessionFactory.getCurrentSession()
         def requisitionAccounting = requisitionAccountingService.findByRequestCodeItemAndSeq( 'RSED0003', 0, 2 )
         session.createSQLQuery( "UPDATE FTVACCI set FTVACCI_ACCI_CODE = 'INVALI' WHERE FTVACCI_ACCI_CODE='" + requisitionAccounting.accountIndex + "' " ).executeUpdate()
-        assertNull requisitionAccountingCompositeService.findByRequestCodeItemAndSeq( 'RSED0003', 0, 2 ).cifoapalp.index.title
         session.createSQLQuery( "UPDATE FTVFUND set FTVFUND_FUND_CODE = 'INVALI' WHERE FTVFUND_FUND_CODE='" + requisitionAccounting.fund + "' " ).executeUpdate()
-        assertNull requisitionAccountingCompositeService.findByRequestCodeItemAndSeq( 'RSED0003', 0, 2 ).cifoapalp.fund.title
         session.createSQLQuery( "UPDATE FTVACCT set ftvacct_acct_code = 'INVALI' WHERE ftvacct_acct_code='" + requisitionAccounting.account + "' " ).executeUpdate()
-        assertNull requisitionAccountingCompositeService.findByRequestCodeItemAndSeq( 'RSED0003', 0, 2 ).cifoapalp.account.accountingTitle
         session.createSQLQuery( "UPDATE FTVPROG set ftvprog_prog_code = 'INVALI' WHERE ftvprog_prog_code='" + requisitionAccounting.program + "' " ).executeUpdate()
-        assertNull requisitionAccountingCompositeService.findByRequestCodeItemAndSeq( 'RSED0003', 0, 2 ).cifoapalp.program.programTitle
+        def updatedReq = requisitionAccountingCompositeService.findByRequestCodeItemAndSeq( 'RSED0003', 0, 2 )
+        assertNull updatedReq.cifoapalp.index.title
+        assertNull updatedReq.cifoapalp.fund.title
+        assertNull updatedReq.cifoapalp.account.accountingTitle
+        assertNull updatedReq.cifoapalp.program.programTitle
+
+        session.createSQLQuery( "UPDATE FTVACCI set FTVACCI_ACCI_CODE = '" + requisitionAccounting.accountIndex + "' WHERE FTVACCI_ACCI_CODE='INVALID'").executeUpdate()
+        session.createSQLQuery( "UPDATE FTVFUND set FTVFUND_FUND_CODE = '" + requisitionAccounting.fund + "' WHERE FTVFUND_FUND_CODE='INVALID' ").executeUpdate()
+        session.createSQLQuery( "UPDATE FTVACCT set ftvacct_acct_code = '" + requisitionAccounting.account + "' WHERE ftvacct_acct_code='INVALID' ").executeUpdate()
+        session.createSQLQuery( "UPDATE FTVPROG set ftvprog_prog_code = '" + requisitionAccounting.program + "' WHERE ftvprog_prog_code='INVALID' ").executeUpdate()
+
     }
 
     /**

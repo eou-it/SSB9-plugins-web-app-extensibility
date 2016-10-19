@@ -10,7 +10,7 @@ class RequisitionAccountingIntegrationTests extends BaseIntegrationTestCase {
 
     def requestCode = "RSED0003"
     def item = 0
-    def sequenceNumber = 3
+    def sequenceNumber = 1
     def amount = 100.00
     def fiscalCode = "15"
     def period = "09"
