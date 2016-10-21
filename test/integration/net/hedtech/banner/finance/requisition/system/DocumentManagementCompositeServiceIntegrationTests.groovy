@@ -164,10 +164,12 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testListDocumentsByRequisitionCodeWithOutBDM() {
-        try {
-            documentManagementCompositeService.listDocumentsByRequisitionCode( 'RSED0006', null, false )
-        } catch (ApplicationException ae) {
-            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED )
+        if(bdmEnabled) {
+            try {
+                documentManagementCompositeService.listDocumentsByRequisitionCode('RSED0006', null, false)
+            } catch (ApplicationException ae) {
+                assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED)
+            }
         }
     }
 
