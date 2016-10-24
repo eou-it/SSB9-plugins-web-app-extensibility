@@ -30,6 +30,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     def springSecurityService
     def financeTextService
     def documentManagementCompositeService
+    def bdmEnabled = Holders?.config.bdm.enabled
 
     /**
      * Super class setup
@@ -80,16 +81,18 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     @Test
     void deletePurchaseRequisitionWithUploadedDocuments() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        try {
-            Integer pidm = 2510
-            MockMultipartFile multipartFile = formFileObject()
-            documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0005', "REQUISITION", pidm, null, true )
-            requisitionHeaderCompositeService.deletePurchaseRequisition( 'RSED0005', false, null, true )
-        } catch (ApplicationException ae) {
-            if (ae.message.contains( 'WARNING' )) {
-                assertApplicationException( ae, 'WARNING' )
-            } else {
-                assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR )
+        if(bdmEnabled) {
+            try {
+                Integer pidm = 2510
+                MockMultipartFile multipartFile = formFileObject()
+                documentManagementCompositeService.uploadDocument(multipartFile, 'RSED0005', "REQUISITION", pidm, null, true)
+                requisitionHeaderCompositeService.deletePurchaseRequisition('RSED0005', false, null, true)
+            } catch (ApplicationException ae) {
+                if (ae.message.contains('WARNING')) {
+                    assertApplicationException(ae, 'WARNING')
+                } else {
+                    assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR)
+                }
             }
         }
     }
@@ -404,7 +407,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     void updatePurchaseRequisitionOnlyShipCodeChange() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         RequisitionHeader header = requisitionHeaderService.findRequisitionHeaderByRequestCode( 'RSED0003' )
-        header.ship = 'GOLF'
+        header.ship = 'NORTH'
         def headerDomainModel = header.class.declaredFields.findAll {
             it.modifiers == java.lang.reflect.Modifier.PRIVATE
         }.collectEntries {[it.name, header[it.name]]}
@@ -701,7 +704,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
                 'deliveryComment'          : 'test',
                 'taxGroup'                 : 'AU',
                 'discount'                 : 30,
-                'currency'                 : 'CAN',
+                'currency'                 : 'CAD',
                 'vendorContact'            : 'Bangalore',
                 'vendorEmailAddress'       : 'vendor@vendorgroup.com',
                 'requisitionOrigination'   : FinanceProcurementConstants.DEFAULT_REQUISITION_ORIGIN,

@@ -3,6 +3,7 @@
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
+import grails.util.Holders
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
@@ -14,6 +15,8 @@ import org.junit.Test
 class FinanceProcurementDocumentTypeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     def financeProcurementDocumentTypeService
+
+    def bdmEnabled = Holders?.config.bdm.enabled
 
     /**
      * Setup
@@ -37,8 +40,10 @@ class FinanceProcurementDocumentTypeServiceIntegrationTests extends BaseIntegrat
      */
     @Test
     void testFetchDocumentTypesByCode() {
-        def documents = financeProcurementDocumentTypeService.getCommonMatchingDocs( "I", 10, 0 )
-        assertNotNull( documents )
+        if(bdmEnabled) {
+            def documents = financeProcurementDocumentTypeService.getCommonMatchingDocs("I", 10, 0)
+            assertNotNull(documents)
+        }
     }
 
     /**
@@ -46,8 +51,10 @@ class FinanceProcurementDocumentTypeServiceIntegrationTests extends BaseIntegrat
      */
     @Test
     void testFetchDocumentTypesByDesc() {
-        def documents = financeProcurementDocumentTypeService.getCommonMatchingDocs( "I", 10, 0 )
-        assertNotNull( documents )
+        if(bdmEnabled) {
+            def documents = financeProcurementDocumentTypeService.getCommonMatchingDocs("I", 10, 0)
+            assertNotNull(documents)
+        }
     }
 
     /**
@@ -55,11 +62,13 @@ class FinanceProcurementDocumentTypeServiceIntegrationTests extends BaseIntegrat
      */
     @Test
     void testFetchDocumentTypesByDescSQLException() {
-        try {
-            financeProcurementDocumentTypeService.getCommonMatchingDocs( "I", 10, 0, 'INVALID :docTypeCode AND :docTypeDesc' )
-        }
-        catch (ApplicationException ae) {
-            assertNotNull( ae.getMessage() )
+        if(bdmEnabled) {
+            try {
+                financeProcurementDocumentTypeService.getCommonMatchingDocs("I", 10, 0, 'INVALID :docTypeCode AND :docTypeDesc')
+            }
+            catch (ApplicationException ae) {
+                assertNotNull(ae.getMessage())
+            }
         }
     }
 }

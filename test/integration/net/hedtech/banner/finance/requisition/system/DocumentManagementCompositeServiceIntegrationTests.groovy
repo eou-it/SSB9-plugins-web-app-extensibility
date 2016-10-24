@@ -20,6 +20,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
 
     def documentManagementCompositeService
 
+    def bdmEnabled = Holders?.config.bdm.enabled
     /**
      * Super class setup
      */
@@ -44,12 +45,14 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testUploadDocumentWithOutBDM() {
-        Integer pidm = 2510
-        MockMultipartFile multipartFile = formFileObject()
-        try {
-            documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0005', "CHECK", pidm, null, false )
-        } catch (ApplicationException ae) {
-            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED )
+        if(bdmEnabled) {
+            Integer pidm = 2510
+            MockMultipartFile multipartFile = formFileObject()
+            try {
+                documentManagementCompositeService.uploadDocument(multipartFile, 'RSED0005', "CHECK", pidm, null, false)
+            } catch (ApplicationException ae) {
+                assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED)
+            }
         }
     }
 
@@ -58,13 +61,15 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testUploadDocument() {
-        try {
-            Integer pidm = 2510
-            MockMultipartFile multipartFile = formFileObject()
-            def dataMap = documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0005', "REQUISITION", pidm, null, true )
-            assertTrue( dataMap.size() > 0 )
-        } catch (ApplicationException e) {
-            assertNotNull( e.getMessage() )
+        if(bdmEnabled) {
+            try {
+                Integer pidm = 2510
+                MockMultipartFile multipartFile = formFileObject()
+                def dataMap = documentManagementCompositeService.uploadDocument(multipartFile, 'RSED0005', "REQUISITION", pidm, null, true)
+                assertTrue(dataMap.size() > 0)
+            } catch (ApplicationException e) {
+                assertNotNull(e.getMessage())
+            }
         }
     }
 
@@ -73,12 +78,14 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testUploadDocumentEmptyContent() {
-        try {
-            Integer pidm = 2510
-            MockMultipartFile multipartFile = formEmptyFileObject()
-            documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0005', "REQUISITION", pidm, null, true )
-        } catch (ApplicationException e) {
-            assertNotNull( e.getMessage() )
+        if(bdmEnabled) {
+            try {
+                Integer pidm = 2510
+                MockMultipartFile multipartFile = formEmptyFileObject()
+                documentManagementCompositeService.uploadDocument(multipartFile, 'RSED0005', "REQUISITION", pidm, null, true)
+            } catch (ApplicationException e) {
+                assertNotNull(e.getMessage())
+            }
         }
     }
 
@@ -89,15 +96,17 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
     void testDeleteDocumentsByRequisitionCodeSecondCase() {
         Integer pidm = 2510
         def dataMap
-        try {
-            dataMap = documentManagementCompositeService.listDocumentsByRequisitionCode( 'RSED0005', null, true )
-            assertTrue( dataMap.size() > 0 )
-            dataMap = documentManagementCompositeService.deleteDocumentsByRequisitionCode( dataMap.documentList[0]?.docAttributes?.DOCID, null, true, 'RSED0004' )
-            assertTrue( dataMap.size() > 0 )
-        } catch (ApplicationException ae) {
-            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR )
-        } catch (WebServiceException e) {
-            assertNotNull( e.getMessage() )
+        if(bdmEnabled) {
+            try {
+                dataMap = documentManagementCompositeService.listDocumentsByRequisitionCode('RSED0005', null, true)
+                assertTrue(dataMap.size() > 0)
+                dataMap = documentManagementCompositeService.deleteDocumentsByRequisitionCode(dataMap.documentList[0]?.docAttributes?.DOCID, null, true, 'RSED0004')
+                assertTrue(dataMap.size() > 0)
+            } catch (ApplicationException ae) {
+                assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR)
+            } catch (WebServiceException e) {
+                assertNotNull(e.getMessage())
+            }
         }
     }
 
@@ -120,12 +129,14 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testDeleteDocumentsByRequisitionCodeWithWrongDocID() {
-        try {
-            documentManagementCompositeService.deleteDocumentsByRequisitionCode( 'test', null, true, 'RSED0004' )
-        } catch (ApplicationException ae) {
-            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR )
-        } catch (WebServiceException e) {
-            assertNotNull( e.getMessage() )
+        if(bdmEnabled) {
+            try {
+                documentManagementCompositeService.deleteDocumentsByRequisitionCode('test', null, true, 'RSED0004')
+            } catch (ApplicationException ae) {
+                assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR)
+            } catch (WebServiceException e) {
+                assertNotNull(e.getMessage())
+            }
         }
     }
 
@@ -136,15 +147,17 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
     void testDeleteDocumentsByRequisitionCode() {
         Integer pidm = 2510
         def dataMap
-        try {
-            dataMap = documentManagementCompositeService.listDocumentsByRequisitionCode( 'RSED0005', null, true )
-            assertTrue( dataMap.size() > 0 )
-            dataMap = documentManagementCompositeService.deleteDocumentsByRequisitionCode( dataMap.documentList[0]?.docAttributes?.DOCID, null, true, 'RSED0003' )
-            assertTrue( dataMap.size() > 0 )
-        } catch (ApplicationException ae) {
-            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR )
-        } catch (WebServiceException e) {
-            assertNotNull( e.getMessage() )
+        if(bdmEnabled) {
+            try {
+                dataMap = documentManagementCompositeService.listDocumentsByRequisitionCode('RSED0005', null, true)
+                assertTrue(dataMap.size() > 0)
+                dataMap = documentManagementCompositeService.deleteDocumentsByRequisitionCode(dataMap.documentList[0]?.docAttributes?.DOCID, null, true, 'RSED0003')
+                assertTrue(dataMap.size() > 0)
+            } catch (ApplicationException ae) {
+                assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR)
+            } catch (WebServiceException e) {
+                assertNotNull(e.getMessage())
+            }
         }
     }
 
@@ -153,10 +166,12 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testListDocumentsByRequisitionCodeWithOutBDM() {
-        try {
-            documentManagementCompositeService.listDocumentsByRequisitionCode( 'RSED0006', null, false )
-        } catch (ApplicationException ae) {
-            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED )
+        if(bdmEnabled) {
+            try {
+                documentManagementCompositeService.listDocumentsByRequisitionCode('RSED0006', null, false)
+            } catch (ApplicationException ae) {
+                assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED)
+            }
         }
     }
 
@@ -165,10 +180,12 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testListDocumentsByRequisitionCodeWithInvalidReqId() {
-        try {
-            documentManagementCompositeService.listDocumentsByRequisitionCode( 'test', 'test', true )
-        } catch (ApplicationException ae) {
-            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR )
+        if(bdmEnabled) {
+            try {
+                documentManagementCompositeService.listDocumentsByRequisitionCode('test', 'test', true)
+            } catch (ApplicationException ae) {
+                assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR)
+            }
         }
     }
 
@@ -177,19 +194,22 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testListDocumentsByRequisitionCode() {
-        Integer pidm = 2510
-        MockMultipartFile multipartFile = formFileObject()
-        def dataMap
-        try {
-            dataMap = documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0004', "CHECK", pidm, null, true )
-            assertTrue( dataMap.size() > 0 )
-            dataMap = documentManagementCompositeService.listDocumentsByRequisitionCode( 'RSED0004', null, true )
-            assertTrue( dataMap.size() > 0 )
-            documentManagementCompositeService.deleteDocumentsByRequisitionCode( dataMap.documentList[0]?.docAttributes?.DOCID, null, true, 'RSED0006' )
-        } catch (ApplicationException ae) {
-            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR )
-        } catch (WebServiceException e) {
-            assertNotNull( e.getMessage() )
+        if (bdmEnabled) {
+            Integer pidm = 2510
+            MockMultipartFile multipartFile = formFileObject()
+            def dataMap
+
+            try {
+                dataMap = documentManagementCompositeService.uploadDocument(multipartFile, 'RSED0004', "CHECK", pidm, null, true)
+                assertTrue(dataMap.size() > 0)
+                dataMap = documentManagementCompositeService.listDocumentsByRequisitionCode('RSED0004', null, true)
+                assertTrue(dataMap.size() > 0)
+                documentManagementCompositeService.deleteDocumentsByRequisitionCode(dataMap.documentList[0]?.docAttributes?.DOCID, null, true, 'RSED0006')
+            } catch (ApplicationException ae) {
+                assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR)
+            } catch (WebServiceException e) {
+                assertNotNull(e.getMessage())
+            }
         }
     }
 
