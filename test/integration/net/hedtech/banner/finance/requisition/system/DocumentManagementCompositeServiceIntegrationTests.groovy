@@ -45,12 +45,14 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testUploadDocumentWithOutBDM() {
-        Integer pidm = 2510
-        MockMultipartFile multipartFile = formFileObject()
-        try {
-            documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0005', "CHECK", pidm, null, false )
-        } catch (ApplicationException ae) {
-            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED )
+        if(bdmEnabled) {
+            Integer pidm = 2510
+            MockMultipartFile multipartFile = formFileObject()
+            try {
+                documentManagementCompositeService.uploadDocument(multipartFile, 'RSED0005', "CHECK", pidm, null, false)
+            } catch (ApplicationException ae) {
+                assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED)
+            }
         }
     }
 
@@ -192,10 +194,11 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testListDocumentsByRequisitionCode() {
-        Integer pidm = 2510
-        MockMultipartFile multipartFile = formFileObject()
-        def dataMap
-        if(bdmEnabled) {
+        if (bdmEnabled) {
+            Integer pidm = 2510
+            MockMultipartFile multipartFile = formFileObject()
+            def dataMap
+
             try {
                 dataMap = documentManagementCompositeService.uploadDocument(multipartFile, 'RSED0004', "CHECK", pidm, null, true)
                 assertTrue(dataMap.size() > 0)
