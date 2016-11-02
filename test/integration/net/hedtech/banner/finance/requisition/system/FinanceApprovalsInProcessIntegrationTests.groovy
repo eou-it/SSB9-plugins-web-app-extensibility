@@ -43,7 +43,7 @@ class FinanceApprovalsInProcessIntegrationTests extends BaseIntegrationTestCase 
     @Test
     public void testFindByDocumentNumberAndDocumentType() {
         def ret = FinanceApprovalsInProcess.fetchByDocumentCodeAndDocType( 'RSED0007', 1 )
-        assert ret.documentNumber == 'RSED0007'
+        assert ret[0].documentNumber == 'RSED0007'
 
     }
 

@@ -41,6 +41,6 @@ class FinanceApprovalHistoryIntegrationTests extends BaseIntegrationTestCase {
     @Test
     public void testFindByDocumentCodeAndDocumentType() {
         def ret = FinanceApprovalHistory.fetchByDocumentCodeAndDocType( 'RSED0007', 1 )
-        assert ret.documentCode == 'RSED0007'
+        assert ret[0].documentCode == 'RSED0007'
     }
 }
