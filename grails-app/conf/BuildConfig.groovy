@@ -34,7 +34,6 @@ grails.project.dependency.resolution = {
     repositories {
         if (System.properties['PROXY_SERVER_NAME']) {
             mavenRepo "${System.properties['PROXY_SERVER_NAME']}"
-            mavenRepo "${System.properties['RELEASE_REPO_NAME']}"
         }
         grailsCentral()
         mavenCentral()
@@ -59,33 +58,32 @@ grails.project.dependency.resolution = {
         ) {
             excludes 'xml-apis'
         }*/
-        test("net.hedtech.banner.pdf:banner_pdf_generator:1.0",
-        		"org.apache.xmlgraphics:fop:1.1",
-        		"org.apache.xmlgraphics:xmlgraphics-commons:1.5",
-        		"org.apache.xmlgraphics:batik-svg-dom:1.7",
-        		"org.apache.xmlgraphics:batik-anim:1.7",
-        		"org.apache.xmlgraphics:batik-css:1.7",
-        		"org.apache.xmlgraphics:batik-dom:1.7",
-        		"org.apache.xmlgraphics:batik-parser:1.7",
-        		"org.apache.xmlgraphics:batik-util:1.7",
-        		"org.apache.xmlgraphics:batik-bridge:1.7",
-        		"org.apache.xmlgraphics:batik-script:1.7",
-        		"org.apache.xmlgraphics:batik-xml:1.7",
-        		"org.apache.xmlgraphics:batik-awt-util:1.7",
-        		"org.apache.xmlgraphics:batik-gvt:1.7",
-        		"org.apache.xmlgraphics:batik-transcoder:1.7",
-        		"org.apache.xmlgraphics:batik-svggen:1.7",
-        		"org.apache.xmlgraphics:batik-extension:1.7",
-        		"org.apache.xmlgraphics:batik-ext:1.7",
-        		"avalon-framework:avalon-framework-api:4.2.0",
-        		"avalon-framework:avalon-framework-impl:4.2.0",
-        		"xml-apis:xml-apis:1.3.04",
-        		"xml-apis:xml-apis-ext:1.3.04",
-        		"xalan:xalan:2.6.0",
-        		"commons-logging:commons-logging:1.0.4",
-        		"commons-io:commons-io:1.3.1",
-        		"org.json:json:20090211")
-        		{ transitive = false }
+        test( "org.apache.xmlgraphics:fop:1.1",
+              "org.apache.xmlgraphics:xmlgraphics-commons:1.5",
+              "org.apache.xmlgraphics:batik-svg-dom:1.7",
+              "org.apache.xmlgraphics:batik-anim:1.7",
+              "org.apache.xmlgraphics:batik-css:1.7",
+              "org.apache.xmlgraphics:batik-dom:1.7",
+              "org.apache.xmlgraphics:batik-parser:1.7",
+              "org.apache.xmlgraphics:batik-util:1.7",
+              "org.apache.xmlgraphics:batik-bridge:1.7",
+              "org.apache.xmlgraphics:batik-script:1.7",
+              "org.apache.xmlgraphics:batik-xml:1.7",
+              "org.apache.xmlgraphics:batik-awt-util:1.7",
+              "org.apache.xmlgraphics:batik-gvt:1.7",
+              "org.apache.xmlgraphics:batik-transcoder:1.7",
+              "org.apache.xmlgraphics:batik-svggen:1.7",
+              "org.apache.xmlgraphics:batik-extension:1.7",
+              "org.apache.xmlgraphics:batik-ext:1.7",
+              "avalon-framework:avalon-framework-api:4.2.0",
+              "avalon-framework:avalon-framework-impl:4.2.0",
+              "xml-apis:xml-apis:1.3.04",
+              "xml-apis:xml-apis-ext:1.3.04",
+              "xalan:xalan:2.6.0",
+              "commons-logging:commons-logging:1.0.4",
+              "commons-io:commons-io:1.3.1",
+              "org.json:json:20090211" )
+                {transitive = false}
     }
 
 }
