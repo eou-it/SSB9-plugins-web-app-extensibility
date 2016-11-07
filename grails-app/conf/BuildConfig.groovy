@@ -34,6 +34,7 @@ grails.project.dependency.resolution = {
     repositories {
         if (System.properties['PROXY_SERVER_NAME']) {
             mavenRepo "${System.properties['PROXY_SERVER_NAME']}"
+            mavenRepo "${System.properties['RELEASE_REPO_NAME']}"
         }
         grailsCentral()
         mavenCentral()
@@ -58,7 +59,8 @@ grails.project.dependency.resolution = {
         ) {
             excludes 'xml-apis'
         }*/
-        test( "org.apache.xmlgraphics:fop:1.1",
+        test("net.hedtech.banner.pdf:banner_pdf_generator:1.0",
+        		"org.apache.xmlgraphics:fop:1.1",
               "org.apache.xmlgraphics:xmlgraphics-commons:1.5",
               "org.apache.xmlgraphics:batik-svg-dom:1.7",
               "org.apache.xmlgraphics:batik-anim:1.7",
