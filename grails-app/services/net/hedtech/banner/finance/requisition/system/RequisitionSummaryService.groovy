@@ -156,6 +156,7 @@ class RequisitionSummaryService extends ServiceBase {
                             accountingActivityCode          : it.accountingActivityCode,
                             accountingProjectCode           : it.accountingProjectCode,
                             accountingProgramCode           : it.accountingProgramCode,
+                            accountingLocationCode          : it.accountingLocationCode,
                             accountingDiscountAmount        : it.accountingDiscountAmount,
                             accountingAdditionalChargeAmount: it.accountingAdditionalChargeAmount,
                             accountingTaxAmount             : it.accountingTaxAmount,

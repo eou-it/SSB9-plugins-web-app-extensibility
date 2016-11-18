@@ -98,6 +98,9 @@ class RequisitionSummary implements Serializable {
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPRREQA_PROG_CODE)
     String accountingProgramCode
 
+    @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPRREQA_LOCN_CODE)
+    String accountingLocationCode
+
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPVVEND_SPRIDEN_ID)
     String vendorCode
 
