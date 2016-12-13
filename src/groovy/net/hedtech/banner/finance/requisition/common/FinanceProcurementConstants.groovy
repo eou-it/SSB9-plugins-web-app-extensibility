@@ -663,6 +663,7 @@ class FinanceProcurementConstants {
     final String FINANCE_TEXT_NAMED_QUERY_GET_FINANCE_TEXT_BY_CODE_AND_SEQUENCE_NO_AND_PRINT_IND = 'FinanceText.getFinanceTextByCodeAndItemNumberAndPrintInd'
     public static
     final String FINANCE_TEXT_NAMED_QUERY_LIST_HEADER_LEVEL_TEXT_BY_CODE_AND_PRINT_OPTION_IND = 'FinanceText.listHeaderLevelTextByCodeAndPrintOptionInd'
+    public static final String FINANCE_TEXT_NAMED_QUERY_LIST_HEADER_LEVEL_TEXT_BY_CODE_AND_PRINT_OPTION_IND_DTYP_SEQ='FinanceText.listHeaderLevelTextByCodeAndPrintOptionIndAndDtypeSeq'
     public static
     final String FINANCE_TEXT_NAMED_QUERY_LIST_HEADER_LEVEL_TEXT_BY_CODE = 'FinanceText.listHeaderLevelTextByCode'
     public static

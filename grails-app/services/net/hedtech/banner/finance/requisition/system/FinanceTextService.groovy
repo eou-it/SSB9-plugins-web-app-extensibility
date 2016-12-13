@@ -1,12 +1,11 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
 import grails.transaction.Transactional
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.service.ServiceBase
-
 
 
 /**
@@ -36,14 +35,13 @@ class FinanceTextService extends ServiceBase {
     @Transactional(readOnly = true)
     def getFinanceTextByDocumentTypeAndCodeAndPrintOption(dtypSeqNum, textCode, printOptionIndicator) {
 
-       def comment = FinanceProcurementConstants.EMPTY_STRING
-       FinanceText.getFinanceTextByDocumentTypeAndCodeAndPrintInd( dtypSeqNum,textCode, printOptionIndicator).each {
-           comment = comment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING) + FinanceProcurementConstants.SPACE_STRING
-       }
+        def comment = FinanceProcurementConstants.EMPTY_STRING
+        FinanceText.getFinanceTextByDocumentTypeAndCodeAndPrintInd(dtypSeqNum, textCode, printOptionIndicator).each {
+            comment = comment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING) + FinanceProcurementConstants.SPACE_STRING
+        }
         return ["comment": comment]
 
     }
-
 
     /**
      * Method is used to get Header FinanceText by text code.
@@ -86,5 +84,20 @@ class FinanceTextService extends ServiceBase {
     def listAllFinanceTextByCode(textCode) {
         return FinanceText.listAllFinanceTextByCode(textCode)
     }
+
+    /**
+     * Method is used to get FinanceText by text code, dtype seq, commodity item number and print option indicator.
+     * @param dtypSeqNum.
+     * @param textCode
+     * @param itemText
+     * @param printOptionIndicator
+     * @return list of finance text.
+     */
+
+    @Transactional(readOnly = true)
+    def findByDocSeqCodeTextCodeItemTextAndPrintInd(Integer dtypSeqNum, textCode, itemText, printOptionIndicator) {
+        FinanceText.findByDocSeqCodeTextCodeItemTextAndPrintInd(dtypSeqNum, textCode, itemText, printOptionIndicator)
+    }
+
 
 }
