@@ -50,28 +50,6 @@ class RequisitionListingCompositeService {
     }
 
     /**
-     * Returns count list of Requisitions in defined data structure
-     */
-    def listRequisitionsCounts() {
-        def user = springSecurityService.getAuthentication().user
-        def wrapperList = [];
-        def draftStatus = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT,
-                           FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
-
-        def completedStatus = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_COMPLETED,
-                               FinanceProcurementConstants.REQUISITION_INFO_STATUS_ASSIGNED_TO_BUYER,
-                               FinanceProcurementConstants.REQUISITION_INFO_STATUS_CONVERTED_TO_PO]
-
-        def pendingStatus = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_PENDING]
-        def countMap = requisitionInformationService.fetchRequisitionsCountByStatus(draftStatus + completedStatus + pendingStatus, user.oracleUserName)
-
-        wrapperList.add(groupCountResult(countMap, draftStatus, FinanceProcurementConstants.REQUISITION_LIST_BUCKET_DRAFT))
-        wrapperList.add(groupCountResult(countMap, pendingStatus, FinanceProcurementConstants.REQUISITION_LIST_BUCKET_PENDING))
-        wrapperList.add(groupCountResult(countMap, completedStatus, FinanceProcurementConstants.REQUISITION_LIST_BUCKET_COMPLETE))
-         wrapperList
-    }
-
-    /**
      * Gives derived formatted amount
      *
      * @param amount
@@ -163,21 +141,6 @@ class RequisitionListingCompositeService {
             getCount += countMap.get( it ) ? countMap.get( it ).intValue() : 0
         }
         [category: groupType, count: getCount, list: records.list]
-    }
-
-    /**
-     * Groups the records as per buckets
-     * @param countMap
-     * @param statusList
-     * @param groupType
-     * @return
-     */
-    private def groupCountResult(countMap, statusList, groupType) {
-        def getCount = 0;
-        statusList.each() {
-            getCount += countMap.get(it) ? countMap.get(it).intValue() : 0
-        }
-        [category: groupType, count: getCount]
     }
 
     /**

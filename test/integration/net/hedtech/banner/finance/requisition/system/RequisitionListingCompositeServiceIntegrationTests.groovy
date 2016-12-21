@@ -49,16 +49,6 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
     }
 
     /**
-     * Test count list requisitions
-     */
-    @Test
-    void listRequisitionsCounts() {
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def list = requisitionListingCompositeService.listRequisitionsCounts()
-        assertTrue list[0].count > 0
-    }
-
-    /**
      * Test list requisitions With Draft Buckets with no user.
      */
     @Test
