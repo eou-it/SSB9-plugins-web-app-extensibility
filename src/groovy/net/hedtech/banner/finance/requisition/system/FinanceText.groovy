@@ -43,7 +43,7 @@ import javax.persistence.*
         @NamedQuery(name = FinanceProcurementConstants.FINANCE_TEXT_NAMED_QUERY_LIST_HEADER_LEVEL_TEXT_BY_CODE_AND_PRINT_OPTION_IND_DTYP_SEQ,
                 query = """FROM FinanceText financeText
                             WHERE financeText.textCode = :textCode
-                            AND financeText.textItem = :textItem
+                            AND financeText.textItem IS NULL
                             AND financeText.printOptionIndicator = :printOptionIndicator
                             AND financeText.documentTypeSequenceNumber = :dtypSeqNum
                             ORDER BY financeText.sequenceNumber ASC"""),
@@ -194,12 +194,11 @@ class FinanceText implements Serializable {
      */
 
     static
-    def findByDocSeqCodeTextCodeItemTextAndPrintInd(Integer dtypSeqNum, textCode, itemText, printOptionIndicator) {
+    def findByDocSeqCodeTextCodeItemTextAndPrintInd(Integer dtypSeqNum, textCode, printOptionIndicator) {
         def list = FinanceText.withSession { session ->
             session.getNamedQuery(FinanceProcurementConstants.FINANCE_TEXT_NAMED_QUERY_LIST_HEADER_LEVEL_TEXT_BY_CODE_AND_PRINT_OPTION_IND_DTYP_SEQ)
                     .setInteger(FinanceProcurementConstants.FINANCE_TEXT_QUERY_PARAM_DTYP_SEQ_NUM, dtypSeqNum)
                     .setString(FinanceProcurementConstants.FINANCE_TEXT_QUERY_PARAM_TEXT_CODE, textCode)
-                    .setString(FinanceProcurementConstants.FINANCE_TEXT_QUERY_PARAM_TEXT_ITEM, itemText)
                     .setString(FinanceProcurementConstants.FINANCE_TEXT_QUERY_PARAM_PRINT_INDICATOR, printOptionIndicator)
                     .list()
         }

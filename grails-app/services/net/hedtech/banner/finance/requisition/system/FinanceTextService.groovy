@@ -95,8 +95,8 @@ class FinanceTextService extends ServiceBase {
      */
 
     @Transactional(readOnly = true)
-    def findByDocSeqCodeTextCodeItemTextAndPrintInd(Integer dtypSeqNum, textCode, itemText, printOptionIndicator) {
-        FinanceText.findByDocSeqCodeTextCodeItemTextAndPrintInd(dtypSeqNum, textCode, itemText, printOptionIndicator)
+    def findByDocSeqCodeTextCodeItemTextAndPrintInd(Integer dtypSeqNum, textCode, printOptionIndicator) {
+        FinanceText.findByDocSeqCodeTextCodeItemTextAndPrintInd(dtypSeqNum, textCode, printOptionIndicator)
     }
 
 
