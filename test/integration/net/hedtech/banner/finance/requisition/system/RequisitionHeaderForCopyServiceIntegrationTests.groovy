@@ -41,7 +41,7 @@ class RequisitionHeaderForCopyServiceIntegrationTests extends BaseIntegrationTes
      * Test case to test pre delete method which will throw the ApplicationException.
      */
     @Test(expected = ApplicationException.class)
-     void testPreDeleteFailCase() {
+    void testPreDeleteFailCase() {
         def map = [:]
         requisitionHeaderForCopyService.delete( map )
     }
@@ -50,8 +50,8 @@ class RequisitionHeaderForCopyServiceIntegrationTests extends BaseIntegrationTes
      * Test case to test pre update method which will throw the ApplicationException.
      */
     @Test(expected = ApplicationException.class)
-     void testPreUpdateFailCase() {
-        def map = RequisitionHeaderForCopy.findByRequestCode('RSED0005')
+    void testPreUpdateFailCase() {
+        def map = RequisitionHeaderForCopy.findByRequestCode( 'RSED0005' )
         map.requestCode = 'RSED0001'
         requisitionHeaderForCopyService.update( map )
     }
@@ -65,6 +65,26 @@ class RequisitionHeaderForCopyServiceIntegrationTests extends BaseIntegrationTes
         def requestHeaderForCopy = newRequisitionHeaderForCopy()
         requestHeaderForCopy = requisitionHeaderForCopyService.create( [domainModel: requestHeaderForCopy] )
         assertTrue requestHeaderForCopy.requestCode == requestHeaderForCopy.requestCode
+    }
+
+    /**
+     *  Test Finding headers
+     */
+    @Test
+    void listRequisitionHeader() {
+
+        def requisitions = requisitionHeaderForCopyService.listRequisitionHeader( null, [offset: 0, max: 10] )
+        assert requisitions.size() > 0
+    }
+
+    /**
+     *  Test Finding headers
+     */
+    @Test
+    void listRequisitionHeaderForReqCode() {
+
+        def requisitions = requisitionHeaderForCopyService.listRequisitionHeader( 'RSED0005', [offset: 0, max: 10] )
+        assert requisitions.size() == 1
     }
 
     /**

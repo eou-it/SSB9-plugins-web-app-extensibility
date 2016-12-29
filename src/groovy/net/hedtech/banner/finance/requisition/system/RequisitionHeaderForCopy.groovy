@@ -261,4 +261,24 @@ class RequisitionHeaderForCopy implements Serializable {
 
     @Column(name = FinanceProcurementConstants.REQUISITION_HEADER_COPY_FIELD_FPBREQH_DATA_ORIGIN)
     String dataOrigin
+
+    /**
+     * Fetches the requisition Headers
+     * @param pagingParams
+     * @param searchParam
+     * @return list of RequisitionHeaderForCopy
+     */
+    public static def listRequisitionHeader( searchParam, pagingParams ) {
+        String query = 'select requestCode, userId from RequisitionHeaderForCopy'
+        if (searchParam) {
+            query <<= " where UPPER(requestCode) like '%" + searchParam.toUpperCase() + "%' OR UPPER(userId) like '%" + searchParam + "%'"
+        }
+        query <<= " order by lastModified desc"
+        RequisitionHeader.withSession {session ->
+            session.createQuery( query )
+                    .setMaxResults( pagingParams.max )
+                    .setFirstResult( pagingParams.offset )
+                    .list()
+        }
+    }
 }

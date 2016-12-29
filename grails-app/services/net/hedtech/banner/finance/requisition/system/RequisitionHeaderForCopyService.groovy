@@ -30,4 +30,13 @@ class RequisitionHeaderForCopyService extends ServiceBase {
         LoggerUtility.debug( log, map )
         throw new ApplicationException( RequisitionHeaderForCopy, FinanceValidationConstants.ERROR_MSG_OPERATION_NOT_SUPPORTED )
     }
+
+    /**
+     * Find the list of requisition Header
+     * @param searchParam
+     * @param pagingParams
+     */
+    def listRequisitionHeader( searchParam, pagingParams ) {
+        RequisitionHeaderForCopy.listRequisitionHeader( searchParam, pagingParams )
+    }
 }
