@@ -273,7 +273,7 @@ class RequisitionHeaderForCopy implements Serializable {
         if (searchParam) {
             query <<= " where UPPER(requestCode) like '%" + searchParam.toUpperCase() + "%' OR UPPER(userId) like '%" + searchParam + "%'"
         }
-        query <<= " order by lastModified desc"
+        query <<= " order by requestCode"
         RequisitionHeader.withSession {session ->
             session.createQuery( query )
                     .setMaxResults( pagingParams.max )
