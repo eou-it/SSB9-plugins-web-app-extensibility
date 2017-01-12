@@ -137,21 +137,21 @@ class RequisitionAccountingCompositeService {
         def requisitionAccounting = findCompleteAccountingByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber )
         def financeAccountIndex
         try {
-            financeAccountIndex = requisitionAccounting.accountIndex ? financeAccountIndexService.listByIndexCodeOrTitleAndEffectiveDate( [coaCode: requisitionAccounting.chartOfAccount, effectiveDate: headerTnxDate, indexCodeTitle: requisitionAccounting.accountIndex], dummyPaginationParam )?.get( 0 ) : null
+            financeAccountIndex = requisitionAccounting.accountIndex ? financeAccountIndexService.findIndexByIndexCodeAndEffectiveDate( [coaCode: requisitionAccounting.chartOfAccount, effectiveDate: headerTnxDate, indexCodeTitle: requisitionAccounting.accountIndex], dummyPaginationParam )?.get( 0 ) : null
         } catch (ApplicationException e) {
             LoggerUtility.warn( LOGGER, e.getMessage() )
         }
 
         def financeFund
         try {
-            financeFund = financeFundCompositeService.findFundListByEffectiveDateAndFundCode( [effectiveDate: headerTnxDate, codeTitle: requisitionAccounting.fund, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )
+            financeFund = financeFundCompositeService.findFundByCoaFundCodeAndEffectiveDate( [effectiveDate: headerTnxDate, codeTitle: requisitionAccounting.fund, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )
         } catch (ApplicationException e) {
             LoggerUtility.warn( LOGGER, e.getMessage() )
         }
 
         def financeOrganization
         try {
-            financeOrganization = financeOrganizationCompositeService.findOrganizationListByEffectiveDateAndSearchParam( [searchParam  : requisitionAccounting.organization,
+            financeOrganization = financeOrganizationCompositeService.findOrganizationByEffectiveDateAndCode( [searchParam  : requisitionAccounting.organization,
                                                                                                                           effectiveDate: headerTnxDate,
                                                                                                                           coaCode      : requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )
 
@@ -161,7 +161,7 @@ class RequisitionAccountingCompositeService {
 
         def accountingTitle
         try {
-            accountingTitle = requisitionAccounting.account ? financeAccountCompositeService.getListByAccountOrChartOfAccAndEffectiveDate(
+            accountingTitle = requisitionAccounting.account ? financeAccountCompositeService.getAccountByAccountOrChartOfAccAndEffectiveDate(
                     [searchParam: requisitionAccounting.account, effectiveDate: headerTnxDate, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )?.title : null
         } catch (ApplicationException e) {
             LoggerUtility.warn( LOGGER, e.getMessage() )
@@ -169,7 +169,7 @@ class RequisitionAccountingCompositeService {
 
         def programTitle
         try {
-            programTitle = requisitionAccounting.program ? programService.findByCoaProgramAndEffectiveDate( [coa: requisitionAccounting.chartOfAccount, effectiveDate: headerTnxDate, programCodeDesc: requisitionAccounting.program], dummyPaginationParam )?.get( 0 )?.title : null
+            programTitle = requisitionAccounting.program ? programService.fetchProgramByCoaProgramAndEffectiveDate( [coa: requisitionAccounting.chartOfAccount, effectiveDate: headerTnxDate, programCodeDesc: requisitionAccounting.program], dummyPaginationParam )?.get( 0 )?.title : null
         } catch (ApplicationException e) {
             LoggerUtility.warn( LOGGER, e.getMessage() )
         }
