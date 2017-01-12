@@ -47,7 +47,6 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     @After
     void tearDown() {
         super.tearDown()
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
     }
     /**
      * Test create
