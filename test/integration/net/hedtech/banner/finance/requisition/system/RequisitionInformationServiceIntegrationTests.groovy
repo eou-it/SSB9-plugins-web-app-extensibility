@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -106,11 +106,19 @@ class RequisitionInformationServiceIntegrationTests extends BaseIntegrationTestC
     }
 
     /**
-     * test fetch requisitions with invalid user
+     * test fetch requisitions
      */
     @Test
     void fetchRequisitionsByReqNumber() {
         assertTrue requisitionInformationService.fetchRequisitionsByReqNumber( 'RSED0001' ) != null
+    }
+
+    /**
+     * test fetch requisitions with code and user
+     */
+    @Test
+    void fetchRequisitionsByReqNumberWithUser() {
+        assertTrue requisitionInformationService.fetchRequisitionsByReqNumber( 'RSED0001', FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME ) != null
     }
 
     /**

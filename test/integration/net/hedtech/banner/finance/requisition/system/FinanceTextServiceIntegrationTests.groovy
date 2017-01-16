@@ -37,7 +37,15 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testListAllFinanceTextByCode() {
-        assert (financeTextService.listAllFinanceTextByCode('RSED0003').size() > 0)
+        assert (financeTextService.listAllFinanceTextByCode( 'RSED0003' ).size() > 0)
+    }
+
+    /**
+     * Test case method to test find By Doc Seq Code Text Code ItemText And Print Ind
+     */
+    @Test
+    public void findByDocSeqCodeTextCodeItemTextAndPrintInd() {
+        assert (financeTextService.findByDocSeqCodeTextCodeItemTextAndPrintInd(1,  'RSED0003', 'Y' ).size() > 0)
     }
 
     /**
@@ -45,7 +53,7 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testGetFinanceTextByCodeAndItemNumber() {
-        assertNotNull(financeTextService.getFinanceTextByCodeAndItemNumber('RSED0003', 10))
+        assertNotNull( financeTextService.getFinanceTextByCodeAndItemNumber( 'RSED0003', 10 ) )
     }
 
     /**
@@ -54,7 +62,7 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
     @Test
     public void testSaveText() {
         def financeText = getFinanceText();
-        assertTrue(financeTextService.create([domainModel: financeText]).textCode == financeText.textCode)
+        assertTrue( financeTextService.create( [domainModel: financeText] ).textCode == financeText.textCode )
     }
 
     /**
@@ -62,10 +70,10 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testUpdateText() {
-        FinanceText financeText = financeTextService.getFinanceTextByCodeAndItemNumber('RSED0003', 1)[0];
+        FinanceText financeText = financeTextService.getFinanceTextByCodeAndItemNumber( 'RSED0003', 1 )[0];
         financeText.text = 'New Text For Update'
-        def updated = financeTextService.update([domainModel: financeText])
-        assertTrue(financeTextService.listAllFinanceTextByCode(updated.textCode).size() >= 1)
+        def updated = financeTextService.update( [domainModel: financeText] )
+        assertTrue( financeTextService.listAllFinanceTextByCode( updated.textCode ).size() >= 1 )
     }
 
     /**
@@ -74,9 +82,9 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
     @Test
     public void testDeleteText() {
         def financeText = getFinanceText();
-        FinanceText financeTextToDelete = financeTextService.getFinanceTextByCodeAndItemNumber('RSED0003', 1)[0];
-        financeTextService.delete([domainModel: financeTextToDelete])
-        assert (financeTextService.listAllFinanceTextByCode(financeText.textCode).size() == 0)
+        FinanceText financeTextToDelete = financeTextService.getFinanceTextByCodeAndItemNumber( 'RSED0003', 1 )[0];
+        financeTextService.delete( [domainModel: financeTextToDelete] )
+        assert (financeTextService.listAllFinanceTextByCode( financeText.textCode ).size() == 0)
     }
 
     /**
@@ -84,9 +92,9 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testGetFinanceTextByCodeAndItemAndPrintOption() {
-        FinanceText financeText = financeTextService.getFinanceTextByCodeAndItemAndPrintOption('RSED0003', 1,
-                FinanceProcurementConstants.DEFAULT_INDICATOR_YES)[0]
-        assertTrue(financeText.textCode == 'RSED0003')
+        FinanceText financeText = financeTextService.getFinanceTextByCodeAndItemAndPrintOption( 'RSED0003', 1,
+                                                                                                FinanceProcurementConstants.DEFAULT_INDICATOR_YES )[0]
+        assertTrue( financeText.textCode == 'RSED0003' )
     }
 
     /**
@@ -94,8 +102,8 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testGetFinanceTextByDocumentTypeAndCodeAndPrintOption() {
-        def financeText = financeTextService.getFinanceTextByDocumentTypeAndCodeAndPrintOption( 1, 'R0000010', FinanceProcurementConstants.DEFAULT_INDICATOR_YES  )
-        assertNotNull(financeText.comment)
+        def financeText = financeTextService.getFinanceTextByDocumentTypeAndCodeAndPrintOption( 1, 'R0000010', FinanceProcurementConstants.DEFAULT_INDICATOR_YES )
+        assertNotNull( financeText.comment )
     }
 
     /**
@@ -103,9 +111,9 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testListHeaderLevelTextByCodeAndPrintOptionInd() {
-        def list = financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd('RSED0003',
-                FinanceProcurementConstants.DEFAULT_INDICATOR_YES)
-        assertTrue(list.size() > 1)
+        def list = financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003',
+                                                                                  FinanceProcurementConstants.DEFAULT_INDICATOR_YES )
+        assertTrue( list.size() > 1 )
     }
 
     /**
@@ -113,8 +121,8 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testListHeaderLevelTextByCode() {
-        def list = financeTextService.listHeaderLevelTextByCode('RSED0003')
-        assertTrue(list.size() > 1)
+        def list = financeTextService.listHeaderLevelTextByCode( 'RSED0003' )
+        assertTrue( list.size() > 1 )
     }
 
     /**

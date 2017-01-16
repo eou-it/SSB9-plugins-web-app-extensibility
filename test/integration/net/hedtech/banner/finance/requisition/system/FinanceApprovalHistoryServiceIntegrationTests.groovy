@@ -20,7 +20,7 @@ class FinanceApprovalHistoryServiceIntegrationTests extends BaseIntegrationTestC
     @Before
     public void setUp() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         formContext = ['GUAGMNU']
         super.setUp()
     }
@@ -38,6 +38,15 @@ class FinanceApprovalHistoryServiceIntegrationTests extends BaseIntegrationTestC
      */
     @Test
     public void testFindByDocumentCode() {
-        assertTrue(financeApprovalHistoryService.findByDocumentCode('RSED0007').size() > 1)
+        assertTrue( financeApprovalHistoryService.findByDocumentCode( 'RSED0007' ).size() > 1 )
+    }
+
+    /**
+     * Test case to test find FinanceApprovalHistory by document code and type.
+     */
+    @Test
+    public void findByDocumentNumberAndType() {
+        def ret = financeApprovalHistoryService.findByDocumentNumberAndType( 'RSED0007', 1 )
+        assert ret[0].documentCode == 'RSED0007'
     }
 }
