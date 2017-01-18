@@ -25,7 +25,6 @@ class FinancePurchaseRequisitionPDFServiceIntegrationTests extends BaseIntegrati
     void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
-        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
     }
 
     /**
@@ -50,6 +49,7 @@ class FinancePurchaseRequisitionPDFServiceIntegrationTests extends BaseIntegrati
      */
     @Test
     void generatePdfStream() {
+        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def pdfStream = financePurchaseRequisitionPDFService.generatePdfStream( 'RSED0001','USD')
         assertTrue pdfStream != null
     }

@@ -18,7 +18,6 @@ class CopyPurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegr
     def requisitionHeaderService
     def requisitionDetailService
     def requisitionAccountingService
-    def financeTextService
     /**
      * Super class setup
      */

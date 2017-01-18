@@ -19,8 +19,6 @@ class FinanceUnapprovedDocumentServiceIntegrationTests extends BaseIntegrationTe
      */
     @Before
     public void setUp() {
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         formContext = ['GUAGMNU']
         super.setUp()
     }

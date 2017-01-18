@@ -27,8 +27,6 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
     void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
     }
 
     /**
@@ -65,13 +63,15 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testFindRequisitionDetailListByUser() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def pagingParams = [max: 500, offset: 0]
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
         springSecurityService.getAuthentication().user.oracleUserName = 'GRAILS'
         try {
             def list = requisitionDetailService.fetchRequisitionDetailListByUser( pagingParams )
             assertTrue( list.size() > 0 )
-        }finally {
+        } finally {
             springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
         }
     }
@@ -91,15 +91,13 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testFindRequisitionDetailList() {
-        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
-        springSecurityService.getAuthentication().user.oracleUserName = 'SYSTESTFINAUSR'
+        super.login 'FORSED23',
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def pagingParams = [max: 500, offset: 0]
         try {
             requisitionDetailService.fetchRequisitionDetailListByUser( pagingParams )
         } catch (ApplicationException ae) {
             assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL )
-        } finally {
-            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
         }
     }
 
@@ -108,6 +106,8 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testFindRequisitionDetailListByUserInvalidUser() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
         springSecurityService.getAuthentication().user.oracleUserName = ''
         def pagingParams = [max: 500, offset: 0]

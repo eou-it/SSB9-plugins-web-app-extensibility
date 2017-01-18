@@ -23,8 +23,6 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
     void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
     }
 
     /**
@@ -86,6 +84,8 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
     @Test
     public void testFetchRequisitionAccountingListByUser() {
         def pagingParams = [max: 500, offset: 0]
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def list = requisitionAccountingService.findRequisitionAccountingListByUser( pagingParams, 'GRAILS' )
         assertTrue( list.size() > 0 )
     }
@@ -95,6 +95,8 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
      */
     @Test
     public void testFetchRequisitionAccountingListByPassingWrongUser() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
         springSecurityService.getAuthentication().user.oracleUserName = ''
         def pagingParams = [max: 500, offset: 0]
@@ -112,15 +114,13 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
      */
     @Test
     public void testFetchRequisitionAccountingListForEmptyTest() {
-        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
-        springSecurityService.getAuthentication().user.oracleUserName = 'SYSTESTFINAUSR'
+        super.login 'FORSED23',
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def pagingParams = [max: 500, offset: 0]
         try {
             requisitionAccountingService.findRequisitionAccountingListByUser( pagingParams )
         } catch (ApplicationException ae) {
             assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_ACCOUNTING )
-        } finally {
-            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
         }
     }
 
@@ -129,16 +129,14 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
      */
     @Test
     public void testFetchRequisitionAccountingListWithProvider() {
-        def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
-        springSecurityService.getAuthentication().user.oracleUserName = 'SYSTESTFINAUSR'
+        super.login 'FORSED23',
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def pagingParams = [max: 500, offset: 0]
         def providedUser = 'testProvider'
         try {
-            requisitionAccountingService.findRequisitionAccountingListByUser( pagingParams,providedUser )
+            requisitionAccountingService.findRequisitionAccountingListByUser( pagingParams, providedUser )
         } catch (ApplicationException ae) {
             assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_ACCOUNTING )
-        } finally {
-            springSecurityService.getAuthentication().user.oracleUserName = oracleUserName
         }
     }
 
@@ -151,7 +149,7 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
         springSecurityService.getAuthentication().user.oracleUserName = 'TESTUSER'
         def pagingParams = [max: 500, offset: 0]
         try {
-            requisitionAccountingService.findRequisitionAccountingListByUser( pagingParams)
+            requisitionAccountingService.findRequisitionAccountingListByUser( pagingParams )
         } catch (ApplicationException ae) {
             assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_ACCOUNTING )
         } finally {
@@ -165,7 +163,7 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
     @Test
     public void testGetLastSequenceNumberByRequestCode() {
         def lastSequence = requisitionAccountingService.getLastSequenceNumberByRequestCode( 'RSED0003', 0 )
-        assertTrue(lastSequence > 0 )
+        assertTrue( lastSequence > 0 )
     }
 
     /**
@@ -174,7 +172,7 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
     @Test
     public void testGetLastSequenceNumberByEmptyRequestCode() {
         def lastSequence = requisitionAccountingService.getLastSequenceNumberByRequestCode( null, 0 )
-        assertTrue(lastSequence == 0 )
+        assertTrue( lastSequence == 0 )
     }
 
     /**
@@ -191,9 +189,10 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
      */
     @Test
     public void testGetLastItemNumberByEmptyRequestCode() {
-        def lastItem = requisitionAccountingService.getLastItemNumberByRequestCode(null)
+        def lastItem = requisitionAccountingService.getLastItemNumberByRequestCode( null )
         assertTrue( lastItem == 0 )
     }
+
 
     @Test
     public void accountingExists() {

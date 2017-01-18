@@ -26,7 +26,6 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
     void setUp() {
         formContext = ['GUAGMNU']
         super.setUp()
-        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
     }
 
     /**
@@ -42,6 +41,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testListRequisitionHeadersByUserName() {
+        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def paginationParam = [max: 500, offset: 0]
         def requestHeader = newRequisitionHeader()
         requestHeader.save( failOnError: true, flush: true )
@@ -55,7 +55,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testListRequisitionHeadersNoList() {
-        login 'grails_user', 'u_pick_it'
+        login 'FORSED25', FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def paginationParam = [max: 500, offset: 0]
         try {
             requisitionHeaderService.listRequisitionHeaderForLoggedInUser( paginationParam )
@@ -71,6 +71,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testListRequisitionHeadersInvalidUser() {
+        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
         springSecurityService.getAuthentication().user.oracleUserName = ''
         def paginationParam = [max: 500, offset: 0]
@@ -89,7 +90,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testFindRequisitionHeaderByRequestCodeFailedCase() {
-
+        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         try {
             requisitionHeaderService.findRequisitionHeaderByRequestCode( 'INVALID_CODE' )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
@@ -104,7 +105,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     void testFindRequisitionHeaderByRequestCode() {
-
+        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def requestHeader = newRequisitionHeader()
         requestHeader.save( failOnError: true, flush: true )
         requestHeader.refresh()
@@ -117,6 +118,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testRecallRequisition() {
+        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         requisitionHeaderService.recallRequisition( 'RSED0007' )
     }
 
@@ -125,6 +127,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testRecallRequisitionHavingNoApprovalHistory() {
+        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         requisitionHeaderService.recallRequisition( 'RSED0012' )
     }
 
@@ -133,6 +136,7 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void testRecallRequisitionFailCase() {
+        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         try {
             requisitionHeaderService.recallRequisition( 'RSED0001' )
         } catch (ApplicationException e) {
