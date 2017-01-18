@@ -75,12 +75,12 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                     FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         Session session = sessionFactory.getCurrentSession()
-        session.createSQLQuery("UPDATE FOBSYSC SET FOBSYSC_TAX_PROCESSING_IND = 'N' WHERE FOBSYSC_EFF_DATE <= SYSDATE AND FOBSYSC_STATUS_IND='A' AND (FOBSYSC_TERM_DATE >= SYSDATE OR FOBSYSC_TERM_DATE IS NULL) AND (FOBSYSC_NCHG_DATE IS NULL OR FOBSYSC_NCHG_DATE > SYSDATE )").executeUpdate()
-            def reqDetailDomainModel = getRequisitionDetails()
-            reqDetailDomainModel.publicComment = 'Testing Public comment.'
-            def domainModelMap = [requisitionDetail: reqDetailDomainModel]
-            def requestCode = requisitionDetailsCompositeService.createPurchaseRequisitionDetail( domainModelMap )
-            assertTrue requestCode?.requestCode == requestHeaderCode
+        session.createSQLQuery( "UPDATE FOBSYSC SET FOBSYSC_TAX_PROCESSING_IND = 'N' WHERE FOBSYSC_EFF_DATE <= SYSDATE AND FOBSYSC_STATUS_IND='A' AND (FOBSYSC_TERM_DATE >= SYSDATE OR FOBSYSC_TERM_DATE IS NULL) AND (FOBSYSC_NCHG_DATE IS NULL OR FOBSYSC_NCHG_DATE > SYSDATE )" ).executeUpdate()
+        def reqDetailDomainModel = getRequisitionDetails()
+        reqDetailDomainModel.publicComment = 'Testing Public comment.'
+        def domainModelMap = [requisitionDetail: reqDetailDomainModel]
+        def requestCode = requisitionDetailsCompositeService.createPurchaseRequisitionDetail( domainModelMap )
+        assertTrue requestCode?.requestCode == requestHeaderCode
     }
 
     /**
@@ -356,6 +356,8 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
 
     @Test
     void testListCommodityWithCommodityLevelAccounting() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                    FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def listCommodityWithAccounting = requisitionDetailsCompositeService.listCommodityWithAccounting( 'RSED0003' )
         assertTrue( listCommodityWithAccounting.size() > 0 )
     }
