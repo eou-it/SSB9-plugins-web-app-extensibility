@@ -81,17 +81,17 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     @Test
     void deletePurchaseRequisitionWithUploadedDocuments() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        if(bdmEnabled) {
+        if (bdmEnabled) {
             try {
                 Integer pidm = 2510
                 MockMultipartFile multipartFile = formFileObject()
-                documentManagementCompositeService.uploadDocument(multipartFile, 'RSED0005', "REQUISITION", pidm, null, true)
-                requisitionHeaderCompositeService.deletePurchaseRequisition('RSED0005', false, null, true)
+                documentManagementCompositeService.uploadDocument( multipartFile, 'RSED0005', "REQUISITION", pidm, null, true )
+                requisitionHeaderCompositeService.deletePurchaseRequisition( 'RSED0005', false, null, true )
             } catch (ApplicationException ae) {
-                if (ae.message.contains('WARNING')) {
-                    assertApplicationException(ae, 'WARNING')
+                if (ae.message.contains( 'WARNING' )) {
+                    assertApplicationException( ae, 'WARNING' )
                 } else {
-                    assertApplicationException(ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR)
+                    assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR )
                 }
             }
         }
@@ -159,11 +159,11 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                     FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         Session session = sessionFactory.getCurrentSession()
-        session.createSQLQuery("UPDATE FOBSYSC SET FOBSYSC_TAX_PROCESSING_IND = 'N' WHERE FOBSYSC_EFF_DATE <= SYSDATE AND FOBSYSC_STATUS_IND='A' AND (FOBSYSC_TERM_DATE >= SYSDATE OR FOBSYSC_TERM_DATE IS NULL) AND (FOBSYSC_NCHG_DATE IS NULL OR FOBSYSC_NCHG_DATE > SYSDATE )").executeUpdate()
-            def headerDomainModel = newRequisitionHeader()
-            def domainModelMap = [requisitionHeader: headerDomainModel]
-            def requestCode = requisitionHeaderCompositeService.createPurchaseRequisitionHeader( domainModelMap )
-            assertTrue requestCode != FinanceProcurementConstants.DEFAULT_REQUEST_CODE
+        session.createSQLQuery( "UPDATE FOBSYSC SET FOBSYSC_TAX_PROCESSING_IND = 'N' WHERE FOBSYSC_EFF_DATE <= SYSDATE AND FOBSYSC_STATUS_IND='A' AND (FOBSYSC_TERM_DATE >= SYSDATE OR FOBSYSC_TERM_DATE IS NULL) AND (FOBSYSC_NCHG_DATE IS NULL OR FOBSYSC_NCHG_DATE > SYSDATE )" ).executeUpdate()
+        def headerDomainModel = newRequisitionHeader()
+        def domainModelMap = [requisitionHeader: headerDomainModel]
+        def requestCode = requisitionHeaderCompositeService.createPurchaseRequisitionHeader( domainModelMap )
+        assertTrue requestCode != FinanceProcurementConstants.DEFAULT_REQUEST_CODE
     }
 
     /**
@@ -246,6 +246,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
      */
     @Test
     void testCompleteAlreadyCompletedRequisition() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         try {
             requisitionHeaderService.completeRequisition( 'RSED0005', 'no' )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_REQUISITION_ALREADY_COMPLETED
@@ -312,18 +313,18 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     }
 
     /**
-      * Test update
-      */
-     @Test
-     void updatePurchaseRequisitionwithDiscountAndCurrency() {
-         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-         def headerDomainModel = newRequisitionHeader()
-         headerDomainModel.requesterName = 'Modified'
-         headerDomainModel.discount = 30
-         headerDomainModel.currency = 'USD'
-         def domainModelMap = [requisitionHeader: headerDomainModel]
-         assert 'Modified' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0011', 'USD' ).requesterName
-     }
+     * Test update
+     */
+    @Test
+    void updatePurchaseRequisitionwithDiscountAndCurrency() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def headerDomainModel = newRequisitionHeader()
+        headerDomainModel.requesterName = 'Modified'
+        headerDomainModel.discount = 30
+        headerDomainModel.currency = 'USD'
+        def domainModelMap = [requisitionHeader: headerDomainModel]
+        assert 'Modified' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0011', 'USD' ).requesterName
+    }
 
     /**
      * Test update. No Change
@@ -669,6 +670,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
      */
     @Test
     void testGetCurrencyDetailByReqCodeByNoCurInReq() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def currency = requisitionHeaderCompositeService.getCurrencyDetailByReqCode( 'RSED0001', 'USD' );
         assertNotNull( currency )
     }

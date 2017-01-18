@@ -94,8 +94,8 @@
     <xsl:attribute-set name="margin">
         <xsl:attribute name="margin">4pt, 0pt, 4pt, 0pt</xsl:attribute>
     </xsl:attribute-set>
-    
-    
+
+
     <!-- Margin. -->
     <xsl:attribute-set name="numeric-align">
         <xsl:attribute name="text-align">
@@ -109,8 +109,8 @@
             </xsl:choose>
         </xsl:attribute>
     </xsl:attribute-set>
-    
-    
+
+
     <!-- Table cell styles  -->
     <xsl:attribute-set name="table-cell">
         <xsl:attribute name="background-color">transparent</xsl:attribute>
@@ -202,6 +202,13 @@
         <xsl:attribute name="font-size">80%</xsl:attribute>
         <xsl:attribute name="padding">2pt, 1pt, 1pt, 1pt</xsl:attribute>
     </xsl:attribute-set>
+
+    <xsl:attribute-set name="preserve-line-and-space">
+        <xsl:attribute name="white-space-collapse">false</xsl:attribute>
+        <xsl:attribute name="white-space-treatment">preserve</xsl:attribute>
+        <xsl:attribute name="linefeed-treatment">preserve</xsl:attribute>
+    </xsl:attribute-set>
+
     <xsl:attribute-set name="procurement-cla-data" use-attribute-sets="table-cell">
         <xsl:attribute name="font-size">80%</xsl:attribute>
         <xsl:attribute name="padding">2pt, 1pt, 1pt, 1pt</xsl:attribute>
@@ -232,15 +239,15 @@
     <xsl:attribute-set name="commotity-item-desc-column">
         <xsl:attribute name="column-width">38%</xsl:attribute>
     </xsl:attribute-set>
-    
+
     <xsl:attribute-set name="accounting-sequence-column">
         <xsl:attribute name="column-width">20%</xsl:attribute>
     </xsl:attribute-set>
-    
+
     <xsl:attribute-set name="accounting-data-column">
         <xsl:attribute name="column-width">40%</xsl:attribute>
     </xsl:attribute-set>
-   
+
     <!-- Filing Statuses section styles -->
 
 </xsl:stylesheet>
