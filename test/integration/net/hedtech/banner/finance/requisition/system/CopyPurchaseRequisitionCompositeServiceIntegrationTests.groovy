@@ -34,6 +34,7 @@ class CopyPurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegr
     @After
     void tearDown() {
         super.tearDown()
+        logout()
     }
 
     /**

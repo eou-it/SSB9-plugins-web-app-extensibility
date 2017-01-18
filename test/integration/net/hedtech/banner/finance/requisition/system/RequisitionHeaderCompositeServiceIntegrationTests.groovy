@@ -47,6 +47,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     @After
     void tearDown() {
         super.tearDown()
+        logout()
     }
     /**
      * Test create

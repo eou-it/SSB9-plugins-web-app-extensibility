@@ -31,6 +31,7 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
     @After
     void tearDown() {
         super.tearDown()
+        logout()
     }
 
     /**

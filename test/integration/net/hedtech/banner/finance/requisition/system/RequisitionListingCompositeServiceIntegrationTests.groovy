@@ -35,6 +35,7 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
     @After
     void tearDown() {
         super.tearDown()
+        logout()
     }
 
     /**

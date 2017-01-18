@@ -42,6 +42,7 @@ class FinanceTextCompositeServiceIntegrationTests extends BaseIntegrationTestCas
     @After
     public void tearDown() {
         super.tearDown()
+        logout()
     }
 
     /**

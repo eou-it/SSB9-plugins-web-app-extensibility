@@ -36,6 +36,7 @@ class RequisitionInformationServiceIntegrationTests extends BaseIntegrationTestC
     @After
     void tearDown() {
         super.tearDown()
+        logout()
     }
 
     /**

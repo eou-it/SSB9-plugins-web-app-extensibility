@@ -33,6 +33,7 @@ class RequisitionDetailAccountingCommonCompositeServiceIntegrationTests extends 
     @After
     void tearDown() {
         super.tearDown()
+        logout()
     }
 
     /**

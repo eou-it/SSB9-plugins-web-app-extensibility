@@ -35,6 +35,7 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
     @After
     void tearDown() {
         super.tearDown()
+        logout()
     }
 
     /**

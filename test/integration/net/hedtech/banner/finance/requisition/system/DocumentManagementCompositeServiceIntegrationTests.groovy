@@ -38,6 +38,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
     @After
     void tearDown() {
         super.tearDown()
+        logout()
     }
 
     /**

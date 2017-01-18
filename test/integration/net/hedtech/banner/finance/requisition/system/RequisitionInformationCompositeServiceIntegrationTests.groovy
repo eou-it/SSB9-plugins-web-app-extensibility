@@ -32,6 +32,7 @@ class RequisitionInformationCompositeServiceIntegrationTests extends BaseIntegra
     @After
     void tearDown() {
         super.tearDown()
+        logout()
     }
 
     /**
