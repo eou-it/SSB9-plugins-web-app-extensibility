@@ -60,7 +60,7 @@ var xe = (function (xe) {
     // create a selector for an element - specify a name or a selector for all with a specific type
     xe.selector = function( elementType, name ) {
         if (name) {
-            return '[' + xe.typePrefix + elementType + '=' + name + ']';
+            return '[' + xe.typePrefix + 'field' + '="' +name + '"]';
         }
         return '[' + xe.typePrefix + elementType + ']';
     };
@@ -412,7 +412,7 @@ var xe = (function (xe) {
         function extendSectionFields(section, extensions) {
             var sectionFields = $(xe.selector(xe.type.field), section); //moved from _.each body - no need to search many times
             _.each(extensions.fields, function (fieldExtension) {
-                var fieldElement = $(xe.selector(xe.type.field, fieldExtension.name), section)[0];
+                var fieldElement = $(xe.selector(xe.type['field'], fieldExtension.name), section)[0];
                 if (!fieldElement) {
                     //Must be a new field, add a placeholder
                     var anchor = null;
