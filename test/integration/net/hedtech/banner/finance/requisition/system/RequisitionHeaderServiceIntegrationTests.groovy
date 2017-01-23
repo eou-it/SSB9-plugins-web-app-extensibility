@@ -109,7 +109,14 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
         sessionFactory.currentSession.createSQLQuery( "UPDATE FPBREQH SET FPBREQH_COPIED_FROM='RSED0003' where FPBREQH_CODE ='RSED0006'" ).executeUpdate()
         requisitionHeaderService.validateRequisitionBeforeComplete('RSED0006')
     }
-
+/**
+     *  Test validate Requisition Before Complete. For un-copied requisition
+     */
+    @Test
+    void validateRequisitionBeforeCompleteForIncomplete() {
+        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        requisitionHeaderService.validateRequisitionBeforeComplete('RSED0006')
+    }
     /**
      *  Test Finding headers for specified code
      */
