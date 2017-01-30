@@ -503,6 +503,7 @@ class FinanceProcurementConstants {
     public static final String REQUISITION_SUMMARY_FIELD_FPRREQA_ACTV_CODE = 'FPRREQA_ACTV_CODE'
     public static final String REQUISITION_SUMMARY_FIELD_SHIP_TO_CODE = 'FPBREQH_SHIP_CODE'
     public static final String REQUISITION_SUMMARY_FIELD_FPBREQH_USER_ID = 'FPBREQH_USER_ID'
+    public static final String REQUISITION_SUMMARY_FIELD_FPBREQH_VPDI_CODE = 'FPBREQH_VPDI_CODE'
     public static final String REQUISITION_SUMMARY_FIELD_FPBREQH_CURR_CODE = 'FPBREQH_CURR_CODE'
     public static final String REQUISITION_SUMMARY_FIELD_FPRREQA_PROJ_CODE = 'FPRREQA_PROJ_CODE'
     public static final String REQUISITION_SUMMARY_FIELD_FPBREQH_ATTENTION_TO = 'FPBREQH_ATTENTION_TO'
@@ -603,7 +604,8 @@ class FinanceProcurementConstants {
     public static final String FINANCE_APPROVAL_HISTORY_FOBAPPH_VPDI_CODE = 'FOBAPPH_VPDI_CODE'
     public static
     final String FINANCE_APPROVAL_HISTORY_QUERY_NAME_FIND_BY_DOCUMENT_CODE = 'FinanceApprovalHistory.fetchByDocumentCode'
-    public static final String FINANCE_APPROVAL_HISTORY_QUERY_NAME_FIND_BY_DOC_CODE_DOC_TYPE='FinanceApprovalHistory.fetchByDocumentCodeAndDocType'
+    public static
+    final String FINANCE_APPROVAL_HISTORY_QUERY_NAME_FIND_BY_DOC_CODE_DOC_TYPE = 'FinanceApprovalHistory.fetchByDocumentCodeAndDocType'
     public static final String FINANCE_APPROVAL_HISTORY_QUERY_ID_DENY = 'DENY'
     public static final int FINANCE_APPROVAL_HISTORY_QUERY_LEVEL_ZERO = 0
 
@@ -663,7 +665,8 @@ class FinanceProcurementConstants {
     final String FINANCE_TEXT_NAMED_QUERY_GET_FINANCE_TEXT_BY_CODE_AND_SEQUENCE_NO_AND_PRINT_IND = 'FinanceText.getFinanceTextByCodeAndItemNumberAndPrintInd'
     public static
     final String FINANCE_TEXT_NAMED_QUERY_LIST_HEADER_LEVEL_TEXT_BY_CODE_AND_PRINT_OPTION_IND = 'FinanceText.listHeaderLevelTextByCodeAndPrintOptionInd'
-    public static final String FINANCE_TEXT_NAMED_QUERY_LIST_HEADER_LEVEL_TEXT_BY_CODE_AND_PRINT_OPTION_IND_DTYP_SEQ='FinanceText.listHeaderLevelTextByCodeAndPrintOptionIndAndDtypeSeq'
+    public static
+    final String FINANCE_TEXT_NAMED_QUERY_LIST_HEADER_LEVEL_TEXT_BY_CODE_AND_PRINT_OPTION_IND_DTYP_SEQ = 'FinanceText.listHeaderLevelTextByCodeAndPrintOptionIndAndDtypeSeq'
     public static
     final String FINANCE_TEXT_NAMED_QUERY_LIST_HEADER_LEVEL_TEXT_BY_CODE = 'FinanceText.listHeaderLevelTextByCode'
     public static

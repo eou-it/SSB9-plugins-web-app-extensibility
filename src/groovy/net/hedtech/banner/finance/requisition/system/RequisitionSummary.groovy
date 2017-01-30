@@ -191,6 +191,9 @@ class RequisitionSummary implements Serializable {
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPBREQH_USER_ID)
     String userId
 
+    @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPBREQH_VPDI_CODE)
+    String vpdiCode
+
     /**
      * This method is used to fetch requisition detail by requisition code.
      * @param requestCode Requisition code.
