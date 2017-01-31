@@ -412,7 +412,7 @@ var xe = (function (xe) {
         function extendSectionFields(section, extensions) {
             var sectionFields = $(xe.selector(xe.type.field), section); //moved from _.each body - no need to search many times
             _.each(extensions.fields, function (fieldExtension) {
-                var fieldElement = $(xe.selector(xe.type['field'], fieldExtension.name), section)[0];
+                var fieldElement = $(xe.selector(xe.type.field, fieldExtension.name), section)[0];
                 if (!fieldElement) {
                     //Must be a new field, add a placeholder
                     var anchor = null;
