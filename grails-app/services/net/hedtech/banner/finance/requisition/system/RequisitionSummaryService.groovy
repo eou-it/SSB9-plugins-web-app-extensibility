@@ -160,10 +160,10 @@ class RequisitionSummaryService extends ServiceBase {
                             accountingDiscountAmount        : it.accountingDiscountAmount,
                             accountingAdditionalChargeAmount: it.accountingAdditionalChargeAmount,
                             accountingTaxAmount             : it.accountingTaxAmount,
-                            accountingTotal                 : it.accountingAmount + it.accountingAdditionalChargeAmount + it.accountingTaxAmount
-                                    - it.accountingDiscountAmount,
-                            accountingTotalDisplay          : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.accountingAmount + it.accountingAdditionalChargeAmount + it.accountingTaxAmount
-                                                                                                                              - it.accountingDiscountAmount, FinanceValidationConstants.TWO )]]
+                            accountingTotal                 : (it.accountingAmount ?: 0.0) + (it.accountingAdditionalChargeAmount ?: 0.0) + (it.accountingTaxAmount ?: 0.0)
+                                    - (it.accountingDiscountAmount ?: 0.0),
+                            accountingTotalDisplay          : FinanceProcurementHelper.getLocaleBasedFormattedNumber( (it.accountingAmount ?: 0.0) + (it.accountingAdditionalChargeAmount ?: 0.0) + (it.accountingTaxAmount ?: 0.0)
+                                    - (it.accountingDiscountAmount ?: 0.0), FinanceValidationConstants.TWO )]]
                 }.each() {
                     key, value ->
                         accountingList.add( value )
