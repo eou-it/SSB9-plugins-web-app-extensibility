@@ -60,13 +60,13 @@ var xe = (function (xe) {
     // create a selector for an element - specify a name or a selector for all with a specific type
     xe.selector = function( elementType, name ) {
         if (name) {
-            return '[' + xe.typePrefix + elementType + '=' + name + ']';
+            return '[' + xe.typePrefix + 'field' + '="' +name + '"]';
         }
         return '[' + xe.typePrefix + elementType + ']';
     };
 
     xe.selectorFor = function( name ) {
-        return '[' + xe.forAttribute + (name ? '=' + name: '') + ']';
+        return '[' + xe.forAttribute + (name ? '="' + name: '"') + ']';
     };
 
     // Create a selector for removing an element and its associated labels, etc.
