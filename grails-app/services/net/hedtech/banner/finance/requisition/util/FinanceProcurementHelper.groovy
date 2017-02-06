@@ -34,9 +34,10 @@ class FinanceProcurementHelper {
      * @return
      */
     static def getLocaleBasedFormattedNumber( amount, fractionDigits ) {
+        amount = amount ?: 0.0
         Locale fmtLocale = LocaleContextHolder.getLocale()
         NumberFormat formatter = NumberFormat.getInstance( fmtLocale );
-        formatter.setMaximumFractionDigits( fractionDigits);
+        formatter.setMaximumFractionDigits( fractionDigits );
         formatter.setMinimumFractionDigits( fractionDigits );
         formatter.format( amount )
     }

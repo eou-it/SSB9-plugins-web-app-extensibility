@@ -3,6 +3,7 @@
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
+import grails.transaction.Transactional
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
@@ -19,7 +20,6 @@ import org.springframework.web.context.request.RequestContextHolder
  *
  */
 class RequisitionSummaryService extends ServiceBase {
-    boolean transactional = true
     private static final def LOGGER = Logger.getLogger( this.getClass() )
     def springSecurityService
     def shipToCodeService
@@ -32,6 +32,7 @@ class RequisitionSummaryService extends ServiceBase {
      * Find the requisition summary for specified requestCode and user name
      * @param requestCode
      */
+    @Transactional(readOnly = true)
     def fetchRequisitionSummaryForRequestCode( requestCode, baseCcy, doesNotNeedPdf = true ) {
         LoggerUtility.debug( LOGGER, 'Input parameters for fetchRequisitionSummaryForRequestCode :' + requestCode )
         def requisitionSummary = RequisitionSummary.fetchRequisitionSummaryForRequestCode( requestCode, springSecurityService.getAuthentication().user.oracleUserName )
@@ -46,6 +47,7 @@ class RequisitionSummaryService extends ServiceBase {
      * Find the requisition summary for specified requestCode
      * @param requestCode
      */
+    @Transactional(readOnly = true)
     def fetchRequisitionSummaryForRequestCode( requestCode ) {
         LoggerUtility.debug( LOGGER, 'Input parameters for fetchRequisitionSummaryForRequestCode :' + requestCode )
         def requisitionSummary = RequisitionSummary.fetchRequisitionSummaryForRequestCode( requestCode, null )
@@ -77,26 +79,39 @@ class RequisitionSummaryService extends ServiceBase {
         }
         def headerRecord = requisitionSummary[0], shipToCodeMap = [:], userProfileMap = [:], orgMap = [:], headerTextMap = [:], statusMap = [:]
         if (!doesNotNeedPdf) {
-            shipToCodeMap[headerRecord.requestCode] = shipToCodeService.findShipToCodesByCode( headerRecord.shipToCode, headerRecord.transactionDate ).collect() {
-                [zipCode       : it.zipCode, state: it.state, city: it.city,
-                 shipCode      : it.shipCode, addressLine1: it.addressLine1,
-                 addressLine2  : it.addressLine2, addressLine3: it.addressLine3,
-                 contact       : it.contact,
-                 phoneNumber   : it.phoneNumber,
-                 phoneArea     : it.phoneArea,
-                 phoneExtension: it.phoneExtension]
+            try {
+                shipToCodeMap[headerRecord.requestCode] = shipToCodeService.findShipToCodesByCode( headerRecord.shipToCode, headerRecord.transactionDate ).collect() {
+                    [zipCode       : it.zipCode, state: it.state, city: it.city,
+                     shipCode      : it.shipCode, addressLine1: it.addressLine1,
+                     addressLine2  : it.addressLine2, addressLine3: it.addressLine3,
+                     contact       : it.contact,
+                     phoneNumber   : it.phoneNumber,
+                     phoneArea     : it.phoneArea,
+                     phoneExtension: it.phoneExtension]
+                }
+            } catch (ApplicationException ae) {
+                LoggerUtility.error( LOGGER, 'Error while getting the ship code information' + ae )
             }
-            userProfileMap[headerRecord.requestCode] = financeUserProfileService.getUserProfileByUserId( springSecurityService.getAuthentication().user.oracleUserName ).collect() {userProfileObj ->
-                [userId           : userProfileObj.userId, requesterName: userProfileObj.requesterName, requesterPhoneNumber: userProfileObj.requesterPhoneNumber,
-                 requesterPhoneExt: userProfileObj.requesterPhoneExt, requesterEmailAddress: userProfileObj.requesterEmailAddress, phoneArea: userProfileObj.phoneArea]
+            try {
+                userProfileMap[headerRecord.requestCode] = financeUserProfileService.getUserProfileByUserId( springSecurityService.getAuthentication().user.oracleUserName ).collect() {userProfileObj ->
+                    [userId           : userProfileObj.userId, requesterName: userProfileObj.requesterName, requesterPhoneNumber: userProfileObj.requesterPhoneNumber,
+                     requesterPhoneExt: userProfileObj.requesterPhoneExt, requesterEmailAddress: userProfileObj.requesterEmailAddress, phoneArea: userProfileObj.phoneArea]
+                }
+            } catch (ApplicationException ae) {
+                LoggerUtility.error( LOGGER, 'Error while getting the user profile code information' + ae )
             }
+
             orgMap[headerRecord.requestCode] = [orgnCode: headerRecord.organizationCode, orgnTitle: '']
-            orgMap[headerRecord.requestCode].orgnTitle = financeOrganizationCompositeService.
-                    findOrganizationListByEffectiveDateAndSearchParam( [searchParam: headerRecord.organizationCode, effectiveDate: headerRecord.transactionDate,
-                                                                        coaCode    : headerRecord.chartOfAccountCode],
-                                                                       [offset: FinanceProcurementConstants.ZERO, max: FinanceProcurementConstants.ONE], false ).collect() {organization ->
-                [orgnCode: organization.orgnCode, orgnTitle: organization.orgnTitle]
-            }?.orgnTitle
+            try {
+                orgMap[headerRecord.requestCode].orgnTitle = financeOrganizationCompositeService.
+                        findOrganizationListByEffectiveDateAndSearchParam( [searchParam: headerRecord.organizationCode, effectiveDate: headerRecord.transactionDate,
+                                                                            coaCode    : headerRecord.chartOfAccountCode],
+                                                                           [offset: FinanceProcurementConstants.ZERO, max: FinanceProcurementConstants.ONE], false ).collect() {organization ->
+                    [orgnCode: organization.orgnCode, orgnTitle: organization.orgnTitle]
+                }?.orgnTitle
+            } catch (ApplicationException ae) {
+                LoggerUtility.error( LOGGER, 'Error while getting the organization information' + ae )
+            }
             headerTextMap[headerRecord.requestCode] = processComment( financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( headerRecord.requestCode,
                                                                                                                                      FinanceValidationConstants.REQUISITION_INDICATOR_YES ) )
             statusMap[headerRecord.requestCode] = MessageHelper.message( 'purchaseRequisition.status.' + isUserIndependent ? requisitionInformationService.fetchRequisitionsByReqNumber( headerRecord.requestCode, null ).status : requisitionInformationService.fetchRequisitionsByReqNumber( headerRecord.requestCode ).status )
@@ -163,7 +178,7 @@ class RequisitionSummaryService extends ServiceBase {
                             accountingTotal                 : (it.accountingAmount ?: 0.0) + (it.accountingAdditionalChargeAmount ?: 0.0) + (it.accountingTaxAmount ?: 0.0)
                                     - (it.accountingDiscountAmount ?: 0.0),
                             accountingTotalDisplay          : FinanceProcurementHelper.getLocaleBasedFormattedNumber( (it.accountingAmount ?: 0.0) + (it.accountingAdditionalChargeAmount ?: 0.0) + (it.accountingTaxAmount ?: 0.0)
-                                    - (it.accountingDiscountAmount ?: 0.0), FinanceValidationConstants.TWO )]]
+                                                                                                                              - (it.accountingDiscountAmount ?: 0.0), FinanceValidationConstants.TWO )]]
                 }.each() {
                     key, value ->
                         accountingList.add( value )
@@ -232,7 +247,7 @@ class RequisitionSummaryService extends ServiceBase {
                         unitOfMeasure                         : it.unitOfMeasure,
                         commodityDiscountAmount               : it.commodityDiscountAmount,
                         commodityDiscountAmountDisplay        : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityDiscountAmount, FinanceValidationConstants.TWO ),
-                        othersDisplay                         : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityAdditionalChargeAmount + it.commodityTaxAmount - it.commodityDiscountAmount, FinanceValidationConstants.TWO ),
+                        othersDisplay                         : FinanceProcurementHelper.getLocaleBasedFormattedNumber( (it.commodityAdditionalChargeAmount ?: 0.0) + (it.commodityTaxAmount ?: 0.0) - (it.commodityDiscountAmount ?: 0.0), FinanceValidationConstants.TWO ),
                         commodityAdditionalChargeAmount       : it.commodityAdditionalChargeAmount,
                         commodityAdditionalChargeAmountDisplay: FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityAdditionalChargeAmount, FinanceValidationConstants.TWO ),
                         commodityText                         : commodityTextMap[it.commodityItem],
@@ -240,10 +255,10 @@ class RequisitionSummaryService extends ServiceBase {
                         commodityTaxAmountDisplay             : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityTaxAmount, FinanceValidationConstants.TWO ),
                         commodityUnitPrice                    : it.commodityUnitPrice,
                         commodityUnitPriceDisplay             : FinanceProcurementHelper.getLocaleBasedFormattedNumber( it.commodityUnitPrice, FinanceValidationConstants.FOUR ),
-                        commodityTotal                        : (it.commodityUnitPrice * it.commodityQuantity).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + it.commodityTaxAmount + it.commodityAdditionalChargeAmount
-                                - it.commodityDiscountAmount,
-                        commodityTotalDisplay                 : FinanceProcurementHelper.getLocaleBasedFormattedNumber( (it.commodityUnitPrice * it.commodityQuantity).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + it.commodityTaxAmount + it.commodityAdditionalChargeAmount
-                                                                                                                                - it.commodityDiscountAmount, FinanceValidationConstants.TWO ),
+                        commodityTotal                        : (it.commodityUnitPrice * it.commodityQuantity).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + (it.commodityTaxAmount ?: 0.0) + (it.commodityAdditionalChargeAmount ?: 0.0)
+                                - (it.commodityDiscountAmount ?: 0.0),
+                        commodityTotalDisplay                 : FinanceProcurementHelper.getLocaleBasedFormattedNumber( (it.commodityUnitPrice * it.commodityQuantity).setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP ) + (it.commodityTaxAmount ?: 0.0) + (it.commodityAdditionalChargeAmount ?: 0.0)
+                                                                                                                                - (it.commodityDiscountAmount ?: 0.0), FinanceValidationConstants.TWO ),
                         accounting                            : isCommodityLevelAccounting ? getAccountingForCommodityItem( it.commodityItem ) : null,
                         distributionPercentageDisplay         : isCommodityLevelAccounting ? FinanceProcurementHelper.getLocaleBasedFormattedNumber( getAccountingDistributionPercentage( getAccountingForCommodityItem( it.commodityItem ) ), FinanceValidationConstants.FOUR ) : null,
                         distributionPercentage                : isCommodityLevelAccounting ? getAccountingDistributionPercentage( getAccountingForCommodityItem( it.commodityItem ) ) : null,
