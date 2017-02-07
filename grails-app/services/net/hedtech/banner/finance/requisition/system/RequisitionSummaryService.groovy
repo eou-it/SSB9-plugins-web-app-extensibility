@@ -79,39 +79,27 @@ class RequisitionSummaryService extends ServiceBase {
         }
         def headerRecord = requisitionSummary[0], shipToCodeMap = [:], userProfileMap = [:], orgMap = [:], headerTextMap = [:], statusMap = [:]
         if (!doesNotNeedPdf) {
-            try {
-                shipToCodeMap[headerRecord.requestCode] = shipToCodeService.findShipToCodesByCode( headerRecord.shipToCode, headerRecord.transactionDate ).collect() {
-                    [zipCode       : it.zipCode, state: it.state, city: it.city,
-                     shipCode      : it.shipCode, addressLine1: it.addressLine1,
-                     addressLine2  : it.addressLine2, addressLine3: it.addressLine3,
-                     contact       : it.contact,
-                     phoneNumber   : it.phoneNumber,
-                     phoneArea     : it.phoneArea,
-                     phoneExtension: it.phoneExtension]
-                }
-            } catch (ApplicationException ae) {
-                LoggerUtility.error( LOGGER, 'Error while getting the ship code information' + ae )
+            shipToCodeMap[headerRecord.requestCode] = shipToCodeService.findShipToCodesByCode( headerRecord.shipToCode, headerRecord.transactionDate ).collect() {
+                [zipCode       : it.zipCode, state: it.state, city: it.city,
+                 shipCode      : it.shipCode, addressLine1: it.addressLine1,
+                 addressLine2  : it.addressLine2, addressLine3: it.addressLine3,
+                 contact       : it.contact,
+                 phoneNumber   : it.phoneNumber,
+                 phoneArea     : it.phoneArea,
+                 phoneExtension: it.phoneExtension]
             }
-            try {
-                userProfileMap[headerRecord.requestCode] = financeUserProfileService.getUserProfileByUserId( springSecurityService.getAuthentication().user.oracleUserName ).collect() {userProfileObj ->
-                    [userId           : userProfileObj.userId, requesterName: userProfileObj.requesterName, requesterPhoneNumber: userProfileObj.requesterPhoneNumber,
-                     requesterPhoneExt: userProfileObj.requesterPhoneExt, requesterEmailAddress: userProfileObj.requesterEmailAddress, phoneArea: userProfileObj.phoneArea]
-                }
-            } catch (ApplicationException ae) {
-                LoggerUtility.error( LOGGER, 'Error while getting the user profile code information' + ae )
+            userProfileMap[headerRecord.requestCode] = financeUserProfileService.getUserProfileByUserId( springSecurityService.getAuthentication().user.oracleUserName ).collect() {userProfileObj ->
+                [userId           : userProfileObj.userId, requesterName: userProfileObj.requesterName, requesterPhoneNumber: userProfileObj.requesterPhoneNumber,
+                 requesterPhoneExt: userProfileObj.requesterPhoneExt, requesterEmailAddress: userProfileObj.requesterEmailAddress, phoneArea: userProfileObj.phoneArea]
             }
 
             orgMap[headerRecord.requestCode] = [orgnCode: headerRecord.organizationCode, orgnTitle: '']
-            try {
-                orgMap[headerRecord.requestCode].orgnTitle = financeOrganizationCompositeService.
-                        findOrganizationListByEffectiveDateAndSearchParam( [searchParam: headerRecord.organizationCode, effectiveDate: headerRecord.transactionDate,
-                                                                            coaCode    : headerRecord.chartOfAccountCode],
-                                                                           [offset: FinanceProcurementConstants.ZERO, max: FinanceProcurementConstants.ONE], false ).collect() {organization ->
-                    [orgnCode: organization.orgnCode, orgnTitle: organization.orgnTitle]
-                }?.orgnTitle
-            } catch (ApplicationException ae) {
-                LoggerUtility.error( LOGGER, 'Error while getting the organization information' + ae )
-            }
+            orgMap[headerRecord.requestCode].orgnTitle = financeOrganizationCompositeService.
+                    findOrganizationListByEffectiveDateAndSearchParam( [searchParam: headerRecord.organizationCode, effectiveDate: headerRecord.transactionDate,
+                                                                        coaCode    : headerRecord.chartOfAccountCode],
+                                                                       [offset: FinanceProcurementConstants.ZERO, max: FinanceProcurementConstants.ONE], false ).collect() {organization ->
+                [orgnCode: organization.orgnCode, orgnTitle: organization.orgnTitle]
+            }?.orgnTitle
             headerTextMap[headerRecord.requestCode] = processComment( financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( headerRecord.requestCode,
                                                                                                                                      FinanceValidationConstants.REQUISITION_INDICATOR_YES ) )
             statusMap[headerRecord.requestCode] = MessageHelper.message( 'purchaseRequisition.status.' + isUserIndependent ? requisitionInformationService.fetchRequisitionsByReqNumber( headerRecord.requestCode, null ).status : requisitionInformationService.fetchRequisitionsByReqNumber( headerRecord.requestCode ).status )
