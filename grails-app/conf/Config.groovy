@@ -143,8 +143,6 @@ grails.plugin.springsecurity.securityConfigType = SecurityConfigType.InterceptUr
 grails.plugin.springsecurity.interceptUrlMap = [
         '/': ['IS_AUTHENTICATED_ANONYMOUSLY'],
         '/ssb/menu/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
-        '/zkau/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
-        '/zkau**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
         '/login/**': ['IS_AUTHENTICATED_ANONYMOUSLY'],
         '/mainPage**': ['ROLE_SCACRSE_BAN_DEFAULT_M'],
         '/menu/**': ['ROLE_SCACRSE_BAN_DEFAULT_M'],
