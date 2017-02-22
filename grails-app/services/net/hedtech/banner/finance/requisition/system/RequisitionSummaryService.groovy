@@ -23,6 +23,7 @@ class RequisitionSummaryService extends ServiceBase {
     private static final def LOGGER = Logger.getLogger( this.getClass() )
     def springSecurityService
     def shipToCodeService
+    def requisitionHeaderService
     def requisitionInformationService
     def financeUserProfileService
     def financeOrganizationCompositeService
@@ -40,7 +41,7 @@ class RequisitionSummaryService extends ServiceBase {
             LoggerUtility.error( LOGGER, 'Missing requisition header ' + requestCode )
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }
-        processSummaryInformation( requisitionSummary, baseCcy, requestCode, doesNotNeedPdf )
+        processSummaryInformation( requisitionSummary, baseCcy, requestCode, doesNotNeedPdf, false )
     }
 
     /**
@@ -60,7 +61,7 @@ class RequisitionSummaryService extends ServiceBase {
 
 
     private def processSummaryInformation( requisitionSummary, baseCcy, requestCode, boolean doesNotNeedPdf ) {
-        processSummaryInformation( requisitionSummary, baseCcy, requestCode, doesNotNeedPdf, false )
+        processSummaryInformation( requisitionSummary, baseCcy, requestCode, doesNotNeedPdf, true )
     }
     /**
      * Process and topologies Requisition Summary
@@ -88,9 +89,15 @@ class RequisitionSummaryService extends ServiceBase {
                  phoneArea     : it.phoneArea,
                  phoneExtension: it.phoneExtension]
             }
-            userProfileMap[headerRecord.requestCode] = financeUserProfileService.getUserProfileByUserId( springSecurityService.getAuthentication().user.oracleUserName ).collect() {userProfileObj ->
-                [userId           : userProfileObj.userId, requesterName: userProfileObj.requesterName, requesterPhoneNumber: userProfileObj.requesterPhoneNumber,
-                 requesterPhoneExt: userProfileObj.requesterPhoneExt, requesterEmailAddress: userProfileObj.requesterEmailAddress, phoneArea: userProfileObj.phoneArea]
+            if (isUserIndependent) {
+                RequisitionHeader header = requisitionHeaderService.get( headerRecord.id.headerId )
+                userProfileMap[headerRecord.requestCode] = [userId           : header.userId, requesterName: header.requesterName, requesterPhoneNumber: header.requesterPhoneNumber,
+                                                            requesterPhoneExt: header.requesterPhoneExtension, requesterEmailAddress: header.requesterEmailAddress, phoneArea: header.requesterPhoneArea]
+            } else {
+                userProfileMap[headerRecord.requestCode] = financeUserProfileService.getUserProfileByUserId( springSecurityService.getAuthentication().user.oracleUserName ).collect() {userProfileObj ->
+                    [userId           : userProfileObj.userId, requesterName: userProfileObj.requesterName, requesterPhoneNumber: userProfileObj.requesterPhoneNumber,
+                     requesterPhoneExt: userProfileObj.requesterPhoneExt, requesterEmailAddress: userProfileObj.requesterEmailAddress, phoneArea: userProfileObj.phoneArea]
+                }
             }
 
             orgMap[headerRecord.requestCode] = [orgnCode: headerRecord.organizationCode, orgnTitle: '']
@@ -102,7 +109,7 @@ class RequisitionSummaryService extends ServiceBase {
             }?.orgnTitle
             headerTextMap[headerRecord.requestCode] = processComment( financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( headerRecord.requestCode,
                                                                                                                                      FinanceValidationConstants.REQUISITION_INDICATOR_YES ) )
-            statusMap[headerRecord.requestCode] = MessageHelper.message( 'purchaseRequisition.status.' + isUserIndependent ? requisitionInformationService.fetchRequisitionsByReqNumber( headerRecord.requestCode, null ).status : requisitionInformationService.fetchRequisitionsByReqNumber( headerRecord.requestCode ).status )
+            statusMap[headerRecord.requestCode] = MessageHelper.message( 'purchaseRequisition.status.' + (isUserIndependent ? requisitionInformationService.fetchRequisitionsByReqNumber( headerRecord.requestCode, null ).status : requisitionInformationService.fetchRequisitionsByReqNumber( headerRecord.requestCode ).status) )
         }
         requisitionSummary.collectEntries() {
             [it.requestCode, [
