@@ -80,7 +80,7 @@ class RequisitionSummaryService extends ServiceBase {
         }
         def headerRecord = requisitionSummary[0], shipToCodeMap = [:], userProfileMap = [:], orgMap = [:], headerTextMap = [:], statusMap = [:]
         if (!doesNotNeedPdf) {
-            shipToCodeMap[headerRecord.requestCode] = shipToCodeService.findShipToCodesByCode( headerRecord.shipToCode, headerRecord.transactionDate ).collect() {
+            shipToCodeMap[headerRecord.requestCode] = shipToCodeService.findShipToCodesByCodeNoException( headerRecord.shipToCode, headerRecord.transactionDate ).collect() {
                 [zipCode       : it.zipCode, state: it.state, city: it.city,
                  shipCode      : it.shipCode, addressLine1: it.addressLine1,
                  addressLine2  : it.addressLine2, addressLine3: it.addressLine3,
