@@ -21,6 +21,7 @@ class FinanceProcurementConstants {
     public static final int EIGHT = 8
     public static final int ONE = 1
     public static final String EMPTY_STRING = ''
+    public static final String UNICODE_CTRL_CHAR = "\\p{Cc}"
     public static final String SPACE_STRING = ' '
     public static final int DECIMAL_PRECISION = 2
     public static final int DECIMAL_PRECISION_PERCENTAGE = 8

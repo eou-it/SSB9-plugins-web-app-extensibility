@@ -52,7 +52,8 @@ class FinancePurchaseRequisitionPDFService {
             def fopBasePath = getFopBasePath()
             BannerPDFGenerator pdfGenerator = new BannerPDFGenerator()
             return pdfGenerator.generatePdfFromXmlString( pdfGenerator.toXmlString( (toPDFModel( summaryModel ) as JSON).toString() )
-                                                                  .replaceAll( FinanceProcurementConstants.PDF_NULL_VALUE, FinanceProcurementConstants.PDF_NULL_REPLACE_VALUE ),
+                                                                  .replaceAll( FinanceProcurementConstants.PDF_NULL_VALUE, FinanceProcurementConstants.PDF_NULL_REPLACE_VALUE )
+                                                                  .replaceAll( FinanceProcurementConstants.UNICODE_CTRL_CHAR, FinanceProcurementConstants.EMPTY_STRING ),
                                                           getXslFilePath( fopBasePath ), getConfigFilePath( fopBasePath ))
         } catch (BannerPDFGeneratorException e) {
             LoggerUtility.error( LOGGER, 'Error while generating PDF' + e )
