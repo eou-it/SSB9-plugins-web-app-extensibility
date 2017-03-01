@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2017 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -21,8 +21,8 @@ class FinanceTextService extends ServiceBase {
      * @return FinanceText.
      */
     @Transactional(readOnly = true)
-    def getFinanceTextByCodeAndItemAndPrintOption(textCode, item, printOptionIndicator) {
-        return FinanceText.getFinanceTextByCodeAndItemNumberAndPrintInd(textCode, item, printOptionIndicator)
+    def getFinanceTextByCodeAndItemAndPrintOption( textCode, item, printOptionIndicator ) {
+        return FinanceText.getFinanceTextByCodeAndItemNumberAndPrintInd( textCode, item, printOptionIndicator )
     }
 
     /**
@@ -33,10 +33,10 @@ class FinanceTextService extends ServiceBase {
      * @return FinanceText concatenated
      */
     @Transactional(readOnly = true)
-    def getFinanceTextByDocumentTypeAndCodeAndPrintOption(dtypSeqNum, textCode, printOptionIndicator) {
+    def getFinanceTextByDocumentTypeAndCodeAndPrintOption( dtypSeqNum, textCode, printOptionIndicator ) {
 
         def comment = FinanceProcurementConstants.EMPTY_STRING
-        FinanceText.getFinanceTextByDocumentTypeAndCodeAndPrintInd(dtypSeqNum, textCode, printOptionIndicator).each {
+        FinanceText.getFinanceTextByDocumentTypeAndCodeAndPrintInd( dtypSeqNum, textCode, printOptionIndicator ).each {
             comment = comment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING) + FinanceProcurementConstants.SPACE_STRING
         }
         return ["comment": comment]
@@ -50,8 +50,8 @@ class FinanceTextService extends ServiceBase {
      * @return list of finance text.
      */
     @Transactional(readOnly = true)
-    def listHeaderLevelTextByCodeAndPrintOptionInd(textCode, printOptionIndicator) {
-        return FinanceText.listHeaderLevelTextByCodeAndPrintOptionInd(textCode, printOptionIndicator)
+    def listHeaderLevelTextByCodeAndPrintOptionInd( textCode, printOptionIndicator ) {
+        return FinanceText.listHeaderLevelTextByCodeAndPrintOptionInd( textCode, printOptionIndicator )
     }
 
     /**
@@ -60,8 +60,8 @@ class FinanceTextService extends ServiceBase {
      * @return list of finance text.
      */
     @Transactional(readOnly = true)
-    def listHeaderLevelTextByCode(textCode) {
-        return FinanceText.listHeaderLevelTextByCode(textCode)
+    def listHeaderLevelTextByCode( textCode ) {
+        return FinanceText.listHeaderLevelTextByCode( textCode )
     }
 
     /**
@@ -71,8 +71,8 @@ class FinanceTextService extends ServiceBase {
      * @return list of finance text.
      */
     @Transactional(readOnly = true)
-    def getFinanceTextByCodeAndItemNumber(textCode, Integer item) {
-        return FinanceText.getFinanceTextByCodeAndItemNumber(textCode, item)
+    def getFinanceTextByCodeAndItemNumber( textCode, Integer item ) {
+        return FinanceText.getFinanceTextByCodeAndItemNumber( textCode, item )
     }
 
     /**
@@ -81,8 +81,8 @@ class FinanceTextService extends ServiceBase {
      * @return list of FinanceText.
      */
     @Transactional(readOnly = true)
-    def listAllFinanceTextByCode(textCode) {
-        return FinanceText.listAllFinanceTextByCode(textCode)
+    def listAllFinanceTextByCode( textCode ) {
+        return FinanceText.listAllFinanceTextByCode( textCode )
     }
 
     /**
@@ -95,8 +95,19 @@ class FinanceTextService extends ServiceBase {
      */
 
     @Transactional(readOnly = true)
-    def findByDocSeqCodeTextCodeItemTextAndPrintInd(Integer dtypSeqNum, textCode, printOptionIndicator) {
-        FinanceText.findByDocSeqCodeTextCodeItemTextAndPrintInd(dtypSeqNum, textCode, printOptionIndicator)
+    def findByDocSeqCodeTextCodeItemTextAndPrintInd( Integer dtypSeqNum, textCode, printOptionIndicator ) {
+        FinanceText.findByDocSeqCodeTextCodeItemTextAndPrintInd( dtypSeqNum, textCode, printOptionIndicator )
+    }
+
+    /**
+     * Fetch By Item Cde Change Sequence Number
+     * @param param request Parameters.
+     * @return list of FinanceText.
+     */
+
+    @Transactional(readOnly = true)
+    def fetchFinancePublicTextByItemCodeForPOWithChangeSequenceNumber( param ) {
+        FinanceText.fetchFinancePublicTextByItemCodeForPOWithChangeSequenceNumber( param )
     }
 
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2017 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -45,7 +45,21 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void findByDocSeqCodeTextCodeItemTextAndPrintInd() {
-        assert (financeTextService.findByDocSeqCodeTextCodeItemTextAndPrintInd(1,  'RSED0003', 'Y' ).size() > 0)
+        assert (financeTextService.findByDocSeqCodeTextCodeItemTextAndPrintInd( 1, 'RSED0003', 'Y' ).size() > 0)
+    }
+
+    /**
+     * Test fetchFinanceTestByItemCdeChangeSequenceNumber
+     */
+    @Test
+    public void fetchFinanceTestByItemCdeChangeSequenceNumber() {
+        def param = [textCode: 'POS0002', textItem: '1', changeSequenceNumber: null, printOptionIndicator: 'Y', dtypSeqNum: '2']
+        FinanceText rec = financeTextService.fetchFinancePublicTextByItemCodeForPOWithChangeSequenceNumber( param )[0]
+        assert rec.id != null
+        assert rec.printOptionIndicator == 'Y'
+        assert rec.text == 'Test comment'
+        assert rec.textCode == 'POS0002'
+        assert rec.documentTypeSequenceNumber == 2
     }
 
     /**
