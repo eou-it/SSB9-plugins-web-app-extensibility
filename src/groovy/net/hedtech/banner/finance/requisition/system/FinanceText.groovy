@@ -266,7 +266,7 @@ class FinanceText implements Serializable {
         def list = FinanceText.withSession {session ->
             session.getNamedQuery( 'FinanceText.fetchFinancePublicTextByItemCodeForPOWithChangeSequenceNumber' )
                     .setString( 'textCode', param.textCode )
-                    .setString( 'textItem', param.textItem )
+                    .setLong( 'textItem', param.textItem )
                     .setString( 'changeSequenceNumber', param.changeSequenceNumber )
                     .setString( 'printOptionIndicator', param.printOptionIndicator )
                     .setString( 'dtypSeqNum', param.dtypSeqNum )
