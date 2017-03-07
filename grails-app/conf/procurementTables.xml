@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- *******************************************************************************
+ Copyright 2009-2013 Ellucian Company L.P. and its affiliates.
+ ***********************************************************************************
+ -->
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="ehcache.xsd" updateCheck="true"
+         monitoring="autodetect" dynamicConfig="true">
+    <diskStore path="java.io.tmpdir/bannerxe"/>
+    <defaultCache
+            statistics="true"
+            maxElementsInMemory="10000"
+            eternal="false"
+            timeToIdleSeconds="6000"
+            timeToLiveSeconds="12000"
+            overflowToDisk="true"
+            diskPersistent="true"
+            diskExpiryThreadIntervalSeconds="1200"/>
+
+
+    <cache name="financeProcurementTablesCacheRegion"
+           maxElementsInMemory="10000"
+           statistics="true"
+           eternal="false"
+           timeToIdleSeconds="6000"
+           timeToLiveSeconds="12000"
+           overflowToDisk="false"
+           diskPersistent="false"
+           memoryStoreEvictionPolicy="LRU"
+           diskExpiryThreadIntervalSeconds="1200">
+
+    </cache>
+</ehcache>

@@ -7,6 +7,7 @@ package net.hedtech.banner.finance.requisition.system
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import org.hibernate.Session
 import org.hibernate.annotations.Type
 
 import javax.persistence.*
@@ -266,18 +267,20 @@ class RequisitionHeaderForCopy implements Serializable {
      * Fetches the requisition Headers
      * @param pagingParams
      * @param searchParam
-     * @return list of RequisitionHeaderForCopy
+     * @return list of RequisitionHeader
      */
     public static def listRequisitionHeader( searchParam, pagingParams ) {
-        String query = 'select requestCode, userId from RequisitionHeaderForCopy'
+        String query = 'select requestCode from RequisitionHeaderForCopy'
         if (searchParam) {
-            query <<= " where UPPER(requestCode) like '%" + searchParam.toUpperCase() + "%' OR UPPER(userId) like '%" + searchParam + "%'"
+            query <<= " where UPPER(requestCode) like '${searchParam.toUpperCase()}%'"
         }
-        query <<= " order by requestCode"
-        RequisitionHeader.withSession {session ->
+        query <<= ' order by requestCode'
+        RequisitionHeaderForCopy.withSession {Session session ->
             session.createQuery( query )
                     .setMaxResults( pagingParams.max )
                     .setFirstResult( pagingParams.offset )
+                    .setCacheable( true )
+                    .setCacheRegion( 'financeProcurementTablesCacheRegion' )
                     .list()
         }
     }
