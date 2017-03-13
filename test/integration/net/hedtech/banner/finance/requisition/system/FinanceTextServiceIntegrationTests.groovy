@@ -57,7 +57,7 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
         FinanceText rec = financeTextService.fetchFinancePublicTextByItemCodeForPOWithChangeSequenceNumber( param )[0]
         assert rec.id != null
         assert rec.printOptionIndicator == 'Y'
-        assert rec.text == 'N'
+        assert rec.text == 'Test comment'
         assert rec.textCode == 'POS0002'
         assert rec.documentTypeSequenceNumber == 2
     }
