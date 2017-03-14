@@ -53,12 +53,12 @@ class FinanceTextServiceIntegrationTests extends BaseIntegrationTestCase {
      */
     @Test
     public void fetchFinanceTestByItemCdeChangeSequenceNumber() {
-        def param = [textCode: 'POS0002', textItem: 1, changeSequenceNumber: null, printOptionIndicator: 'Y', dtypSeqNum: '2']
+        def param = [textCode: 'POS0012', textItem: 1, changeSequenceNumber: null, printOptionIndicator: 'Y', dtypSeqNum: '2']
         FinanceText rec = financeTextService.fetchFinancePublicTextByItemCodeForPOWithChangeSequenceNumber( param )[0]
         assert rec.id != null
         assert rec.printOptionIndicator == 'Y'
         assert rec.text == 'Test comment'
-        assert rec.textCode == 'POS0002'
+        assert rec.textCode == 'POS0012'
         assert rec.documentTypeSequenceNumber == 2
     }
 
