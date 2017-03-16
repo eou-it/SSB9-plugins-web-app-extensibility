@@ -191,7 +191,7 @@ class RequisitionSummaryService extends ServiceBase {
             def getAccountingDistributionPercentage = {list ->
                 def sum = 0;
                 list.each() {
-                    sum += it.accountingPercentage
+                    sum += (it.accountingPercentage ?: 0.0)
                 }
                 sum
             }
