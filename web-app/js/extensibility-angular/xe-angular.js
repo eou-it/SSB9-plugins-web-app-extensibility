@@ -12,16 +12,18 @@
     xe.ng = xe.ng || {};
 
     xe.ng.applyExtensions = function( restriction ) {
-        return function() {
+        return ['$timeout', function($timeout) {
             return {
                 restrict: restriction,
                 compile: function(element) {
-                    if (xe.enableExtensions()) {
-                        xe.extend(element);
-                    }
+                    $timeout(function () {
+                        if (xe.enableExtensions()) {
+                            xe.extend(element);
+                        }
+                    });
                 }
             };
-        };};
+        }]}
 
     angular.module('extensibility', [])
         .directive( 'body', xe.ng.applyExtensions('E') )
