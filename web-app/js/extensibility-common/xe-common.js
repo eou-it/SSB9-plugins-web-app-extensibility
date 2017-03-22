@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2016 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
 
 /* global _  */
@@ -232,6 +232,17 @@ var xe = (function (xe) {
             elementsToRemove.addClass('xe-exclude');
         }
 
+        function showElement( type, element ) {
+            var elementsToShow = $(element).add( $(xe.selectorFor(element.attributes[xe.typePrefix + type].value) ) );
+            xe.log('Show', type, element.attributes[xe.typePrefix + type].value,elementsToShow);
+            // include elements linked to this by aria-labelledby and aria-describedby ids
+            $.merge(elementsToShow,findAriaLinkedElements(xe.attr.labelledBy,elementsToShow));
+            $.merge(elementsToShow,findAriaLinkedElements(xe.attr.describedBy,elementsToShow));
+
+            elementsToShow.removeClass('xe-exclude');
+        }
+
+
 
         /*******************************************************************************************************
          Reposition a section or field
@@ -432,6 +443,12 @@ var xe = (function (xe) {
                     // exclude field
                     if ( fieldExtension.exclude ) {
                         removeElement(xe.type.field, fieldElement );
+                        return;
+                    }
+
+                    //show field
+                    if ( typeof fieldExtension.exclude !=  'undefined' && fieldExtension.exclude===false) {
+                        showElement(xe.type.field, fieldElement);
                         return;
                     }
 
