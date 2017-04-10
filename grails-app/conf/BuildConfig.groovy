@@ -47,7 +47,8 @@ grails.project.dependency.resolution = {
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
         // Note: elvyx-1.0.24_beta.jar remains in the lib/ directory of the project as it is not available in a public repo due to licensing issues.
-        test( "org.apache.xmlgraphics:fop:1.1",
+        test("net.hedtech.banner.pdf:banner_pdf_generator:1.0",
+        		"org.apache.xmlgraphics:fop:1.1",
               "org.apache.xmlgraphics:xmlgraphics-commons:1.5",
               "org.apache.xmlgraphics:batik-svg-dom:1.7",
               "org.apache.xmlgraphics:batik-anim:1.7",
