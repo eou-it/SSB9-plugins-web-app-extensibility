@@ -12,6 +12,12 @@
         <xsl:attribute name="margin">.25in, .25in, .25in, .25in</xsl:attribute>
     </xsl:attribute-set>
 
+    <xsl:attribute-set name="preserve-line-and-space">
+            <xsl:attribute name="white-space-collapse">false</xsl:attribute>
+            <xsl:attribute name="white-space-treatment">preserve</xsl:attribute>
+            <xsl:attribute name="linefeed-treatment">preserve</xsl:attribute>
+    </xsl:attribute-set>
+
     <!-- Header region for the procurement logo and address when printed at top of the page. -->
     <xsl:attribute-set name="header-region">
         <xsl:attribute name="extent">.5in</xsl:attribute>
