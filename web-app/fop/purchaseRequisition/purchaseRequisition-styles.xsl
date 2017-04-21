@@ -217,7 +217,7 @@
     <xsl:attribute-set name="procurement-logo">
         <xsl:attribute name="src">
             <xsl:value-of
-                    select="concat('url(', /pdfModel/logoPath, '/', /pdfModel/logoFilename, ')')"/>
+                    select="concat('url(', /pdfModel/logoFile,')')"/>
         </xsl:attribute>
         <xsl:attribute name="text-align">left</xsl:attribute>
         <xsl:attribute name="content-width">scale-to-fit</xsl:attribute>

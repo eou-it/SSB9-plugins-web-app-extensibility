@@ -119,8 +119,7 @@ class FinancePurchaseRequisitionPDFService {
                 FinanceProcurementConstants.PDF_DIRECTION_LEFT : FinanceProcurementConstants.PDF_DIRECTION_RIGHT)]
         pdfModel.pdfModel.config.languageDirection = languageDirection
         pdfModel.pdfModel.config.locale = LocaleContextHolder.getLocale()
-        pdfModel.pdfModel.logoPath = Holders.config.banner.finance.ssb.logoPath
-        pdfModel.pdfModel.logoFilename = FinanceProcurementConstants.LOG_FILE
+        pdfModel.pdfModel.logoFile = Holders.config.banner.finance.ssb.logoImageFile
         pdfModel.pdfModel.requisition = model
         pdfModel
     }
