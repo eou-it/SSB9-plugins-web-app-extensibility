@@ -15,7 +15,8 @@ import javax.persistence.*
 @NamedQueries(value = [
         @NamedQuery(name = FinanceProcurementConstants.GURTKLR_NAMED_QUERY_FIND_BY_ITEM_REFERENCE,
                 query = """FROM FinanceGeneralTickler ticklerTable
-                WHERE ticklerTable.itemReferenceNo = :itemReferenceNo""")
+                WHERE ticklerTable.itemReferenceNo = :itemReferenceNo
+                ORDER BY ticklerTable.activityDate DESC""")
 ])
 @Entity
 @Table(name = FinanceProcurementConstants.GURTKLR_TABLE)
