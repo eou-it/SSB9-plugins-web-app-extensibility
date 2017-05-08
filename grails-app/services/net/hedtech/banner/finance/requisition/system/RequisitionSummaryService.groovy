@@ -129,7 +129,7 @@ class RequisitionSummaryService extends ServiceBase {
                     status                   : statusMap[it.requestCode],
                     vendorAddressTypeSequence: it.vendorAddressTypeSequence,
                     vendorAddressTypeCode    : it.vendorAddressTypeCode,
-                    vendorLastName           : it.vendorCode ? it.vendorLastName + '(' + it.vendorCode + ')' : it.vendorLastName,
+                    vendorLastName           : doesNotNeedPdf ? it.vendorLastName : (it.vendorCode ? it.vendorLastName + '(' + it.vendorCode + ')' : it.vendorLastName),
                     vendorAddressLine1       : it.vendorAddressLine1,
                     vendorAddressLine2       : it.vendorAddressLine2,
                     vendorAddressLine3       : it.vendorAddressLine3,
