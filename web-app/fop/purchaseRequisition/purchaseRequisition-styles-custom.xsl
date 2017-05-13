@@ -5,7 +5,7 @@
                 exclude-result-prefixes="exsl">
 
     <!--
-    Pay stub styling customizations can be placed here.
+    Purchase Requisition styling customizations can be placed here.
     Attribute sets defined in this file that have the same name as attributes sets in the default
     styling file, purchaseRequisition-styles.xsl, will override the default settings. New attribute sets (styles) can be
     defined here as well; however, they must be added to the element's "user-attribute-sets" in purchaseRequisition.xsl.
@@ -13,7 +13,7 @@
 
     <!-- Examples.
 
-    Override the default font size of the pay stub.
+    Override the default font size of the Purchase Requisition.
     <xsl:attribute-set name="container">
         <xsl:attribute name="font-size">6pt</xsl:attribute>
     </xsl:attribute-set>
