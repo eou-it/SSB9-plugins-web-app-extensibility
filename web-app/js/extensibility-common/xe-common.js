@@ -794,26 +794,28 @@ var xe = (function (xe) {
     };
 
     xe.startup = function () {
-        if (typeof extensibilityInfo.extensions !== 'undefined' && !_.isEmpty(extensibilityInfo.extensions)) {
-            xe.extensions = extensibilityInfo.extensions;
-        }
-        if ((xe.extensions !== undefined)) {
-            xe.extensionsFound = true;
-            if (xe.devMode()){
-                xe.page.metadata=$.extend(true,{},xe.extensions);  //clone of extensions used for editor
+        if(extensibilityInfo.application!='BannerExtensibility') {
+            if (typeof extensibilityInfo.extensions !== 'undefined' && !_.isEmpty(extensibilityInfo.extensions)) {
+                xe.extensions = extensibilityInfo.extensions;
             }
-            xe.extensions.orderedSections = xe.reorderMetadata(xe.extensions.sections);
-            if(xe.extendFunctions !== undefined) {
-                xe.extendFunctions();
+            if ((xe.extensions !== undefined)) {
+                xe.extensionsFound = true;
+                if (xe.devMode()) {
+                    xe.page.metadata = $.extend(true, {}, xe.extensions);  //clone of extensions used for editor
+                }
+                xe.extensions.orderedSections = xe.reorderMetadata(xe.extensions.sections);
+                if (xe.extendFunctions !== undefined) {
+                    xe.extendFunctions();
+                }
             }
+            if (xe.extensionsFound) {
+                xe.log("Extensions", xe.extensions);
+                xe.loadResources();
+            } else {
+                xe.log('No Extensibility definitions found!');
+            }
+            xe.addExtensibilityMenu();
         }
-        if (xe.extensionsFound) {
-            xe.log("Extensions",xe.extensions);
-            xe.loadResources();
-        } else {
-            xe.log('No Extensibility definitions found!');
-        }
-        xe.addExtensibilityMenu();
     };
 
     $(xe.startup);
