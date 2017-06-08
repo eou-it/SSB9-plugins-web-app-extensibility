@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2016 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
 
 /* global _  */
@@ -60,13 +60,13 @@ var xe = (function (xe) {
     // create a selector for an element - specify a name or a selector for all with a specific type
     xe.selector = function( elementType, name ) {
         if (name) {
-            return '[' + xe.typePrefix + elementType + '=' + name + ']';
+            return '[' + xe.typePrefix + 'field' + '="' +name + '"]';
         }
         return '[' + xe.typePrefix + elementType + ']';
     };
 
     xe.selectorFor = function( name ) {
-        return '[' + xe.forAttribute + (name ? '=' + name: '') + ']';
+        return '[' + xe.forAttribute + (name ? '="' + name: '"') + ']';
     };
 
     // Create a selector for removing an element and its associated labels, etc.
@@ -231,6 +231,17 @@ var xe = (function (xe) {
 
             elementsToRemove.addClass('xe-exclude');
         }
+
+        function showElement( type, element ) {
+            var elementsToShow = $(element).add( $(xe.selectorFor(element.attributes[xe.typePrefix + type].value) ) );
+            xe.log('Show', type, element.attributes[xe.typePrefix + type].value,elementsToShow);
+            // include elements linked to this by aria-labelledby and aria-describedby ids
+            $.merge(elementsToShow,findAriaLinkedElements(xe.attr.labelledBy,elementsToShow));
+            $.merge(elementsToShow,findAriaLinkedElements(xe.attr.describedBy,elementsToShow));
+
+            elementsToShow.removeClass('xe-exclude');
+        }
+
 
 
         /*******************************************************************************************************
@@ -432,6 +443,12 @@ var xe = (function (xe) {
                     // exclude field
                     if ( fieldExtension.exclude ) {
                         removeElement(xe.type.field, fieldElement );
+                        return;
+                    }
+
+                    //show field
+                    if ( typeof fieldExtension.exclude !=  'undefined' && fieldExtension.exclude===false) {
+                        showElement(xe.type.field, fieldElement);
                         return;
                     }
 
