@@ -7,6 +7,7 @@ package net.hedtech.banner.finance.requisition.system
 import groovy.transform.EqualsAndHashCode
 import groovy.transform.ToString
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import org.hibernate.CacheMode
 import org.hibernate.Session
 import org.hibernate.annotations.Type
 
@@ -280,6 +281,7 @@ class RequisitionHeaderForCopy implements Serializable {
                     .setMaxResults( pagingParams.max )
                     .setFirstResult( pagingParams.offset )
                     .setCacheable( true )
+                    .setCacheMode(CacheMode.GET)
                     .setCacheRegion( 'financeProcurementTablesCacheRegion' )
                     .list()
         }
