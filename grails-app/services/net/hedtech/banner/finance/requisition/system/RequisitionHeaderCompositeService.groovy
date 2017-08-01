@@ -38,9 +38,12 @@ class RequisitionHeaderCompositeService {
     def createPurchaseRequisitionHeader( map ) {
         RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
         def user = springSecurityService.getAuthentication().user
-        if (user.oracleUserName) {
-            def oracleUserName = user.oracleUserName
-            requisitionHeaderRequest.userId = oracleUserName
+        String oracleUsername = map.oracleUsername
+        if (!oracleUsername) {
+            oracleUsername = user.oracleUserName
+        }
+        if (oracleUsername) {
+            requisitionHeaderRequest.userId = oracleUsername
             // Check for tax group
             if (financeSystemControlService.findActiveFinanceSystemControl().taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_NO) {
                 requisitionHeaderRequest.taxGroup = null
@@ -50,7 +53,7 @@ class RequisitionHeaderCompositeService {
             def header = RequisitionHeader.read( requisitionHeader.id )
             financeTextCompositeService.saveTextForHeader( requisitionHeader,
                                                            [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
-                                                           user.oracleUserName )
+                    oracleUsername )
             return header.requestCode
         } else {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
