@@ -84,7 +84,11 @@ class RequisitionHeaderCompositeService {
     def updateRequisitionHeader( map, requestCode, baseCcy ) {
         // Update header
         def user = springSecurityService.getAuthentication().user
-        if (map?.requisitionHeader && user.oracleUserName) {
+        String oracleUsername = map.oracleUsername
+        if (!oracleUsername) {
+            oracleUsername = user.oracleUserName
+        }
+        if (map?.requisitionHeader && oracleUsername) {
             def existingHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
             map.requisitionHeader.requestCode = existingHeader.requestCode
             if (!checkHeaderUpdateEligibility( map, existingHeader, baseCcy )) {
@@ -105,12 +109,11 @@ class RequisitionHeaderCompositeService {
                                                 new BusinessLogicValidationException(
                                                         FinanceProcurementConstants.ERROR_MESSAGE_DOCUMENT_CHANGE, [] ) )
             }
-            requisitionHeaderRequest.userId = user.oracleUserName
+            requisitionHeaderRequest.userId = oracleUsername
             def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
             LoggerUtility.debug LOGGER, "Requisition Header updated " + requisitionHeader
             financeTextCompositeService.saveTextForHeader( requisitionHeader,
-                                                           [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
-                                                           user.oracleUserName )
+                                                           [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],oracleUsername)
             if (isDiscountChanged || isCcyChanged) {
                 reCalculateCommodities( requisitionHeader, isDiscountChanged, isCcyChanged )
             }

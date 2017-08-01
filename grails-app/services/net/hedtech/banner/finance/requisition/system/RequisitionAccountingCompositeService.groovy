@@ -46,8 +46,12 @@ class RequisitionAccountingCompositeService {
     def createPurchaseRequisitionAccounting( map ) {
         RequisitionAccounting requisitionAccountingRequest = map.requisitionAccounting
         def user = springSecurityService.getAuthentication().user
-        if (user.oracleUserName) {
-            requisitionAccountingRequest.userId = user.oracleUserName
+        String oracleUsername = map.oracleUsername
+        if (!oracleUsername) {
+            oracleUsername = user.oracleUserName
+        }
+        if (oracleUsername) {
+            requisitionAccountingRequest.userId = oracleUsername
             def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionAccountingRequest.requestCode )
             FinanceProcurementHelper.checkCompleteRequisition( header )
             reValidateAccountingFOAP( requisitionAccountingRequest, header.transactionDate )
@@ -89,7 +93,11 @@ class RequisitionAccountingCompositeService {
     def updateRequisitionAccounting( accountingDomainModel ) {
         // Null or empty check for item number and sequence number.
         def user = springSecurityService.getAuthentication().user
-        if (!user.oracleUserName) {
+        String oracleUsername = accountingDomainModel.oracleUsername
+        if (!oracleUsername) {
+            oracleUsername = user.oracleUserName
+        }
+        if (!oracleUsername) {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
             throw new ApplicationException( RequisitionAccountingCompositeService,
                                             new BusinessLogicValidationException(
@@ -114,7 +122,7 @@ class RequisitionAccountingCompositeService {
         requisitionAccountingRequest.lastModified = new Date()
         requisitionAccountingRequest.item = existingAccountingInfo.item
         requisitionAccountingRequest.sequenceNumber = existingAccountingInfo.sequenceNumber
-        requisitionAccountingRequest.userId = user.oracleUserName
+        requisitionAccountingRequest.userId = oracleUsername
         setNSFOverride( requisitionAccountingRequest )
         requisitionDetailsAcctCommonCompositeService.adjustAccountPercentageAndAmount( requisitionAccountingRequest )
         def requisitionAccounting = requisitionAccountingService.update( [domainModel: requisitionAccountingRequest] )

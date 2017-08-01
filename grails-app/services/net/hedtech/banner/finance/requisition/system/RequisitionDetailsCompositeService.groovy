@@ -47,10 +47,14 @@ class RequisitionDetailsCompositeService {
     def createPurchaseRequisitionDetail( map ) {
         RequisitionDetail requisitionDetailRequest = map.requisitionDetail
         def user = springSecurityService.getAuthentication().user
-        if (user.oracleUserName) {
+        String oracleUsername = map.oracleUsername
+        if (!oracleUsername) {
+            oracleUsername = user.oracleUserName
+        }
+        if (oracleUsername) {
             def requestCode = requisitionDetailRequest.requestCode
             FinanceProcurementHelper.checkCompleteRequisition( requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ) )
-            requisitionDetailRequest.userId = user.oracleUserName
+            requisitionDetailRequest.userId = oracleUsername
             requisitionDetailRequest.item = requisitionDetailService.getLastItem( requestCode ).next()
             // Set all data with business logic.
             requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
@@ -60,7 +64,7 @@ class RequisitionDetailsCompositeService {
             reBalanceRequisitionAccounting requestCode, requisitionDetail.item, null
             financeTextCompositeService.saveTextForCommodity( requisitionDetail,
                                                               [privateComment: map.requisitionDetail.privateComment, publicComment: map.requisitionDetail.publicComment],
-                                                              user.oracleUserName, requisitionDetail.item )
+                    oracleUsername, requisitionDetail.item )
             return [requestCode: requisitionDetail.requestCode, item: requisitionDetail.item]
         } else {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
@@ -93,7 +97,11 @@ class RequisitionDetailsCompositeService {
     def updateRequisitionDetail( detailDomainModel ) {
         def requestCode = detailDomainModel.requisitionDetail.requestCode
         def user = springSecurityService.getAuthentication().user
-        if (!user.oracleUserName) {
+        String oracleUsername = detailDomainModel.oracleUsername
+        if (!oracleUsername) {
+            oracleUsername = user.oracleUserName
+        }
+        if (!oracleUsername) {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
             throw new ApplicationException( RequisitionDetailsCompositeService,
                                             new BusinessLogicValidationException(
@@ -117,14 +125,14 @@ class RequisitionDetailsCompositeService {
         requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
         requisitionDetailRequest.lastModified = new Date()
         requisitionDetailRequest.item = existingDetail.item
-        requisitionDetailRequest.userId = user.oracleUserName
+        requisitionDetailRequest.userId = oracleUsername
         RequisitionDetail requisitionDetail = requisitionDetailService.update( [domainModel: requisitionDetailRequest] )
         LoggerUtility.debug LOGGER, "Requisition Detail updated " + requisitionDetail
         /** Re-balance associated accounting information*/
         reBalanceRequisitionAccounting( requestCode, requisitionDetail.item )
         financeTextCompositeService.saveTextForCommodity( requisitionDetail,
                                                           [privateComment: detailDomainModel.requisitionDetail.privateComment, publicComment: detailDomainModel.requisitionDetail.publicComment],
-                                                          user.oracleUserName, requisitionDetail.item )
+                oracleUsername, requisitionDetail.item )
         return requisitionDetail
     }
 

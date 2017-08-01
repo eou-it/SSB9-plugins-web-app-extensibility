@@ -61,6 +61,16 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         assertTrue requestCode != FinanceProcurementConstants.DEFAULT_REQUEST_CODE
     }
 
+    @Test
+    void createPurchaseRequisition_WithDefaultOracleUser() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def headerDomainModel = newRequisitionHeader()
+        String oracleUsername = "FIMSUSR"
+        def domainModelMap = [requisitionHeader: headerDomainModel, oracleUsername: oracleUsername]
+        def requestCode = requisitionHeaderCompositeService.createPurchaseRequisitionHeader( domainModelMap )
+        assertTrue requestCode != FinanceProcurementConstants.DEFAULT_REQUEST_CODE
+    }
+
     /**
      * Test create where Tax processing Off
      */
@@ -309,6 +319,16 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         def headerDomainModel = newRequisitionHeader()
         headerDomainModel.requesterName = 'Modified'
         def domainModelMap = [requisitionHeader: headerDomainModel]
+        assert 'Modified' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0001', 'USD' ).requesterName
+    }
+
+    @Test
+    void updatePurchaseRequisition_WithDefaultOracleUser() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def headerDomainModel = newRequisitionHeader()
+        headerDomainModel.requesterName = 'Modified'
+        String oracleUsername = "FIMSUSR"
+        def domainModelMap = [requisitionHeader: headerDomainModel, oracleUsername: oracleUsername]
         assert 'Modified' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0001', 'USD' ).requesterName
     }
 

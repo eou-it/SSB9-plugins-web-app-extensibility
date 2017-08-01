@@ -53,6 +53,17 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
         assertTrue requestCode?.requestCode == requestHeaderCode
     }
 
+    @Test
+    void testCreatePurchaseRequisitionDetail_WithDefaultOracleUser() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def reqDetailDomainModel = getRequisitionDetails()
+        reqDetailDomainModel.privateComment = 'Testing Private comment.'
+        String oracleUsername = "FIMSUSR"
+        def domainModelMap = [requisitionDetail: reqDetailDomainModel, oracleUsername: oracleUsername]
+        def requestCode = requisitionDetailsCompositeService.createPurchaseRequisitionDetail( domainModelMap )
+        assertTrue requestCode?.requestCode == requestHeaderCode
+    }
+
     /**
      * Test create Requisition Detail Having discount code
      */
@@ -203,6 +214,19 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
         detailDomainModel.item = 1
         detailDomainModel.privateComment = 'Testing Private comment.'
         def domainModelMap = [requisitionDetail: detailDomainModel]
+        def detail = requisitionDetailsCompositeService.updateRequisitionDetail( domainModelMap )
+        assertTrue( detail.requestCode == requestHeaderCode )
+    }
+
+    @Test
+    void updatePurchaseDetail_WithDefaultOracleUser() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
+                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def detailDomainModel = getRequisitionDetails()
+        detailDomainModel.item = 1
+        detailDomainModel.privateComment = 'Testing Private comment.'
+        String oracleUsername = "FIMSUSR"
+        def domainModelMap = [requisitionDetail: detailDomainModel, oracleUsername: oracleUsername]
         def detail = requisitionDetailsCompositeService.updateRequisitionDetail( domainModelMap )
         assertTrue( detail.requestCode == requestHeaderCode )
     }
