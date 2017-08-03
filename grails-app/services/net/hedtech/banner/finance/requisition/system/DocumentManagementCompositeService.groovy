@@ -10,6 +10,7 @@ import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.general.person.PersonIdentificationName
 import org.apache.log4j.Logger
 import grails.util.Holders
+import net.hedtech.banner.imaging.BdmUtility
 
 import javax.xml.ws.WebServiceException
 import java.text.DateFormat
@@ -125,10 +126,42 @@ class DocumentManagementCompositeService {
     private Map getBdmParams() {
         Map bdmParams = new HashMap()
         Holders.config.bdmserver.each {k, v ->
-            bdmParams.put( k, v )
+            bdmParams.put( k, k == "Password" ? decryptString( v ) : v )
         }
+        bdmParams.put( "KeyPassword", fetchBdmCyptoKey() )
         LoggerUtility.debug( LOGGER, "BDMParams :: " + bdmParams )
         return bdmParams
+    }
+
+    /**
+     *
+     * @param v
+     * @return
+     */
+    private def decryptString( v ) {
+        try {
+            BdmUtility.decryptString( v )
+        }
+        catch (ApplicationException ae) {
+            LoggerUtility.error( LOGGER, 'Error while Deleting document' + ae.message )
+            throw new ApplicationException( DocumentManagementCompositeService,
+                                            new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR, [] ) )
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    private def fetchBdmCyptoKey() {
+        try {
+            BdmUtility.fetchBdmCyptoKey()
+        }
+        catch (ApplicationException ae) {
+            LoggerUtility.error( LOGGER, 'Error while Deleting document' + ae.message )
+            throw new ApplicationException( DocumentManagementCompositeService,
+                                            new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR, [] ) )
+        }
     }
 
     /**
@@ -181,14 +214,14 @@ class DocumentManagementCompositeService {
         }
         return bdmInstalled
     }
-	
+
 	def encodeDocumentAttributes(documentAttributes){
 		documentAttributes.each {entry ->
                 if(entry.value && entry.value instanceof String){
                     entry.value = entry.value.encodeAsHTML()
                 }
             }
-		return documentAttributes	
+		return documentAttributes
 	}
 
 }
