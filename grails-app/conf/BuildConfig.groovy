@@ -69,7 +69,6 @@ grails.project.dependency.resolution = {
               "avalon-framework:avalon-framework-impl:4.2.0",
               "xml-apis:xml-apis:1.3.04",
               "xml-apis:xml-apis-ext:1.3.04",
-              "xalan:xalan:2.6.0",
               "commons-logging:commons-logging:1.0.4",
               "commons-io:commons-io:1.3.1",
               "org.json:json:20090211" )
