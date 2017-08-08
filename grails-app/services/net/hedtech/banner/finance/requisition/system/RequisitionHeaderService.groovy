@@ -32,9 +32,12 @@ class RequisitionHeaderService extends ServiceBase {
      * Find the requisition Header for specified requestCode
      * @param requestCode
      */
-    def findRequisitionHeaderByRequestCode( requestCode ) {
+    def findRequisitionHeaderByRequestCode( requestCode, String oracleUserName = null ) {
         LoggerUtility.debug( LOGGER, 'Input parameters for findRequisitionHeaderByRequestCode :' + requestCode )
-        def retRequisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode, springSecurityService.getAuthentication().user.oracleUserName )
+        if(!oracleUserName){
+            oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
+        }
+        def retRequisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode, oracleUserName )
 
         if (!retRequisitionHeader) {
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
@@ -63,9 +66,12 @@ class RequisitionHeaderService extends ServiceBase {
      * Completes the purchase requisition
      * @param requestCode
      */
-    def completeRequisition( requestCode, forceComplete ) {
+    def completeRequisition( requestCode, forceComplete, String oracleUserName ) {
         LoggerUtility.debug( LOGGER, 'Input parameters for completeRequisition :' + requestCode )
-        def requisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode, springSecurityService.getAuthentication().user.oracleUserName )
+        if(!oracleUserName){
+            oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
+        }
+        def requisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode, oracleUserName )
         if (!requisitionHeader) {
             LoggerUtility.error( LOGGER, 'Header not found for ' + requestCode )
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
