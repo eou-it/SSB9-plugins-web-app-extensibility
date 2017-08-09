@@ -259,4 +259,36 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
                                                              testFile.getName(), "text/plain", IOUtils.toByteArray( input ) )
         multipartFile
     }
+
+    /**
+     * Tests decryption with invalid string
+     */
+    @Test
+    void testDecryptString() {
+        try {
+            documentManagementCompositeService.decryptString( )
+        } catch (ApplicationException ae) {
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR )
+        }
+    }
+
+    /**
+     * Tests BDM installed false
+     */
+    @Test
+    void testBDMInstalledFalse() {
+        try {
+            documentManagementCompositeService.checkIfBDMInstalled( false )
+        } catch (ApplicationException ae) {
+            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED )
+        }
+    }
+
+    /**
+     * Tests BDM installed true
+     */
+    @Test
+    void testBDMInstalledTrue() {
+        assertTrue documentManagementCompositeService.checkIfBDMInstalled( true )
+    }
 }
