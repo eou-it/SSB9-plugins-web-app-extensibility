@@ -143,7 +143,7 @@ class DocumentManagementCompositeService {
             BdmUtility.decryptString( v )
         }
         catch (ApplicationException ae) {
-            LoggerUtility.error( LOGGER, 'Error while Deleting document' + ae.message )
+            LoggerUtility.error( LOGGER, 'Error while getting the decrypting' + ae.message )
             throw new ApplicationException( DocumentManagementCompositeService,
                                             new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR, [] ) )
         }
@@ -158,7 +158,7 @@ class DocumentManagementCompositeService {
             BdmUtility.fetchBdmCyptoKey()
         }
         catch (ApplicationException ae) {
-            LoggerUtility.error( LOGGER, 'Error while Deleting document' + ae.message )
+            LoggerUtility.error( LOGGER, 'Error while getting BDM Crypto key.' + ae.message )
             throw new ApplicationException( DocumentManagementCompositeService,
                                             new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR, [] ) )
         }
