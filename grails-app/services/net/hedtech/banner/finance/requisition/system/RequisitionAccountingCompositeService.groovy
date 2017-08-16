@@ -115,6 +115,8 @@ class RequisitionAccountingCompositeService {
         requisitionAccountingRequest.item = existingAccountingInfo.item
         requisitionAccountingRequest.sequenceNumber = existingAccountingInfo.sequenceNumber
         requisitionAccountingRequest.userId = user.oracleUserName
+        requisitionAccountingRequest.fiscalYear = null
+
         setNSFOverride( requisitionAccountingRequest )
         requisitionDetailsAcctCommonCompositeService.adjustAccountPercentageAndAmount( requisitionAccountingRequest )
         def requisitionAccounting = requisitionAccountingService.update( [domainModel: requisitionAccountingRequest] )
@@ -363,5 +365,29 @@ class RequisitionAccountingCompositeService {
         programService.findByCoaProgramAndEffectiveDate( [coa: requisitionAccount.chartOfAccount, effectiveDate: tnxDate, programCodeDesc: requisitionAccount.program],
                                                          [offset: FinanceProcurementConstants.ZERO, max: FinanceProcurementConstants.ONE] )
 
+    }
+
+    private def updateRequisitionAccountSequence(requisitionCode) {
+
+        def user = springSecurityService.getAuthentication().user
+        if (!user.oracleUserName) {
+            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            throw new ApplicationException( RequisitionAccountingCompositeService,
+                    new BusinessLogicValidationException(
+                            FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
+        }
+        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionCode)
+        FinanceProcurementHelper.checkCompleteRequisition( header )
+
+        //def account = null
+        def allAccounting = requisitionAccountingService.findAccountingByRequestCode(requisitionCode)
+        allAccounting.each {RequisitionAccounting requisitionAccounting ->
+            def account = null
+            account = requisitionAccounting
+            account.fiscalYear = null
+            account.period = null
+            requisitionAccountingService.update([domainModel: account])
+        }
+        LoggerUtility.debug(LOGGER, "Requisition Accounting information updated for " + requisitionCode)
     }
 }
