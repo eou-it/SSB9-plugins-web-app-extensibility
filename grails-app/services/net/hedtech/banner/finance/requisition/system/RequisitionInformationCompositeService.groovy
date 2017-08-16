@@ -114,11 +114,4 @@ class RequisitionInformationCompositeService {
                 headerPublicComment : publicComment,
                 status              : status]
     }
-
-    @Transactional(readOnly = true)
-    def fetchRequisitionHeader( requestCode ) {
-        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
-        return [header : header]
-    }
-
 }

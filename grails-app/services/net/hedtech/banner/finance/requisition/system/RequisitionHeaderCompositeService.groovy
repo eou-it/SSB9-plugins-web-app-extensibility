@@ -111,6 +111,17 @@ class RequisitionHeaderCompositeService {
             if (isDiscountChanged || isCcyChanged) {
                 reCalculateCommodities( requisitionHeader, isDiscountChanged, isCcyChanged )
             }
+            if(checkAccountUpdateEligibility( map, existingHeader )){
+                LoggerUtility.debug( LOGGER, 'Modification Account sequences required' )
+                def allAccounting = requisitionAccountingService.findAccountingByRequestCode(requisitionCode)
+                allAccounting.each {RequisitionAccounting requisitionAccounting ->
+                    def account = null
+                    account = requisitionAccounting
+                    account.fiscalYear = null
+                    account.period = null
+                    requisitionAccountingService.update([domainModel: account])
+                }
+            }
             return requisitionHeader
         } else {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
@@ -240,5 +251,16 @@ class RequisitionHeaderCompositeService {
         } catch (ApplicationException e) {
             LoggerUtility.warn( LOGGER, 'Requisition Commodity Details are empty for requestCode=' + requisitionHeader.requestCode + ' and commodity recalculation is not performed' )
         }
+    }
+
+    /**
+     * Check if Account Lines are modified and save to db is required
+     * @param map
+     * @param existingHeader
+     * @return
+     */
+    private boolean checkAccountUpdateEligibility( def map, RequisitionHeader existingHeader ) {
+        RequisitionHeader newHeader = map.requisitionHeader
+        return (new java.sql.Date(newHeader.transactionDate.getTime()) != existingHeader.transactionDate)
     }
 }
