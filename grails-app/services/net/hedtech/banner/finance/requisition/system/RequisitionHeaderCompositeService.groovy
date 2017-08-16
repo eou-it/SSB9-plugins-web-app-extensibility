@@ -88,6 +88,7 @@ class RequisitionHeaderCompositeService {
                 LoggerUtility.debug( LOGGER, 'Modification not required' )
                 return existingHeader
             }
+            boolean checkUpdateAccountRequire = checkAccountUpdateEligibility( map, existingHeader )
             FinanceProcurementHelper.checkCompleteRequisition( existingHeader )
             RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
             boolean isDiscountChanged = requisitionHeaderRequest.discount && requisitionHeaderRequest.discount != existingHeader.discount
@@ -96,7 +97,8 @@ class RequisitionHeaderCompositeService {
             requisitionHeaderRequest.version = existingHeader.version
             requisitionHeaderRequest.requestCode = existingHeader.requestCode
             requisitionHeaderRequest.documentCopiedFrom = existingHeader.documentCopiedFrom
-            if (requisitionHeaderRequest.isDocumentLevelAccounting != existingHeader.isDocumentLevelAccounting && requisitionAccountingService.findAccountingSizeByRequestCode( existingHeader.requestCode ) > 0) {
+            def accountSize = requisitionAccountingService.findAccountingSizeByRequestCode( existingHeader.requestCode )
+            if (requisitionHeaderRequest.isDocumentLevelAccounting != existingHeader.isDocumentLevelAccounting && accountSize > 0) {
                 LoggerUtility.error( LOGGER, 'Document type cannot be modified once accounting associated with this' )
                 throw new ApplicationException( RequisitionHeaderCompositeService,
                                                 new BusinessLogicValidationException(
@@ -111,16 +113,8 @@ class RequisitionHeaderCompositeService {
             if (isDiscountChanged || isCcyChanged) {
                 reCalculateCommodities( requisitionHeader, isDiscountChanged, isCcyChanged )
             }
-            if(checkAccountUpdateEligibility( map, existingHeader )){
-                LoggerUtility.debug( LOGGER, 'Modification Account sequences required' )
-                def allAccounting = requisitionAccountingService.findAccountingByRequestCode(requisitionCode)
-                allAccounting.each {RequisitionAccounting requisitionAccounting ->
-                    def account = null
-                    account = requisitionAccounting
-                    account.fiscalYear = null
-                    account.period = null
-                    requisitionAccountingService.update([domainModel: account])
-                }
+            if( accountSize > 0 && checkUpdateAccountRequire){
+                updateAccountSequences(requestCode)
             }
             return requisitionHeader
         } else {
@@ -259,8 +253,20 @@ class RequisitionHeaderCompositeService {
      * @param existingHeader
      * @return
      */
-    private boolean checkAccountUpdateEligibility( def map, RequisitionHeader existingHeader ) {
+    private boolean checkAccountUpdateEligibility( map, RequisitionHeader existingHeader ) {
         RequisitionHeader newHeader = map.requisitionHeader
         return (new java.sql.Date(newHeader.transactionDate.getTime()) != existingHeader.transactionDate)
+    }
+
+    private void updateAccountSequences(requestCode){
+        def allAccounting = requisitionAccountingService.findAccountingByRequestCode(requestCode)
+        allAccounting.each {RequisitionAccounting requisitionAccounting ->
+            def account = null
+            account = requisitionAccounting
+            account.fiscalYear = null
+            account.period = null
+            requisitionAccountingService.update([domainModel: account])
+        }
+        LoggerUtility.debug( LOGGER, 'Modified Account sequences ' )
     }
 }
