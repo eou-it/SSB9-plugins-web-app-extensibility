@@ -43,7 +43,7 @@ class RequisitionInformationCompositeService {
             header.transactionDate = new Date()
         }
         LoggerUtility.debug( LOGGER, 'Header: ' + header )
-        def shipTo = shipToCodeService.findShipToCodesByCode( header.ship, originalTransDate )
+        def shipTo = shipToCodeService.findShipToCodesByCode( header.ship, originalTransDate, false )
         LoggerUtility.debug( LOGGER, 'shipTo: ' + shipTo )
 
         def organization
