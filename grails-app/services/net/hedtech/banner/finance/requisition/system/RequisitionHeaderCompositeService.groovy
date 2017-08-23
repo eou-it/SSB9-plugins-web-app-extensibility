@@ -267,20 +267,4 @@ class RequisitionHeaderCompositeService {
         RequisitionHeader newHeader = map.requisitionHeader
         return (new java.sql.Date(newHeader.transactionDate.getTime()) != existingHeader.transactionDate)
     }
-
-    def updateAccountSequences(requestCode){
-        try {
-            def allAccounting = requisitionAccountingService.findAccountingByRequestCode(requestCode)
-            allAccounting.each { RequisitionAccounting requisitionAccounting ->
-                def account = null
-                account = requisitionAccounting
-                account.fiscalYear = null
-                account.period = null
-                requisitionAccountingService.update([domainModel: account])
-            }
-        }catch (ApplicationException e){
-            return e
-        }
-        LoggerUtility.debug( LOGGER, 'Modified Account sequences ' )
-    }
 }
