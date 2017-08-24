@@ -77,7 +77,6 @@ class RequisitionHeaderCompositeService {
      * @param map the requisition map
      * @param requestCode
      */
-    @Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
     def updateRequisitionHeader( map, requestCode, baseCcy ) {
         // Update header
         def user = springSecurityService.getAuthentication().user
@@ -106,6 +105,18 @@ class RequisitionHeaderCompositeService {
             }
             requisitionHeaderRequest.userId = user.oracleUserName
             def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
+
+            if( accountSize > 0 && checkUpdateAccountRequire){
+                def allAccounting = requisitionAccountingService.findAccountingByRequestCode(requestCode)
+                allAccounting.each {RequisitionAccounting requisitionAccounting ->
+                    def account = null
+                    account = requisitionAccounting
+                    account.fiscalYear = null
+                    account.period = null
+                    requisitionAccountingService.update([domainModel: account])
+
+                }
+            }
             LoggerUtility.debug LOGGER, "Requisition Header updated " + requisitionHeader
             financeTextCompositeService.saveTextForHeader( requisitionHeader,
                                                            [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
@@ -113,9 +124,7 @@ class RequisitionHeaderCompositeService {
             if (isDiscountChanged || isCcyChanged) {
                 reCalculateCommodities( requisitionHeader, isDiscountChanged, isCcyChanged )
             }
-            if( accountSize > 0 && checkUpdateAccountRequire){
-                updateAccountSequences(requestCode)
-            }
+
             return requisitionHeader
         } else {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
@@ -256,17 +265,5 @@ class RequisitionHeaderCompositeService {
     private boolean checkAccountUpdateEligibility( map, RequisitionHeader existingHeader ) {
         RequisitionHeader newHeader = map.requisitionHeader
         return (new java.sql.Date(newHeader.transactionDate.getTime()) != existingHeader.transactionDate)
-    }
-
-    private void updateAccountSequences(requestCode){
-        def allAccounting = requisitionAccountingService.findAccountingByRequestCode(requestCode)
-        allAccounting.each {RequisitionAccounting requisitionAccounting ->
-            def account = null
-            account = requisitionAccounting
-            account.fiscalYear = null
-            account.period = null
-            requisitionAccountingService.update([domainModel: account])
-        }
-        LoggerUtility.debug( LOGGER, 'Modified Account sequences ' )
     }
 }
