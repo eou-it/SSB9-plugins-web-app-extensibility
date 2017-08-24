@@ -323,7 +323,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         headerDomainModel.discount = 30
         headerDomainModel.currency = 'USD'
         def domainModelMap = [requisitionHeader: headerDomainModel]
-        assert 'Modified' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0011', 'USD' ).requesterName
+        assert 'Modified' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0001', 'USD' ).requesterName
     }
 
     /**
