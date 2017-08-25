@@ -77,6 +77,7 @@ class RequisitionHeaderCompositeService {
      * @param map the requisition map
      * @param requestCode
      */
+    @Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
     def updateRequisitionHeader( map, requestCode, baseCcy ) {
         // Update header
         def user = springSecurityService.getAuthentication().user
@@ -105,7 +106,6 @@ class RequisitionHeaderCompositeService {
             }
             requisitionHeaderRequest.userId = user.oracleUserName
             def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
-
             if( accountSize > 0 && checkUpdateAccountRequire){
                 def allAccounting = requisitionAccountingService.findAccountingByRequestCode(requestCode)
                 allAccounting.each {RequisitionAccounting requisitionAccounting ->
@@ -117,6 +117,7 @@ class RequisitionHeaderCompositeService {
 
                 }
             }
+
             LoggerUtility.debug LOGGER, "Requisition Header updated " + requisitionHeader
             financeTextCompositeService.saveTextForHeader( requisitionHeader,
                                                            [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
