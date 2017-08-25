@@ -77,7 +77,7 @@ class RequisitionHeaderCompositeService {
      * @param map the requisition map
      * @param requestCode
      */
-    @Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
+
     def updateRequisitionHeader( map, requestCode, baseCcy ) {
         // Update header
         def user = springSecurityService.getAuthentication().user
