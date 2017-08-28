@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015-2017 Ellucian Company L.P. and its affiliates.
+ Copyright 2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -49,21 +49,6 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
         reqAccountingDomainModel.requisitionAmount = null
         reqAccountingDomainModel.requestCode = 'RSED0003'
         def domainModelMap = [requisitionAccounting: reqAccountingDomainModel]
-        def requestCode = requisitionAccountingCompositeService.createPurchaseRequisitionAccounting( domainModelMap )
-        assertTrue requestCode?.requestCode == reqAccountingDomainModel.requestCode
-        assertTrue requestCode?.item == reqAccountingDomainModel.item
-        assertTrue requestCode?.sequenceNumber == reqAccountingDomainModel.sequenceNumber
-    }
-
-    @Test
-    void testCreateRequisitionAccounting_WithDefaultOracleUser() {
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def reqAccountingDomainModel = getRequestAccounting()
-        reqAccountingDomainModel.requisitionAmount = null
-        reqAccountingDomainModel.requestCode = 'RSED0003'
-        String oracleUsername = "FIMSUSR"
-        def domainModelMap = [requisitionAccounting: reqAccountingDomainModel, oracleUsername: oracleUsername]
         def requestCode = requisitionAccountingCompositeService.createPurchaseRequisitionAccounting( domainModelMap )
         assertTrue requestCode?.requestCode == reqAccountingDomainModel.requestCode
         assertTrue requestCode?.item == reqAccountingDomainModel.item
@@ -137,21 +122,6 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
         accountingDomainModel.requestCode = 'RSED0003'
         accountingDomainModel.requisitionAmount = null
         def domainModelMap = [requisitionAccounting: accountingDomainModel]
-        def accounting = requisitionAccountingCompositeService.updateRequisitionAccounting( domainModelMap )
-        assertTrue( accounting.requestCode == 'RSED0003' )
-    }
-
-    @Test
-    void updatePurchaseAccounting_WithDefaultOracleUser() {
-        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
-                FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        def accountingDomainModel = getRequestAccounting()
-        accountingDomainModel.item = 0
-        accountingDomainModel.sequenceNumber = 1
-        accountingDomainModel.requestCode = 'RSED0003'
-        accountingDomainModel.requisitionAmount = null
-        String oracleUsername = "FIMSUSR"
-        def domainModelMap = [requisitionAccounting: accountingDomainModel, oracleUsername: oracleUsername]
         def accounting = requisitionAccountingCompositeService.updateRequisitionAccounting( domainModelMap )
         assertTrue( accounting.requestCode == 'RSED0003' )
     }

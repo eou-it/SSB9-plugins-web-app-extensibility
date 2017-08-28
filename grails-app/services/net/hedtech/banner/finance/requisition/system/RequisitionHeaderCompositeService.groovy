@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015-2017 Ellucian Company L.P. and its affiliates.
+ Copyright 2015 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -38,12 +38,9 @@ class RequisitionHeaderCompositeService {
     def createPurchaseRequisitionHeader( map ) {
         RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
         def user = springSecurityService.getAuthentication().user
-        String oracleUsername = map.oracleUsername
-        if (!oracleUsername) {
-            oracleUsername = user.oracleUserName
-        }
-        if (oracleUsername) {
-            requisitionHeaderRequest.userId = oracleUsername
+        if (user.oracleUserName) {
+            def oracleUserName = user.oracleUserName
+            requisitionHeaderRequest.userId = oracleUserName
             // Check for tax group
             if (financeSystemControlService.findActiveFinanceSystemControl().taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_NO) {
                 requisitionHeaderRequest.taxGroup = null
@@ -53,7 +50,7 @@ class RequisitionHeaderCompositeService {
             def header = RequisitionHeader.read( requisitionHeader.id )
             financeTextCompositeService.saveTextForHeader( requisitionHeader,
                                                            [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
-                    oracleUsername )
+                                                           user.oracleUserName )
             return header.requestCode
         } else {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
@@ -84,11 +81,7 @@ class RequisitionHeaderCompositeService {
     def updateRequisitionHeader( map, requestCode, baseCcy ) {
         // Update header
         def user = springSecurityService.getAuthentication().user
-        String oracleUsername = map.oracleUsername
-        if (!oracleUsername) {
-            oracleUsername = user.oracleUserName
-        }
-        if (map?.requisitionHeader && oracleUsername) {
+        if (map?.requisitionHeader && user.oracleUserName) {
             def existingHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
             map.requisitionHeader.requestCode = existingHeader.requestCode
             if (!checkHeaderUpdateEligibility( map, existingHeader, baseCcy )) {
@@ -109,11 +102,12 @@ class RequisitionHeaderCompositeService {
                                                 new BusinessLogicValidationException(
                                                         FinanceProcurementConstants.ERROR_MESSAGE_DOCUMENT_CHANGE, [] ) )
             }
-            requisitionHeaderRequest.userId = oracleUsername
+            requisitionHeaderRequest.userId = user.oracleUserName
             def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
             LoggerUtility.debug LOGGER, "Requisition Header updated " + requisitionHeader
             financeTextCompositeService.saveTextForHeader( requisitionHeader,
-                                                           [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],oracleUsername)
+                                                           [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
+                                                           user.oracleUserName )
             if (isDiscountChanged || isCcyChanged) {
                 reCalculateCommodities( requisitionHeader, isDiscountChanged, isCcyChanged )
             }

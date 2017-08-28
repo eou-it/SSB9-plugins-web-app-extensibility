@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015-2017 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -47,14 +47,10 @@ class RequisitionDetailsCompositeService {
     def createPurchaseRequisitionDetail( map ) {
         RequisitionDetail requisitionDetailRequest = map.requisitionDetail
         def user = springSecurityService.getAuthentication().user
-        String oracleUsername = map.oracleUsername
-        if (!oracleUsername) {
-            oracleUsername = user.oracleUserName
-        }
-        if (oracleUsername) {
+        if (user.oracleUserName) {
             def requestCode = requisitionDetailRequest.requestCode
             FinanceProcurementHelper.checkCompleteRequisition( requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ) )
-            requisitionDetailRequest.userId = oracleUsername
+            requisitionDetailRequest.userId = user.oracleUserName
             requisitionDetailRequest.item = requisitionDetailService.getLastItem( requestCode ).next()
             // Set all data with business logic.
             requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
@@ -64,7 +60,7 @@ class RequisitionDetailsCompositeService {
             reBalanceRequisitionAccounting requestCode, requisitionDetail.item, null
             financeTextCompositeService.saveTextForCommodity( requisitionDetail,
                                                               [privateComment: map.requisitionDetail.privateComment, publicComment: map.requisitionDetail.publicComment],
-                    oracleUsername, requisitionDetail.item )
+                                                              user.oracleUserName, requisitionDetail.item )
             return [requestCode: requisitionDetail.requestCode, item: requisitionDetail.item]
         } else {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
@@ -97,11 +93,7 @@ class RequisitionDetailsCompositeService {
     def updateRequisitionDetail( detailDomainModel ) {
         def requestCode = detailDomainModel.requisitionDetail.requestCode
         def user = springSecurityService.getAuthentication().user
-        String oracleUsername = detailDomainModel.oracleUsername
-        if (!oracleUsername) {
-            oracleUsername = user.oracleUserName
-        }
-        if (!oracleUsername) {
+        if (!user.oracleUserName) {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
             throw new ApplicationException( RequisitionDetailsCompositeService,
                                             new BusinessLogicValidationException(
@@ -125,14 +117,14 @@ class RequisitionDetailsCompositeService {
         requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
         requisitionDetailRequest.lastModified = new Date()
         requisitionDetailRequest.item = existingDetail.item
-        requisitionDetailRequest.userId = oracleUsername
+        requisitionDetailRequest.userId = user.oracleUserName
         RequisitionDetail requisitionDetail = requisitionDetailService.update( [domainModel: requisitionDetailRequest] )
         LoggerUtility.debug LOGGER, "Requisition Detail updated " + requisitionDetail
         /** Re-balance associated accounting information*/
         reBalanceRequisitionAccounting( requestCode, requisitionDetail.item )
         financeTextCompositeService.saveTextForCommodity( requisitionDetail,
                                                           [privateComment: detailDomainModel.requisitionDetail.privateComment, publicComment: detailDomainModel.requisitionDetail.publicComment],
-                oracleUsername, requisitionDetail.item )
+                                                          user.oracleUserName, requisitionDetail.item )
         return requisitionDetail
     }
 
