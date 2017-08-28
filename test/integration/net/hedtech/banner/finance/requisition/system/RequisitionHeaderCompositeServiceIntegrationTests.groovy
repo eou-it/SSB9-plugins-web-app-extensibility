@@ -557,6 +557,8 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     @Test
     void updatePurchaseRequisitionWithNoChange() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        Session session = sessionFactory.getCurrentSession()
+                        session.createSQLQuery( "UPDATE GUBINST set GUBINST_BASE_CURR_CODE = 'USD' WHERE GUBINST_KEY = 'INST'" ).executeUpdate()
         def headerDomainModel = newRequisitionHeader()
         def domainModelMap = [requisitionHeader: headerDomainModel]
         assertEquals headerDomainModel.currency, requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0001', 'USD' ).currency
