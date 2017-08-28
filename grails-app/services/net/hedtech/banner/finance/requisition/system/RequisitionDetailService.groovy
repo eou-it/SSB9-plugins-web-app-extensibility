@@ -105,4 +105,14 @@ class RequisitionDetailService extends ServiceBase {
         }
         return requisitionDetails
     }
+
+    /**
+     * This method is used to find RequisitionDetail list by requisition code.
+     * @param requisitionCode Requisition code.
+     * @return List of requisition code.
+     */
+    def findDetailsRequestCode( requisitionCode ) {
+        return RequisitionDetail.fetchByRequestCode( requisitionCode ).list
+
+    }
 }

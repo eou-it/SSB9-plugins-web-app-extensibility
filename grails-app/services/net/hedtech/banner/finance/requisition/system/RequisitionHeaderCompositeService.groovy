@@ -29,6 +29,7 @@ class RequisitionHeaderCompositeService {
     def requisitionDetailService
     def documentManagementCompositeService
     def requisitionDetailsCompositeService
+    def requisitionAccountingCompositeService
 
     /**
      * Create purchase requisition Header
@@ -77,7 +78,6 @@ class RequisitionHeaderCompositeService {
      * @param map the requisition map
      * @param requestCode
      */
-
     def updateRequisitionHeader( map, requestCode, baseCcy ) {
         // Update header
         def user = springSecurityService.getAuthentication().user
@@ -106,15 +106,15 @@ class RequisitionHeaderCompositeService {
             }
             requisitionHeaderRequest.userId = user.oracleUserName
             def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
+
+            // updating the account sequences with valid fiscal year and period
             if( accountSize > 0 && checkUpdateAccountRequire){
-                def allAccounting = requisitionAccountingService.findAccountingByRequestCode(requestCode)
-                allAccounting.each {RequisitionAccounting requisitionAccounting ->
+                    requisitionAccountingService.findAccountingByRequestCode(requestCode).each {RequisitionAccounting requisitionAccounting ->
                     def account = null
                     account = requisitionAccounting
                     account.fiscalYear = null
                     account.period = null
                     requisitionAccountingService.update([domainModel: account])
-
                 }
             }
 
@@ -239,18 +239,22 @@ class RequisitionHeaderCompositeService {
      */
     private def reCalculateCommodities( RequisitionHeader requisitionHeader, isDiscountChanged, isCcyChanged ) {
         try {
-            requisitionDetailService.findByRequestCode( requisitionHeader.requestCode ).each {item ->
-                def requisitionDetailModel = item.class.declaredFields.findAll {
-                    it.modifiers == java.lang.reflect.Modifier.PRIVATE
-                }.collectEntries {[it.name, item[it.name]]}
-                if (isDiscountChanged) {
-                    requisitionDetailModel.discountAmount = null
+            def detailList = requisitionDetailService.findDetailsRequestCode( requisitionHeader.requestCode )
+            int detailSize = detailList.size()
+            if(detailSize > 0 ) {
+                detailList.each { item ->
+                    def requisitionDetailModel = item.class.declaredFields.findAll {
+                        it.modifiers == java.lang.reflect.Modifier.PRIVATE
+                    }.collectEntries { [it.name, item[it.name]] }
+                    if (isDiscountChanged) {
+                        requisitionDetailModel.discountAmount = null
+                    }
+                    if (isCcyChanged) {
+                        requisitionDetailModel.convertedDiscountAmount = null
+                    }
+                    def detailDomainModel = [requisitionDetail: requisitionDetailModel]
+                    requisitionDetailsCompositeService.updateRequisitionDetail(detailDomainModel)
                 }
-                if (isCcyChanged) {
-                    requisitionDetailModel.convertedDiscountAmount = null
-                }
-                def detailDomainModel = [requisitionDetail: requisitionDetailModel]
-                requisitionDetailsCompositeService.updateRequisitionDetail( detailDomainModel )
             }
         } catch (ApplicationException e) {
             LoggerUtility.warn( LOGGER, 'Requisition Commodity Details are empty for requestCode=' + requisitionHeader.requestCode + ' and commodity recalculation is not performed' )
