@@ -226,6 +226,8 @@ class RequisitionHeaderCompositeService {
                 newHeader.deliveryComment == existingHeader.deliveryComment &&
                 newHeader.taxGroup == existingHeader.taxGroup &&
                 newHeader.discount == existingHeader.discount &&
+                newHeader.requesterEmailAddress == existingHeader.requesterEmailAddress &&
+                newHeader.vendorEmailAddress == existingHeader.vendorEmailAddress &&
                 ((newHeader.currency == baseCcy && existingHeader.currency == null) || newHeader.currency == existingHeader.currency) &&
                 isCommentUnChanged( map.requisitionHeader.privateComment, map.requisitionHeader.publicComment, newHeader.requestCode ))
     }
