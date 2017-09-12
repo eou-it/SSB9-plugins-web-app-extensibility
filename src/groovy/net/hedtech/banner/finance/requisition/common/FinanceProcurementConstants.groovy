@@ -542,6 +542,7 @@ class FinanceProcurementConstants {
     public static final String REQUISITION_SUMMARY_FIELD_FPVVEND_PHONE_EXT = 'FPVVEND_PHONE_EXT'
     public static final String REQUISITION_SUMMARY_FIELD_FPVVEND_FAX = 'FPVVEND_FAX'
     public static final String REQUISITION_SUMMARY_FIELD_FPVVEND_PHONE_AREA = 'FPVVEND_PHONE_AREA'
+    public static final String REQUISITION_SUMMARY_FIELD_FPBREQH_VEND_EMAIL = 'FPBREQH_VEND_EMAIL_ADDR'
 
     public static
     final String REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE = 'RequisitionSummary.FetchRequisitionSummaryForRequestCode'
@@ -847,6 +848,7 @@ class FinanceProcurementConstants {
     final String LABELS_ACCOUNTING_TOTAL = 'banner.finance.procurement.requisition.pdf.label.accounting.distribution.total'
     public static
     final String LABELS_GRAND_TOTAL_ACCOUNTING = 'banner.finance.procurement.requisition.pdf.label.grand.total.accounting'
+    public static final String VENDOR_EMAIL = 'banner.finance.procurement.requisition.pdf.label.vendor.email'
     public static
     final String LABELS_CLA_ACCOUNTING_TOTAL_AT_COMMODITY = 'banner.finance.procurement.requisition.pdf.label.accounting.total'
     public static final String LABELS_COMMODITY = 'banner.finance.procurement.requisition.pdf.label.commodity'

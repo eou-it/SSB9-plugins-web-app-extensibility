@@ -141,7 +141,8 @@ class RequisitionSummaryService extends ServiceBase {
                     vendorPhoneFax           : it.vendorPhoneFax,
                     vendorPhoneArea          : it.vendorPhoneArea,
                     commodityItem            : it.commodityItem,
-                    accountingItem           : it.accountingItem]]
+                    accountingItem           : it.accountingItem,
+                    vendorEmailAddress       : it.vendorEmailAddress]]
         }.each() {
             key, value ->
                 retJSON['header'] = value
