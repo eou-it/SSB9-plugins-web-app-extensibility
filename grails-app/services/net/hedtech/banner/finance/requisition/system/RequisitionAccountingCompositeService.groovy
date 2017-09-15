@@ -115,6 +115,8 @@ class RequisitionAccountingCompositeService {
         requisitionAccountingRequest.item = existingAccountingInfo.item
         requisitionAccountingRequest.sequenceNumber = existingAccountingInfo.sequenceNumber
         requisitionAccountingRequest.userId = user.oracleUserName
+        requisitionAccountingRequest.fiscalYear = null
+
         setNSFOverride( requisitionAccountingRequest )
         requisitionDetailsAcctCommonCompositeService.adjustAccountPercentageAndAmount( requisitionAccountingRequest )
         def requisitionAccounting = requisitionAccountingService.update( [domainModel: requisitionAccountingRequest] )

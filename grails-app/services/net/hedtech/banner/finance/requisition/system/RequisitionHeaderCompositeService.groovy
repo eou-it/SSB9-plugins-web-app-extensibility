@@ -29,6 +29,7 @@ class RequisitionHeaderCompositeService {
     def requisitionDetailService
     def documentManagementCompositeService
     def requisitionDetailsCompositeService
+    def requisitionAccountingCompositeService
 
     /**
      * Create purchase requisition Header
@@ -77,7 +78,6 @@ class RequisitionHeaderCompositeService {
      * @param map the requisition map
      * @param requestCode
      */
-    @Transactional(readOnly = false, propagation = Propagation.SUPPORTS)
     def updateRequisitionHeader( map, requestCode, baseCcy ) {
         // Update header
         def user = springSecurityService.getAuthentication().user
@@ -88,6 +88,7 @@ class RequisitionHeaderCompositeService {
                 LoggerUtility.debug( LOGGER, 'Modification not required' )
                 return existingHeader
             }
+            boolean checkUpdateAccountRequire = checkAccountUpdateEligibility( map, existingHeader )
             FinanceProcurementHelper.checkCompleteRequisition( existingHeader )
             RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
             boolean isDiscountChanged = requisitionHeaderRequest.discount && requisitionHeaderRequest.discount != existingHeader.discount
@@ -96,7 +97,8 @@ class RequisitionHeaderCompositeService {
             requisitionHeaderRequest.version = existingHeader.version
             requisitionHeaderRequest.requestCode = existingHeader.requestCode
             requisitionHeaderRequest.documentCopiedFrom = existingHeader.documentCopiedFrom
-            if (requisitionHeaderRequest.isDocumentLevelAccounting != existingHeader.isDocumentLevelAccounting && requisitionAccountingService.findAccountingSizeByRequestCode( existingHeader.requestCode ) > 0) {
+            def accountSize = requisitionAccountingService.findAccountingSizeByRequestCode( existingHeader.requestCode )
+            if (requisitionHeaderRequest.isDocumentLevelAccounting != existingHeader.isDocumentLevelAccounting && accountSize > 0) {
                 LoggerUtility.error( LOGGER, 'Document type cannot be modified once accounting associated with this' )
                 throw new ApplicationException( RequisitionHeaderCompositeService,
                                                 new BusinessLogicValidationException(
@@ -104,6 +106,18 @@ class RequisitionHeaderCompositeService {
             }
             requisitionHeaderRequest.userId = user.oracleUserName
             def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
+
+            // updating the account sequences with valid fiscal year and period
+            if( accountSize > 0 && checkUpdateAccountRequire){
+                    requisitionAccountingService.findAccountingByRequestCode(requestCode).each {RequisitionAccounting requisitionAccounting ->
+                    def account = null
+                    account = requisitionAccounting
+                    account.fiscalYear = null
+                    account.period = null
+                    requisitionAccountingService.update([domainModel: account])
+                }
+            }
+
             LoggerUtility.debug LOGGER, "Requisition Header updated " + requisitionHeader
             financeTextCompositeService.saveTextForHeader( requisitionHeader,
                                                            [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
@@ -111,6 +125,7 @@ class RequisitionHeaderCompositeService {
             if (isDiscountChanged || isCcyChanged) {
                 reCalculateCommodities( requisitionHeader, isDiscountChanged, isCcyChanged )
             }
+
             return requisitionHeader
         } else {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
@@ -211,6 +226,8 @@ class RequisitionHeaderCompositeService {
                 newHeader.deliveryComment == existingHeader.deliveryComment &&
                 newHeader.taxGroup == existingHeader.taxGroup &&
                 newHeader.discount == existingHeader.discount &&
+                newHeader.requesterEmailAddress == existingHeader.requesterEmailAddress &&
+                newHeader.vendorEmailAddress == existingHeader.vendorEmailAddress &&
                 ((newHeader.currency == baseCcy && existingHeader.currency == null) || newHeader.currency == existingHeader.currency) &&
                 isCommentUnChanged( map.requisitionHeader.privateComment, map.requisitionHeader.publicComment, newHeader.requestCode ))
     }
@@ -224,21 +241,36 @@ class RequisitionHeaderCompositeService {
      */
     private def reCalculateCommodities( RequisitionHeader requisitionHeader, isDiscountChanged, isCcyChanged ) {
         try {
-            requisitionDetailService.findByRequestCode( requisitionHeader.requestCode ).each {item ->
-                def requisitionDetailModel = item.class.declaredFields.findAll {
-                    it.modifiers == java.lang.reflect.Modifier.PRIVATE
-                }.collectEntries {[it.name, item[it.name]]}
-                if (isDiscountChanged) {
-                    requisitionDetailModel.discountAmount = null
+            def detailList = requisitionDetailService.findDetailsRequestCode( requisitionHeader.requestCode )
+            int detailSize = detailList.size()
+            if(detailSize > 0 ) {
+                detailList.each { item ->
+                    def requisitionDetailModel = item.class.declaredFields.findAll {
+                        it.modifiers == java.lang.reflect.Modifier.PRIVATE
+                    }.collectEntries { [it.name, item[it.name]] }
+                    if (isDiscountChanged) {
+                        requisitionDetailModel.discountAmount = null
+                    }
+                    if (isCcyChanged) {
+                        requisitionDetailModel.convertedDiscountAmount = null
+                    }
+                    def detailDomainModel = [requisitionDetail: requisitionDetailModel]
+                    requisitionDetailsCompositeService.updateRequisitionDetail(detailDomainModel)
                 }
-                if (isCcyChanged) {
-                    requisitionDetailModel.convertedDiscountAmount = null
-                }
-                def detailDomainModel = [requisitionDetail: requisitionDetailModel]
-                requisitionDetailsCompositeService.updateRequisitionDetail( detailDomainModel )
             }
         } catch (ApplicationException e) {
             LoggerUtility.warn( LOGGER, 'Requisition Commodity Details are empty for requestCode=' + requisitionHeader.requestCode + ' and commodity recalculation is not performed' )
         }
+    }
+
+    /**
+     * Check if Account Lines are modified and save to db is required
+     * @param map
+     * @param existingHeader
+     * @return
+     */
+    private boolean checkAccountUpdateEligibility( map, RequisitionHeader existingHeader ) {
+        RequisitionHeader newHeader = map.requisitionHeader
+        return (new java.sql.Date(newHeader.transactionDate.getTime()) != existingHeader.transactionDate)
     }
 }

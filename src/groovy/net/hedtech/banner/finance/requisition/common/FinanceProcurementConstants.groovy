@@ -65,6 +65,7 @@ class FinanceProcurementConstants {
     public static final String REQUISITION_HEADER_FIELD_FPBREQH_RECOMM_VEND_NAME = 'FPBREQH_RECOMM_VEND_NAME'
     public static final String REQUISITION_HEADER_FIELD_FPBREQH_CURR_CODE = 'FPBREQH_CURR_CODE'
     public static final String REQUISITION_HEADER_FIELD_FPBREQH_NSF_ON_OFF_IND = 'FPBREQH_NSF_ON_OFF_IND'
+    public static final String REQUISITION_HEADER_FIELD_FPBREQH_BYPASS_NSF_CHK_IND = 'FPBREQH_BYPASS_NSF_CHK_IND'
     public static final String REQUISITION_HEADER_FIELD_FPBREQH_SINGLE_ACCTG_IND = 'FPBREQH_SINGLE_ACCTG_IND'
     public static final String REQUISITION_HEADER_FIELD_FPBREQH_CLOSED_IND = 'FPBREQH_CLOSED_IND'
     public static final String REQUISITION_HEADER_FIELD_FPBREQH_SHIP_CODE = 'FPBREQH_SHIP_CODE'
@@ -523,6 +524,8 @@ class FinanceProcurementConstants {
     public static final String REQUISITION_SUMMARY_FIELD_FPRREQD_TAX_AMT = 'FPRREQD_TAX_AMT'
     public static final String REQUISITION_SUMMARY_FIELD_FPRREQD_UNIT_PRICE = 'FPRREQD_UNIT_PRICE'
     public static final String REQUISITION_SUMMARY_FIELD_FPBREQH_CODE = 'FPBREQH_CODE'
+    public static final String REQUISITION_SUMMARY_FIELD_FPBREQH_NAME = 'FPBREQH_NAME'
+    public static final String REQUISITION_SUMMARY_FIELD_FPBREQH_EMAIL_ADDRESS = 'FPBREQH_EMAIL_ADDR'
     public static final String REQUISITION_SUMMARY_FIELD_FPBREQH_VEND_PIDM = 'FPBREQH_VEND_PIDM'
     public static final String REQUISITION_SUMMARY_FIELD_FPBREQH_ATYP_SEQ_NUM = 'FPBREQH_ATYP_SEQ_NUM'
     public static final String REQUISITION_SUMMARY_FIELD_FPBREQH_ATYP_CODE = 'FPBREQH_ATYP_CODE'
@@ -541,6 +544,7 @@ class FinanceProcurementConstants {
     public static final String REQUISITION_SUMMARY_FIELD_FPVVEND_PHONE_EXT = 'FPVVEND_PHONE_EXT'
     public static final String REQUISITION_SUMMARY_FIELD_FPVVEND_FAX = 'FPVVEND_FAX'
     public static final String REQUISITION_SUMMARY_FIELD_FPVVEND_PHONE_AREA = 'FPVVEND_PHONE_AREA'
+    public static final String REQUISITION_SUMMARY_FIELD_FPBREQH_VEND_EMAIL = 'FPBREQH_VEND_EMAIL_ADDR'
 
     public static
     final String REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE = 'RequisitionSummary.FetchRequisitionSummaryForRequestCode'
@@ -846,6 +850,7 @@ class FinanceProcurementConstants {
     final String LABELS_ACCOUNTING_TOTAL = 'banner.finance.procurement.requisition.pdf.label.accounting.distribution.total'
     public static
     final String LABELS_GRAND_TOTAL_ACCOUNTING = 'banner.finance.procurement.requisition.pdf.label.grand.total.accounting'
+    public static final String VENDOR_EMAIL = 'banner.finance.procurement.requisition.pdf.label.vendor.email'
     public static
     final String LABELS_CLA_ACCOUNTING_TOTAL_AT_COMMODITY = 'banner.finance.procurement.requisition.pdf.label.accounting.total'
     public static final String LABELS_COMMODITY = 'banner.finance.procurement.requisition.pdf.label.commodity'

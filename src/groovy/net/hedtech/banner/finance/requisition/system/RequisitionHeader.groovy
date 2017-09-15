@@ -180,6 +180,13 @@ class RequisitionHeader implements Serializable {
     Boolean nsfOnOffIndicator
 
     /**
+     * Bypass NSF Error Check Indicator: If N, while Approval is ON, then on NSF Error, document is not allowed to be completed.
+     */
+    @Type(type = "yes_no")
+    @Column(name = FinanceProcurementConstants.REQUISITION_HEADER_FIELD_FPBREQH_BYPASS_NSF_CHK_IND)
+    Boolean bypassNsfChkIndicator
+
+    /**
      * Document level accounting: If Y, the document will have an accounting or accounting distributions for the document not for specific commodities
      */
     @Type(type = "yes_no")
@@ -308,6 +315,7 @@ class RequisitionHeader implements Serializable {
         recommVendName( nullable: true, maxSize: 60 )
         currency( nullable: true, maxSize: 4 )
         nsfOnOffIndicator( nullable: true )
+        bypassNsfChkIndicator( nullable: true)
         isDocumentLevelAccounting( nullable: true )
         closedIndicator( nullable: true )
         ship( nullable: true, maxSize: 6 )
