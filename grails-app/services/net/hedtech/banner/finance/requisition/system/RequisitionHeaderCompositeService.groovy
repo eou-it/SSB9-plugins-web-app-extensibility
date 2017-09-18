@@ -88,7 +88,6 @@ class RequisitionHeaderCompositeService {
                 LoggerUtility.debug( LOGGER, 'Modification not required' )
                 return existingHeader
             }
-            boolean checkUpdateAccountRequire = checkAccountUpdateEligibility( map, existingHeader )
             FinanceProcurementHelper.checkCompleteRequisition( existingHeader )
             RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
             boolean isDiscountChanged = requisitionHeaderRequest.discount && requisitionHeaderRequest.discount != existingHeader.discount
@@ -98,6 +97,7 @@ class RequisitionHeaderCompositeService {
             requisitionHeaderRequest.requestCode = existingHeader.requestCode
             requisitionHeaderRequest.documentCopiedFrom = existingHeader.documentCopiedFrom
             def accountSize = requisitionAccountingService.findAccountingSizeByRequestCode( existingHeader.requestCode )
+            boolean checkUpdateAccountRequire = checkAccountUpdateEligibility( map, existingHeader )
             if (requisitionHeaderRequest.isDocumentLevelAccounting != existingHeader.isDocumentLevelAccounting && accountSize > 0) {
                 LoggerUtility.error( LOGGER, 'Document type cannot be modified once accounting associated with this' )
                 throw new ApplicationException( RequisitionHeaderCompositeService,
@@ -242,8 +242,7 @@ class RequisitionHeaderCompositeService {
     private def reCalculateCommodities( RequisitionHeader requisitionHeader, isDiscountChanged, isCcyChanged ) {
         try {
             def detailList = requisitionDetailService.findDetailsRequestCode( requisitionHeader.requestCode )
-            int detailSize = detailList.size()
-            if(detailSize > 0 ) {
+            if(detailList.size() > 0 ) {
                 detailList.each { item ->
                     def requisitionDetailModel = item.class.declaredFields.findAll {
                         it.modifiers == java.lang.reflect.Modifier.PRIVATE
