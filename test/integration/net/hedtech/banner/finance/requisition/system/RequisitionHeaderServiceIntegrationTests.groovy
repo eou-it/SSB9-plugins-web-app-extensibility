@@ -130,6 +130,17 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
         assertTrue header.requestCode == requestHeader.requestCode
     }
 
+    @Test
+    void testFindRequisitionHeaderByRequestCode_WithDefaultOracleUser() {
+        login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def requestHeader = newRequisitionHeader()
+        String oracleUsername = springSecurityService.getAuthentication().user.oracleUserName
+        requestHeader.save( failOnError: true, flush: true )
+        requestHeader.refresh()
+        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestHeader.requestCode, oracleUsername )
+        assertTrue header.requestCode == requestHeader.requestCode
+    }
+
     /**
      * Test case to test recall requisition.
      */

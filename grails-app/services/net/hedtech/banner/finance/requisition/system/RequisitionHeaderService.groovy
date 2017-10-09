@@ -66,7 +66,7 @@ class RequisitionHeaderService extends ServiceBase {
      * Completes the purchase requisition
      * @param requestCode
      */
-    def completeRequisition( requestCode, forceComplete, String oracleUserName ) {
+    def completeRequisition( requestCode, forceComplete, String oracleUserName = null) {
         LoggerUtility.debug( LOGGER, 'Input parameters for completeRequisition :' + requestCode )
         if(!oracleUserName){
             oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
