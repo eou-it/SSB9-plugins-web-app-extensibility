@@ -233,7 +233,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     @Test
     void testCompleteRequisitionInvalidReq() {
         try {
-            requisitionHeaderService.completeRequisition( 'INVALID', 'no' )
+            requisitionHeaderService.completeRequisition( 'INVALID', 'no', Boolean.FALSE )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER
         }
         catch (ApplicationException ae) {
@@ -248,7 +248,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     void testCompleteAlreadyCompletedRequisition() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         try {
-            requisitionHeaderService.completeRequisition( 'RSED0005', 'no' )
+            requisitionHeaderService.completeRequisition( 'RSED0005', 'no', Boolean.FALSE )
             fail 'This should have failed with ' + FinanceProcurementConstants.ERROR_MESSAGE_REQUISITION_ALREADY_COMPLETED
         }
         catch (ApplicationException ae) {
@@ -262,7 +262,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     @Test
     void testCompleteRequisition() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        assertTrue requisitionHeaderService.completeRequisition( 'RSED0010', 'yes' ).completeIndicator
+        assertTrue requisitionHeaderService.completeRequisition( 'RSED0010', 'yes', Boolean.FALSE ).completeIndicator
     }
 
     /**
@@ -323,7 +323,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         headerDomainModel.discount = 30
         headerDomainModel.currency = 'USD'
         def domainModelMap = [requisitionHeader: headerDomainModel]
-        assert 'Modified' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0011', 'USD' ).requesterName
+        assert 'Modified' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0001', 'USD' ).requesterName
     }
 
     /**

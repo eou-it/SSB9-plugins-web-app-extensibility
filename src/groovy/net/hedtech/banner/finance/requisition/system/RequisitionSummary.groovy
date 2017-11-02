@@ -149,6 +149,12 @@ class RequisitionSummary implements Serializable {
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPBREQH_CODE)
     String requestCode
 
+    @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPBREQH_NAME)
+    String requesterName
+
+    @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPBREQH_EMAIL_ADDRESS)
+    String requesterEmailAddress
+
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPBREQH_VEND_PIDM)
     String vendorPidm
 
@@ -187,6 +193,9 @@ class RequisitionSummary implements Serializable {
 
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPVVEND_PHONE_AREA)
     String vendorPhoneArea
+
+    @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPBREQH_VEND_EMAIL)
+    String vendorEmailAddress
 
     @Column(name = FinanceProcurementConstants.REQUISITION_SUMMARY_FIELD_FPBREQH_USER_ID)
     String userId

@@ -9,7 +9,6 @@ import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
-
 /**
  * Class for Purchase Requisition Information Composite
  */

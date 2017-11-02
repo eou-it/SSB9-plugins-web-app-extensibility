@@ -33,7 +33,7 @@ class UserProfileCompositeService {
 
         def userProfileObj = financeUserProfileService.getUserProfileByUserId( user.oracleUserName )
         userProfile = [userId           : userProfileObj.userId, requesterName: userProfileObj.requesterName, requesterOrgCode: userProfileObj.requesterOrgCode,
-                       requesterShipCode: userProfileObj.requesterShipCode, requesterCaosCode: userProfileObj.requesterCaosCode]
+                       requesterShipCode: userProfileObj.requesterShipCode, requesterCaosCode: userProfileObj.requesterCaosCode, requesterEmailAddress: userProfileObj.requesterEmailAddress]
         if (userProfile.requesterShipCode) {
             try {
                 def shipTo = shipToCodeService.findShipToCodesByCode( userProfile.requesterShipCode, effectiveDate )

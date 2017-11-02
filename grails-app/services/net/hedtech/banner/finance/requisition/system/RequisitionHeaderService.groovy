@@ -66,7 +66,8 @@ class RequisitionHeaderService extends ServiceBase {
      * Completes the purchase requisition
      * @param requestCode
      */
-    def completeRequisition( requestCode, forceComplete, String oracleUserName = null) {
+
+    def completeRequisition( requestCode, forceComplete,bypassNsfChkIndicator, String oracleUserName = null) {    
         LoggerUtility.debug( LOGGER, 'Input parameters for completeRequisition :' + requestCode )
         if(!oracleUserName){
             oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
@@ -79,6 +80,7 @@ class RequisitionHeaderService extends ServiceBase {
         FinanceProcurementHelper.checkCompleteRequisition( requisitionHeader )
         requisitionHeader.completeIndicator = Boolean.TRUE
         requisitionHeader.deliveryComment = forceComplete // Custom comment used only for complete
+        requisitionHeader.bypassNsfChkIndicator = bypassNsfChkIndicator
         update( [domainModel: requisitionHeader] )
     }
 
