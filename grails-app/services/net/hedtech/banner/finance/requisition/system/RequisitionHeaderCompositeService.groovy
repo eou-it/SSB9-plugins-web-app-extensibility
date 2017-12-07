@@ -168,11 +168,8 @@ class RequisitionHeaderCompositeService {
             // Delete Accounting
             requisitionAccountingService.delete( requisitionAccountingService.findAccountingByRequestCode( requestCode ) )
             // Delete Detail
-            try {
-                requisitionDetailService.delete( requisitionDetailService.findByRequestCode( requestCode ) )
-            } catch (ApplicationException ae) {
-                LoggerUtility.debug LOGGER, "No requisition details to delete for request code=$requestCode"
-            }
+            requisitionDetailService.delete( requisitionDetailService.findDetailsRequestCode( requestCode ) )
+
             // Delete Header
             requisitionHeaderService.delete( requestHeader )
             return requestCode
