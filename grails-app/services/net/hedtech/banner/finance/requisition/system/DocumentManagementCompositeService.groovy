@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2018 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -126,27 +126,11 @@ class DocumentManagementCompositeService {
     private Map getBdmParams() {
         Map bdmParams = new HashMap()
         Holders.config.bdmserver.each {k, v ->
-            bdmParams.put( k, k == "Password" ? decryptString( v ) : v )
+            bdmParams.put( k, v )
         }
         bdmParams.put( "KeyPassword", fetchBdmCryptoKey() )
         LoggerUtility.debug( LOGGER, "BDMParams :: " + bdmParams )
         return bdmParams
-    }
-
-    /**
-     * Decrypts the BDM encrypted password
-     * @param encryptedString
-     * @return
-     */
-    private def decryptString( encryptedString ) {
-        try {
-            BdmUtility.decryptString( encryptedString )
-        }
-        catch (ApplicationException ae) {
-            LoggerUtility.error( LOGGER, 'Error while getting the decrypted BDM password' + ae.message )
-            throw new ApplicationException( DocumentManagementCompositeService,
-                                            new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR, [] ) )
-        }
     }
 
     /**
