@@ -261,18 +261,6 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
     }
 
     /**
-     * Tests decryption with invalid string
-     */
-    @Test
-    void testDecryptString() {
-        try {
-            documentManagementCompositeService.decryptString( )
-        } catch (ApplicationException ae) {
-            assertApplicationException( ae, FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR )
-        }
-    }
-
-    /**
      * Tests BDM installed false
      */
     @Test
