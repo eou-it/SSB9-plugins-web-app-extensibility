@@ -129,7 +129,6 @@ class DocumentManagementCompositeService {
             bdmParams.put( k, v )
         }
         bdmParams.put( "KeyPassword", fetchBdmCryptoKey() )
-        LoggerUtility.debug( LOGGER, "BDMParams :: " + bdmParams )
         return bdmParams
     }
 
