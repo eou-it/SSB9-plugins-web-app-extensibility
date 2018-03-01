@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2018 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
 
 package net.hedtech.extensibility.metadata
@@ -98,7 +98,7 @@ class ExtensionService {
             }
             if (jsonStr) {
                  //handle compatibility with older version where extensions were defined in an array
-                if (jsonStr[0].equals("[") && jsonStr[jsonStr.length()-1].equals("]")) {
+                if (jsonStr[0].equals("[") && jsonStr[jsonStr.length()-1].equals("]") && jsonStr!="[]") {
                     jsonStr = jsonStr.substring(1,jsonStr.length()-1)
                 }
                 try {
