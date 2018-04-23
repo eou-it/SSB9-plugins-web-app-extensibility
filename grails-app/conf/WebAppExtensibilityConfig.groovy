@@ -22,9 +22,14 @@ class WebAppExtensibilityConfig extends Script {
         // Make sure to add the extensibility security at the start (odd, a Map should have no order, but spring security appears to consider order)
         def interceptUrlMap = [
                 '/internal/**' : ['IS_AUTHENTICATED_ANONYMOUSLY'],
-                '/webadmin/**' : adminRoles,
                 '/templates/**': ['IS_AUTHENTICATED_ANONYMOUSLY']
         ]
+
+        if(adminRoles.size() == 1){
+
+            interceptUrlMap << ['/webadmin/**' : adminRoles ]
+        }
+
         interceptUrlMap << grails.plugin.springsecurity.interceptUrlMap
         grails.plugin.springsecurity.interceptUrlMap = interceptUrlMap
 
