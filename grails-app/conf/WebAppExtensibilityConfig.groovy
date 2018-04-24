@@ -25,7 +25,7 @@ class WebAppExtensibilityConfig extends Script {
                 '/templates/**': ['IS_AUTHENTICATED_ANONYMOUSLY']
         ]
 
-        if(adminRoles.size() == 1){
+        if(adminRoles){
 
             interceptUrlMap << ['/webadmin/**' : adminRoles ]
         }
