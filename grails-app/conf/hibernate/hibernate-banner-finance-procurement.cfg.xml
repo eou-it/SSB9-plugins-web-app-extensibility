@@ -30,7 +30,6 @@
         <mapping class="net.hedtech.banner.finance.requisition.system.FinanceApprovalHistory"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.FinanceApprovalsInProcess"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.FinanceUnapprovedDocument"/>
-        <mapping class="net.hedtech.banner.finance.requisition.system.FinanceText"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.FinanceBuyerVerification"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.FinanceRequestPOVerification"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.FinancePendingApproverList"/>

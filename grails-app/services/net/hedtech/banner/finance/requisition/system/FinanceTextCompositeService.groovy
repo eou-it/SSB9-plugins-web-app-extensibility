@@ -5,6 +5,7 @@ package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
+import net.hedtech.banner.finance.system.FinanceText
 
 /**
  * Composite service class for FinanceText.
@@ -24,7 +25,7 @@ class FinanceTextCompositeService {
     public def saveTextForHeader( header, map, user ) {
         def listToSave = []
         def listToDelete = []
-        financeTextService.listHeaderLevelTextByCode( header.requestCode ).each {FinanceText financeTextToDelete ->
+        financeTextService.listHeaderLevelTextByCode( 1, header.requestCode ).each {FinanceText financeTextToDelete ->
             listToDelete << financeTextToDelete
         }
         if (listToDelete.size() > 0) {
@@ -57,7 +58,7 @@ class FinanceTextCompositeService {
     public def saveTextForCommodity( detail, map, user, Integer item ) {
         def listToSave = []
         def listToDelete = []
-        financeTextService.getFinanceTextByCodeAndItemNumber( detail.requestCode, item ).each {FinanceText financeTextToDelete ->
+        financeTextService.getFinanceTextByCodeAndItemNumber( 1, detail.requestCode, item ).each {FinanceText financeTextToDelete ->
             listToDelete << financeTextToDelete
         }
         financeTextService.delete( listToDelete, true )

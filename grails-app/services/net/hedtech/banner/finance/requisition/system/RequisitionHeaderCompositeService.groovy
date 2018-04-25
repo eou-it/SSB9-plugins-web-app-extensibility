@@ -69,7 +69,7 @@ class RequisitionHeaderCompositeService {
         def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         FinanceProcurementHelper.checkCompleteRequisition( requisitionHeader )
         requisitionHeaderService.delete( [domainModel: requisitionHeader] )
-        financeTextService.delete( financeTextService.listAllFinanceTextByCode( requestCode ) )
+        financeTextService.delete( financeTextService.listAllFinanceTextByCode( 1, requestCode ) )
     }
 
     /**
@@ -192,10 +192,10 @@ class RequisitionHeaderCompositeService {
     private boolean isCommentUnChanged( privateComment, publicComment, requestCode ) {
         def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
         def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
             existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
             existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
         existingPublicComment == publicComment && existingPrivateComment == privateComment

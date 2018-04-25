@@ -8,6 +8,7 @@ import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
+import net.hedtech.banner.finance.system.FinanceText
 
 /**
  * The service class which is used to have methods for copy purchase requisition.
@@ -149,7 +150,7 @@ class CopyPurchaseRequisitionCompositeService {
      * @param requestCode
      */
     private void copyFinanceText( nextRequisitionNumber, requestCode ) {
-        def textList = financeTextService.listAllFinanceTextByCode( requestCode )
+        def textList = financeTextService.listAllFinanceTextByCode( 1, requestCode )
         textList.each {FinanceText financeText ->
             def textForCopy = FinanceText.newInstance( financeText.properties )
             textForCopy.textCode = nextRequisitionNumber

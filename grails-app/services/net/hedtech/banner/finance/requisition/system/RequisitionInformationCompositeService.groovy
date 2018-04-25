@@ -89,10 +89,10 @@ class RequisitionInformationCompositeService {
 
         privateComment = FinanceProcurementConstants.EMPTY_STRING
         publicComment = FinanceProcurementConstants.EMPTY_STRING
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( header.requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, header.requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
             privateComment = privateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( header.requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, header.requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
             publicComment = publicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
         LoggerUtility.debug( LOGGER, 'taxGroup: ' + taxGroup )

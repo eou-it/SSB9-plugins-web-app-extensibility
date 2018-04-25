@@ -107,7 +107,7 @@ class RequisitionSummaryService extends ServiceBase {
                                                                        [offset: FinanceProcurementConstants.ZERO, max: FinanceProcurementConstants.ONE], false ).collect() {organization ->
                 [orgnCode: organization.orgnCode, orgnTitle: organization.orgnTitle]
             }?.orgnTitle
-            headerTextMap[headerRecord.requestCode] = processComment( financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( headerRecord.requestCode,
+            headerTextMap[headerRecord.requestCode] = processComment( financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, headerRecord.requestCode,
                                                                                                                                      FinanceValidationConstants.REQUISITION_INDICATOR_YES ) )
             statusMap[headerRecord.requestCode] = MessageHelper.message( 'purchaseRequisition.status.' + (isUserIndependent ? requisitionInformationService.fetchRequisitionsByReqNumber( headerRecord.requestCode, null ).status : requisitionInformationService.fetchRequisitionsByReqNumber( headerRecord.requestCode ).status) )
         }
@@ -229,7 +229,7 @@ class RequisitionSummaryService extends ServiceBase {
                 requisitionSummary.collectEntries() {
                     [it.commodityItem, it.commodityItem]
                 }.each {key, value ->
-                    commodityTextMap[key] = processComment( financeTextService.getFinanceTextByCodeAndItemAndPrintOption( requestCode, key.intValue(),
+                    commodityTextMap[key] = processComment( financeTextService.getFinanceTextByCodeAndItemAndPrintOption( 1, requestCode, key.intValue(),
                                                                                                                           FinanceValidationConstants.REQUISITION_INDICATOR_YES ) )
                 }
             }

@@ -339,10 +339,10 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
         def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
             existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
             existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
         headerDomainModel.privateComment = existingPrivateComment
@@ -365,10 +365,10 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
         def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
             existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
             existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
         headerDomainModel.privateComment = existingPrivateComment
@@ -390,10 +390,10 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
         def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
             existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
             existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
         headerDomainModel.privateComment = existingPrivateComment
@@ -415,10 +415,10 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
         def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
             existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
             existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
         headerDomainModel.privateComment = existingPrivateComment
@@ -440,10 +440,10 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
         def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
             existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
             existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
         headerDomainModel.privateComment = existingPrivateComment
@@ -465,10 +465,10 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
         def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
             existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
             existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
         headerDomainModel.privateComment = existingPrivateComment
@@ -490,10 +490,10 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
         def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
             existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
             existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
         headerDomainModel.privateComment = existingPrivateComment
@@ -515,10 +515,10 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def existingPrivateComment = 'Modified'
         def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
             existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
             existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
         headerDomainModel.privateComment = existingPrivateComment
@@ -540,10 +540,10 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
         def existingPublicComment = 'Modified'
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
             existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
             existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
         headerDomainModel.privateComment = existingPrivateComment
@@ -592,8 +592,8 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         headerDomainModel.publicComment = 'changed public comment'
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def requisitionHeader = requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0009', 'USD' )
-        assert 'changed private comment' == financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( requisitionHeader.requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_NO )[0].text
-        assert 'changed public comment' == financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( requisitionHeader.requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_YES )[0].text
+        assert 'changed private comment' == financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, requisitionHeader.requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_NO )[0].text
+        assert 'changed public comment' == financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, requisitionHeader.requestCode, FinanceValidationConstants.REQUISITION_INDICATOR_YES )[0].text
     }
 
     /**

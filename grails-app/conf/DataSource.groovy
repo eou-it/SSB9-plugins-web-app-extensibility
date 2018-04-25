@@ -30,8 +30,10 @@ hibernate {
             "classpath:hibernate-banner-general-validation-common.cfg.xml",
             "classpath:hibernate-banner-finance-procurement-validation.cfg.xml",
             "classpath:hibernate-banner-finance-validation-common.cfg.xml",
-            "classpath:hibernate-banner-general-person.cfg.xml"
+            "classpath:hibernate-banner-general-person.cfg.xml",
+            "classpath:hibernate-banner-finance-common.cfg.xml"
     ]
+
 }
 
 

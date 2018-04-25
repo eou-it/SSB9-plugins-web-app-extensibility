@@ -82,7 +82,7 @@ class RequisitionDetailsCompositeService {
         deleteAccountingForCommodity requestCode, requisitionDetail.item
         requisitionDetailService.delete( [domainModel: requisitionDetail] )
         reBalanceRequisitionAccounting( requestCode, item )
-        financeTextService.delete( financeTextService.getFinanceTextByCodeAndItemNumber( requestCode, item ) )
+        financeTextService.delete( financeTextService.getFinanceTextByCodeAndItemNumber( 1, requestCode, item ) )
     }
 
     /**
@@ -271,12 +271,12 @@ class RequisitionDetailsCompositeService {
         boolean isCommodityLevelAccounting = !reqHeader.isDocumentLevelAccounting
         def privateComment = FinanceProcurementConstants.EMPTY_STRING
         def publicComment = FinanceProcurementConstants.EMPTY_STRING
-        financeTextService.getFinanceTextByCodeAndItemAndPrintOption( requisitionDetail.requestCode,
+        financeTextService.getFinanceTextByCodeAndItemAndPrintOption( 1, requisitionDetail.requestCode,
                                                                       requisitionDetail.item,
                                                                       FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
             privateComment = privateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
-        financeTextService.getFinanceTextByCodeAndItemAndPrintOption( requisitionDetail.requestCode,
+        financeTextService.getFinanceTextByCodeAndItemAndPrintOption( 1, requisitionDetail.requestCode,
                                                                       requisitionDetail.item,
                                                                       FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
             publicComment = publicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
