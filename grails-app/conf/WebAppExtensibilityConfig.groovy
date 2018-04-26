@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2018 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
 
 import grails.util.Environment
@@ -26,7 +26,6 @@ class WebAppExtensibilityConfig extends Script {
         ]
 
         if(adminRoles){
-
             interceptUrlMap << ['/webadmin/**' : adminRoles ]
         }
 
