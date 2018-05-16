@@ -22,8 +22,6 @@ class RequisitionHeaderService extends ServiceBase {
     def financeApprovalHistoryService
     def financeApprovalsInProcessService
     def financeUnapprovedDocumentService
-    def requisitionDetailsCompositeService
-    def requisitionAccountingCompositeService
     def requisitionDetailService
     def requisitionAccountingService
 
@@ -127,7 +125,7 @@ class RequisitionHeaderService extends ServiceBase {
             // Insert FOBAPPH Approval History table with queueId = DENY and queueLevel = 0.
             def approvalHistoryList = financeApprovalHistoryService.findByDocumentCode( requestHeaderUpdated.requestCode )
             if (approvalHistoryList) {
-                approvalHistoryList.each {FinanceApprovalHistory approvalHistory ->
+                approvalHistoryList.each {approvalHistory ->
                     approvalHistory.documentCode = requestHeaderUpdated.requestCode
                     approvalHistory.queueId = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_ID_DENY
                     approvalHistory.queueLevel = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_LEVEL_ZERO
@@ -137,7 +135,7 @@ class RequisitionHeaderService extends ServiceBase {
                     financeApprovalHistoryService.update( [domainModel: approvalHistory] )
                 }
             } else {
-                FinanceApprovalHistory financeApprovalHistory = new FinanceApprovalHistory()
+                def financeApprovalHistory = [:]
                 financeApprovalHistory.documentCode = requestHeaderUpdated.requestCode
                 financeApprovalHistory.queueId = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_ID_DENY
                 financeApprovalHistory.queueLevel = FinanceProcurementConstants.FINANCE_APPROVAL_HISTORY_QUERY_LEVEL_ZERO
@@ -148,12 +146,12 @@ class RequisitionHeaderService extends ServiceBase {
             }
             // Removing the row relating to this requisition in FOBUAPP FinanceUnapprovedDocument.
             financeUnapprovedDocumentService.findByDocumentCode( requestHeaderUpdated.requestCode ).each {
-                FinanceUnapprovedDocument financeUnapprovedDocument ->
+                 financeUnapprovedDocument ->
                     financeUnapprovedDocumentService.delete( [domainModel: financeUnapprovedDocument] )
             }
             // Removing the row relating to this requisition in FOBAINP FinanceApprovalsInProcess.
             financeApprovalsInProcessService.findByDocumentNumber( requestHeaderUpdated.requestCode ).each {
-                FinanceApprovalsInProcess financeApprovalsInProcess ->
+                 financeApprovalsInProcess ->
                     financeApprovalsInProcessService.delete( [domainModel: financeApprovalsInProcess] )
             }
             return requestHeaderUpdated.requestCode

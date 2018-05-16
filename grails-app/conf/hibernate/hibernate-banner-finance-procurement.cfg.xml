@@ -27,13 +27,5 @@
         <mapping class="net.hedtech.banner.finance.requisition.system.RequisitionInformation"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.RequisitionAccounting"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.RequisitionSummary"/>
-        <mapping class="net.hedtech.banner.finance.requisition.system.FinanceApprovalHistory"/>
-        <mapping class="net.hedtech.banner.finance.requisition.system.FinanceApprovalsInProcess"/>
-        <mapping class="net.hedtech.banner.finance.requisition.system.FinanceUnapprovedDocument"/>
-        <mapping class="net.hedtech.banner.finance.requisition.system.FinanceBuyerVerification"/>
-        <mapping class="net.hedtech.banner.finance.requisition.system.FinanceRequestPOVerification"/>
-        <mapping class="net.hedtech.banner.finance.requisition.system.FinancePendingApproverList"/>
-        <mapping class="net.hedtech.banner.finance.requisition.system.FinanceGeneralTickler"/>
-        <mapping class="net.hedtech.banner.finance.requisition.system.FinancePOStatusExtension"/>
     </session-factory>
 </hibernate-configuration>
