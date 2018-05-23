@@ -882,16 +882,6 @@ class FinanceProcurementConstants {
     public static final String FINANCE_GENERAL_TICKLER_GURTKLR_VPDI_CODE = 'GURTKLR_VPDI_CODE'
     public static final String FINANCE_GENERAL_TICKLER_QUERY_PARAM_ITEM_REF_NO = 'itemReferenceNo'
 
-    /** Constants for Finance object sequence Table FOBSEQN **/
-    public static final String FINANCE_OBJECT_SEQ = 'FOBSEQN'
-    public static final String FINANCE_OBJECT_SEQ_SEQ_GENERATOR = 'FOBSEQN_SEQ_GEN'
-    public static final String FINANCE_OBJECT_SEQ_SEQ_FOBSEQN_SURROGATE_ID_SEQUENCE = 'FOBSEQN_SURROGATE_ID_SEQUENCE'
-    public static final String FINANCE_OBJECT_SEQ_FIELD_FOBSEQN_SURROGATE_ID = 'FOBSEQN_SURROGATE_ID'
-    public static final String FINANCE_OBJECT_SEQ_FIELD_FOBSEQN_SEQNO_TYPE = 'FOBSEQN_SEQNO_TYPE'
-    public static final String FINANCE_OBJECT_SEQ_FIELD_FOBSEQN_SEQNO_PREFIX = 'FOBSEQN_SEQNO_PREFIX'
-    public static final String FINANCE_OBJECT_SEQ_FIELD_FOBSEQN_MAXSEQNO_7 = 'FOBSEQN_MAXSEQNO_7'
-    public static final String FINANCE_OBJECT_SEQ_FIELD_FOBSEQN_VERSION = 'FOBSEQN_VERSION'
-    public static final String FINANCE_OBJECT_SEQ_FOBSEQN_SEQNO_TYPE = 'R'
 
     /** Table name constants for tables **/
     public static final String FPBREQH_TABLE = 'FPBREQH'

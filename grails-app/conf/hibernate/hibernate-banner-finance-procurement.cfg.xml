@@ -22,7 +22,6 @@
         <mapping class="net.hedtech.banner.finance.requisition.system.RequisitionDetailForCopy"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.RequisitionAccountingForCopy"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.RequisitionTaxForCopy"/>
-        <mapping class="net.hedtech.banner.finance.requisition.system.FinanceObjectSequence"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.RequisitionDetail"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.RequisitionInformation"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.RequisitionAccounting"/>
