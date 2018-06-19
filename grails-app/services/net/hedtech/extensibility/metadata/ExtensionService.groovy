@@ -80,7 +80,7 @@ class ExtensionService {
                 }
             } else {
                 //TODO Task for asset pipeline
-                log.error "error loading extensions from ${file.path}"
+                //log.error "error loading extensions from ${file.path}"
             }
         }
         result
