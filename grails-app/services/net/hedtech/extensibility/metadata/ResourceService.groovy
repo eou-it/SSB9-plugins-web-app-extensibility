@@ -8,14 +8,13 @@ import grails.converters.JSON
 import grails.util.Environment
 import net.hedtech.banner.i18n.MessageHelper
 import org.apache.log4j.Logger
-import org.codehaus.groovy.grails.web.converters.exceptions.ConverterException
+import org.grails.web.converters.exceptions.ConverterException
 import org.springframework.web.context.request.RequestContextHolder
 import net.hedtech.extensibility.ExtensionUtility
 
 
 class ResourceService {
     static transactional = false
-    private static final Logger log = Logger.getLogger( this.getClass() )
     def localizerService = { mapToLocalize ->
         new MessageHelper().message(mapToLocalize)
     }
@@ -53,7 +52,8 @@ class ResourceService {
                 }
             }
             catch (ConverterException ce) {
-                log.error "Error parsing resources json string"
+                //TODO Task for asset pipeline
+                //log.error "Error parsing resources json string"
                 result = "{}"
             }
         } else {
@@ -64,7 +64,8 @@ class ResourceService {
                 }
             }
             catch (ConverterException ce) {
-                log.error "Error parsing resources json string"
+                //TODO Task for asset pipeline
+                //log.error "Error parsing resources json string"
                 map = "{}"
             }
             map.each { k,v ->

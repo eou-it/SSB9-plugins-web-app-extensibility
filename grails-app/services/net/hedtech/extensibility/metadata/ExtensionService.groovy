@@ -5,15 +5,13 @@
 package net.hedtech.extensibility.metadata
 import grails.converters.JSON
 import net.hedtech.banner.i18n.MessageHelper
-import org.codehaus.groovy.grails.web.converters.exceptions.ConverterException
+import org.grails.web.converters.exceptions.ConverterException
 import grails.util.Environment
-import org.apache.log4j.Logger
 import net.hedtech.extensibility.ExtensionUtility
 
 class ExtensionService {
     static transactional = false
     def static extensionsPath = grails.util.Holders.getConfig().webAppExtensibility.locations.extensions
-    private static final Logger log = Logger.getLogger( this.getClass() )
     def static localizerService = { mapToLocalize ->
         new MessageHelper().message(mapToLocalize)
     }
@@ -67,7 +65,8 @@ class ExtensionService {
                 jsonStr = file.text
             }
             catch (IOException ioe) {
-                log.error "Error reading extensions json file ${file.path}: " + ioe.stackTrace
+                //TODO Task for asset pipeline
+                //log.error "Error reading extensions json file ${file.path}: " + ioe.stackTrace
             }
             if (jsonStr) {
                 try {
@@ -76,9 +75,11 @@ class ExtensionService {
                     }
                 }
                 catch (ConverterException ce) {
-                    log.error "Error parsing extensions json from ${file.path}: " + ce.stackTrace
+                    //TODO Task for asset pipeline
+                    //log.error "Error parsing extensions json from ${file.path}: " + ce.stackTrace
                 }
             } else {
+                //TODO Task for asset pipeline
                 log.error "error loading extensions from ${file.path}"
             }
         }
@@ -94,7 +95,8 @@ class ExtensionService {
                 jsonStr = file.text
             }
             catch (IOException ioe) {
-                log.error "Error reading extensions json file ${file.path}: " + ioe.stackTrace
+                //TODO Task for asset pipeline
+                //log.error "Error reading extensions json file ${file.path}: " + ioe.stackTrace
             }
             if (jsonStr) {
                  //handle compatibility with older version where extensions were defined in an array
@@ -108,12 +110,14 @@ class ExtensionService {
                 }
                 catch (ConverterException ce) {
                     def parseError = ce.getCause().getMessage()
-                    log.error "Error parsing extensions json from ${file.path}: " + parseError
+                    //TODO Task for asset pipeline
+                    //log.error "Error parsing extensions json from ${file.path}: " + parseError
                     throw new Exception(localizerService(code: "xe.extensions.json.load.error",args: [parseError]))
                 }
                 return jsonStr
             } else {
-                log.error "error loading extensions from ${file.path}"
+                //TODO Task for asset pipeline
+                //log.error "error loading extensions from ${file.path}"
             }
         }
         emptyJSON
