@@ -8,7 +8,9 @@ import net.hedtech.banner.i18n.MessageHelper
 import org.grails.web.converters.exceptions.ConverterException
 import grails.util.Environment
 import net.hedtech.extensibility.ExtensionUtility
+import groovy.util.logging.Slf4j
 
+@Slf4j
 class ExtensionService {
     static transactional = false
     def static extensionsPath = grails.util.Holders.getConfig().webAppExtensibility.locations.extensions
@@ -66,7 +68,7 @@ class ExtensionService {
             }
             catch (IOException ioe) {
                 //TODO Task for asset pipeline
-                //log.error "Error reading extensions json file ${file.path}: " + ioe.stackTrace
+                log.error "Error reading extensions json file ${file.path}: " + ioe.stackTrace
             }
             if (jsonStr) {
                 try {
@@ -76,11 +78,11 @@ class ExtensionService {
                 }
                 catch (ConverterException ce) {
                     //TODO Task for asset pipeline
-                    //log.error "Error parsing extensions json from ${file.path}: " + ce.stackTrace
+                    log.error "Error parsing extensions json from ${file.path}: " + ce.stackTrace
                 }
             } else {
                 //TODO Task for asset pipeline
-                //log.error "error loading extensions from ${file.path}"
+                log.error "error loading extensions from ${file.path}"
             }
         }
         result
@@ -96,7 +98,7 @@ class ExtensionService {
             }
             catch (IOException ioe) {
                 //TODO Task for asset pipeline
-                //log.error "Error reading extensions json file ${file.path}: " + ioe.stackTrace
+                log.error "Error reading extensions json file ${file.path}: " + ioe.stackTrace
             }
             if (jsonStr) {
                  //handle compatibility with older version where extensions were defined in an array
@@ -117,7 +119,7 @@ class ExtensionService {
                 return jsonStr
             } else {
                 //TODO Task for asset pipeline
-                //log.error "error loading extensions from ${file.path}"
+                log.error "error loading extensions from ${file.path}"
             }
         }
         emptyJSON

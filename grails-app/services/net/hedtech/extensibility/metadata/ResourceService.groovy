@@ -11,8 +11,9 @@ import org.apache.log4j.Logger
 import org.grails.web.converters.exceptions.ConverterException
 import org.springframework.web.context.request.RequestContextHolder
 import net.hedtech.extensibility.ExtensionUtility
+import groovy.util.logging.Slf4j
 
-
+@Slf4j
 class ResourceService {
     static transactional = false
     def localizerService = { mapToLocalize ->
@@ -53,7 +54,7 @@ class ResourceService {
             }
             catch (ConverterException ce) {
                 //TODO Task for asset pipeline
-                //log.error "Error parsing resources json string"
+                log.error "Error parsing resources json string"
                 result = "{}"
             }
         } else {
@@ -65,7 +66,7 @@ class ResourceService {
             }
             catch (ConverterException ce) {
                 //TODO Task for asset pipeline
-                //log.error "Error parsing resources json string"
+                log.error "Error parsing resources json string"
                 map = "{}"
             }
             map.each { k,v ->
