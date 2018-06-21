@@ -466,7 +466,7 @@ class FinanceProcurementConstants {
     /** Properties keys for Requisition Information status  **/
     public static final String REQUISITION_INFO_STATUS_DRAFT = 'draft'
     public static final String REQUISITION_INFO_STATUS_DISAPPROVED = 'disapproved'
-    public static final String REQUISITION_INFO_STATUS_PENDING = 'pending'
+    public static final String REQUISITION_INFO_STATUS_PENDING = 'inapproval'
     public static final String REQUISITION_INFO_STATUS_COMPLETED = 'completed'
     public static final String REQUISITION_INFO_STATUS_ASSIGNED_TO_BUYER = 'assignedToBuyer'
     public static final String REQUISITION_INFO_STATUS_CONVERTED_TO_PO = 'convertedToPo'
@@ -483,7 +483,7 @@ class FinanceProcurementConstants {
 
     /** Constants for listing and search Requisitions */
     public static final String REQUISITION_LIST_BUCKET_DRAFT = 'draft'
-    public static final String REQUISITION_LIST_BUCKET_PENDING = 'pending'
+    public static final String REQUISITION_LIST_BUCKET_PENDING = 'inapproval'
     public static final String REQUISITION_LIST_BUCKET_COMPLETE = 'completed'
     public static final String REQUISITION_LIST_BUCKET_ALL = 'all'
     public static final String REQUEST_PARAM_ACCOUNTING_ITEM = 'item'
