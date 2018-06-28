@@ -50,7 +50,6 @@ dependencies {
     testCompile "org.grails:grails-gorm-testing-support"
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails:grails-web-testing-support"
-    compile project(":banner-core")
 }
 
 bootRun {
@@ -73,8 +72,13 @@ grailsPublish {
     developers = [johndoe:"John Doe"]
 }
 
-
-
 assets {
     packagePlugin = true
+}
+
+// Added for BannerXE - Internal plugin dependency
+grails {
+    plugins {
+        compile project(":banner-core")
+    }
 }
