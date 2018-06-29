@@ -11,7 +11,7 @@ import org.junit.Test
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 
-class InfoServicesTests extends BaseIntegrationTestCase {
+class InfoServiceIntegrationTests extends BaseIntegrationTestCase {
     def selfServiceBannerAuthenticationProvider
 
     @Before
