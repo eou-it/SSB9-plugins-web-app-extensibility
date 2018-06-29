@@ -10,7 +10,7 @@ import org.codehaus.groovy.grails.web.json.JSONObject
 import spock.lang.Specification
 
 @TestMixin(ControllerUnitTestMixin)
-class ResourceServiceTests extends Specification{
+class ResourceServiceSpec extends Specification{
     def resourceService
 
     //def resourceService = new net.hedtech.extensibility.metadata.ResourceService()

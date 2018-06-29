@@ -6,7 +6,7 @@ package net.hedtech.extensibility.metadata
 import net.hedtech.extensibility.ExtensionUtility
 import spock.lang.Specification
 
-class ExtensionUtilityTest extends Specification{
+class ExtensionUtilitySpec extends Specification{
     void "test extensionUtility"(){
         when:
         def res = ExtensionUtility.derivePageName("/EXTZ/Test.json")

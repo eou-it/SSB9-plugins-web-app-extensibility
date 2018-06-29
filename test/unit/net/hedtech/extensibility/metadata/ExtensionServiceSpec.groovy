@@ -11,7 +11,7 @@ import org.codehaus.groovy.grails.web.json.JSONObject
 import spock.lang.Specification
 
 @TestMixin(ControllerUnitTestMixin)
-class ExtensionServiceTests extends Specification{
+class ExtensionServiceSpec extends Specification{
 
     def jsonData = '''{
                "sections":[
