@@ -15,24 +15,24 @@ class ResourceServiceTests extends Specification{
 
     //def resourceService = new net.hedtech.extensibility.metadata.ResourceService()
 
-    def jsonData = '{' +
-            '   "sections":[' +
-            '      {' +
-            '         "name":"extzToolList",' +
-            '         "exclude":false,' +
-            '         "fields":[' +
-            '            {' +
-            '               "name":"about",' +
-            '               "exclude":false' +
-            '            },' +
-            '            {' +
-            '               "name":"uploadProperties",' +
-            '               "exclude":false' +
-            '            }' +
-            '         ]' +
-            '      }' +
-            '   ]' +
-            '}'
+    def jsonData = '''{
+               "sections":[
+                  {
+                     "name":"extzToolList",
+                     "exclude":false,
+                     "fields":[
+                        {
+                           "name":"about",
+                           "exclude":false
+                        },
+                        {
+                           "name":"uploadProperties",
+                           "exclude":false
+                        }
+                     ]
+                  }
+               ]
+            }'''
 
 
     def params = [unitTest: true, dummy: 1, application:"banner_extensibility", page:"Test",

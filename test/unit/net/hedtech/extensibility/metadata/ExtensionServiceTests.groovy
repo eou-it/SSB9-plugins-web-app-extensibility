@@ -13,24 +13,24 @@ import spock.lang.Specification
 @TestMixin(ControllerUnitTestMixin)
 class ExtensionServiceTests extends Specification{
 
-    def jsonData = '{' +
-            '   "sections":[' +
-            '      {' +
-            '         "name":"extzToolList",' +
-            '         "exclude":false,' +
-            '         "fields":[' +
-            '            {' +
-            '               "name":"about",' +
-            '               "exclude":false' +
-            '            },' +
-            '            {' +
-            '               "name":"uploadProperties",' +
-            '               "exclude":false' +
-            '            }' +
-            '         ]' +
-            '      }' +
-            '   ]' +
-            '}'
+    def jsonData = '''{
+               "sections":[
+                  {
+                     "name":"extzToolList",
+                     "exclude":false,
+                     "fields":[
+                        {
+                           "name":"about",
+                           "exclude":false
+                        },
+                        {
+                           "name":"uploadProperties",
+                           "exclude":false
+                        }
+                     ]
+                  }
+               ]
+            }'''
 
     def extensionService = new ExtensionService()
 
@@ -60,7 +60,7 @@ class ExtensionServiceTests extends Specification{
         when:
         def result = extensionService.list(params)
         then:
-        result !=null
+        result.size()>0
     }
 
 

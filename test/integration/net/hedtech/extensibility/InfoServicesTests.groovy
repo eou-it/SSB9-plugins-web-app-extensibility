@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2018 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
 
 package net.hedtech.extensibility
@@ -32,6 +32,6 @@ class InfoServicesTests extends BaseIntegrationTestCase {
   @Test
     void testUserWithoutAdminRole() {
         def res = InfoService.getJSON(null,"web-app-extensibility")
-        assert res !=null
+        assert res.contains("web-app-extensibility")
     }
 }
