@@ -23,12 +23,12 @@
 
 grails.config.locations = [] // leave this initialized to an empty list, and add your locations in the map below.
 
-def locationAdder = ConfigFinder.&addLocation.curry(grails.config.locations)
+/*def locationAdder = ConfigFinder.&addLocation.curry(grails.config.locations)
 
 [
         BANNER_APP_CONFIG:                 "banner_configuration.groovy",
         WEB_APP_EXTENSIBILITY_CONFIG:      "WebAppExtensibilityConfig.class"
-].each { envName, defaultFileName -> locationAdder( envName, defaultFileName ) }
+].each { envName, defaultFileName -> locationAdder( envName, defaultFileName ) }*/
 
 grails.config.locations.each {
     println "configuration: " + it
@@ -42,12 +42,12 @@ ssbEnabled = true
 ssbOracleUsersProxied = true
 
 
-dataSource {
+/*dataSource {
     pooled = true
     driverClassName = "org.h2.Driver"
     username = "sa"
     password = ""
-}
+}*/
 hibernate {
     cache.use_second_level_cache = true
     cache.use_query_cache = false
