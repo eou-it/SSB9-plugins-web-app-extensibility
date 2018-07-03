@@ -4,15 +4,14 @@
 
 package net.hedtech.extensibility
 
-import grails.transaction.Transactional
 import net.hedtech.extensibility.metadata.ExtensionService
 import net.hedtech.extensibility.metadata.ResourceService
 
 import org.springframework.web.context.request.RequestContextHolder
 
-@Transactional
+
 class InfoService {
-    static transactional = false
+    //static transactional = false
 
     // This service provides all information needed by the browser for extensibility as a String representation
     // of a JavaScript Object (JSON)
