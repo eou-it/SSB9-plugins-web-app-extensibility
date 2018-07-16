@@ -23,7 +23,8 @@ var xe = (function (xe) {
     xe.extensionsFound = false;
     xe.extensionsParseErrorId = "extensionsParseError";
 
-    $.fn.editable.defaults.placeholder = '';
+    // TODO :grails_332_change, needs to revisit
+    //$.fn.editable.defaults.placeholder = '';
 
     xe.log = function () {
         if (window.console && console.log && log.isDebugEnabled()) {
