@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2018 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
 
 /* global _  */
@@ -66,7 +66,7 @@ var xe = (function (xe) {
     };
 
     xe.selectorFor = function( name ) {
-        return '[' + xe.forAttribute + (name ? '="' + name: '"') + ']';
+        return '[' + xe.forAttribute + (name ? '="' + name + '"':'=""') + ']';
     };
 
     // Create a selector for removing an element and its associated labels, etc.
