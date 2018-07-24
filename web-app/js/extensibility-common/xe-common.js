@@ -187,7 +187,7 @@ var xe = (function (xe) {
      *******************************************************************************************************/
     xe.extend = function ( $rootElement ) {
         if (xe.extensionsFound) {
-            if ( $($rootElement)[0].hasAttribute( "xe-dynamic" ) ) {
+            if ( $($rootElement)[0] && $($rootElement)[0].hasAttribute( "xe-dynamic" ) ) {
                 extendDynamicContent();
             } else {
                 extendStaticContent();
