@@ -449,7 +449,6 @@ var xe = (function (xe) {
                     //show field
                     if ( typeof fieldExtension.exclude !=  'undefined' && fieldExtension.exclude===false) {
                         showElement(xe.type.field, fieldElement);
-                        return;
                     }
 
                     // reposition field
