@@ -10,7 +10,10 @@ class WebAppExtensibilityGrailsPlugin extends Plugin {
     def pluginExcludes = [
         "grails-app/views/error.gsp"
     ]
-
+    List loadAfter = ['bannerCore']
+    def dependsOn = [
+            bannerCore: '9.28.1 => *'
+    ]
     // TODO Fill in these fields
     def title = "Web App Extensibility" // Headline display name of the plugin
     def author = "Your name"
