@@ -676,7 +676,7 @@ var xe = (function (xe) {
                 title: $.i18n.prop("xe.extension.editor.window.title"),
                 appendTo: "#content", width: 600, height: "auto",
                 buttons: [
-                    {'class': 'btn btn-secondary', text: $.i18n.prop("xe.btn.label.cancel"),
+                    {'class': 'secondary', text: $.i18n.prop("xe.btn.label.cancel"),
                       click: function() {
                           var dialogWindow = this;
                           if (xe.extensionsChanged(popup)) {
@@ -702,7 +702,7 @@ var xe = (function (xe) {
                           }
                      }
                     },
-                    {'class': 'btn btn-primary', text: $.i18n.prop("xe.btn.label.submit"),
+                    {'class': 'primary', text: $.i18n.prop("xe.btn.label.submit"),
                      click: function(){
                         var dialogWindow = this;
                         if (xe.setExtensions($('#extensions-edit-input',popup).val())) {
