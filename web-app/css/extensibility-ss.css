@@ -81,7 +81,7 @@ div.ui-dialog.ui-widget.ui-widget-content.ui-corner-all.xe-extensions-editor.ui-
     padding: 0;
 }
 
-.primary, .ui-corner-all.ui-button.ui-widget.primary {
+.xe-extensions-editor .primary, .xe-extensions-editor .ui-corner-all.ui-button.ui-widget.primary {
     background-color: #026BC8;
     background-image: none;
     color: #FFFFFF;
@@ -98,29 +98,29 @@ div.ui-dialog.ui-widget.ui-widget-content.ui-corner-all.xe-extensions-editor.ui-
     line-height: 20px;
 }
 
-.primary:hover:not([disabled]), .ui-corner-all.ui-button.ui-widget.primary:hover:not([disabled]) {
+.xe-extensions-editor .primary:hover:not([disabled]), .xe-extensions-editor .ui-corner-all.ui-button.ui-widget.primary:hover:not([disabled]) {
     background-color: #065AA5;
     border: none;
 }
 
-.primary:focus:not([disabled]), .ui-corner-all.ui-button.ui-widget.primary:focus:not([disabled]) {
+.xe-extensions-editor .primary:focus:not([disabled]), .xe-extensions-editor .ui-corner-all.ui-button.ui-widget.primary:focus:not([disabled]) {
     border: 2px solid #81C8FF;
     -ms-user-select: none;
     outline: none;
 }
 
-.primary:disabled, .ui-corner-all.ui-button.ui-widget.primary:disabled {
+.xe-extensions-editor .primary:disabled, .xe-extensions-editor .ui-corner-all.ui-button.ui-widget.primary:disabled {
     background-color: #B2B3B7;
     color: #FFFFFF;
     border: none;
 }
 
-.primary:active:not([disabled]), .ui-corner-all.ui-button.ui-widget.primary:active:not([disabled]) {
+.xe-extensions-editor .primary:active:not([disabled]), .xe-extensions-editor .ui-corner-all.ui-button.ui-widget.primary:active:not([disabled]) {
     background-color: #0A4982;
     border: none;
 }
 
-.secondary, .ui-corner-all.ui-button.ui-widget.secondary {
+.xe-extensions-editor .secondary, .ui-corner-all.ui-button.ui-widget.secondary {
     background-color: #FFFFFF;
     background-image: none;
     background-position: left 0px, right -58px, 0 -29px;
@@ -139,12 +139,12 @@ div.ui-dialog.ui-widget.ui-widget-content.ui-corner-all.xe-extensions-editor.ui-
 }
 
 
-.secondary:hover:not([disabled]), .ui-corner-all.ui-button.ui-widget.secondary:hover:not([disabled]) {
+.xe-extensions-editor .secondary:hover:not([disabled]), .ui-corner-all.ui-button.ui-widget.secondary:hover:not([disabled]) {
     background-color: #065AA5;
     color: #FFFFFF;
 }
 
-.secondary:focus:not([disabled]), .ui-corner-all.ui-button.ui-widget.secondary:focus:not([disabled]) {
+.xe-extensions-editor .secondary:focus:not([disabled]), .ui-corner-all.ui-button.ui-widget.secondary:focus:not([disabled]) {
     border: 1px solid #81C8FF;
     -ms-user-select: none;
     background-color: #026BC8;
@@ -152,13 +152,13 @@ div.ui-dialog.ui-widget.ui-widget-content.ui-corner-all.xe-extensions-editor.ui-
     outline: none;
 }
 
-.secondary:disabled, .ui-corner-all.ui-button.ui-widget.secondary:disabled {
+.xe-extensions-editor .secondary:disabled, .ui-corner-all.ui-button.ui-widget.secondary:disabled {
     background-color: #B2B3B7;
     color: #FFFFFF;
     border: none;
 }
 
-.secondary:active:not([disabled]), .ui-corner-all.ui-button.ui-widget.secondary:active:not([disabled]) {
+.xe-extensions-editor .secondary:active:not([disabled]), .ui-corner-all.ui-button.ui-widget.secondary:active:not([disabled]) {
     background-color: #0A4982;
     border: none;
 }
