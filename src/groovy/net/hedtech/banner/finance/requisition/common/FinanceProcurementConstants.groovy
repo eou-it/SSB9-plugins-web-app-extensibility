@@ -8,7 +8,7 @@ package net.hedtech.banner.finance.requisition.common
  */
 class FinanceProcurementConstants {
 
-    public static final String USER_PROFILE_KEY = 'userProfile'
+    public static final String USER_PROFILE_KEY = 'procurementUserProfile'
     public static final String DASHBOARD_PAGE = 'financeProcurement'
     public static final String DEFAULT_ACTION = 'dashboard'
     public static final String INSTITUTION_BASE_CCY = 'institutionBaseCcy'
