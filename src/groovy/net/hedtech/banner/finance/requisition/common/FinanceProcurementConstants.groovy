@@ -561,7 +561,7 @@ class FinanceProcurementConstants {
     final String SUCCESS_MESSAGE_COPY_REQUISITION_HEADER = 'net.hedtech.banner.finance.requisition.copy.requisition.header.success'
 
     /** Date format error **/
-    public static final String ERROR_MESSAGE_INVALID_DATE_FORMAT = 'default.invalid.date.format'
+    public static final String ERROR_MESSAGE_INVALID_DATE_FORMAT = 'net.hedtech.banner.finance.requisition.invalid.date.format'
 
     /** Recall requisition **/
     public static
