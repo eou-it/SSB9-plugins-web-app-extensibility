@@ -16,7 +16,7 @@ import org.junit.Test
 class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
     def springSecurityService
     def requisitionHeaderService
-
+    def financeUtilityService
 
     @Before
     void setUp() {
@@ -375,7 +375,7 @@ class RequisitionInformationIntegrationTests extends BaseIntegrationTestCase {
         def ship_Code = "EAST"
         def matchRequired = "U"
         def requisitionHeader = new RequisitionHeader(
-                requestCode: FinanceProcurementConstants.DEFAULT_REQUEST_CODE,
+                requestCode: financeUtilityService.getLocalizedNextKeyword(),
                 requestDate: new Date(),
                 transactionDate: new Date(),
                 postingDate: new Date(),

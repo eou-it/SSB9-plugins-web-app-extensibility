@@ -15,7 +15,7 @@ import org.junit.Test
 class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
 
     def reqCode = "RSED0001"
-
+    def financeUtilityService
 
     @Before
     void setUp() {
@@ -85,7 +85,7 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
         def request = RequisitionHeader.findById( reqId )
         assertNotNull request.id
         assertNotNull request.requestCode
-        assertFalse( request.requestCode == FinanceProcurementConstants.DEFAULT_REQUEST_CODE )
+        assertFalse( request.requestCode == financeUtilityService.getLocalizedNextKeyword() )
     }
 
     /**
@@ -122,7 +122,7 @@ class RequisitionHeaderIntegrationTests extends BaseIntegrationTestCase {
         def ship_Code = "EAST"
         def matchRequired = "U"
         def requisitionHeader = new RequisitionHeader(
-                requestCode: FinanceProcurementConstants.DEFAULT_REQUEST_CODE,
+                requestCode:financeUtilityService.getLocalizedNextKeyword(),
                 requestDate: new Date(),
                 transactionDate: new Date(),
                 postingDate: new Date(),

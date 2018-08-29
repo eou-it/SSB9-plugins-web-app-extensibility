@@ -31,7 +31,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     def financeTextService
     def documentManagementCompositeService
     def bdmEnabled = Holders?.config.bdm.enabled
-
+    def financeUtilityService
     /**
      * Super class setup
      */
@@ -58,7 +58,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         def headerDomainModel = newRequisitionHeader()
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def requestCode = requisitionHeaderCompositeService.createPurchaseRequisitionHeader( domainModelMap )
-        assertTrue requestCode != FinanceProcurementConstants.DEFAULT_REQUEST_CODE
+        assertTrue requestCode != financeUtilityService.getLocalizedNextKeyword()
     }
 
     /**
@@ -72,7 +72,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         def headerDomainModel = newRequisitionHeader()
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def requestCode = requisitionHeaderCompositeService.createPurchaseRequisitionHeader( domainModelMap )
-        assertTrue requestCode != FinanceProcurementConstants.DEFAULT_REQUEST_CODE
+        assertTrue requestCode != financeUtilityService.getLocalizedNextKeyword()
     }
 
     /**
@@ -163,7 +163,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         def headerDomainModel = newRequisitionHeader()
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def requestCode = requisitionHeaderCompositeService.createPurchaseRequisitionHeader( domainModelMap )
-        assertTrue requestCode != FinanceProcurementConstants.DEFAULT_REQUEST_CODE
+        assertTrue requestCode != financeUtilityService.getLocalizedNextKeyword()
     }
 
     /**
@@ -683,7 +683,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
      */
     private def newRequisitionHeader() {
         return [
-                'requestCode'              : FinanceProcurementConstants.DEFAULT_REQUEST_CODE,
+                'requestCode'              : financeUtilityService.getLocalizedNextKeyword(),
                 'requestDate'              : new Date(),
                 'transactionDate'          : new Date(),
                 'requesterName'            : 'Caliper College_u1',
