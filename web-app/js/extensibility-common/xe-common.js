@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2018 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
 
 /* global _  */
@@ -66,7 +66,7 @@ var xe = (function (xe) {
     };
 
     xe.selectorFor = function( name ) {
-        return '[' + xe.forAttribute + (name ? '="' + name: '"') + ']';
+        return '[' + xe.forAttribute + (name ? '="' + name + '"':'=""') + ']';
     };
 
     // Create a selector for removing an element and its associated labels, etc.
@@ -187,7 +187,7 @@ var xe = (function (xe) {
      *******************************************************************************************************/
     xe.extend = function ( $rootElement ) {
         if (xe.extensionsFound) {
-            if ( $($rootElement)[0].hasAttribute( "xe-dynamic" ) ) {
+            if ( $($rootElement)[0] && $($rootElement)[0].hasAttribute( "xe-dynamic" ) ) {
                 extendDynamicContent();
             } else {
                 extendStaticContent();
@@ -449,7 +449,6 @@ var xe = (function (xe) {
                     //show field
                     if ( typeof fieldExtension.exclude !=  'undefined' && fieldExtension.exclude===false) {
                         showElement(xe.type.field, fieldElement);
-                        return;
                     }
 
                     // reposition field
