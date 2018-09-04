@@ -272,16 +272,26 @@ class RequisitionHeaderForCopy implements Serializable {
     public static def listRequisitionHeader( searchParam, pagingParams ) {
         String query = 'select requestCode from RequisitionHeaderForCopy'
         if (searchParam) {
-            query <<= " where UPPER(requestCode) like '${searchParam.toUpperCase()}%'"
+            query <<= " where UPPER(requestCode) like :searchParam"
         }
         query <<= ' order by requestCode'
-        RequisitionHeaderForCopy.withSession {Session session ->
-            session.createQuery( query )
-                    .setMaxResults( pagingParams.max )
-                    .setFirstResult( pagingParams.offset )
-                    .setCacheable( true )
-                    .setCacheRegion( 'financeProcurementTablesCacheRegion' )
-                    .list()
+        if(searchParam){
+            RequisitionHeaderForCopy.withSession {Session session ->
+                        session.createQuery( query )
+                                .setString('searchParam',searchParam.toUpperCase() + '%')
+                                .setMaxResults( pagingParams.max )
+                                .setFirstResult( pagingParams.offset )
+                                .setCacheable( true )
+                                .setCacheRegion( 'financeProcurementTablesCacheRegion' )
+                                .list()}
+        } else {
+                RequisitionHeaderForCopy.withSession {Session session ->
+                            session.createQuery( query )
+                                    .setMaxResults( pagingParams.max )
+                                    .setFirstResult( pagingParams.offset )
+                                    .setCacheable( true )
+                                    .setCacheRegion( 'financeProcurementTablesCacheRegion' )
+                                    .list()}
         }
     }
 }
