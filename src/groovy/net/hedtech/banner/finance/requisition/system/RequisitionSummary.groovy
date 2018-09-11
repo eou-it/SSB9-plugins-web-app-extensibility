@@ -209,7 +209,7 @@ class RequisitionSummary implements Serializable {
      * @param userName
      * @return requisition Summary.
      */
-    static def fetchRequisitionSummaryForRequestCode( requestCode, userName ) {
+    static fetchRequisitionSummaryForRequestCode( requestCode, userName ) {
         RequisitionSummary.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_SUMMARY_FINDER_BY_REQUEST_CODE )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )

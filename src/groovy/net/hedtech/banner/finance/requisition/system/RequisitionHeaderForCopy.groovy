@@ -269,7 +269,7 @@ class RequisitionHeaderForCopy implements Serializable {
      * @param searchParam
      * @return list of RequisitionHeader
      */
-    public static def listRequisitionHeader( searchParam, pagingParams ) {
+    public static listRequisitionHeader( searchParam, pagingParams ) {
         String query = 'select requestCode from RequisitionHeaderForCopy'
         if (searchParam) {
             query <<= " where UPPER(requestCode) like :searchParam"

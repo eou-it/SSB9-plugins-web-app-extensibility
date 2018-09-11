@@ -60,7 +60,7 @@ class RequisitionSummaryService extends ServiceBase {
     }
 
 
-    private def processSummaryInformation( requisitionSummary, baseCcy, requestCode, boolean doesNotNeedPdf ) {
+    private processSummaryInformation( requisitionSummary, baseCcy, requestCode, boolean doesNotNeedPdf ) {
         processSummaryInformation( requisitionSummary, baseCcy, requestCode, doesNotNeedPdf, true )
     }
     /**
@@ -68,8 +68,7 @@ class RequisitionSummaryService extends ServiceBase {
      * @param requisitionSummary
      * @param requestCode
      */
-    private
-    def processSummaryInformation( requisitionSummary, baseCcy, requestCode, boolean doesNotNeedPdf, boolean isUserIndependent ) {
+    private processSummaryInformation( requisitionSummary, baseCcy, requestCode, boolean doesNotNeedPdf, boolean isUserIndependent ) {
         def retJSON = [:]
         def processComment = {list ->
             def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING

@@ -352,7 +352,7 @@ class RequisitionHeader implements Serializable {
      * @param pagingParams
      * @return list of
      */
-    public static def fetchByUser( userId, pagingParams ) {
+    public static fetchByUser( userId, pagingParams ) {
         def headerList = RequisitionHeader.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_HEADER_FINDER_BY_USER ).setString(
                     FinanceProcurementConstants.REQUISITION_HEADER_FINDER_BY_REQUEST_CODE_PARAM_USER_ID, userId )

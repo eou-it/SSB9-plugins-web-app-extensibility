@@ -375,7 +375,7 @@ class RequisitionDetail implements Serializable {
      * This method is used to called named query for get last item generated in requisition detail.
      * @return last generated item.
      */
-    static def getLastItem(requestCode) {
+    static getLastItem(requestCode) {
         def lastItem = RequisitionDetail.withSession { session ->
             session.getNamedQuery(FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_GET_LAST_ITEM)
                     .setString(FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode)
@@ -390,7 +390,7 @@ class RequisitionDetail implements Serializable {
      * @param item Item Number.
      * @return list of requisition.
      */
-    static def fetchByRequestCodeAndItem(requestCode, Integer item) {
+    static fetchByRequestCodeAndItem(requestCode, Integer item) {
         def requestDetailList = RequisitionDetail.withSession { session ->
             session.getNamedQuery(FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE_AND_ITEM)
                     .setString(FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode)
@@ -406,7 +406,7 @@ class RequisitionDetail implements Serializable {
      * @param paginationParams pagination parameters.
      * @return List of requisition details.
      */
-    static def fetchByUserId(userId, paginationParams) {
+    static fetchByUserId(userId, paginationParams) {
         def requestDetailList = RequisitionDetail.withSession { session ->
             session.getNamedQuery(FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_USER)
                     .setString(FinanceProcurementConstants.QUERY_PARAM_USER_ID, userId)
@@ -422,7 +422,7 @@ class RequisitionDetail implements Serializable {
      * @param requestCode Requisition code.
      * @return list of requisition.
      */
-    static def fetchByRequestCode(requestCode) {
+    static fetchByRequestCode(requestCode) {
         def requestDetailList = RequisitionDetail.withSession { session ->
             session.getNamedQuery(FinanceProcurementConstants.NAMED_QUERY_REQUEST_DETAIL_BY_REQ_CODE)
                     .setString(FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode)

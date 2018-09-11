@@ -95,7 +95,7 @@ class RequisitionInformationService extends ServiceBase {
      * Gets oracle user name for Logged In user
      * @return
      */
-    def private getOracleUserNameForLoggedInUser() {
+    private getOracleUserNameForLoggedInUser() {
         def user = springSecurityService.getAuthentication().user
         if (!user.oracleUserName) {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
@@ -151,7 +151,7 @@ class RequisitionInformationService extends ServiceBase {
      * @param oracleUserName
      * @return
      */
-    private def fetchRequisitionsCountBySearchParam( searchParam, oracleUserName ) {
+    private fetchRequisitionsCountBySearchParam( searchParam, oracleUserName ) {
         RequisitionInformation.fetchRequisitionsCountBySearchParam( searchParam, oracleUserName )
     }
 
@@ -161,7 +161,7 @@ class RequisitionInformationService extends ServiceBase {
      * @param oracleUserName
      * @return
      */
-    private def fetchRequisitionsCountByTransactionDate( searchParam, oracleUserName ) {
+    private fetchRequisitionsCountByTransactionDate( searchParam, oracleUserName ) {
         RequisitionInformation.fetchRequisitionsCountByTransactionDate( searchParam, oracleUserName )
     }
 
@@ -171,7 +171,7 @@ class RequisitionInformationService extends ServiceBase {
      * @param oracleUserName
      * @return
      */
-    private def fetchRequisitionsCountByBucketAndSearchParam( searchParam, oracleUserName, status ) {
+    private fetchRequisitionsCountByBucketAndSearchParam( searchParam, oracleUserName, status ) {
         RequisitionInformation.fetchRequisitionsCountByStatusAndSearchParam( searchParam, oracleUserName, status )
     }
 
@@ -181,7 +181,7 @@ class RequisitionInformationService extends ServiceBase {
      * @param oracleUserName
      * @return
      */
-    private def fetchRequisitionsCountByStatusAndTransactionDate( searchParam, oracleUserName, status ) {
+    private fetchRequisitionsCountByStatusAndTransactionDate( searchParam, oracleUserName, status ) {
         RequisitionInformation.fetchRequisitionsCountByStatusAndTransactionDate( searchParam, oracleUserName, status )
     }
 }

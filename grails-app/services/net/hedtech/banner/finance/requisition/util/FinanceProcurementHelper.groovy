@@ -19,7 +19,7 @@ class FinanceProcurementHelper {
      * Checks if requisition is already complete
      * @param requisitionHeader
      */
-    static def checkCompleteRequisition( requisitionHeader ) {
+    static checkCompleteRequisition( requisitionHeader ) {
         if (requisitionHeader.completeIndicator) {
             throw new ApplicationException(
                     FinanceProcurementHelper,
@@ -33,7 +33,7 @@ class FinanceProcurementHelper {
      * @param fractionDigits
      * @return
      */
-    static def getLocaleBasedFormattedNumber( amount, fractionDigits ) {
+    static getLocaleBasedFormattedNumber( amount, fractionDigits ) {
         amount = amount ?: 0.0
         Locale fmtLocale = LocaleContextHolder.getLocale()
         NumberFormat formatter = NumberFormat.getInstance( fmtLocale );

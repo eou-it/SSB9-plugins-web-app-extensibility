@@ -133,7 +133,7 @@ class RequisitionDetailsCompositeService {
      * @param requestCode
      * @return
      */
-    private def deleteAccountingForCommodity( requestCode, item ) {
+    private deleteAccountingForCommodity( requestCode, item ) {
         def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         if (header.isDocumentLevelAccounting && requisitionDetailService.findByRequestCode( requestCode )?.size() == 1) {
             requisitionAccountingService.findAccountingByRequestCode( requestCode )?.each() {
@@ -176,7 +176,7 @@ class RequisitionDetailsCompositeService {
      * @param requisitionDetailRequest Requisition details.
      * @return updated requisition details.
      */
-    private def setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest ) {
+    private setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest ) {
         // Set all the required information from the Requisition Header.
         def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         requisitionDetailRequest.chartOfAccount = requisitionHeader.chartOfAccount

@@ -269,7 +269,7 @@ class RequisitionAccountingCompositeService {
      * @param sequenceNumber
      * @return
      */
-    private def findCompleteAccountingByRequestCodeItemAndSeq( requisitionCode, Integer item, Integer sequenceNumber ) {
+    private findCompleteAccountingByRequestCodeItemAndSeq( requisitionCode, Integer item, Integer sequenceNumber ) {
         LoggerUtility.debug( LOGGER, 'Input parameter for findCompleteAccountingByRequestCodeItemAndSeq :' + requisitionCode )
         def requisitionAccounting = requisitionAccountingService.findBasicAccountingByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber )
         if (!requisitionAccounting) {
@@ -337,7 +337,7 @@ class RequisitionAccountingCompositeService {
      * @param requisitionAccounting
      * @return
      */
-    private def setNSFOverride( requisitionAccounting ) {
+    private setNSFOverride( requisitionAccounting ) {
         requisitionAccounting.insufficientFundsOverrideIndicator = FinanceProcurementConstants.FALSE
         // Populate always false from XE as Requested by BA Mark/Kumar
     }
@@ -348,7 +348,7 @@ class RequisitionAccountingCompositeService {
      * @param tnxDate
      * @return
      */
-    private def reValidateAccountingFOAP( requisitionAccount, tnxDate ) {
+    private reValidateAccountingFOAP( requisitionAccount, tnxDate ) {
         financeOrganizationCompositeService.findOrganizationListByEffectiveDateAndSearchParam( [searchParam  : requisitionAccount.organization,
                                                                                                 effectiveDate: tnxDate, coaCode: requisitionAccount.chartOfAccount],
                                                                                                [offset: FinanceProcurementConstants.ZERO, max: FinanceProcurementConstants.ONE] )

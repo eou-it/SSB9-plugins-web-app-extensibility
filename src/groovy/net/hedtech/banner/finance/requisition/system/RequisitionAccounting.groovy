@@ -388,7 +388,7 @@ class RequisitionAccounting implements Serializable {
      * @param sequenceNumber Sequence Number.
      * @return RequisitionAccounting.
      */
-    static def fetchByRequestCodeItemAndSeq( requestCode, Integer item, Integer sequenceNumber ) {
+    static fetchByRequestCodeItemAndSeq( requestCode, Integer item, Integer sequenceNumber ) {
         def requestAccounting = RequisitionAccounting.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_BY_CODE )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
@@ -403,7 +403,7 @@ class RequisitionAccounting implements Serializable {
      * This method is used to called named query for get last sequence number generated in requisition accounting.
      * @return last generated sequence number.
      */
-    static def fetchLastSequenceNumberByRequestCode( requestCode, int item ) {
+    static fetchLastSequenceNumberByRequestCode( requestCode, int item ) {
         def lastSequenceNumber = RequisitionAccounting.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_GET_LAST_SEQ )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
@@ -419,7 +419,7 @@ class RequisitionAccounting implements Serializable {
      * @param item
      * @return
      */
-    static def getSplittingPercentage( requestCode, int item ) {
+    static getSplittingPercentage( requestCode, int item ) {
         def lastSequenceNumber = RequisitionAccounting.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_GET_SUM_PERCENTAGE )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
@@ -433,7 +433,7 @@ class RequisitionAccounting implements Serializable {
      * This method is used to called named query for get last sequence number generated in requisition accounting.
      * @return last generated item number.
      */
-    static def fetchLastItemNumberByRequestCode( requestCode ) {
+    static fetchLastItemNumberByRequestCode( requestCode ) {
         def lastItemNumber = RequisitionAccounting.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_GET_LAST_ITEM )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
@@ -447,7 +447,7 @@ class RequisitionAccounting implements Serializable {
      * @param requestCode
      * @return
      */
-    static def findAccountingByRequestCode( requestCode ) {
+    static findAccountingByRequestCode( requestCode ) {
         RequisitionAccounting.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_BY_REQUEST_CODE )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )
@@ -461,7 +461,7 @@ class RequisitionAccounting implements Serializable {
      * @param paginationParams pagination parameters.
      * @return List of requisition details.
      */
-    static def fetchByUserId( userId, paginationParams ) {
+    static fetchByUserId( userId, paginationParams ) {
         def requestAccountingList = RequisitionAccounting.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_BY_USER )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_USER_ID, userId )
@@ -478,7 +478,7 @@ class RequisitionAccounting implements Serializable {
      * @param item
      * @return
      */
-    static def findAccountingByRequestCodeAndItem( requestCode, item ) {
+    static findAccountingByRequestCodeAndItem( requestCode, item ) {
         RequisitionAccounting.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQ_ACC_NAMED_QUERY_BY_REQUEST_CODE_AND_ITEM )
                     .setString( FinanceProcurementConstants.QUERY_PARAM_REQUEST_CODE, requestCode )

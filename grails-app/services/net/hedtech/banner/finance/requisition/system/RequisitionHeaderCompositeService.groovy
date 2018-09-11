@@ -10,8 +10,6 @@ import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
-import org.springframework.transaction.annotation.Propagation
-import org.springframework.transaction.annotation.Transactional
 
 /**
  * Class for Purchase Requisition Header Composite Service
@@ -236,7 +234,7 @@ class RequisitionHeaderCompositeService {
      * @param isCcyChanged
      * @return
      */
-    private def reCalculateCommodities( RequisitionHeader requisitionHeader, isDiscountChanged, isCcyChanged ) {
+    private reCalculateCommodities( RequisitionHeader requisitionHeader, isDiscountChanged, isCcyChanged ) {
         try {
             def detailList = requisitionDetailService.findDetailsRequestCode( requisitionHeader.requestCode )
             if(detailList.size() > 0 ) {

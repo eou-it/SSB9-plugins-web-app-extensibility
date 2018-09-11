@@ -76,7 +76,7 @@ class RequisitionListingCompositeService {
      * @param pagingParams
      * @return
      */
-    private def processBucket( wrapperList, bucket, pagingParams, user, baseCcy ) {
+    private processBucket( wrapperList, bucket, pagingParams, user, baseCcy ) {
         def draftStatus = [FinanceProcurementConstants.REQUISITION_INFO_STATUS_DRAFT,
                            FinanceProcurementConstants.REQUISITION_INFO_STATUS_DISAPPROVED]
 
@@ -135,7 +135,7 @@ class RequisitionListingCompositeService {
      * @param records
      * @return
      */
-    private def groupResult( countMap, statusList, groupType, records ) {
+    private groupResult( countMap, statusList, groupType, records ) {
         def getCount = 0;
         statusList.each() {
             getCount += countMap.get( it ) ? countMap.get( it ).intValue() : 0
@@ -161,7 +161,7 @@ class RequisitionListingCompositeService {
      * Returns list of Requisitions in defined data structure
      * @param searchParam as String
      */
-    private def searchRequisitionsBySearchParam( searchParam, pagingParams, isDateString, baseCcy ) {
+    private searchRequisitionsBySearchParam( searchParam, pagingParams, isDateString, baseCcy ) {
         def user = springSecurityService.getAuthentication().user
         if (!user.oracleUserName) {
             LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
@@ -224,8 +224,7 @@ class RequisitionListingCompositeService {
      * Returns list of Requisitions in defined data structure
      * @param searchParam as String
      */
-    private
-    def fetchRequisitionsByStatusAndSearchParam( user, searchParam, pagingParams, status, isDateString, baseCcy ) {
+    private fetchRequisitionsByStatusAndSearchParam( user, searchParam, pagingParams, status, isDateString, baseCcy ) {
         def inputMap = [searchParam: (isDateString) ? searchParam : searchParam?.toUpperCase()]
         if (!isDateString) {
             FinanceCommonUtility.applyWildCard( inputMap, true, true )
@@ -251,7 +250,7 @@ class RequisitionListingCompositeService {
      * @param institutionCcy
      * @return
      */
-    private def processResult( ret, institutionCcy ) {
+    private processResult( ret, institutionCcy ) {
         ret.list.collect() {
             [id             : it.id,
              version        : it.version,

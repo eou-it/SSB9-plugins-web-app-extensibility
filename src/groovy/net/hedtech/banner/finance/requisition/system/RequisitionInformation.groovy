@@ -137,7 +137,7 @@ class RequisitionInformation implements Serializable {
      * @param status
      * @return
      */
-    static def listRequisitionsByStatus( userId, paginationParams, status ) {
+    static listRequisitionsByStatus( userId, paginationParams, status ) {
         return RequisitionInformation.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_FINDER_BY_STATUS )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
@@ -155,7 +155,7 @@ class RequisitionInformation implements Serializable {
      * @param status
      * @return
      */
-    static def fetchRequisitionsCountByStatus( userId, status ) {
+    static fetchRequisitionsCountByStatus( userId, status ) {
         def requisitionsCount = RequisitionInformation.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_COUNT_FINDER_BY_STATUS )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
@@ -171,7 +171,7 @@ class RequisitionInformation implements Serializable {
      * @param requisitionCode
      * @return
      */
-    static def fetchRequisitionsByReqNumber( userId, requisitionCode ) {
+    static fetchRequisitionsByReqNumber( userId, requisitionCode ) {
         def requisitions = RequisitionInformation.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_FINDER_BY_CODE_USER )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
@@ -188,7 +188,7 @@ class RequisitionInformation implements Serializable {
      * @param status
      * @return
      */
-    static def listRequisitionsBySearchParam( userId, searchParam, paginationParams ) {
+    static listRequisitionsBySearchParam( userId, searchParam, paginationParams ) {
         return RequisitionInformation.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_FINDER_BY_SEARCH_PARAM )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
@@ -207,7 +207,7 @@ class RequisitionInformation implements Serializable {
      * @param searchParam
      * @return
      */
-    static def fetchRequisitionsCountBySearchParam( searchParam, userId ) {
+    static fetchRequisitionsCountBySearchParam( searchParam, userId ) {
         def requisitionsCount = RequisitionInformation.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_COUNT_FINDER_BY_SEARCH_PARAM )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
@@ -225,7 +225,7 @@ class RequisitionInformation implements Serializable {
      * @param searchParam
      * @return
      */
-    static def listRequisitionsByTransactionDate( userId, searchParam, paginationParams ) {
+    static listRequisitionsByTransactionDate( userId, searchParam, paginationParams ) {
         return RequisitionInformation.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_SEARCH_BY_TRANSACTION_DATE )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
@@ -243,7 +243,7 @@ class RequisitionInformation implements Serializable {
      * @param searchParam
      * @return
      */
-    static def fetchRequisitionsCountByTransactionDate( searchParam, userId ) {
+    static fetchRequisitionsCountByTransactionDate( searchParam, userId ) {
         def requisitionsCount = RequisitionInformation.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_SEARCH_COUNT_FINDER_BY_TRANSACTION_DATE )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
@@ -260,7 +260,7 @@ class RequisitionInformation implements Serializable {
      * @param status
      * @return
      */
-    static def listRequisitionsByStatusAndSearchParam( userId, searchParam, paginationParams, status ) {
+    static listRequisitionsByStatusAndSearchParam( userId, searchParam, paginationParams, status ) {
         return RequisitionInformation.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_FINDER_BY_SEARCH_PARAM_AND_STATUS )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
@@ -280,7 +280,7 @@ class RequisitionInformation implements Serializable {
      * @param searchParam
      * @return
      */
-    static def fetchRequisitionsCountByStatusAndSearchParam( searchParam, userId, status ) {
+    static fetchRequisitionsCountByStatusAndSearchParam( searchParam, userId, status ) {
         def requisitionsCount = RequisitionInformation.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_COUNT_FINDER_BY_SEARCH_PARAM_AND_STATUS )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
@@ -299,7 +299,7 @@ class RequisitionInformation implements Serializable {
      * @param searchParam
      * @return
      */
-    static def listRequisitionsByStatusAndTransactionDate( userId, searchParam, paginationParams, status ) {
+    static listRequisitionsByStatusAndTransactionDate( userId, searchParam, paginationParams, status ) {
         return RequisitionInformation.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_SEARCH_BY_TRANSACTION_DATE_AND_STATUS )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )
@@ -318,7 +318,7 @@ class RequisitionInformation implements Serializable {
      * @param searchParam
      * @return
      */
-    static def fetchRequisitionsCountByStatusAndTransactionDate( searchParam, userId, status ) {
+    static fetchRequisitionsCountByStatusAndTransactionDate( searchParam, userId, status ) {
         def requisitionsCount = RequisitionInformation.withSession {session ->
             session.getNamedQuery( FinanceProcurementConstants.REQUISITION_INFO_SEARCH_COUNT_FINDER_BY_TRANSACTION_DATE_AND_STATUS )
                     .setString( FinanceProcurementConstants.REQUISITION_INFO_FINDER_PARAM_STATUS_PARAM_USER_ID, userId )

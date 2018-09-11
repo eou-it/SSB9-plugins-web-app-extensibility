@@ -20,7 +20,7 @@ class RequisitionDetailsAcctCommonCompositeService {
      * @param requisitionAccountingRequest
      * @return
      */
-    public def adjustAccountPercentageAndAmount( RequisitionAccounting requisitionAccountingRequest ) {
+    public adjustAccountPercentageAndAmount( RequisitionAccounting requisitionAccountingRequest ) {
         def requisitionDetail
         def orgPercentage = requisitionAccountingRequest.percentage
         def adjustedPercentage = orgPercentage;

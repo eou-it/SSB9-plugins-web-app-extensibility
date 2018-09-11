@@ -136,7 +136,7 @@ class DocumentManagementCompositeService {
      * Gets BDM Crypto Key
      * @return
      */
-    private def fetchBdmCryptoKey() {
+    private fetchBdmCryptoKey() {
         try {
             BdmUtility.fetchBdmCryptoKey()
         }
@@ -158,8 +158,7 @@ class DocumentManagementCompositeService {
      * @return
      * @throws ApplicationException
      */
-    private
-    def uploadDocToBdmServer( RequisitionHeader requisition, docType, ownerPidm, fileName, absoluteFileName, vpdiCode ) throws ApplicationException {
+    private uploadDocToBdmServer( RequisitionHeader requisition, docType, ownerPidm, fileName, absoluteFileName, vpdiCode ) throws ApplicationException {
         DateFormat dateFormat = new SimpleDateFormat( FinanceProcurementConstants.BDM_DATE_FORMAT )
         def documentAttributes = [:]
         //Empty value is set to few fields as we need to change them when we create the fields at BDM forms.

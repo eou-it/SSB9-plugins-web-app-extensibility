@@ -22,7 +22,7 @@ class FinanceTextCompositeService {
      * @param user User information.
      * @return
      */
-    public def saveTextForHeader( header, map, user ) {
+    public saveTextForHeader( header, map, user ) {
         def listToSave = []
         def listToDelete = []
         financeTextService.listHeaderLevelTextByCode( 1, header.requestCode ).each {FinanceText financeTextToDelete ->
@@ -55,7 +55,7 @@ class FinanceTextCompositeService {
      * @param item item number.
      * @return
      */
-    public def saveTextForCommodity( detail, map, user, Integer item ) {
+    public saveTextForCommodity( detail, map, user, Integer item ) {
         def listToSave = []
         def listToDelete = []
         financeTextService.getFinanceTextByCodeAndItemNumber( 1, detail.requestCode, item ).each {FinanceText financeTextToDelete ->
@@ -118,7 +118,7 @@ class FinanceTextCompositeService {
      * @param text Finance text.
      * @return List of splitted the text.
      */
-    private static final def splitAndGetTextList( text ) {
+    private static final splitAndGetTextList( text ) {
         return text.toList().collate( FinanceProcurementConstants.FINANCE_TEXT_TEXT_LENGTH )*.join()
     }
 }
