@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2018 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
 
 /* global _  */
@@ -67,7 +67,7 @@ var xe = (function (xe) {
     };
 
     xe.selectorFor = function( name ) {
-        return '[' + xe.forAttribute + (name ? '="' + name: '"') + ']';
+        return '[' + xe.forAttribute + (name ? '="' + name + '"':'=""') + ']';
     };
 
     // Create a selector for removing an element and its associated labels, etc.
@@ -188,7 +188,7 @@ var xe = (function (xe) {
      *******************************************************************************************************/
     xe.extend = function ( $rootElement ) {
         if (xe.extensionsFound) {
-            if ( $($rootElement)[0].hasAttribute( "xe-dynamic" ) ) {
+            if ( $($rootElement)[0] && $($rootElement)[0].hasAttribute( "xe-dynamic" ) ) {
                 extendDynamicContent();
             } else {
                 extendStaticContent();
@@ -450,7 +450,6 @@ var xe = (function (xe) {
                     //show field
                     if ( typeof fieldExtension.exclude !=  'undefined' && fieldExtension.exclude===false) {
                         showElement(xe.type.field, fieldElement);
-                        return;
                     }
 
                     // reposition field
@@ -678,7 +677,7 @@ var xe = (function (xe) {
                 title: $.i18n.prop("xe.extension.editor.window.title"),
                 appendTo: "#content", width: 600, height: "auto",
                 buttons: [
-                    {'class': 'btn btn-secondary', text: $.i18n.prop("xe.btn.label.cancel"),
+                    {'class': 'secondary', text: $.i18n.prop("xe.btn.label.cancel"),
                       click: function() {
                           var dialogWindow = this;
                           if (xe.extensionsChanged(popup)) {
@@ -704,7 +703,7 @@ var xe = (function (xe) {
                           }
                      }
                     },
-                    {'class': 'btn btn-primary', text: $.i18n.prop("xe.btn.label.submit"),
+                    {'class': 'primary', text: $.i18n.prop("xe.btn.label.submit"),
                      click: function(){
                         var dialogWindow = this;
                         if (xe.setExtensions($('#extensions-edit-input',popup).val())) {
