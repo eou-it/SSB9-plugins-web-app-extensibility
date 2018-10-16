@@ -181,9 +181,9 @@ class RequisitionHeaderServiceIntegrationTests extends BaseIntegrationTestCase {
         def requestorPhoneAreaCode = "080"
         def requestorPhoneNumber = "242037662"
         def requestorPhoneExt = "9066"
-        def vendorPidm = 278
-        def addressType = "BU"
-        def vendorAddressTypeSequence = 1
+        def vendorPidm = null
+        def addressType = null
+        def vendorAddressTypeSequence = null
         def chartOfAccountsCode = "B"
         def orgnCode = "11103"
         def attentionTo = "Avery Johnson"
