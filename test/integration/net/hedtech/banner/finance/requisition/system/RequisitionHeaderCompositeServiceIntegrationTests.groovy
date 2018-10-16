@@ -7,6 +7,7 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
+import net.hedtech.banner.finance.util.FinanceCommonUtility
 import org.apache.commons.io.IOUtils
 import grails.util.Holders
 import org.hibernate.Session
@@ -32,6 +33,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     def documentManagementCompositeService
     def bdmEnabled = Holders?.config.bdm.enabled
     def financeUtilityService
+    def financeVendorService
     /**
      * Super class setup
      */
@@ -457,23 +459,24 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     @Test
     void updatePurchaseRequisitionOnlyVendorPidmChange() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        RequisitionHeader header = requisitionHeaderService.findRequisitionHeaderByRequestCode( 'RSED0003' )
-        header.vendorPidm = 206
+        RequisitionHeader header = requisitionHeaderService.findRequisitionHeaderByRequestCode( 'RSED0002' )
+        int pidm = getPidm('FTV00099')
+        header.vendorPidm = pidm
         def headerDomainModel = header.class.declaredFields.findAll {
             it.modifiers == java.lang.reflect.Modifier.PRIVATE
         }.collectEntries {[it.name, header[it.name]]}
         def domainModelMap = [requisitionHeader: headerDomainModel]
         def existingPrivateComment = FinanceProcurementConstants.EMPTY_STRING
         def existingPublicComment = FinanceProcurementConstants.EMPTY_STRING
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0002', FinanceValidationConstants.REQUISITION_INDICATOR_NO ).each {
             existingPrivateComment = existingPrivateComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
-        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0003', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
+        financeTextService.listHeaderLevelTextByCodeAndPrintOptionInd( 1, 'RSED0002', FinanceValidationConstants.REQUISITION_INDICATOR_YES ).each {
             existingPublicComment = existingPublicComment + (it.text ? it.text : FinanceProcurementConstants.EMPTY_STRING)
         }
         headerDomainModel.privateComment = existingPrivateComment
         headerDomainModel.publicComment = existingPublicComment
-        assert 'RSED0003' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0003', 'USD' ).requestCode
+        assert 'RSED0002' == requisitionHeaderCompositeService.updateRequisitionHeader( domainModelMap, 'RSED0002', 'USD' ).requestCode
     }
 
     /**
@@ -740,5 +743,15 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         MultipartFile multipartFile = new MockMultipartFile( "file",
                                                              testFile.getName(), "text/plain", IOUtils.toByteArray( input ) )
         multipartFile
+    }
+
+    private getPidm(search){
+        def map = [:]
+        map.effectiveDate = FinanceCommonUtility.parseDate( '07/01/2015' )
+        map.searchParam = search
+        def pagingParams = [max: 10, offset: 0]
+        def pidm =  financeVendorService.fetchFinanceVendorList(map, pagingParams, ['MA', 'BU'], [''] )[0]
+
+        return pidm.pidm
     }
 }
