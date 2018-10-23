@@ -3,6 +3,7 @@
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
+import groovy.sql.Sql
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
@@ -10,6 +11,8 @@ import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
 import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.service.ServiceBase
 import org.apache.log4j.Logger
+
+import java.sql.SQLException
 
 /**
  * Service class for RequisitionHeader.
@@ -24,7 +27,7 @@ class RequisitionHeaderService extends ServiceBase {
     def financeUnapprovedDocumentService
     def requisitionDetailService
     def requisitionAccountingService
-
+    def financeSystemControlService
 
     /**
      * Find the requisition Header for specified requestCode
@@ -88,7 +91,8 @@ class RequisitionHeaderService extends ServiceBase {
      */
     def validateRequisitionBeforeComplete( requestCode ) {
         LoggerUtility.debug(LOGGER, 'Input parameters for validate Requisition :' + requestCode)
-
+        def assignBuyerCode
+        def autoBuyrInd = financeSystemControlService.findActiveFinanceSystemControl().autoBuyrInd
         def requisitionHeader = RequisitionHeader.fetchByRequestCode(requestCode, springSecurityService.getAuthentication().user.oracleUserName)
         update([domainModel: requisitionHeader])
 
@@ -97,9 +101,15 @@ class RequisitionHeaderService extends ServiceBase {
         {
             def requisitionDetailsList = requisitionDetailService.findByRequestCode( requestCode )
             requisitionDetailsList.each () {
-                it.bid='aa'
-                it.bid=null
+                it.bid = null
+                if(autoBuyrInd == FinanceProcurementConstants.DEFAULT_INDICATOR_YES) {
+                    assignBuyerCode = assignBuyer(it)
+                    it.buyer = assignBuyerCode
+                }
                 requisitionDetailService.update ( [domainModel: it] )
+                if(autoBuyrInd == FinanceProcurementConstants.DEFAULT_INDICATOR_YES) {
+                    updateBuyerAssignDate(assignBuyerCode)
+                }
             }
             def requisitionAccountingList = requisitionAccountingService.findAccountingByRequestCode(requestCode)
             requisitionAccountingList.each () {
@@ -111,6 +121,35 @@ class RequisitionHeaderService extends ServiceBase {
         }
     }
 
+    private def assignBuyer(requisitionDetail) {
+        def effDate = new Date().format('yyyyMMdd')
+        def effTime = '235959'
+        def buyerCode = sessionFactory.currentSession
+                            .createSQLQuery( """SELECT FTVBUYR_CODE FROM FTVBUYR WHERE (FTVBUYR_CODE) IN (( SELECT FTVBUYO_CODE FROM FTVBUYO WHERE FTVBUYO_COAS_CODE = :FPBREQH_COAS_CODE AND 
+                                FTVBUYO_ORGN_CODE = :FPBREQH_ORGN_CODE UNION SELECT FTVBUYC_CODE FROM FTVBUYC WHERE FTVBUYC_COMM_CODE = :AUTO_COMM_CODE )) AND TRUNC(FTVBUYR_EFF_DATE) <= TO_DATE($effDate$effTime,'YYYYMMDDHH24MISS')
+                                AND (TRUNC(FTVBUYR_TERM_DATE) > TO_DATE($effDate$effTime,'YYYYMMDDHH24MISS') OR FTVBUYR_TERM_DATE IS NULL) ORDER BY FTVBUYR_LAST_ASSIGN_DATE""" )
+                            .setString( 'FPBREQH_COAS_CODE', requisitionDetail.chartOfAccount )
+                            .setString( 'FPBREQH_ORGN_CODE', requisitionDetail.organization )
+                            .setString( 'AUTO_COMM_CODE', requisitionDetail.commodity ).list()
+        if(buyerCode == null) {
+            buyerCode = sessionFactory.currentSession
+                    .createSQLQuery( """SELECT FTVBUYR_CODE FROM FTVBUYR WHERE TRUNC(FTVBUYR_EFF_DATE) <= TO_DATE($effDate$effTime,'YYYYMMDDHH24MISS') 
+                        AND (TRUNC(FTVBUYR_TERM_DATE) > TO_DATE($effDate$effTime,'YYYYMMDDHH24MISS') OR FTVBUYR_TERM_DATE IS NULL) ORDER BY FTVBUYR_LAST_ASSIGN_DATE""" ).list()
+        }
+        buyerCode[0]
+    }
+
+    private def updateBuyerAssignDate(assignBuyerCode) {
+        def sql
+        try {
+            sessionFactory.currentSession.with { session ->
+                sql = new Sql(session.connection())
+                sql.executeUpdate("UPDATE FTVBUYR SET FTVBUYR_LAST_ASSIGN_DATE = SYSDATE WHERE FTVBUYR_CODE = ?", [assignBuyerCode])
+            }
+        } finally {
+            sql?.close()
+        }
+    }
 
     /**
      * Service Method to recall a purchase requisition.

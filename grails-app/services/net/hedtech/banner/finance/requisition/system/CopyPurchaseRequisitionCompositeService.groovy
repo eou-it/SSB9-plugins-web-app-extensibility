@@ -97,6 +97,7 @@ class CopyPurchaseRequisitionCompositeService {
             detailForCopy.cancellationDate = null
             detailForCopy.closedIndicator = null
             detailForCopy.postDate = null
+            detailForCopy.buyer = null
             requisitionDetailForCopyService.create( [domainModel: detailForCopy] )
         }
 
