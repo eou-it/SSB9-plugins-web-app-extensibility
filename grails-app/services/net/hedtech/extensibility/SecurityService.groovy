@@ -8,10 +8,9 @@ import grails.plugin.springsecurity.SpringSecurityUtils
 
 class SecurityService {
     //static transactional = false
-    static def adminRoles = grails.util.Holders.config.webAppExtensibility.adminRoles?: ''
-
 
     static def userHasAdminRole() {
+        def adminRoles = grails.util.Holders.config.webAppExtensibility.adminRoles?: ''
         return SpringSecurityUtils.ifAnyGranted(adminRoles)
     }
 }
