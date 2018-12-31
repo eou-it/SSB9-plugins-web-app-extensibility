@@ -715,7 +715,7 @@ var xe = (function (xe) {
                 ]
             });
 
-            popup.load(extensibilityInfo.pluginUrl+'templates/extedit.html',
+            popup.load(extensibilityInfo.url+'assets/html/templates/extedit.html',
                 function(){
                     $('#extensions-edit-input',popup).val(JSON.stringify(xe.page.metadata,null,2));
                 }
