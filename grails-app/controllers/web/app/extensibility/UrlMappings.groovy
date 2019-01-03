@@ -3,6 +3,11 @@ package web.app.extensibility
 class UrlMappings {
 
     static mappings = {
+        "/ssb/$controller/$action?/$id?(.$format)?"{
+            constraints {
+                // apply constraints here
+            }
+        }
 
         //read only restful api
         "/internal/$pluralizedResourceName/$id"(controller: 'restfulApi') {
