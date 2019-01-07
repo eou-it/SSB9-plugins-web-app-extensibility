@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  ****************************************************************************** */
 package net.hedtech.banner.finance.requisition.system
 
@@ -11,8 +11,7 @@ import net.hedtech.banner.service.ServiceBase
 import org.apache.log4j.Logger
 import org.hibernate.HibernateException
 import org.hibernate.Session
-import org.springframework.transaction.annotation.Transactional
-
+import grails.gorm.transactions.Transactional
 /**
  * This service helps to get document type for BDM attachments
  */

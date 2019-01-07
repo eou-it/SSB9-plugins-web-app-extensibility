@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015 -2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.profile
 
@@ -9,13 +9,13 @@ import net.hedtech.banner.finance.util.FinanceCommonUtility
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
 import org.springframework.transaction.annotation.Propagation
-import org.springframework.transaction.annotation.Transactional
+import grails.gorm.transactions.Transactional
 
 /**
  * Class for User Profile Composite Service
  */
 class UserProfileCompositeService {
-    boolean transactional = false
+
     def financeUserProfileService
     def shipToCodeService
     def chartOfAccountsService

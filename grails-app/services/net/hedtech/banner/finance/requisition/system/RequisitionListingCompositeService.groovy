@@ -12,14 +12,14 @@ import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.i18n.MessageHelper
 import org.apache.log4j.Logger
 import org.springframework.transaction.annotation.Propagation
-import org.springframework.transaction.annotation.Transactional
-
+import grails.gorm.transactions.Transactional
 /**
  * Class for Purchase Requisition Listing Composite
  */
+@Transactional
 class RequisitionListingCompositeService {
     private static final Logger LOGGER = Logger.getLogger( this.class )
-    boolean transactional = true
+   
 
     def springSecurityService
     def requisitionInformationService

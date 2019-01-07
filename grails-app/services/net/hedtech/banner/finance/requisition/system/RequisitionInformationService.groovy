@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -10,11 +10,12 @@ import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.service.ServiceBase
 import org.apache.log4j.Logger
-
+import grails.gorm.transactions.Transactional
 import java.sql.SQLException
 
+@Transactional
 class RequisitionInformationService extends ServiceBase {
-    boolean transactional = true
+   
     private static final def LOGGER = Logger.getLogger( this.getClass() )
     def springSecurityService
 

@@ -11,15 +11,16 @@ import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
 import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.service.ServiceBase
 import org.apache.log4j.Logger
-
+import grails.gorm.transactions.Transactional
 import java.sql.SQLException
 
 /**
  * Service class for RequisitionHeader.
  *
  */
+@Transactional 
 class RequisitionHeaderService extends ServiceBase {
-    boolean transactional = true
+    
     private static final def LOGGER = Logger.getLogger( this.getClass() )
     def springSecurityService
     def financeApprovalHistoryService

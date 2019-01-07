@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2018-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -15,11 +15,13 @@ import net.hedtech.banner.imaging.BdmUtility
 import javax.xml.ws.WebServiceException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import grails.gorm.transactions.Transactional
 
+@Transactional
 class DocumentManagementCompositeService {
 
     private static final def LOGGER = Logger.getLogger( this.getClass() )
-    boolean transactional = true
+    
 
     def bdmAttachmentService
     def requisitionHeaderService

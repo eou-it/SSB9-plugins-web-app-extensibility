@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -9,13 +9,15 @@ import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
 import net.hedtech.banner.finance.system.FinanceText
+import grails.gorm.transactions.Transactional
 
 /**
  * The service class which is used to have methods for copy purchase requisition.
  */
+ @Transactional
 class CopyPurchaseRequisitionCompositeService {
     private static final def LOGGER = Logger.getLogger( this.getClass() )
-    boolean transactional = true
+   
 
     def sessionFactory
     def requisitionHeaderService

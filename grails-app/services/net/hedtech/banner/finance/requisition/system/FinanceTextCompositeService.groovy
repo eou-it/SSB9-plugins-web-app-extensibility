@@ -1,21 +1,19 @@
 /*******************************************************************************
- Copyright 2015-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.system.FinanceText
-
+import grails.gorm.transactions.Transactional
 /**
  * Composite service class for FinanceText.
  */
+ @Transactional
 class FinanceTextCompositeService {
-    boolean transactional = true
 
-    def financeTextService
-
-    /**
+def financeTextService    /**
      * Method is used to save text for header.
      * @param header requisition header.
      * @param map map which having comments.
