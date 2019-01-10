@@ -6,31 +6,29 @@ package web.app.extensibility
 class ExtensibilityUrlMappings {
     static mappings = {
         //read only restful api
-        "/internal/$pluralizedResourceName/$id"(controller: 'restfulApi') {
+        /*"/internal/$pluralizedResourceName/$id"(controller: 'webAppExtensibility') {
             action = [GET: "show"]
-            parseRequest = false
-            constraints {
-                // to constrain the id to numeric, uncomment the following:
-                // id matches: /\d+/
-            }
         }
-        "/internal/$pluralizedResourceName"(controller: 'restfulApi') {
+        "/internal/$pluralizedResourceName"(controller: 'webAppExtensibility') {
             action = [GET: "list"]
-            parseRequest = false
         }
         //secured restful api requiring the webtailor admin role
-        "/webadmin/$pluralizedResourceName/$id"(controller: 'restfulApi') {
+        "/webadmin/$pluralizedResourceName/$id"(controller: 'webAppExtensibility') {
             action = [GET   : "show", PUT: "update",
                       DELETE: "delete"]
-            parseRequest = false
-            constraints {
-                // to constrain the id to numeric, uncomment the following:
-                // id matches: /\d+/
-            }
-        }
-        "/webadmin/$pluralizedResourceName"(controller: 'restfulApi') {
+        }*/
+        "/webadmin/$pluralizedResourceName"(controller: 'webAppExtensibility') {
             action = [GET: "list", POST: "create"]
-            parseRequest = false
         }
+
+
+
+       /* "/webadmin/extensions"(controller: 'webAppExtensibility' ) {
+            action = "extensions"
+        }
+
+        "/webadmin/resources" (controller: 'webAppExtensibility' ){
+            action = "resources"
+        }*/
     }
 }

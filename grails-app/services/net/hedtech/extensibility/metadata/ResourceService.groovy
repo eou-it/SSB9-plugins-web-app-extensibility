@@ -21,7 +21,7 @@ class ResourceService {
     }
 
     def grailsApplication
-    def static resourcePath = grails.util.Holders.getConfig().webAppExtensibility.locations.resources
+    def static resourcePath
 
     def create(Map content, params) {
         def result = content.metadata
