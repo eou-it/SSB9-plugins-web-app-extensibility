@@ -30,10 +30,6 @@ grails.plugin.springsecurity.securityConfigType = SecurityConfigType.InterceptUr
 // Configuration for a Banner self service application
 ssbEnabled = true
 ssbOracleUsersProxied = true
-grails.config.locations = [
-        "classpath:WebAppExtensibilityConfig.groovy",
-        "~/.grails/banner_configuration.groovy"
-]
 
 /*String confAdminRoles = grailsApplication.config.getProperty('webAppExtensibility.adminRoles')
 if (!confAdminRoles) {

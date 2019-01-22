@@ -96,8 +96,5 @@ Brief summary/description of the plugin.
         if(adminRoles){
             config.grails.plugin.springsecurity.interceptUrlMap  << [pattern:'/webadmin/**' , access:[adminRoles]]
         }
-/*
-        interceptUrlMap << grails.plugin.springsecurity.interceptUrlMap
-        grails.plugin.springsecurity.interceptUrlMap = interceptUrlMap*/
     }
 }
