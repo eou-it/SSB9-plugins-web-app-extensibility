@@ -1,5 +1,4 @@
 import grails.util.Environment
-import grails.util.Holders
 
 /*******************************************************************************
  Copyright 2015 Ellucian Company L.P. and its affiliates.
