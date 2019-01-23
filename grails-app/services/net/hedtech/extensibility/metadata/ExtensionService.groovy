@@ -13,7 +13,7 @@ import groovy.util.logging.Slf4j
 @Slf4j
 class ExtensionService {
     static transactional = false
-    def static extensionsPath = grails.util.Holders.getConfig().webAppExtensibility.locations.extensions
+    def static extensionsPath
     def static localizerService = { mapToLocalize ->
         new MessageHelper().message(mapToLocalize)
     }

@@ -1,6 +1,10 @@
 package web.app.extensibility
 
 import grails.plugins.*
+import grails.util.Environment
+import grails.util.Holders
+import net.hedtech.extensibility.metadata.ExtensionService
+import net.hedtech.extensibility.metadata.ResourceService
 
 class WebAppExtensibilityGrailsPlugin extends Plugin {
 
@@ -44,7 +48,7 @@ Brief summary/description of the plugin.
 //    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
 
     Closure doWithSpring() { {->
-            // TODO Implement runtime spring config (optional)
+            setupExternalConfig()
         }
     }
 
@@ -69,5 +73,28 @@ Brief summary/description of the plugin.
 
     void onShutdown(Map<String, Object> event) {
         // TODO Implement code that is executed when the application shuts down (optional)
+    }
+
+    private setupExternalConfig(){
+        def config = Holders.config
+        ResourceService.resourcePath = config?.webAppExtensibility.locations.resources
+        ExtensionService.extensionsPath =config?.webAppExtensibility.locations.extensions
+        def roles = config.webAppExtensibility.adminRoles
+        if (!roles) {
+            //When in production do not use a default admin role
+            roles = Environment.current == Environment.PRODUCTION ? "" : "ROLE_SELFSERVICE-WTAILORADMIN_BAN_DEFAULT_M"
+        }
+        def adminRoles = roles.tokenize(',')  // List of adminRoles for Spring security
+
+        // Spring security
+        // Make sure to add the extensibility security at the start (odd, a Map should have no order, but spring security appears to consider order)
+        config.grails.plugin.springsecurity.interceptUrlMap << [
+                [pattern:'/internal/**', access:['IS_AUTHENTICATED_ANONYMOUSLY']],
+                [pattern:'/webadmin/**' , access:['IS_AUTHENTICATED_ANONYMOUSLY']]
+        ]
+
+        if(adminRoles){
+            config.grails.plugin.springsecurity.interceptUrlMap  << [pattern:'/webadmin/**' , access:[adminRoles]]
+        }
     }
 }
