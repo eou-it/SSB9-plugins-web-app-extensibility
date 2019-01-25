@@ -89,12 +89,11 @@ Brief summary/description of the plugin.
         // Spring security
         // Make sure to add the extensibility security at the start (odd, a Map should have no order, but spring security appears to consider order)
         config.grails.plugin.springsecurity.interceptUrlMap << [
-                [pattern:'/internal/**', access:['IS_AUTHENTICATED_ANONYMOUSLY']],
-                [pattern:'/webadmin/**' , access:['IS_AUTHENTICATED_ANONYMOUSLY']]
+                pattern:'/internal/**', access:['IS_AUTHENTICATED_ANONYMOUSLY']
         ]
 
         if(adminRoles){
-            config.grails.plugin.springsecurity.interceptUrlMap  << [pattern:'/webadmin/**' , access:[adminRoles]]
+            config.grails.plugin.springsecurity.interceptUrlMap  << [pattern:'/webadmin/**' , access:adminRoles]
         }
     }
 }
