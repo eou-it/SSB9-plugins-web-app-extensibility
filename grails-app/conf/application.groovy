@@ -33,11 +33,3 @@ hibernate {
 grails.config.locations = [
         BANNER_APP_CONFIG: "banner_configuration.groovy"
 ]
-
-webAppExtensibility {
-    locations {
-        resources     = "/Users/dharmarayudu/BanXE/sstext/i18n"
-        extensions    = "/Users/dharmarayudu/BanXE/sstext/extensions"
-    }
-    adminRoles = "ROLE_SELFSERVICE-WTAILORADMIN_BAN_DEFAULT_M"
-}
