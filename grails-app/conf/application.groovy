@@ -1,82 +1,35 @@
-import grails.util.Environment
-
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
- ******************************************************************************/
+ Copyright 2019 Ellucian Company L.P. and its affiliates.
+ *******************************************************************************/
 
-// configuration for plugin testing - will not be included in the plugin zip
-
-//TODO Add Dependency
-//import net.hedtech.banner.configuration.ApplicationConfigurationUtils as ConfigFinder
-//import grails.plugin.springsecurity.SecurityConfigType
-
-// ******************************************************************************
-//
-//                       +++ EXTERNALIZED CONFIGURATION +++
-//
-// ******************************************************************************
-//
-// Config locations should be added to the map used below. They will be loaded based upon this search order:
-// 1. Load the configuration file if its location was specified on the command line using -DmyEnvName=myConfigLocation
-// 2. Load the configuration file if it exists within the user's .grails directory (i.e., convenient for developers)
-// 3. Load the configuration file if its location was specified as a system environment variable
-//
-// Map [ environment variable or -D command line argument name : file path ]
-
-grails.plugin.springsecurity.useRequestMapDomainClass = false
-grails.plugin.springsecurity.securityConfigType = SecurityConfigType.InterceptUrlMap
-
-// Configuration for a Banner self service application
-ssbEnabled = true
-ssbOracleUsersProxied = true
-
-/*String confAdminRoles = grailsApplication.config.getProperty('webAppExtensibility.adminRoles')
-if (!confAdminRoles) {
-    //When in production do not use a default admin role
-    confAdminRoles = Environment.current == Environment.PRODUCTION ? "" : "ROLE_SELFSERVICE-WTAILORADMIN_BAN_DEFAULT_M"
-}
-def adminRoles = confAdminRoles.tokenize(',')  // List of adminRoles for Spring security*/
-
-// Spring security
-// Make sure to add the extensibility security at the start (odd, a Map should have no order, but spring security appears to consider order)
-/*grails.plugin.springsecurity.interceptUrlMap  = [
-        [pattern:'/internal/**', access:['IS_AUTHENTICATED_ANONYMOUSLY']],
-        [pattern:'/templates/**', access:['IS_AUTHENTICATED_ANONYMOUSLY']],
-        [pattern:'/webadmin/**' , access:['IS_AUTHENTICATED_ANONYMOUSLY']]
-]
-
-*//*if(adminRoles){
-    interceptUrlMap << [pattern:'/webadmin/**' , access:[adminRoles]]
-}*//*
-
-interceptUrlMap << grails.plugin.springsecurity.interceptUrlMap
-grails.plugin.springsecurity.interceptUrlMap = interceptUrlMap*/
-
-/*dataSource {
-    pooled = true
-    driverClassName = "org.h2.Driver"
-    username = "sa"
-    password = ""
-}*/
-hibernate {
-    cache.use_second_level_cache = true
-    cache.use_query_cache = false
-    cache.region.factory_class = 'net.sf.ehcache.hibernate.EhCacheRegionFactory'
-    //show_sql = true
-}
-
-// environment specific settings
 environments {
+    production {
+        grails.serverURL = "http://NOT_USED:8080/${appName}"
+    }
     development {
-        dataSource {
-        }
+        grails.serverURL = "http://NOT_USED:8080/${appName}"
     }
     test {
-        dataSource {
-        }
-    }
-    production {
-        dataSource {
-        }
+        grails.serverURL = "http://NOT_USED:8080/${appName}"
     }
 }
+
+
+hibernate {
+    cache.use_second_level_cache = true
+    cache.use_query_cache = true
+    cache.region.factory_class = 'org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory'
+    //hbm2ddl.auto = null
+    show_sql = false
+    packagesToScan="net.hedtech.**.*"
+    flush.mode = AUTO
+    dialect = "org.hibernate.dialect.Oracle10gDialect"
+    config.location = [
+            "classpath:hibernate-banner-core.cfg.xml",
+            "classpath:hibernate-banner-general-utility.cfg.xml"
+    ]
+}
+
+grails.config.locations = [
+        BANNER_APP_CONFIG: "banner_configuration.groovy"
+]

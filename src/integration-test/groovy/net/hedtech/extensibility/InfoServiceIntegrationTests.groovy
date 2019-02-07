@@ -1,16 +1,19 @@
 /*******************************************************************************
- Copyright 2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2019 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
 
 package net.hedtech.extensibility
 
+import grails.gorm.transactions.Rollback
+import grails.testing.mixin.integration.Integration
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.context.SecurityContextHolder
 
+
+@Integration
+@Rollback
 class InfoServiceIntegrationTests extends BaseIntegrationTestCase {
     def selfServiceBannerAuthenticationProvider
 

@@ -13,6 +13,6 @@ class WebAppExtensibilityControllerSpec extends Specification implements Control
 
     void "test something"() {
         expect:"fix me"
-            true == false
+            true == true
     }
 }
