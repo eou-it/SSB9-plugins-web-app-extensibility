@@ -9,7 +9,7 @@ buildscript {
     }
 }
 
-version "9.31"
+version "9.31.1"
 group "web.app.extensibility"
 
 apply plugin:"eclipse"
