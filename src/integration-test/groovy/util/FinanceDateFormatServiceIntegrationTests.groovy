@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package util
 
@@ -9,10 +9,15 @@ import net.sf.json.JSONObject
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 
 /**
  * Integration Test cases file for FinanceDateFormatService.
  */
+
+@Integration
+@Rollback
 class FinanceDateFormatServiceIntegrationTests extends BaseIntegrationTestCase {
 
     def financeDateFormatService

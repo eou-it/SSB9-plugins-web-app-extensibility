@@ -68,7 +68,7 @@ class RequisitionInformationService extends ServiceBase {
             throw new ApplicationException( RequisitionInformationService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_REQ_RECORD_COUNT, [] ) )
         }
         finally {
-            sql?.close()
+ //           sql?.close()
         }
         countMap
     }

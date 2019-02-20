@@ -4,6 +4,7 @@
 package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.exceptions.ApplicationException
+
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.FinanceCommonUtility
@@ -11,7 +12,7 @@ import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.service.ServiceBase
 import org.apache.log4j.Logger
 import grails.gorm.transactions.Transactional
-
+import static groovy.test.GroovyAssert.*
 /**
  * Service class for RequisitionAccounting.
  */

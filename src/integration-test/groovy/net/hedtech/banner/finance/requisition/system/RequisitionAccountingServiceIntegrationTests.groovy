@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -9,10 +9,16 @@ import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
+import static groovy.test.GroovyAssert.*
 
 /**
  * Test case class for RequisitionAccountingService.
  */
+
+@Integration
+@Rollback
 class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCase {
     def requisitionAccountingService
     def springSecurityService
@@ -146,8 +152,11 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
      */
     @Test
     public void testFetchRequisitionAccountingListWithWrongProvider() {
+
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
         springSecurityService.getAuthentication().user.oracleUserName = 'TESTUSER'
+        println ">>>>>>>>>springSecurityService.getAuthentication().user is ::"+springSecurityService.getAuthentication().user
+
         def pagingParams = [max: 500, offset: 0]
         try {
             requisitionAccountingService.findRequisitionAccountingListByUser( pagingParams )
@@ -239,11 +248,11 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
         def activityCode = ''
         def location = ''
         def projectCode = ''
-        def percentage = ''
-        def discountAmount = ''
-        def discountAmountPercent = ''
-        def additionalChargeAmount = ''
-        def additionalChargeAmountPct = ''
+        def percentage = null
+        def discountAmount = null
+        def discountAmountPercent = null
+        def additionalChargeAmount = null
+        def additionalChargeAmountPct = null
         def requestAccounting = new RequisitionAccounting(
                 requestCode: requestCode,
                 item: item,
@@ -257,10 +266,10 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
                 additionalChargeAmountPct: additionalChargeAmountPct,
                 sequenceNumber: sequenceNumber,
                 requisitionAmount: amount,
-                fiscalYearCode: fiscalCode,
+                fiscalYear: fiscalCode,
                 period: period,
                 ruleClass: ruleClassCode,
-                chartOfAccounts: chartOfAccountsCode,
+                chartOfAccount: chartOfAccountsCode,
                 accountIndex: indexCode,
                 fund: fundCode,
                 organization: orgnCode,

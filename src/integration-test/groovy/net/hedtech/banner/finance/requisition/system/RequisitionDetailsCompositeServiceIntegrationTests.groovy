@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -12,10 +12,14 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.springframework.security.authentication.BadCredentialsException
-
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 /**
  * Test class for Requisition Details Composite Service
  */
+
+@Integration
+@Rollback
 class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
 
@@ -385,7 +389,7 @@ class RequisitionDetailsCompositeServiceIntegrationTests extends BaseIntegration
                 'commodityDescription'  : 'New Requisition Detail',
                 'quantity'              : '2',
                 'unitOfMeasure'         : 'EA',
-                'unitPrice'             : '99.99',
+                'unitPrice'             :  99.99,
                 'suspenseIndicator'     : true,
                 'textUsageIndicator'    : FinanceProcurementConstants.DEFAULT_FPBREQD_TEXT_USAGE,
                 'discountAmount'        : '0',

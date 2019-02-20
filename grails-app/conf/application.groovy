@@ -2,12 +2,6 @@
 /*******************************************************************************
  Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
-
-// import net.hedtech.banner.configuration.ApplicationConfigurationUtils as ConfigFinder
-// import grails.plugin.springsecurity.SecurityConfigType
-// Support Hibernate annotations
-//import org.codehaus.groovy.grails.orm.hibernate.cfg.GrailsAnnotationConfiguration
-
 // ******************************************************************************
 //
 //                       +++ EXTERNALIZED CONFIGURATION +++
@@ -21,51 +15,11 @@
 //
 // Map [ environment variable or -D command line argument name : file path ]
 grails.config.locations = [] // leave this initialized to an empty list, and add your locations
-// in the APPLICATION CONFIGURATION section below.
-// def locationAdder = ConfigFinder.&addLocation.curry(grails.config.locations)
-
-// [BANNER_APP_CONFIG:                      "banner_configuration.groovy",
-//         BANNER_FINANCE_SSB_CONFIG:  "${userHome}/.grails/FinanceSelfService_configuration.groovy"
-// ].each { envName, defaultFileName -> locationAdder(envName, defaultFileName) }
-
+grails.config.locations = [
+        BANNER_APP_CONFIG         : "banner_configuration.groovy",
+        BANNER_FINANCE_SSB_CONFIG : "FinanceSelfService_configuration.groovy"
+]
 grails.databinding.useSpringBinder=true
-
-// You must create a small configuration file named 'banner_on_grails-local-config.groovy' (as referenced
-// in the above map defining externalized configuration files) that contains your own specific
-// configuration (e.g., URIs, usernames, etc.).  Following is an example of this file:
-
-/* ***************************** EXAMPLE local file ******************************
-myDataSource.username = "banproxy"
-myDataSource.password = "u_pick_it"
-myDataSource.driver = "oracle.jdbc.OracleDriver"
-myDataSource.url = "jdbc:oracle:thin:@{YOUR_HOST}:1521:ban83"
-myDataSource.jndiName = "jdbc/horizonDataSource"
-********************************************************************************* */
-
-/* *************** ANOTHER EXAMPLE of the same local file ***********************
-def username = "banproxy"
-def password = "u_pick_it"
-def url      ="jdbc:oracle:thin:@MAL0600026.corp.sct.com:1521:ban83"
-def driver   = "oracle.jdbc.OracleDriver"
-
-// Note: When using the com.elvyx.Driver, you may run the standalone elvyx client to see the actual SQL being executed.
-// You must download the elvyx-1.0.24_beta.zip from http://sourceforge.net/projects/elvyx/files and unzip where you want to keep it.
-// Note: You do NOT need to add the jar file to the project -- it is already present.
-// Next, Update the url below in this file for your environment, then
-//       Run the elvyz.bat or elvyz.sh file to launch the swing UI, and lastly
-//       Rrun your tests or the grails application.
-
-myDataSource.username = username
-myDataSource.password = password
-
-myDataSource.driver = driver
-// myDataSource.driver = "com.elvyx.Driver"
-
-myDataSource.url = url
-// myDataSource.url = "jdbc:elvyx://localhost:4448/?elvyx.real_driver=$driver&elvyx.real_jdbc=$url&user=$username&password=$password"
-
-myDataSource.jndiName = "jdbc/horizonDataSource"
-********************************************************************************* */
 
 grails.project.groupId = "net.hedtech" // used when deploying to a maven repo
 
@@ -116,6 +70,7 @@ environments {
 //        grails.serverURL = "http://localhost:8080/${appName}"
     }
     test {
+      
 //        grails.serverURL = "http://localhost:8080/${appName}"
     }
 }
@@ -184,9 +139,9 @@ convertedPages = ["medicalCondition", "disability", "medicalEquipment", "disabil
 // installation-specific configuration file (see Config.groovy for the include).
 
 dataSource {
-    configClass = GrailsAnnotationConfiguration.class
+//    configClass = GrailsAnnotationConfiguration.class
     dialect = "org.hibernate.dialect.Oracle10gDialect"
-    loggingSql = false
+ //   loggingSql = false
 
 }
 
@@ -194,9 +149,11 @@ dataSource {
 hibernate {
     cache.use_second_level_cache = true
     cache.use_query_cache = true
-   	hbm2ddl.auto = null
-   	show_sql = false
-//   	naming_strategy = "org.hibernate.cfg.ImprovedNamingStrategy"
+//    hbm2ddl.auto = null
+    cache.region.factory_class = 'org.hibernate.cache.ehcache.EhCacheRegionFactory'
+    show_sql = false
+    packagesToScan="net.hedtech.**.*"
+    flush.mode = AUTO
    	dialect = "org.hibernate.dialect.Oracle10gDialect"
     config.location = [
 	        "classpath:hibernate-banner-general-utility.cfg.xml",

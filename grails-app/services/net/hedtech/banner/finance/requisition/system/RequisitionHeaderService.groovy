@@ -148,7 +148,7 @@ class RequisitionHeaderService extends ServiceBase {
                 sql.executeUpdate("UPDATE FTVBUYR SET FTVBUYR_LAST_ASSIGN_DATE = SYSDATE WHERE FTVBUYR_CODE = ?", [assignBuyerCode])
             }
         } finally {
-            sql?.close()
+//            sql?.close()
         }
     }
 

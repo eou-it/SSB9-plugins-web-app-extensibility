@@ -1,5 +1,5 @@
 /***************************************************************
- Copyright 2015 Ellucian company L.P and its affiliates.
+ Copyright 2015-2019 Ellucian company L.P and its affiliates.
 ***************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -8,10 +8,14 @@ import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 /**
  * Integration Test case class for FinanceTextCompositeService.
  */
+
+@Integration
+@Rollback
 class FinanceTextCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
     def financeTextCompositeService
     def springSecurityService

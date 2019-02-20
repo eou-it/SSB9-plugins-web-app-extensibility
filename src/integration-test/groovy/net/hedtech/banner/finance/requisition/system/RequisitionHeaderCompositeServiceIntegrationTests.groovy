@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -17,12 +17,16 @@ import org.junit.Test
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.web.multipart.MultipartFile
-
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 import javax.xml.ws.WebServiceException
 
 /**
  * Test class for Requisition Header Composite Service
  */
+
+@Integration
+@Rollback
 class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
 

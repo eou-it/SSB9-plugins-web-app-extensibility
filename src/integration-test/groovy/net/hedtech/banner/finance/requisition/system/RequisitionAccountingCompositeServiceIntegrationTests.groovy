@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -10,11 +10,15 @@ import org.hibernate.Session
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
+import static groovy.test.GroovyAssert.*
 /**
  * Test class for PurchaseRequisitionCompositeService
  */
-class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
+@Integration
+@Rollback
+class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrationTestCase  {
 
 
     def requisitionAccountingCompositeService
@@ -45,6 +49,7 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
     void testCreateRequisitionAccounting() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                     FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+
         def reqAccountingDomainModel = getRequestAccounting()
         reqAccountingDomainModel.requisitionAmount = null
         reqAccountingDomainModel.requestCode = 'RSED0003'
@@ -335,10 +340,10 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
         def location = ''
         def projectCode = ''
         def percentage = '3'
-        def discountAmount = ''
-        def discountAmountPercent = ''
-        def additionalChargeAmount = ''
-        def additionalChargeAmountPct = ''
+        def discountAmount = null
+        def discountAmountPercent = null
+        def additionalChargeAmount = null
+        def additionalChargeAmountPct = null
         def requestAccounting = [
                 'requestCode'                       : requestCode,
                 'activity'                          : activityCode,
@@ -350,7 +355,7 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
                 'additionalChargeAmount'            : additionalChargeAmount,
                 'additionalChargeAmountPct'         : additionalChargeAmountPct,
                 'requisitionAmount'                 : amount,
-                'fiscalYearCode'                    : fiscalCode,
+                'fiscalYear'                        : fiscalCode,
                 'period'                            : period,
                 'ruleClass'                         : ruleClassCode,
                 'chartOfAccount'                    : chartOfAccountsCode,

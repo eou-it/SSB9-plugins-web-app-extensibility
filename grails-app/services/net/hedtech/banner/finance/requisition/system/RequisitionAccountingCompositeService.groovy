@@ -3,7 +3,7 @@
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
-import grails.transaction.Transactional
+import grails.web.databinding.DataBinder
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants

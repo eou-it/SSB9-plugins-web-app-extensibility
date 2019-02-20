@@ -467,9 +467,9 @@ class RequisitionAccounting implements Serializable {
                     .setString( FinanceProcurementConstants.QUERY_PARAM_USER_ID, userId )
                     .setMaxResults( paginationParams.max )
                     .setFirstResult( paginationParams.offset )
-                    .list()
-        }
-        return [list: requestAccountingList]
+                        .list()
+            }
+            return [list: requestAccountingList]
     }
 
     /**

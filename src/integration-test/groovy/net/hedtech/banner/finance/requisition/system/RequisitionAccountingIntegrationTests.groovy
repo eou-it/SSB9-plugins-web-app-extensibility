@@ -1,3 +1,6 @@
+/*******************************************************************************
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
+ *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
@@ -5,7 +8,12 @@ import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 
+
+@Integration
+@Rollback
 class RequisitionAccountingIntegrationTests extends BaseIntegrationTestCase {
 
     def requestCode = "RSED0003"
@@ -25,11 +33,11 @@ class RequisitionAccountingIntegrationTests extends BaseIntegrationTestCase {
     def activityCode = ''
     def location = ''
     def projectCode = ''
-    def percentage = ''
-    def discountAmount = ''
-    def discountAmountPercent = ''
-    def additionalChargeAmount = ''
-    def additionalChargeAmountPct = ''
+    def percentage = null
+    def discountAmount = null
+    def discountAmountPercent = null
+    def additionalChargeAmount = null
+    def additionalChargeAmountPct = null
 
     /**
      * The tear down method will run before all test case method execution start.
@@ -123,10 +131,10 @@ class RequisitionAccountingIntegrationTests extends BaseIntegrationTestCase {
                 additionalChargeAmountPct: additionalChargeAmountPct,
                 sequenceNumber: lastSeq.next(),
                 requisitionAmount: amount,
-                fiscalYearCode: fiscalCode,
+                fiscalYear: fiscalCode,
                 period: period,
                 ruleClass: ruleClassCode,
-                chartOfAccounts: chartOfAccountsCode,
+                chartOfAccount: chartOfAccountsCode,
                 accountIndex: indexCode,
                 fund: fundCode,
                 organization: orgnCode,

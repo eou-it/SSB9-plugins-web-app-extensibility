@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -13,9 +13,13 @@ import org.junit.Before
 import org.junit.Test
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.web.multipart.MultipartFile
-
+import grails.testing.mixin.integration.Integration
+import grails.gorm.transactions.Rollback
 import javax.xml.ws.WebServiceException
 
+
+@Integration
+@Rollback
 class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegrationTestCase {
 
     def documentManagementCompositeService
