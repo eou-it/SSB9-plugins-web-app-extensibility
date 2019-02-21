@@ -1,16 +1,22 @@
 /*******************************************************************************
- Copyright 2015-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
 
 package net.hedtech.extensibility.metadata
 
 import grails.converters.JSON
-import grails.test.mixin.TestMixin
-import grails.test.mixin.web.ControllerUnitTestMixin
+import grails.gorm.transactions.Rollback
+import grails.testing.mixin.integration.Integration
 import org.grails.web.json.JSONObject
+import org.springframework.mock.web.MockHttpServletRequest
+import org.springframework.web.context.request.RequestAttributes
+import org.springframework.web.context.request.ServletWebRequest
 import spock.lang.Specification
+import org.springframework.web.context.request.RequestContextHolder
 
-@TestMixin(ControllerUnitTestMixin)
+
+@Integration
+@Rollback
 class ExtensionServiceSpec extends Specification{
 
     def jsonData = '''{
@@ -36,10 +42,12 @@ class ExtensionServiceSpec extends Specification{
 
     def params = [unitTest: true, dummy: 1, application:"banner_extensibility", page:"Test",
                   "metadata":jsonData]
-    def static extensionsPath = grails.util.Holders.getConfig().webAppExtensibility.locations.extensions
+
+    def static extensionsPath
 
 
     def setup() {
+        extensionsPath = grails.util.Holders.getConfig().webAppExtensibility.locations.extensions
         def folder = new File( "${extensionsPath}/${params.application}/${params.page}.json" )
         if( !folder.exists() ) {
             folder.getParentFile().mkdirs();
@@ -94,6 +102,8 @@ class ExtensionServiceSpec extends Specification{
 
     void "loadExtensionsJSON" (){
         given:
+        RequestAttributes mockRequest = new ServletWebRequest(new MockHttpServletRequest("GET", "/test"))
+        RequestContextHolder.setRequestAttributes(mockRequest)
         def requestURI = "V${params.application}/${params.page}.json"
         when:
         ExtensionService.loadExtensionsJSON(requestURI)
