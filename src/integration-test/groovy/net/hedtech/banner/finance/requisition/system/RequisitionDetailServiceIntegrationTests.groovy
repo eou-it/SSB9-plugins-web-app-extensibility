@@ -72,7 +72,7 @@ class RequisitionDetailServiceIntegrationTests extends BaseIntegrationTestCase {
                     FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def pagingParams = [max: 500, offset: 0]
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
-        springSecurityService.getAuthentication().user.oracleUserName = 'GRAILS'
+        springSecurityService.getAuthentication().user.oracleUserName = FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME
         try {
             def list = requisitionDetailService.fetchRequisitionDetailListByUser( pagingParams )
             assertTrue( list.size() > 0 )

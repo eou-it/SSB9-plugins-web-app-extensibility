@@ -154,9 +154,7 @@ class RequisitionAccountingServiceIntegrationTests extends BaseIntegrationTestCa
     public void testFetchRequisitionAccountingListWithWrongProvider() {
 
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
-        springSecurityService.getAuthentication().user.oracleUserName = 'TESTUSER'
-        println ">>>>>>>>>springSecurityService.getAuthentication().user is ::"+springSecurityService.getAuthentication().user
-
+        springSecurityService.getAuthentication().user.oracleUserName = FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME
         def pagingParams = [max: 500, offset: 0]
         try {
             requisitionAccountingService.findRequisitionAccountingListByUser( pagingParams )

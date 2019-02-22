@@ -3,6 +3,8 @@
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
+
+import grails.web.databinding.DataBinder
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
@@ -19,7 +21,7 @@ import grails.gorm.transactions.Transactional
  * Class for Purchase Requisition Details Composite Service
  */
 @Transactional 
-class RequisitionDetailsCompositeService {
+class RequisitionDetailsCompositeService  implements DataBinder {
     private static final Logger LOGGER = Logger.getLogger( this.class )
   
 
@@ -45,7 +47,9 @@ class RequisitionDetailsCompositeService {
      * @return requestCode and item number.
      */
     def createPurchaseRequisitionDetail( map ) {
-        RequisitionDetail requisitionDetailRequest = map.requisitionDetail
+        RequisitionDetail requisitionDetailRequest = new RequisitionDetail()
+        bindData(requisitionDetailRequest, map.requisitionDetail,[exclude: ['privateComment','publicComment']])
+
         def user = springSecurityService.getAuthentication().user
         if (user.oracleUserName) {
             def requestCode = requisitionDetailRequest.requestCode
@@ -54,7 +58,7 @@ class RequisitionDetailsCompositeService {
             requisitionDetailRequest.item = requisitionDetailService.getLastItem( requestCode ).next()
             // Set all data with business logic.
             requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
-            RequisitionDetail requisitionDetail = requisitionDetailService.create( [domainModel: requisitionDetailRequest] )
+            RequisitionDetail requisitionDetail = requisitionDetailService.create(  requisitionDetailRequest )
             LoggerUtility.debug LOGGER, "Requisition Detail created " + requisitionDetail
             /** Re-balance associated accounting information*/
             reBalanceRequisitionAccounting requestCode, requisitionDetail.item, null
@@ -109,7 +113,8 @@ class RequisitionDetailsCompositeService {
                                                     FinanceProcurementConstants.ERROR_MESSAGE_ITEM_IS_REQUIRED, [] ) )
         }
         def existingDetail = requisitionDetailService.findByRequestCodeAndItem( requestCode, item )
-        RequisitionDetail requisitionDetailRequest = detailDomainModel.requisitionDetail
+        RequisitionDetail requisitionDetailRequest = new RequisitionDetail()
+        bindData(requisitionDetailRequest, detailDomainModel.requisitionDetail,[exclude: ['privateComment','publicComment']])
         requisitionDetailRequest.id = existingDetail.id
         requisitionDetailRequest.version = existingDetail.version
         requisitionDetailRequest.requestCode = existingDetail.requestCode
@@ -118,7 +123,7 @@ class RequisitionDetailsCompositeService {
         requisitionDetailRequest.lastModified = new Date()
         requisitionDetailRequest.item = existingDetail.item
         requisitionDetailRequest.userId = user.oracleUserName
-        RequisitionDetail requisitionDetail = requisitionDetailService.update( [domainModel: requisitionDetailRequest] )
+        RequisitionDetail requisitionDetail = requisitionDetailService.update( requisitionDetailRequest )
         LoggerUtility.debug LOGGER, "Requisition Detail updated " + requisitionDetail
         /** Re-balance associated accounting information*/
         reBalanceRequisitionAccounting( requestCode, requisitionDetail.item )
@@ -137,13 +142,13 @@ class RequisitionDetailsCompositeService {
         def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         if (header.isDocumentLevelAccounting && requisitionDetailService.findByRequestCode( requestCode )?.size() == 1) {
             requisitionAccountingService.findAccountingByRequestCode( requestCode )?.each() {
-                requisitionAccountingService.delete( [domainModel: it] )
+                requisitionAccountingService.delete(  it )
             }
         } else if (!header.isDocumentLevelAccounting) {
             requisitionAccountingService.findAccountingByRequestCode( requestCode ).findAll() {
                 it.item == item
             }?.each() {
-                requisitionAccountingService.delete( [domainModel: it] )
+                requisitionAccountingService.delete( it )
             }
         }
     }

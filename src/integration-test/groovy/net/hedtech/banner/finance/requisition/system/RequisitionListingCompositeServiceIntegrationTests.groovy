@@ -197,7 +197,7 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void searchPurchaseRequisitionWithSearchParamAsString() {
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
-        springSecurityService.getAuthentication().user.oracleUserName = 'GRAILS'
+        springSecurityService.getAuthentication().user.oracleUserName = FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME
         try {
             def pagingParams = [max: 500, offset: 0]
             def searchParams = [convertValue: 'RSED0001', isDateString: false]
@@ -259,7 +259,7 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void searchPurchaseRequisitionWithSearchParamAsDate() {
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
-        springSecurityService.getAuthentication().user.oracleUserName = 'GRAILS'
+        springSecurityService.getAuthentication().user.oracleUserName = FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME
         try {
             def pagingParams = [max: 500, offset: 0]
             def searchParams = [convertValue: FinanceCommonUtility.parseDate( '06/19/2015' ), isDateString: true]
@@ -278,7 +278,7 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void searchPurchaseRequisitionWithSearchParamAsStringAndDraftStatus() {
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
-        springSecurityService.getAuthentication().user.oracleUserName = 'GRAILS'
+        springSecurityService.getAuthentication().user.oracleUserName = FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME
 
         try {
             def pagingParams = [max: 500, offset: 0]
@@ -298,7 +298,7 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void searchPurchaseRequisitionWithSearchParamAsStringAndPendingStatus() {
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
-        springSecurityService.getAuthentication().user.oracleUserName = 'GRAILS'
+        springSecurityService.getAuthentication().user.oracleUserName = FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME
 
         try {
             def pagingParams = [max: 500, offset: 0]
@@ -318,7 +318,7 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void searchPurchaseRequisitionWithSearchParamAsStringAndCompletedStatus() {
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
-        springSecurityService.getAuthentication().user.oracleUserName = 'GRAILS'
+        springSecurityService.getAuthentication().user.oracleUserName = FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME
 
         try {
             def pagingParams = [max: 500, offset: 0]
@@ -338,7 +338,7 @@ class RequisitionListingCompositeServiceIntegrationTests extends BaseIntegration
     @Test
     void searchPurchaseRequisitionWithSearchParamAsDateAndStatus() {
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
-        springSecurityService.getAuthentication().user.oracleUserName = 'GRAILS'
+        springSecurityService.getAuthentication().user.oracleUserName = FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME
 
         try {
             def pagingParams = [max: 500, offset: 0]

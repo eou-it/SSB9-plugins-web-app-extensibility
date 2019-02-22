@@ -11,14 +11,16 @@ import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
 import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
 import grails.gorm.transactions.Transactional
+import grails.web.databinding.DataBinder
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class for Purchase Requisition Header Composite Service
  */
 @Transactional 
-class RequisitionHeaderCompositeService {
-    private static final Logger LOGGER = Logger.getLogger( this.class )
-    
+class RequisitionHeaderCompositeService implements DataBinder{
+    private static final Logger LOGGER = LoggerFactory.getLogger(this.class)
     def requisitionHeaderService
     def requisitionAccountingService
     def springSecurityService
@@ -36,7 +38,8 @@ class RequisitionHeaderCompositeService {
      * @return Requisition code.
      */
     def createPurchaseRequisitionHeader( map ) {
-        RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
+        def requisitionHeaderRequest = new RequisitionHeader()
+        bindData(requisitionHeaderRequest, map.requisitionHeader,[exclude: ['privateComment','publicComment']])
         def user = springSecurityService.getAuthentication().user
         if (user.oracleUserName) {
             def oracleUserName = user.oracleUserName
@@ -45,7 +48,7 @@ class RequisitionHeaderCompositeService {
             if (financeSystemControlService.findActiveFinanceSystemControl().taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_NO) {
                 requisitionHeaderRequest.taxGroup = null
             }
-            def requisitionHeader = requisitionHeaderService.create( [domainModel: requisitionHeaderRequest] )
+            def requisitionHeader = requisitionHeaderService.create(requisitionHeaderRequest)
             LoggerUtility.debug LOGGER, "Requisition Header created " + requisitionHeader
             def header = RequisitionHeader.read( requisitionHeader.id )
             financeTextCompositeService.saveTextForHeader( requisitionHeader,
@@ -67,7 +70,7 @@ class RequisitionHeaderCompositeService {
     def deletePurchaseRequisitionHeader( requestCode ) {
         def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         FinanceProcurementHelper.checkCompleteRequisition( requisitionHeader )
-        requisitionHeaderService.delete( [domainModel: requisitionHeader] )
+        requisitionHeaderService.delete( requisitionHeader )
         financeTextService.delete( financeTextService.listAllFinanceTextByCode( 1, requestCode ) )
     }
 
@@ -88,7 +91,8 @@ class RequisitionHeaderCompositeService {
                 return existingHeader
             }
             FinanceProcurementHelper.checkCompleteRequisition( existingHeader )
-            RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
+            RequisitionHeader requisitionHeaderRequest = new RequisitionHeader()
+            bindData(requisitionHeaderRequest, map.requisitionHeader,[exclude: ['privateComment','publicComment']])
             boolean isDiscountChanged = requisitionHeaderRequest.discount && requisitionHeaderRequest.discount != existingHeader.discount
             boolean isCcyChanged = requisitionHeaderRequest.currency != existingHeader.currency
             requisitionHeaderRequest.id = existingHeader.id
@@ -104,7 +108,7 @@ class RequisitionHeaderCompositeService {
                                                         FinanceProcurementConstants.ERROR_MESSAGE_DOCUMENT_CHANGE, [] ) )
             }
             requisitionHeaderRequest.userId = user.oracleUserName
-            def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
+            def requisitionHeader = requisitionHeaderService.update( requisitionHeaderRequest )
 
             // updating the account sequences with valid fiscal year and period
             if( accountSize > 0 && checkUpdateAccountRequire){
@@ -113,7 +117,7 @@ class RequisitionHeaderCompositeService {
                     account = requisitionAccounting
                     account.fiscalYear = null
                     account.period = null
-                    requisitionAccountingService.update([domainModel: account])
+                    requisitionAccountingService.update(account)
                 }
             }
 
@@ -207,7 +211,8 @@ class RequisitionHeaderCompositeService {
      * @return
      */
     private boolean checkHeaderUpdateEligibility( def map, RequisitionHeader existingHeader, baseCcy ) {
-        RequisitionHeader newHeader = map.requisitionHeader
+        RequisitionHeader newHeader = new RequisitionHeader();
+        bindData(newHeader, map.requisitionHeader,[exclude: ['privateComment','publicComment']])
         return !(new java.sql.Date( newHeader.transactionDate.getTime() ) == existingHeader.transactionDate &&
                 new java.sql.Date( newHeader.deliveryDate.getTime() ) == existingHeader.deliveryDate &&
                 newHeader.requesterName == existingHeader.requesterName &&
@@ -265,7 +270,8 @@ class RequisitionHeaderCompositeService {
      * @return
      */
     private boolean checkAccountUpdateEligibility( map, RequisitionHeader existingHeader ) {
-        RequisitionHeader newHeader = map.requisitionHeader
+        RequisitionHeader newHeader = new RequisitionHeader()
+        bindData(newHeader, map.requisitionHeader,[exclude: ['privateComment','publicComment']])
         return (new java.sql.Date(newHeader.transactionDate.getTime()) != existingHeader.transactionDate)
     }
 }
