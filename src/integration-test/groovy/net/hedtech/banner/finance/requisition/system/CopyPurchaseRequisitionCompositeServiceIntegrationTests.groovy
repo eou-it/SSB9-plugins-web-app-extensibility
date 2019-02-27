@@ -3,14 +3,20 @@
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
+import grails.gorm.transactions.Transactional
+import grails.util.GrailsWebMockUtil
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.testing.BaseIntegrationTestCase
 import org.junit.After
+import org.junit.AfterClass
 import org.junit.Before
 import org.junit.Test
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.web.context.WebApplicationContext
+import org.springframework.web.context.request.RequestContextHolder
 
 /**
  * Integration test case for service CopyPurchaseRequisitionCompositeService.
@@ -25,8 +31,12 @@ class CopyPurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegr
     /**
      * Super class setup
      */
+    @Autowired
+    WebApplicationContext ctx
+
     @Before
     void setUp() {
+        GrailsWebMockUtil.bindMockWebRequest(ctx)
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         formContext = ['GUAGMNU']
         super.setUp()
@@ -45,6 +55,7 @@ class CopyPurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegr
      * Test case to test copy requisition.
      */
     @Test
+
     public void testCopyRequisition() {
 
         def requistionNumber = copyPurchaseRequisitionCompositeService.copyRequisition( 'RSED0005' )
@@ -76,5 +87,10 @@ class CopyPurchaseRequisitionCompositeServiceIntegrationTests extends BaseIntegr
         } catch (ApplicationException e) {
             assertApplicationException e, (FinanceProcurementConstants.ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED)
         }
+    }
+
+    @AfterClass
+    public static void cleanUp() {
+        RequestContextHolder.resetRequestAttributes()
     }
 }

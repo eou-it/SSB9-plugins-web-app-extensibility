@@ -12,7 +12,8 @@ import net.hedtech.banner.i18n.MessageHelper
 import net.hedtech.banner.pdf.exceptions.BannerPDFGeneratorException
 import net.hedtech.banner.pdf.impl.BannerPDFGenerator
 import org.apache.log4j.Logger
-import org.grails.web.util.GrailsApplicationAttributes
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationContext
 import org.springframework.context.i18n.LocaleContextHolder
 
@@ -20,7 +21,7 @@ import org.springframework.context.i18n.LocaleContextHolder
  * Service class for Finance Purchase Requisition PDF.
  */
 class FinancePurchaseRequisitionPDFService {
-    private static final Logger LOGGER = Logger.getLogger( this.class )
+    private static final Logger LOGGER = LoggerFactory.getLogger(FinancePurchaseRequisitionPDFService.class)
     def requisitionSummaryService
 
     /**
@@ -76,7 +77,7 @@ class FinancePurchaseRequisitionPDFService {
      * @return
      */
     private ApplicationContext getApplicationContext() {
-        return (ApplicationContext) Holders.getServletContext().getAttribute( GrailsApplicationAttributes.APPLICATION_CONTEXT )
+        return Holders.grailsApplication.getMainContext();
     }
 
     /**

@@ -83,7 +83,7 @@ class RequisitionHeaderService extends ServiceBase {
         requisitionHeader.completeIndicator = Boolean.TRUE
         requisitionHeader.deliveryComment = forceComplete // Custom comment used only for complete
         requisitionHeader.bypassNsfChkIndicator = bypassNsfChkIndicator
-        update( [domainModel: requisitionHeader] )
+        update( requisitionHeader )
     }
 
     /**
@@ -95,7 +95,7 @@ class RequisitionHeaderService extends ServiceBase {
         def assignBuyerCode
         def autoBuyrInd = financeSystemControlService.findActiveFinanceSystemControl().autoBuyrInd
         def requisitionHeader = RequisitionHeader.fetchByRequestCode(requestCode, springSecurityService.getAuthentication().user.oracleUserName)
-        update([domainModel: requisitionHeader])
+        update(requisitionHeader)
 
         //Validate only if the Requisition is copied
         if (requisitionHeader.documentCopiedFrom)
@@ -107,7 +107,7 @@ class RequisitionHeaderService extends ServiceBase {
                     assignBuyerCode = assignBuyer(it)
                     it.buyer = assignBuyerCode
                 }
-                requisitionDetailService.update ( [domainModel: it] )
+                requisitionDetailService.update (it )
                 if(autoBuyrInd == FinanceProcurementConstants.DEFAULT_INDICATOR_YES) {
                     updateBuyerAssignDate(assignBuyerCode)
                 }
@@ -117,7 +117,7 @@ class RequisitionHeaderService extends ServiceBase {
                 //Making model as dirty, the will be update by DB API
                 it.fiscalYear="00"
                 it.period="00"
-                requisitionAccountingService.update( [domainModel: it] )
+                requisitionAccountingService.update(  it )
             }
         }
     }
@@ -161,7 +161,7 @@ class RequisitionHeaderService extends ServiceBase {
         def user = springSecurityService.getAuthentication().user.oracleUserName
         if (requestHeader.completeIndicator && !requestHeader.approvalIndicator) {
             requestHeader.completeIndicator = false
-            RequisitionHeader requestHeaderUpdated = update( [domainModel: requestHeader], true )
+            RequisitionHeader requestHeaderUpdated = update(requestHeader, true )
             // Insert FOBAPPH Approval History table with queueId = DENY and queueLevel = 0.
             def approvalHistoryList = financeApprovalHistoryService.findByDocumentCode( requestHeaderUpdated.requestCode )
             if (approvalHistoryList) {
@@ -172,7 +172,7 @@ class RequisitionHeaderService extends ServiceBase {
                     approvalHistory.lastModifiedBy = user
                     approvalHistory.activityDate = new Date()
                     approvalHistory.sequenceNumber = new BigDecimal( FinanceProcurementConstants.ONE )
-                    financeApprovalHistoryService.update( [domainModel: approvalHistory] )
+                    financeApprovalHistoryService.update( approvalHistory )
                 }
             } else {
                 def financeApprovalHistory = [:]
@@ -182,17 +182,17 @@ class RequisitionHeaderService extends ServiceBase {
                 financeApprovalHistory.lastModifiedBy = user
                 financeApprovalHistory.activityDate = new Date()
                 financeApprovalHistory.sequenceNumber = new BigDecimal( FinanceProcurementConstants.ONE )
-                financeApprovalHistoryService.create( [domainModel: financeApprovalHistory] )
+                financeApprovalHistoryService.create(  financeApprovalHistory )
             }
             // Removing the row relating to this requisition in FOBUAPP FinanceUnapprovedDocument.
             financeUnapprovedDocumentService.findByDocumentCode( requestHeaderUpdated.requestCode ).each {
                  financeUnapprovedDocument ->
-                    financeUnapprovedDocumentService.delete( [domainModel: financeUnapprovedDocument] )
+                    financeUnapprovedDocumentService.delete( financeUnapprovedDocument )
             }
             // Removing the row relating to this requisition in FOBAINP FinanceApprovalsInProcess.
             financeApprovalsInProcessService.findByDocumentNumber( requestHeaderUpdated.requestCode ).each {
                  financeApprovalsInProcess ->
-                    financeApprovalsInProcessService.delete( [domainModel: financeApprovalsInProcess] )
+                    financeApprovalsInProcessService.delete( financeApprovalsInProcess)
             }
             return requestHeaderUpdated.requestCode
         } else {

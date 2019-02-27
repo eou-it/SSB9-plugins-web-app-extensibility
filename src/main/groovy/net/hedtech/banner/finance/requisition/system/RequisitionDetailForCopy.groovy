@@ -302,4 +302,9 @@ class RequisitionDetailForCopy implements Serializable {
     @Column(name = FinanceProcurementConstants.FIELD_FPRREQD_COPY_DATA_ORIGIN)
     String dataOrigin
 
+    static constraints = {
+        importFrom RequisitionDetail
+    }
+
+
 }

@@ -10,12 +10,12 @@ import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.log4j.Logger
 import net.hedtech.banner.finance.system.FinanceText
 import grails.gorm.transactions.Transactional
-
+import grails.web.databinding.DataBinder
 /**
  * The service class which is used to have methods for copy purchase requisition.
  */
  @Transactional
-class CopyPurchaseRequisitionCompositeService {
+class CopyPurchaseRequisitionCompositeService implements DataBinder{
     private static final def LOGGER = Logger.getLogger( this.getClass() )
    
 
@@ -33,21 +33,21 @@ class CopyPurchaseRequisitionCompositeService {
      * This method is used to copy the requisition.
      */
     def copyRequisition( requestCode ) {
-        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
+        def header = requisitionHeaderService.findRequisitionHeaderByRequestCode(requestCode)
         if (header?.completeIndicator) {
             def nextRequisitionNumber = financeObjectSequenceService.findNextSequenceNumber()
-            copyRequisitionHeader( header, nextRequisitionNumber, requestCode )
-            copyRequisitionDetail( nextRequisitionNumber, requestCode )
-            copyFinanceText( nextRequisitionNumber, requestCode )
-            copyRequisitionAccounting( nextRequisitionNumber, requestCode )
-            copyRequisitionTax( nextRequisitionNumber, requestCode )
+            copyRequisitionHeader(header, nextRequisitionNumber, requestCode)
+            copyRequisitionDetail(nextRequisitionNumber, requestCode)
+            copyFinanceText(nextRequisitionNumber, requestCode)
+            copyRequisitionAccounting(nextRequisitionNumber, requestCode)
+            copyRequisitionTax(nextRequisitionNumber, requestCode)
             nextRequisitionNumber
         } else {
-            LoggerUtility.error( LOGGER, "Only completed requisition can be copied = $header.requestCode" )
+            LoggerUtility.error(LOGGER, "Only completed requisition can be copied = $header.requestCode")
             throw new ApplicationException(
                     CopyPurchaseRequisitionCompositeService,
                     new BusinessLogicValidationException(
-                            FinanceProcurementConstants.ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED, [] ) )
+                            FinanceProcurementConstants.ERROR_MESSAGE_COMPLETED_REQUISITION_IS_REQUIRED, []))
         }
     }
 
@@ -58,7 +58,11 @@ class CopyPurchaseRequisitionCompositeService {
      * @param requestCode
      */
     private void copyRequisitionHeader( RequisitionHeader header, nextRequisitionNumber, requestCode ) {
-        def headerForCopy = RequisitionHeaderForCopy.newInstance( header.properties )
+
+        RequisitionHeaderForCopy headerForCopy = new RequisitionHeaderForCopy()
+        def requisitionHeaderMap = [requisitionHeader: header]
+        bindData(headerForCopy,requisitionHeaderMap.requisitionHeader,[exclude: ['Id','bypassNsfChkIndicator','dirtyPropertyNames','dirty','attached']])
+
         headerForCopy.requestCode = nextRequisitionNumber
         headerForCopy.documentCopiedFrom = requestCode // Old requisition number
         headerForCopy.transactionDate = new Date()   // default to System Date
@@ -75,7 +79,8 @@ class CopyPurchaseRequisitionCompositeService {
         headerForCopy.nsfOnOffIndicator = FinanceProcurementConstants.TRUE
         headerForCopy.closedIndicator = null
         headerForCopy.closedDate = null
-        requisitionHeaderForCopyService.create( [domainModel: headerForCopy] )
+
+        requisitionHeaderForCopyService.create(headerForCopy)
     }
 
     /**
@@ -85,14 +90,19 @@ class CopyPurchaseRequisitionCompositeService {
      * @return
      */
     private copyRequisitionDetail( nextRequisitionNumber, requestCode ) {
-        def requisitionDetailList = RequisitionDetailForCopy.findAllByRequestCode( requestCode )
-        def detailForCopy
-        requisitionDetailList.each {RequisitionDetailForCopy requisitionDetail ->
-            detailForCopy = RequisitionDetailForCopy.newInstance( requisitionDetail.properties )
+        def requisitionDetailList = RequisitionDetailForCopy.findAllByRequestCode(requestCode)
+        RequisitionDetailForCopy detailForCopy
+        requisitionDetailList.each { RequisitionDetailForCopy requisitionDetail ->
+            detailForCopy  = new RequisitionDetailForCopy()
+
+            def requisitionDetailMap = [requisitionDetail: requisitionDetail]
+            bindData(detailForCopy,requisitionDetailMap.requisitionDetail,[exclude: ['Id','dirtyPropertyNames','dirty','attached']])
+
             detailForCopy.requestCode = nextRequisitionNumber
             detailForCopy.purchaseOrder = null
             detailForCopy.purchaseOrderItem = null
             detailForCopy.bid = null
+            detailForCopy.id = null
             detailForCopy.completeIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_NO
             detailForCopy.suspenseIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_YES
             detailForCopy.cancellationIndicator = null
@@ -100,7 +110,9 @@ class CopyPurchaseRequisitionCompositeService {
             detailForCopy.closedIndicator = null
             detailForCopy.postDate = null
             detailForCopy.buyer = null
-            requisitionDetailForCopyService.create( [domainModel: detailForCopy] )
+            requisitionDetailForCopyService.create(  detailForCopy)
+
+
         }
 
     }
@@ -114,9 +126,12 @@ class CopyPurchaseRequisitionCompositeService {
     private copyRequisitionAccounting( nextRequisitionNumber, requestCode ) {
 
         def requisitionAccountingList = RequisitionAccountingForCopy.findAllByRequestCode( requestCode )
-        def accountingForCopy
+        RequisitionAccountingForCopy accountingForCopy
         requisitionAccountingList.each {RequisitionAccountingForCopy requisitionAccounting ->
-            accountingForCopy = RequisitionAccountingForCopy.newInstance( requisitionAccounting.properties )
+          accountingForCopy = new RequisitionAccountingForCopy()
+            def requisitionAccountingMap = [requisitionAccounting: requisitionAccounting]
+            bindData(accountingForCopy,requisitionAccountingMap.requisitionAccounting,[exclude: ['id','dirtyPropertyNames','dirty','attached']])
+
             accountingForCopy.requestCode = nextRequisitionNumber
             accountingForCopy.suspenseIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_YES
             accountingForCopy.nsfSuspInd = FinanceProcurementConstants.DEFAULT_INDICATOR_YES
@@ -128,7 +143,8 @@ class CopyPurchaseRequisitionCompositeService {
             accountingForCopy.closedIndicator = null
             accountingForCopy.fiscalYear = null
             accountingForCopy.period = null
-            requisitionAccountingForCopyService.create( [domainModel: accountingForCopy] )
+            accountingForCopy.id = null
+            requisitionAccountingForCopyService.create( accountingForCopy)
         }
     }
 
@@ -139,11 +155,11 @@ class CopyPurchaseRequisitionCompositeService {
      * @return
      */
     private copyRequisitionTax( nextRequisitionNumber, requestCode ) {
-        def requisitionTaxList = RequisitionTaxForCopy.findAllByRequestCode( requestCode )
-        requisitionTaxList.each {RequisitionTaxForCopy requisitionTax ->
-            def taxForCopy = RequisitionTaxForCopy.newInstance( requisitionTax.properties )
+        def requisitionTaxList = RequisitionTaxForCopy.findAllByRequestCode(requestCode)
+        requisitionTaxList.each { RequisitionTaxForCopy requisitionTax ->
+            RequisitionTaxForCopy taxForCopy = new RequisitionTaxForCopy()
             taxForCopy.requestCode = nextRequisitionNumber
-            requisitionTaxForCopyService.create( [domainModel: taxForCopy] )
+            requisitionTaxForCopyService.create(taxForCopy)
         }
     }
 
@@ -155,9 +171,11 @@ class CopyPurchaseRequisitionCompositeService {
     private void copyFinanceText( nextRequisitionNumber, requestCode ) {
         def textList = financeTextService.listAllFinanceTextByCode( 1, requestCode )
         textList.each {FinanceText financeText ->
-            def textForCopy = FinanceText.newInstance( financeText.properties )
+            def textForCopy  = new FinanceText()
+            def FinanceTextMap = [financeText: financeText]
+            bindData(textForCopy,FinanceTextMap.financeText,[exclude: ['dirtyPropertyNames','dirty','attached']])
             textForCopy.textCode = nextRequisitionNumber
-            financeTextService.create( [domainModel: textForCopy] )
+            financeTextService.create( textForCopy )
         }
     }
 }

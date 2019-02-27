@@ -10,6 +10,7 @@ import org.junit.Before
 import org.junit.Test
 import grails.testing.mixin.integration.Integration
 import grails.gorm.transactions.Rollback
+import static groovy.test.GroovyAssert.shouldFail
 
 /**
  * Test class for RequisitionHeaderIntegration
