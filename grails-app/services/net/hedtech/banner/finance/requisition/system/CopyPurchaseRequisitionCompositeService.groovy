@@ -124,27 +124,53 @@ class CopyPurchaseRequisitionCompositeService implements DataBinder{
      * @return
      */
     private copyRequisitionAccounting( nextRequisitionNumber, requestCode ) {
-
-        def requisitionAccountingList = RequisitionAccountingForCopy.findAllByRequestCode( requestCode )
+        def requisitionAccountingList = RequisitionAccountingForCopy.findAllByRequestCode(requestCode)
         RequisitionAccountingForCopy accountingForCopy
-        requisitionAccountingList.each {RequisitionAccountingForCopy requisitionAccounting ->
-          accountingForCopy = new RequisitionAccountingForCopy()
-            def requisitionAccountingMap = [requisitionAccounting: requisitionAccounting]
-            bindData(accountingForCopy,requisitionAccountingMap.requisitionAccounting,[exclude: ['id','dirtyPropertyNames','dirty','attached']])
-
+        requisitionAccountingList.each { RequisitionAccountingForCopy requisitionAccounting ->
+            accountingForCopy = new RequisitionAccountingForCopy()
             accountingForCopy.requestCode = nextRequisitionNumber
+            accountingForCopy.item = requisitionAccounting.item
+            accountingForCopy.sequenceNumber = requisitionAccounting.sequenceNumber
+            accountingForCopy.lastModified = requisitionAccounting.lastModified
+            accountingForCopy.userId = requisitionAccounting.userId
+            accountingForCopy.percentage = requisitionAccounting.percentage
+            accountingForCopy.requisitionAmount = requisitionAccounting.requisitionAmount
+            accountingForCopy.fiscalYear = null
+            accountingForCopy.period = null
+            accountingForCopy.ruleClass = requisitionAccounting.ruleClass
+            accountingForCopy.chartOfAccount = requisitionAccounting.chartOfAccount
+            accountingForCopy.accountIndex = requisitionAccounting.accountIndex
+            accountingForCopy.fund = requisitionAccounting.fund
+            accountingForCopy.organization = requisitionAccounting.organization
+            accountingForCopy.account = requisitionAccounting.account
+            accountingForCopy.program = requisitionAccounting.program
+            accountingForCopy.activity = requisitionAccounting.activity
+            accountingForCopy.location = requisitionAccounting.location
             accountingForCopy.suspenseIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_YES
             accountingForCopy.nsfSuspInd = FinanceProcurementConstants.DEFAULT_INDICATOR_YES
             accountingForCopy.cancelIndicator = null
             accountingForCopy.cancellationDate = null
+            accountingForCopy.project = requisitionAccounting.project
             accountingForCopy.approvalIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_NO
             accountingForCopy.insufficientFundsOverrideIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_NO
             accountingForCopy.availableBudgetOverride = null
+            accountingForCopy.convertedAmount = requisitionAccounting.convertedAmount
             accountingForCopy.closedIndicator = null
-            accountingForCopy.fiscalYear = null
-            accountingForCopy.period = null
-            accountingForCopy.id = null
-            requisitionAccountingForCopyService.create( accountingForCopy)
+            accountingForCopy.discountAmount = requisitionAccounting.discountAmount
+            accountingForCopy.taxAmount = requisitionAccounting.taxAmount
+            accountingForCopy.additionalChargeAmount = requisitionAccounting.additionalChargeAmount
+            accountingForCopy.convertedDiscountAmount = requisitionAccounting.convertedDiscountAmount
+            accountingForCopy.convvertedTaxAmount = requisitionAccounting.convvertedTaxAmount
+            accountingForCopy.convertedAdditionalChargeAmount = requisitionAccounting.convertedAdditionalChargeAmount
+            accountingForCopy.discountAmountPercent = requisitionAccounting.discountAmountPercent
+            accountingForCopy.additionalChargeAmountPct = requisitionAccounting.additionalChargeAmountPct
+            accountingForCopy.taxAmountPercent = requisitionAccounting.taxAmountPercent
+            accountingForCopy.discountRuleClass = requisitionAccounting.discountRuleClass
+            accountingForCopy.taxRuleClass = requisitionAccounting.taxRuleClass
+            accountingForCopy.additionalChargeRuleClass = requisitionAccounting.additionalChargeRuleClass
+            accountingForCopy.liquidationRuleClass = requisitionAccounting.liquidationRuleClass
+            accountingForCopy.dataOrigin = requisitionAccounting.dataOrigin
+            requisitionAccountingForCopyService.create(accountingForCopy)
         }
     }
 

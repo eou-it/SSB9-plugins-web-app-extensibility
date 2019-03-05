@@ -18,7 +18,7 @@ import grails.gorm.transactions.Transactional
  * Class for Purchase Requisition Accounting Composite
  */
 @Transactional
-class RequisitionAccountingCompositeService {
+class RequisitionAccountingCompositeService implements DataBinder {
     private static final Logger LOGGER = Logger.getLogger( this.class )
     
     def requisitionHeaderService
@@ -44,7 +44,8 @@ class RequisitionAccountingCompositeService {
      * @return map Map having requestCode, item and sequenceNumber of created requisition accounting.
      */
     def createPurchaseRequisitionAccounting( map ) {
-        RequisitionAccounting requisitionAccountingRequest = map.requisitionAccounting
+        RequisitionAccounting requisitionAccountingRequest = new RequisitionAccounting()
+        bindData(requisitionAccountingRequest, map.requisitionAccounting)
         def user = springSecurityService.getAuthentication().user
         if (user.oracleUserName) {
             requisitionAccountingRequest.userId = user.oracleUserName
@@ -57,7 +58,7 @@ class RequisitionAccountingCompositeService {
             requisitionAccountingRequest.sequenceNumber = requisitionAccountingService.getLastSequenceNumberByRequestCode( requisitionAccountingRequest.requestCode, requisitionAccountingRequest.item ).next()
             setNSFOverride( requisitionAccountingRequest )
             requisitionDetailsAcctCommonCompositeService.adjustAccountPercentageAndAmount( requisitionAccountingRequest )
-            RequisitionAccounting requisitionAccounting = requisitionAccountingService.create( [domainModel: requisitionAccountingRequest] )
+            RequisitionAccounting requisitionAccounting = requisitionAccountingService.create( requisitionAccountingRequest )
             LoggerUtility.debug( LOGGER, 'Requisition Accounting created ' + requisitionAccounting )
             return [requestCode: requisitionAccounting.requestCode,
                     item       : requisitionAccounting.item, sequenceNumber: requisitionAccounting.sequenceNumber]
@@ -78,7 +79,7 @@ class RequisitionAccountingCompositeService {
     def deletePurchaseRequisitionAccountingInformation( requestCode, Integer item, Integer sequenceNumber ) {
         FinanceProcurementHelper.checkCompleteRequisition( requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ) )
         def requisitionAccounting = requisitionAccountingService.findByRequestCodeItemAndSeq( requestCode, item, sequenceNumber )
-        requisitionAccountingService.delete( [domainModel: requisitionAccounting] )
+        requisitionAccountingService.delete( requisitionAccounting )
     }
 
     /**
@@ -107,7 +108,8 @@ class RequisitionAccountingCompositeService {
         reValidateAccountingFOAP( accountingDomainModel.requisitionAccounting, header.transactionDate )
         def existingAccountingInfo = requisitionAccountingService.findByRequestCodeItemAndSeq( accountingDomainModel.requisitionAccounting.requestCode,
                                                                                                accountingDomainModel.requisitionAccounting.item, accountingDomainModel.requisitionAccounting.sequenceNumber )
-        RequisitionAccounting requisitionAccountingRequest = accountingDomainModel.requisitionAccounting
+        RequisitionAccounting requisitionAccountingRequest = new RequisitionAccounting()
+        bindData(requisitionAccountingRequest, accountingDomainModel.requisitionAccounting)
         requisitionAccountingRequest.id = existingAccountingInfo.id
         requisitionAccountingRequest.version = existingAccountingInfo.version
         requisitionAccountingRequest.requestCode = existingAccountingInfo.requestCode
@@ -119,7 +121,7 @@ class RequisitionAccountingCompositeService {
 
         setNSFOverride( requisitionAccountingRequest )
         requisitionDetailsAcctCommonCompositeService.adjustAccountPercentageAndAmount( requisitionAccountingRequest )
-        def requisitionAccounting = requisitionAccountingService.update( [domainModel: requisitionAccountingRequest] )
+        def requisitionAccounting = requisitionAccountingService.update( requisitionAccountingRequest)
         LoggerUtility.debug( LOGGER, "Requisition Accounting information updated " + requisitionAccounting )
         return requisitionAccounting
     }
