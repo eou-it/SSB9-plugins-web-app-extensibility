@@ -21,7 +21,8 @@ apply plugin:"org.grails.grails-gsp"
 
 repositories {
     mavenLocal()
-    maven { url "https://repo.grails.org/grails/core" }
+    maven { url "https://repo.grails.org/grails/core"
+    }
 }
 
 dependencies {
@@ -51,7 +52,7 @@ dependencies {
     testCompile "org.grails:grails-gorm-testing-support"
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails:grails-web-testing-support"
-    testCompile "org.apache.xmlgraphics:fop:2.3",
+    /*testCompile "org.apache.xmlgraphics:fop:2.3",
             "org.apache.xmlgraphics:xmlgraphics-commons:2.3",
             "org.apache.xmlgraphics:batik-svg-dom:1.10",
             "org.apache.xmlgraphics:batik-anim:1.7",
@@ -74,13 +75,19 @@ dependencies {
             "xml-apis:xml-apis-ext:1.3.04",
             "commons-logging:commons-logging:1.0.4",
             "commons-io:commons-io:1.3.1",
-            "org.json:json:20090211"
-    
+            "org.json:json:20090211"*/
+
+
     compileOnly files("lib/banner_pdf_generator-1.0.jar")
     compileOnly files("lib/xmlsec-1.4.3.jar")
     compileOnly files("lib/xalan-2.7.1.jar")
+    compile ("org.apache.xmlgraphics:fop:1.1") {
+        exclude group:"org.apache.avalon.framework", module:"avalon-framework-api"
+        exclude group:"org.apache.avalon.framework", module:"avalon-framework-impl"
+    }
+    compile "org.apache.avalon.framework:avalon-framework-api:4.3.1"
+    compile "org.apache.avalon.framework:avalon-framework-impl:4.3.1"
 
-    compile "org.apache.xmlgraphics:fop:2.3"
 
     //Added for BannerXE
     compile "org.grails.plugins:hibernate5"
