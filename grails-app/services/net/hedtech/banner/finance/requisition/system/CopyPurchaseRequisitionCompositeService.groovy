@@ -58,11 +58,9 @@ class CopyPurchaseRequisitionCompositeService implements DataBinder{
      * @param requestCode
      */
     private void copyRequisitionHeader( RequisitionHeader header, nextRequisitionNumber, requestCode ) {
-
         RequisitionHeaderForCopy headerForCopy = new RequisitionHeaderForCopy()
-        def requisitionHeaderMap = [requisitionHeader: header]
-        bindData(headerForCopy,requisitionHeaderMap.requisitionHeader,[exclude: ['Id','bypassNsfChkIndicator','dirtyPropertyNames','dirty','attached']])
-
+        bindData(headerForCopy,header,[exclude: ['Id','bypassNsfChkIndicator','dirtyPropertyNames','dirty','attached']])
+        headerForCopy.id = null
         headerForCopy.requestCode = nextRequisitionNumber
         headerForCopy.documentCopiedFrom = requestCode // Old requisition number
         headerForCopy.transactionDate = new Date()   // default to System Date
@@ -79,8 +77,8 @@ class CopyPurchaseRequisitionCompositeService implements DataBinder{
         headerForCopy.nsfOnOffIndicator = FinanceProcurementConstants.TRUE
         headerForCopy.closedIndicator = null
         headerForCopy.closedDate = null
-
-        requisitionHeaderForCopyService.create(headerForCopy)
+        headerForCopy = requisitionHeaderForCopyService.create(headerForCopy)
+        headerForCopy.discard()
     }
 
     /**
@@ -94,10 +92,7 @@ class CopyPurchaseRequisitionCompositeService implements DataBinder{
         RequisitionDetailForCopy detailForCopy
         requisitionDetailList.each { RequisitionDetailForCopy requisitionDetail ->
             detailForCopy  = new RequisitionDetailForCopy()
-
-            def requisitionDetailMap = [requisitionDetail: requisitionDetail]
-            bindData(detailForCopy,requisitionDetailMap.requisitionDetail,[exclude: ['Id','dirtyPropertyNames','dirty','attached']])
-
+            bindData(detailForCopy,requisitionDetail,[exclude: ['Id','dirtyPropertyNames','dirty','attached']])
             detailForCopy.requestCode = nextRequisitionNumber
             detailForCopy.purchaseOrder = null
             detailForCopy.purchaseOrderItem = null
@@ -110,9 +105,8 @@ class CopyPurchaseRequisitionCompositeService implements DataBinder{
             detailForCopy.closedIndicator = null
             detailForCopy.postDate = null
             detailForCopy.buyer = null
-            requisitionDetailForCopyService.create(  detailForCopy)
-
-
+            detailForCopy = requisitionDetailForCopyService.create(detailForCopy)
+            detailForCopy.discard()
         }
 
     }
@@ -123,30 +117,30 @@ class CopyPurchaseRequisitionCompositeService implements DataBinder{
      * @param requestCode
      * @return
      */
-    private copyRequisitionAccounting( nextRequisitionNumber, requestCode ) {
+     private copyRequisitionAccounting( nextRequisitionNumber, requestCode ) {
 
-        def requisitionAccountingList = RequisitionAccountingForCopy.findAllByRequestCode( requestCode )
-        RequisitionAccountingForCopy accountingForCopy
-        requisitionAccountingList.each {RequisitionAccountingForCopy requisitionAccounting ->
-          accountingForCopy = new RequisitionAccountingForCopy()
-            def requisitionAccountingMap = [requisitionAccounting: requisitionAccounting]
-            bindData(accountingForCopy,requisitionAccountingMap.requisitionAccounting,[exclude: ['id','dirtyPropertyNames','dirty','attached']])
-
-            accountingForCopy.requestCode = nextRequisitionNumber
-            accountingForCopy.suspenseIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_YES
-            accountingForCopy.nsfSuspInd = FinanceProcurementConstants.DEFAULT_INDICATOR_YES
-            accountingForCopy.cancelIndicator = null
-            accountingForCopy.cancellationDate = null
-            accountingForCopy.approvalIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_NO
-            accountingForCopy.insufficientFundsOverrideIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_NO
-            accountingForCopy.availableBudgetOverride = null
-            accountingForCopy.closedIndicator = null
-            accountingForCopy.fiscalYear = null
-            accountingForCopy.period = null
-            accountingForCopy.id = null
-            requisitionAccountingForCopyService.create( accountingForCopy)
-        }
-    }
+         def requisitionAccountingList = RequisitionAccountingForCopy.findAllByRequestCode( requestCode )
+         def accountingForCopy
+         requisitionAccountingList.each {RequisitionAccountingForCopy requisitionAccounting ->
+             accountingForCopy = new RequisitionAccountingForCopy()
+             bindData(accountingForCopy, requisitionAccounting,[exclude: ['Id','dirtyPropertyNames','dirty','attached']])
+             accountingForCopy.id = null
+             accountingForCopy.version = 0
+             accountingForCopy.requestCode = nextRequisitionNumber
+             accountingForCopy.suspenseIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_YES
+             accountingForCopy.nsfSuspInd = FinanceProcurementConstants.DEFAULT_INDICATOR_YES
+             accountingForCopy.cancelIndicator = null
+             accountingForCopy.cancellationDate = null
+             accountingForCopy.approvalIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_NO
+             accountingForCopy.insufficientFundsOverrideIndicator = FinanceProcurementConstants.DEFAULT_INDICATOR_NO
+             accountingForCopy.availableBudgetOverride = null
+             accountingForCopy.closedIndicator = null
+             accountingForCopy.fiscalYear = null
+             accountingForCopy.period = null
+             accountingForCopy = requisitionAccountingForCopyService.create(accountingForCopy)
+             accountingForCopy.discard()
+         }
+     }
 
     /**
      * Copy Tax details
@@ -158,8 +152,10 @@ class CopyPurchaseRequisitionCompositeService implements DataBinder{
         def requisitionTaxList = RequisitionTaxForCopy.findAllByRequestCode(requestCode)
         requisitionTaxList.each { RequisitionTaxForCopy requisitionTax ->
             RequisitionTaxForCopy taxForCopy = new RequisitionTaxForCopy()
+            bindData(taxForCopy,requisitionTax,[exclude: ['dirtyPropertyNames','dirty','attached']])
             taxForCopy.requestCode = nextRequisitionNumber
-            requisitionTaxForCopyService.create(taxForCopy)
+            taxForCopy = requisitionTaxForCopyService.create(taxForCopy)
+            taxForCopy.discard()
         }
     }
 
@@ -175,7 +171,8 @@ class CopyPurchaseRequisitionCompositeService implements DataBinder{
             def FinanceTextMap = [financeText: financeText]
             bindData(textForCopy,FinanceTextMap.financeText,[exclude: ['dirtyPropertyNames','dirty','attached']])
             textForCopy.textCode = nextRequisitionNumber
-            financeTextService.create( textForCopy )
+            textForCopy = financeTextService.create( textForCopy)
+            textForCopy.discard()
         }
     }
 }
