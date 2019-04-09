@@ -95,6 +95,9 @@ class RequisitionHeaderService extends ServiceBase {
         def assignBuyerCode
         def autoBuyrInd = financeSystemControlService.findActiveFinanceSystemControl().autoBuyrInd
         def requisitionHeader = RequisitionHeader.fetchByRequestCode(requestCode, springSecurityService.getAuthentication().user.oracleUserName)
+        if (!requisitionHeader) {
+            throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
+        }
         update(requisitionHeader)
 
         //Validate only if the Requisition is copied
