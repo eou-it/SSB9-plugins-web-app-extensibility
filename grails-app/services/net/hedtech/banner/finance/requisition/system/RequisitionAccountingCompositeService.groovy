@@ -45,7 +45,7 @@ class RequisitionAccountingCompositeService implements DataBinder {
      */
     def createPurchaseRequisitionAccounting( map ) {
         RequisitionAccounting requisitionAccountingRequest = new RequisitionAccounting()
-        bindData(requisitionAccountingRequest, map.requisitionAccounting)
+        bindData(requisitionAccountingRequest, map.requisitionAccounting,[exclude: ['dirtyPropertyNames','dirty','attached']])
         def user = springSecurityService.getAuthentication().user
         if (user.oracleUserName) {
             requisitionAccountingRequest.userId = user.oracleUserName

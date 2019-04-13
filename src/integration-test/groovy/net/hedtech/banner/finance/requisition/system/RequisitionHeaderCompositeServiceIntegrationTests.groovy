@@ -202,8 +202,9 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME,
                     FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
         def oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
-        springSecurityService.getAuthentication().user.oracleUserName = ''
         def headerDomainModel = newRequisitionHeader()
+        springSecurityService.getAuthentication().user.oracleUserName = ''
+
         def domainModelMap = [requisitionHeader: headerDomainModel]
         try {
             requisitionHeaderCompositeService.createPurchaseRequisitionHeader( domainModelMap )

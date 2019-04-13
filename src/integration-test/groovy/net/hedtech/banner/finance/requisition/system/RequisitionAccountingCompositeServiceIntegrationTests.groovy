@@ -56,8 +56,8 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
         def domainModelMap = [requisitionAccounting: reqAccountingDomainModel]
         def requestCode = requisitionAccountingCompositeService.createPurchaseRequisitionAccounting( domainModelMap )
         assertTrue requestCode?.requestCode == reqAccountingDomainModel.requestCode
-        assertTrue requestCode?.item == reqAccountingDomainModel.item
-        assertTrue requestCode?.sequenceNumber == reqAccountingDomainModel.sequenceNumber
+        assertNotNull requestCode.item
+        assertTrue requestCode.sequenceNumber>0
     }
 
     /**
@@ -75,7 +75,7 @@ class RequisitionAccountingCompositeServiceIntegrationTests extends BaseIntegrat
         def requestCode = requisitionAccountingCompositeService.createPurchaseRequisitionAccounting( domainModelMap )
         assertTrue requestCode?.requestCode == reqAccountingDomainModel.requestCode
         assertTrue requestCode?.item == reqAccountingDomainModel.item
-        assertTrue requestCode?.sequenceNumber == reqAccountingDomainModel.sequenceNumber
+        assertTrue requestCode.sequenceNumber >0
     }
 
     /**
