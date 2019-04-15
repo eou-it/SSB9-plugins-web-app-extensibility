@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -175,7 +175,8 @@ class RequisitionHeaderService extends ServiceBase {
                     approvalHistory.lastModifiedBy = user
                     approvalHistory.activityDate = new Date()
                     approvalHistory.sequenceNumber = new BigDecimal( FinanceProcurementConstants.ONE )
-                    financeApprovalHistoryService.update( approvalHistory )
+                    approvalHistory = financeApprovalHistoryService.update( approvalHistory )
+                    approvalHistory.discard()
                 }
             } else {
                 def financeApprovalHistory = [:]
@@ -185,7 +186,8 @@ class RequisitionHeaderService extends ServiceBase {
                 financeApprovalHistory.lastModifiedBy = user
                 financeApprovalHistory.activityDate = new Date()
                 financeApprovalHistory.sequenceNumber = new BigDecimal( FinanceProcurementConstants.ONE )
-                financeApprovalHistoryService.create(  financeApprovalHistory )
+                financeApprovalHistory = financeApprovalHistoryService.create(  financeApprovalHistory )
+                financeApprovalHistory.discard()
             }
             // Removing the row relating to this requisition in FOBUAPP FinanceUnapprovedDocument.
             financeUnapprovedDocumentService.findByDocumentCode( requestHeaderUpdated.requestCode ).each {
