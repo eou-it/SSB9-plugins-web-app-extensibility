@@ -8,8 +8,6 @@ import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
-import net.hedtech.banner.finance.util.LoggerUtility
-import org.apache.log4j.Logger
 import grails.gorm.transactions.Transactional
 import grails.web.databinding.DataBinder
 import org.slf4j.Logger;
@@ -20,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 @Transactional 
 class RequisitionHeaderCompositeService implements DataBinder{
-    private static final Logger LOGGER = LoggerFactory.getLogger(this.class)
+
     def requisitionHeaderService
     def requisitionAccountingService
     def springSecurityService
@@ -49,14 +47,14 @@ class RequisitionHeaderCompositeService implements DataBinder{
                 requisitionHeaderRequest.taxGroup = null
             }
             def requisitionHeader = requisitionHeaderService.create(requisitionHeaderRequest)
-            LoggerUtility.debug LOGGER, "Requisition Header created " + requisitionHeader
+            log.debug("Requisition Header created {}", requisitionHeader)
             def header = RequisitionHeader.read( requisitionHeader.id )
             financeTextCompositeService.saveTextForHeader( requisitionHeader,
                                                            [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
                                                            user.oracleUserName )
             return header.requestCode
         } else {
-            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            log.error('User {} is not valid',user )
             throw new ApplicationException(
                     RequisitionHeaderCompositeService,
                     new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -87,7 +85,7 @@ class RequisitionHeaderCompositeService implements DataBinder{
             def existingHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
             map.requisitionHeader.requestCode = existingHeader.requestCode
             if (!checkHeaderUpdateEligibility( map, existingHeader, baseCcy )) {
-                LoggerUtility.debug( LOGGER, 'Modification not required' )
+                log.debug('Modification not required' )
                 return existingHeader
             }
             FinanceProcurementHelper.checkCompleteRequisition( existingHeader )
@@ -102,7 +100,7 @@ class RequisitionHeaderCompositeService implements DataBinder{
             def accountSize = requisitionAccountingService.findAccountingSizeByRequestCode( existingHeader.requestCode )
             boolean checkUpdateAccountRequire = checkAccountUpdateEligibility( map, existingHeader )
             if (requisitionHeaderRequest.isDocumentLevelAccounting != existingHeader.isDocumentLevelAccounting && accountSize > 0) {
-                LoggerUtility.error( LOGGER, 'Document type cannot be modified once accounting associated with this' )
+                log.error('Document type cannot be modified once accounting associated with this' )
                 throw new ApplicationException( RequisitionHeaderCompositeService,
                                                 new BusinessLogicValidationException(
                                                         FinanceProcurementConstants.ERROR_MESSAGE_DOCUMENT_CHANGE, [] ) )
@@ -121,7 +119,7 @@ class RequisitionHeaderCompositeService implements DataBinder{
                 }
             }
 
-            LoggerUtility.debug LOGGER, "Requisition Header updated " + requisitionHeader
+            log.debug("Requisition Header updated {}", requisitionHeader)
             financeTextCompositeService.saveTextForHeader( requisitionHeader,
                                                            [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
                                                            user.oracleUserName )
@@ -131,7 +129,7 @@ class RequisitionHeaderCompositeService implements DataBinder{
 
             return requisitionHeader
         } else {
-            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            log.error('User {} is not valid',user )
             throw new ApplicationException( RequisitionHeaderCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -159,7 +157,7 @@ class RequisitionHeaderCompositeService implements DataBinder{
     def deletePurchaseRequisition( requestCode, boolean forceDelete, mep, boolean isBDMInstalled ) {
         if (!forceDelete && isBDMInstalled) {
             if (documentManagementCompositeService.listDocumentsByRequisitionCode( requestCode, mep, isBDMInstalled )?.documentList?.size() > 0) {
-                LoggerUtility.info( LOGGER, "Documents are present for this requisition. You may need to remove them before deleting this requisition" + requestCode )
+                log.info("Documents are present for this requisition. You may need to remove them before deleting this requisition{}", requestCode )
                 throw new ApplicationException(
                         RequisitionHeaderCompositeService,
                         new BusinessLogicValidationException( 'WARNING', [] ) )
@@ -177,7 +175,7 @@ class RequisitionHeaderCompositeService implements DataBinder{
             requisitionHeaderService.delete( requestHeader )
             return requestCode
         } else {
-            LoggerUtility.error( LOGGER, "Only Draft/Disapproved requisition can be deleted = $requestCode" )
+            log.error("Only Draft/Disapproved requisition can be deleted = $requestCode" )
             throw new ApplicationException(
                     RequisitionHeaderCompositeService,
                     new BusinessLogicValidationException(
@@ -259,7 +257,7 @@ class RequisitionHeaderCompositeService implements DataBinder{
                 }
             }
         } catch (ApplicationException e) {
-            LoggerUtility.warn( LOGGER, 'Requisition Commodity Details are empty for requestCode=' + requisitionHeader.requestCode + ' and commodity recalculation is not performed' )
+            log.warn('Requisition Commodity Details are empty for requestCode= {}  and commodity recalculation is not performed' ,requisitionHeader.requestCode)
         }
     }
 

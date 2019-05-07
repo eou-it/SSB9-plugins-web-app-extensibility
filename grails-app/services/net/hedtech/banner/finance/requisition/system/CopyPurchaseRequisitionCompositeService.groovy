@@ -6,8 +6,6 @@ package net.hedtech.banner.finance.requisition.system
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
-import net.hedtech.banner.finance.util.LoggerUtility
-import org.apache.log4j.Logger
 import net.hedtech.banner.finance.system.FinanceText
 import grails.gorm.transactions.Transactional
 import grails.web.databinding.DataBinder
@@ -16,7 +14,6 @@ import grails.web.databinding.DataBinder
  */
  @Transactional
 class CopyPurchaseRequisitionCompositeService implements DataBinder{
-    private static final def LOGGER = Logger.getLogger( this.getClass() )
    
 
     def sessionFactory
@@ -43,7 +40,7 @@ class CopyPurchaseRequisitionCompositeService implements DataBinder{
             copyRequisitionTax(nextRequisitionNumber, requestCode)
             nextRequisitionNumber
         } else {
-            LoggerUtility.error(LOGGER, "Only completed requisition can be copied = $header.requestCode")
+            log.error("Only completed requisition can be copied = $header.requestCode")
             throw new ApplicationException(
                     CopyPurchaseRequisitionCompositeService,
                     new BusinessLogicValidationException(

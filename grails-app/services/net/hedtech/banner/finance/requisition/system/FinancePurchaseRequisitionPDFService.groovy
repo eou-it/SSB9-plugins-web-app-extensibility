@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015-2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -7,11 +7,9 @@ import grails.converters.JSON
 import grails.util.Holders
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
-import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.i18n.MessageHelper
 import net.hedtech.banner.pdf.exceptions.BannerPDFGeneratorException
 import net.hedtech.banner.pdf.impl.BannerPDFGenerator
-import org.apache.log4j.Logger
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationContext
@@ -21,7 +19,6 @@ import org.springframework.context.i18n.LocaleContextHolder
  * Service class for Finance Purchase Requisition PDF.
  */
 class FinancePurchaseRequisitionPDFService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FinancePurchaseRequisitionPDFService.class)
     def requisitionSummaryService
 
     /**
@@ -57,7 +54,7 @@ class FinancePurchaseRequisitionPDFService {
                                                                   .replaceAll( FinanceProcurementConstants.UNICODE_CTRL_CHAR, FinanceProcurementConstants.EMPTY_STRING ),
                                                           getXslFilePath( fopBasePath ), getConfigFilePath( fopBasePath ))
         } catch (BannerPDFGeneratorException e) {
-            LoggerUtility.error( LOGGER, 'Error while generating PDF' + e )
+            log.error('Error while generating PDF {}', e )
             throw new ApplicationException( FinancePurchaseRequisitionPDFService, "generatorError" )
         }
     }
@@ -68,7 +65,7 @@ class FinancePurchaseRequisitionPDFService {
      */
     private getFopBasePath() {
         def fopBasePath = getApplicationContext().getResource( FinanceProcurementConstants.BASE_DIR ).file.absolutePath
-        LoggerUtility.debug( LOGGER, 'fopBasePath' + fopBasePath )
+        log.debug('fopBasePath {}', fopBasePath )
         fopBasePath
     }
 
@@ -87,7 +84,7 @@ class FinancePurchaseRequisitionPDFService {
      */
     private String getConfigFilePath( String fopBasePath ) {
         String configPath = new File( fopBasePath, FinanceProcurementConstants.FOP_CONFIG_FILENAME_DEFAULT ).absolutePath
-        LoggerUtility.debug( LOGGER, 'configPath' + configPath )
+        log.debug('configPath {}', configPath )
         configPath
     }
 
@@ -99,7 +96,7 @@ class FinancePurchaseRequisitionPDFService {
     private String getXslFilePath( String fopBasePath ) {
         String xslPath = new File( new File( fopBasePath, FinanceProcurementConstants.PDF_NAME ), FinanceProcurementConstants.PDF_NAME.concat( FinanceProcurementConstants.DOT )
                 .concat( FinanceProcurementConstants.XSL_FILE_EXTENSION ) ).absolutePath
-        LoggerUtility.debug( LOGGER, 'xslPath' + xslPath )
+        log.debug('xslPath {}', xslPath )
         xslPath
     }
     /**

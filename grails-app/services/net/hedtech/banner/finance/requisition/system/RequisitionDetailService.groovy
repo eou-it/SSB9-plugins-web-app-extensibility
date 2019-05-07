@@ -1,14 +1,12 @@
 /*******************************************************************************
- Copyright 2015 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
-import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.service.ServiceBase
-import org.apache.log4j.Logger
 import grails.gorm.transactions.Transactional
 /**
  * Service class for RequisitionDetail.
@@ -16,8 +14,7 @@ import grails.gorm.transactions.Transactional
  */
 @Transactional 
 class RequisitionDetailService extends ServiceBase {
-   
-    private static final def LOGGER = Logger.getLogger( this.getClass() )
+
     def springSecurityService
 
     /**
@@ -26,11 +23,11 @@ class RequisitionDetailService extends ServiceBase {
      * @return List of requisition code.
      */
     def findByRequestCodeAndItem( requisitionCode, Integer item ) {
-        LoggerUtility.debug( LOGGER, 'Input parameter for findByRequestCodeAndItem :' + requisitionCode )
+      log.debug( 'Input parameter for findByRequestCodeAndItem :{}', requisitionCode )
         def inputMap = [requisitionCode: requisitionCode, item: item]
         def requisitionDetails = RequisitionDetail.fetchByRequestCodeAndItem( inputMap.requisitionCode, inputMap.item ).list
         if (!requisitionDetails) {
-            LoggerUtility.error( LOGGER, 'Requisition Commodity Details are empty for requestCode=' + requisitionCode )
+            log.error( 'Requisition Commodity Details are empty for requestCode={}',requisitionCode )
             throw new ApplicationException(
                     RequisitionDetailService,
                     new BusinessLogicValidationException(
@@ -56,7 +53,7 @@ class RequisitionDetailService extends ServiceBase {
             }
             return requisitionDetailList
         } else {
-            LoggerUtility.error( LOGGER, 'User' + loggedInUser + ' is not valid' )
+        log.error('User {} is not valid',loggedInUser )
             throw new ApplicationException( RequisitionDetailService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -82,7 +79,7 @@ class RequisitionDetailService extends ServiceBase {
     def getRequisitionDetailByRequestCodeAndItem( requestCode, Integer item ) {
         def requisitionDetail = RequisitionDetail.fetchByRequestCodeAndItem( requestCode, item ).list.getAt( 0 )
         if (!requisitionDetail) {
-            LoggerUtility.error( LOGGER, 'Requisition Detail Not found for Request Code :' + requestCode + ' and Item : ' + item )
+        log.error( 'Requisition Detail Not found for Request Code :{} and Item :{} ',requestCode ,item )
             throw new ApplicationException( RequisitionDetailService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_DETAIL, [] ) )
@@ -96,7 +93,7 @@ class RequisitionDetailService extends ServiceBase {
      * @return List of requisition code.
      */
     def findByRequestCode( requisitionCode ) {
-        LoggerUtility.debug( LOGGER, 'Input parameter for findByDocumentCode :' + requisitionCode )
+        log.debug('Input parameter for findByDocumentCode :{}',requisitionCode )
         def requisitionDetails = RequisitionDetail.fetchByRequestCode( requisitionCode ).list
         if (!requisitionDetails) {
             throw new ApplicationException(

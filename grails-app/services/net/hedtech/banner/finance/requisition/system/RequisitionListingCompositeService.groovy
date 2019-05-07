@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -8,9 +8,7 @@ import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.exceptions.CurrencyNotFoundException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.FinanceCommonUtility
-import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.i18n.MessageHelper
-import org.apache.log4j.Logger
 import org.springframework.transaction.annotation.Propagation
 import grails.gorm.transactions.Transactional
 /**
@@ -18,7 +16,6 @@ import grails.gorm.transactions.Transactional
  */
 @Transactional
 class RequisitionListingCompositeService {
-    private static final Logger LOGGER = Logger.getLogger( this.class )
    
 
     def springSecurityService
@@ -33,7 +30,7 @@ class RequisitionListingCompositeService {
     def listRequisitionsByBucket( buckets, pagingParams, baseCcy ) {
         def user = springSecurityService.getAuthentication().user
         if (!user.oracleUserName) {
-            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            log.error('User {} is not valid',user )
             throw new ApplicationException( RequisitionListingCompositeService, new BusinessLogicValidationException(
                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
@@ -109,7 +106,7 @@ class RequisitionListingCompositeService {
                 wrapperList.add( groupResult( countMap, completedStatus, bucket, listRequisitions( user, pagingParams, completedStatus, baseCcy ) ) )
                 break
             default:
-                LoggerUtility.error( LOGGER, 'Group Type not valid' )
+                log.error('Group Type not valid' )
                 throw new ApplicationException( RequisitionListingCompositeService, new BusinessLogicValidationException(
                         FinanceProcurementConstants.ERROR_MESSAGE_INVALID_BUCKET_TYPE, [bucket] ) )
         }
@@ -164,7 +161,7 @@ class RequisitionListingCompositeService {
     private searchRequisitionsBySearchParam( searchParam, pagingParams, isDateString, baseCcy ) {
         def user = springSecurityService.getAuthentication().user
         if (!user.oracleUserName) {
-            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            log.error( 'User {} is not valid' ,user)
             throw new ApplicationException( RequisitionListingCompositeService, new BusinessLogicValidationException(
                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
@@ -189,7 +186,7 @@ class RequisitionListingCompositeService {
         def dataMap = [:]
         def user = springSecurityService.getAuthentication().user
         if (!user.oracleUserName) {
-            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            log.error('User {} is not valid',user )
             throw new ApplicationException( RequisitionListingCompositeService, new BusinessLogicValidationException(
                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
@@ -212,7 +209,7 @@ class RequisitionListingCompositeService {
                 dataMap = fetchRequisitionsByStatusAndSearchParam( user.oracleUserName, searchParam, pagingParams, completedStatus, isDateString, baseCcy )
                 break
             default:
-                LoggerUtility.error( LOGGER, 'Group Type not valid' )
+                log.error('Group Type not valid' )
                 throw new ApplicationException( RequisitionListingCompositeService, new BusinessLogicValidationException(
                         FinanceProcurementConstants.ERROR_MESSAGE_INVALID_BUCKET_TYPE, [bucket] ) )
         }

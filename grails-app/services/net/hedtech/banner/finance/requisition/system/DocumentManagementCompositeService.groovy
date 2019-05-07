@@ -6,9 +6,7 @@ package net.hedtech.banner.finance.requisition.system
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
-import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.general.person.PersonIdentificationName
-import org.apache.log4j.Logger
 import grails.util.Holders
 import net.hedtech.banner.imaging.BdmUtility
 
@@ -20,8 +18,6 @@ import grails.gorm.transactions.Transactional
 @Transactional
 class DocumentManagementCompositeService {
 
-    private static final def LOGGER = Logger.getLogger( this.getClass() )
-    
 
     def bdmAttachmentService
     def requisitionHeaderService
@@ -37,13 +33,13 @@ class DocumentManagementCompositeService {
      * @return list of documents of requisition
      */
     def uploadDocument( file, requisitionCode, docType, ownerPidm, vpdiCode, bdmInstalled ) {
-        LoggerUtility.debug( LOGGER, 'requisitionCode ' + requisitionCode + ' vpdiCode ' + vpdiCode + 'bdmInstalled ' + bdmInstalled + 'docType ' + docType )
+        log.debug('requisitionCode {}  vpdiCode {} bdmInstalled {} docType {}' ,requisitionCode,vpdiCode,bdmInstalled,docType )
         if (!bdmInstalled) {
-            LoggerUtility.error( LOGGER, 'BDM Not installed' )
+            log.error( 'BDM Not installed' )
             throw new ApplicationException( DocumentManagementCompositeService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED, [] ) )
         }
         if (file?.isEmpty()) {
-            LoggerUtility.error( LOGGER, 'Document File to upload for requisition ' + requisitionCode + ' Doc type ' + docType + ' and PIDM ' + ownerPidm + ' is empty' )
+            log.error('Document File to upload for requisition {}  Doc type {} and PIDM {} is empty',requisitionCode,docType,ownerPidm )
             throw new ApplicationException( DocumentManagementCompositeService, new BusinessLogicValidationException( FinanceProcurementConstants.BDM_FILE_UPLOAD_ERROR_MESSAGE, [] ) )
         }
         try {
@@ -53,7 +49,7 @@ class DocumentManagementCompositeService {
             map.userDir.deleteDir()
             listDocumentsByRequisitionCode( requisitionCode, vpdiCode, bdmInstalled )
         } catch (FileNotFoundException e) {
-            LoggerUtility.error( LOGGER, 'File Not found' )
+            log.error('File Not found' )
             throw new ApplicationException( DocumentManagementCompositeService, new BusinessLogicValidationException( e.getMessage(), [] ) )
         }
     }
@@ -71,13 +67,13 @@ class DocumentManagementCompositeService {
             throw new ApplicationException( DocumentManagementCompositeService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED, [] ) )
         }
         def docIds = []
-        LoggerUtility.debug( LOGGER, 'requisitionCode ' + requisitionCode + ' vpdiCode ' + vpdiCode + 'bdmInstalled ' + bdmInstalled )
+        log.debug('requisitionCode {} vpdiCode {} bdmInstalled {}',requisitionCode,vpdiCode,bdmInstalled )
         docIds.add( documentId )
         try {
             bdmAttachmentService.deleteDocument( getBdmParams(), docIds, vpdiCode )
             listDocumentsByRequisitionCode( requisitionCode, vpdiCode, bdmInstalled )
         } catch (ApplicationException ae) {
-            LoggerUtility.error( LOGGER, 'Error while Deleting document' + ae.message )
+            log.error('Error while Deleting document {}',ae.message )
             throw new ApplicationException( DocumentManagementCompositeService,
                                             new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR, [] ) )
         }
@@ -95,7 +91,7 @@ class DocumentManagementCompositeService {
             throw new ApplicationException( DocumentManagementCompositeService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_NOT_INSTALLED, [] ) )
         }
         def criteria = [:]
-        LoggerUtility.debug( LOGGER, 'requisitionCode ' + requisitionCode + ' vpdiCode ' + vpdiCode + 'bdmInstalled ' + bdmInstalled )
+        log.debug('requisitionCode {} vpdiCode {} bdmInstalled {}' ,requisitionCode,vpdiCode,bdmInstalled)
         criteria.put( FinanceProcurementConstants.BDM_DOCUMENT_ID, requisitionCode )
         def documentList
         try {
@@ -143,7 +139,7 @@ class DocumentManagementCompositeService {
             BdmUtility.fetchBdmCryptoKey()
         }
         catch (ApplicationException ae) {
-            LoggerUtility.error( LOGGER, 'Error while getting BDM Crypto key.' + ae.message )
+            log.error('Error while getting BDM Crypto key.{}', ae.message )
             throw new ApplicationException( DocumentManagementCompositeService,
                                             new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR, [] ) )
         }
@@ -185,7 +181,7 @@ class DocumentManagementCompositeService {
         try {
             bdmAttachmentService.createDocument( getBdmParams(), absoluteFileName, encodeDocumentAttributes(documentAttributes), vpdiCode )
         } catch (ApplicationException | WebServiceException ae) {
-            LoggerUtility.error( LOGGER, 'Error while uploading document' + ae.message )
+            log.error('Error while uploading document {}', ae.message )
             throw new ApplicationException( DocumentManagementCompositeService,
                                             new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_BDM_ERROR, [] ) )
         }

@@ -12,9 +12,7 @@ import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
 import net.hedtech.banner.finance.system.FinanceSystemControl
 import net.hedtech.banner.finance.util.FinanceCommonUtility
-import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.commons.lang3.StringUtils
-import org.apache.log4j.Logger
 import org.springframework.transaction.annotation.Propagation
 import grails.gorm.transactions.Transactional
 /**
@@ -22,7 +20,6 @@ import grails.gorm.transactions.Transactional
  */
 @Transactional 
 class RequisitionDetailsCompositeService  implements DataBinder {
-    private static final Logger LOGGER = Logger.getLogger( this.class )
   
 
     def requisitionHeaderService
@@ -59,7 +56,7 @@ class RequisitionDetailsCompositeService  implements DataBinder {
             // Set all data with business logic.
             requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
             RequisitionDetail requisitionDetail = requisitionDetailService.create(  requisitionDetailRequest )
-            LoggerUtility.debug LOGGER, "Requisition Detail created " + requisitionDetail
+            log.debug("Requisition Detail created {}" ,requisitionDetail)
             /** Re-balance associated accounting information*/
             reBalanceRequisitionAccounting requestCode, requisitionDetail.item, null
             financeTextCompositeService.saveTextForCommodity( requisitionDetail,
@@ -67,7 +64,7 @@ class RequisitionDetailsCompositeService  implements DataBinder {
                                                               user.oracleUserName, requisitionDetail.item )
             return [requestCode: requisitionDetail.requestCode, item: requisitionDetail.item]
         } else {
-            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            log.error('User {} is not valid',user )
             throw new ApplicationException(
                     RequisitionDetailsCompositeService,
                     new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -98,7 +95,7 @@ class RequisitionDetailsCompositeService  implements DataBinder {
         def requestCode = detailDomainModel.requisitionDetail.requestCode
         def user = springSecurityService.getAuthentication().user
         if (!user.oracleUserName) {
-            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            log.error('User {} is not valid',user )
             throw new ApplicationException( RequisitionDetailsCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -107,7 +104,7 @@ class RequisitionDetailsCompositeService  implements DataBinder {
         Integer item = detailDomainModel.requisitionDetail.item
         // Null or empty check for item.
         if (!item) {
-            LoggerUtility.error( LOGGER, 'Item is required to update the detail.' )
+            log.error('Item is required to update the detail.' )
             throw new ApplicationException( RequisitionDetailsCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_ITEM_IS_REQUIRED, [] ) )
@@ -124,7 +121,7 @@ class RequisitionDetailsCompositeService  implements DataBinder {
         requisitionDetailRequest.item = existingDetail.item
         requisitionDetailRequest.userId = user.oracleUserName
         RequisitionDetail requisitionDetail = requisitionDetailService.update( requisitionDetailRequest )
-        LoggerUtility.debug LOGGER, "Requisition Detail updated " + requisitionDetail
+        log.debug("Requisition Detail updated {}" , requisitionDetail)
         /** Re-balance associated accounting information*/
         reBalanceRequisitionAccounting( requestCode, requisitionDetail.item )
         financeTextCompositeService.saveTextForCommodity( requisitionDetail,
@@ -373,7 +370,7 @@ class RequisitionDetailsCompositeService  implements DataBinder {
         try {
             requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
         } catch (ApplicationException ae) {
-            LoggerUtility.warn( LOGGER, 'No requisition detail available for ' + requisitionCode + ': ' + ae.message )
+            log.warn('No requisition detail available for {}:{}',requisitionCode, ae.message )
         }
         def commodityCodes = requisitionDetails.findAll() {it.commodityDescription == null}.collect() {
             it.commodity
@@ -417,7 +414,7 @@ class RequisitionDetailsCompositeService  implements DataBinder {
         try {
             requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
         } catch (ApplicationException ae) {
-            LoggerUtility.info( LOGGER, 'No requisition detail available for ' + requisitionCode + ': ' + ae.message )
+            log.info('No requisition detail available for {}:{}', requisitionCode , ae.message )
         }
         def commodityCodes = requisitionDetails.findAll() {it.commodityDescription == null}.collect() {
             it.commodity

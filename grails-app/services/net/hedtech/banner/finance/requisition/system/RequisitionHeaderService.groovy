@@ -8,9 +8,7 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
-import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.service.ServiceBase
-import org.apache.log4j.Logger
 import grails.gorm.transactions.Transactional
 import java.sql.SQLException
 
@@ -20,8 +18,7 @@ import java.sql.SQLException
  */
 @Transactional 
 class RequisitionHeaderService extends ServiceBase {
-    
-    private static final def LOGGER = Logger.getLogger( this.getClass() )
+
     def springSecurityService
     def financeApprovalHistoryService
     def financeApprovalsInProcessService
@@ -35,7 +32,7 @@ class RequisitionHeaderService extends ServiceBase {
      * @param requestCode
      */
     def findRequisitionHeaderByRequestCode( requestCode, String oracleUserName = null ) {
-        LoggerUtility.debug( LOGGER, 'Input parameters for findRequisitionHeaderByRequestCode :' + requestCode )
+        log.debug('Input parameters for findRequisitionHeaderByRequestCode :{}', requestCode )
         if(!oracleUserName){
             oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
         }
@@ -59,7 +56,7 @@ class RequisitionHeaderService extends ServiceBase {
             }
             return requisitionHeaderList.list;
         } else {
-            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            log.error('User{} is not valid',user )
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
     }
@@ -70,13 +67,13 @@ class RequisitionHeaderService extends ServiceBase {
      */
 
     def completeRequisition( requestCode, forceComplete,bypassNsfChkIndicator, String oracleUserName = null) {    
-        LoggerUtility.debug( LOGGER, 'Input parameters for completeRequisition :' + requestCode )
+        log.debug('Input parameters for completeRequisition :{}', requestCode )
         if(!oracleUserName){
             oracleUserName = springSecurityService.getAuthentication().user.oracleUserName
         }
         def requisitionHeader = RequisitionHeader.fetchByRequestCode( requestCode, oracleUserName )
         if (!requisitionHeader) {
-            LoggerUtility.error( LOGGER, 'Header not found for ' + requestCode )
+            log.error( 'Header not found for {}', requestCode )
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }
         FinanceProcurementHelper.checkCompleteRequisition( requisitionHeader )
@@ -91,7 +88,7 @@ class RequisitionHeaderService extends ServiceBase {
      * @param requestCode
      */
     def validateRequisitionBeforeComplete( requestCode ) {
-        LoggerUtility.debug(LOGGER, 'Input parameters for validate Requisition :' + requestCode)
+        log.debug('Input parameters for validate Requisition :{}', requestCode)
         def assignBuyerCode
         def autoBuyrInd = financeSystemControlService.findActiveFinanceSystemControl().autoBuyrInd
         def requisitionHeader = RequisitionHeader.fetchByRequestCode(requestCode, springSecurityService.getAuthentication().user.oracleUserName)
@@ -201,7 +198,7 @@ class RequisitionHeaderService extends ServiceBase {
             }
             return requestHeaderUpdated.requestCode
         } else {
-            LoggerUtility.error( LOGGER, 'Only pending requisition can be recalled=' + requestCode )
+            log.error('Only pending requisition can be recalled={}', requestCode )
             throw new ApplicationException(
                     RequisitionHeaderCompositeService,
                     new BusinessLogicValidationException(

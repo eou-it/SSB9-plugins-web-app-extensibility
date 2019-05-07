@@ -8,9 +8,7 @@ import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.FinanceCommonUtility
-import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.service.ServiceBase
-import org.apache.log4j.Logger
 import grails.gorm.transactions.Transactional
 import static groovy.test.GroovyAssert.*
 /**
@@ -18,8 +16,7 @@ import static groovy.test.GroovyAssert.*
  */
 @Transactional
 class RequisitionAccountingService extends ServiceBase {
-   
-    private static final def LOGGER = Logger.getLogger( this.getClass() )
+
     def springSecurityService
 
     /**
@@ -30,7 +27,7 @@ class RequisitionAccountingService extends ServiceBase {
      * @return
      */
     def findBasicAccountingByRequestCodeItemAndSeq( requisitionCode, Integer item, Integer sequenceNumber ) {
-        LoggerUtility.debug( LOGGER, 'Input parameter for findBasicAccountingByRequestCodeItemAndSeq :' + requisitionCode )
+        log.debug('Input parameter for findBasicAccountingByRequestCodeItemAndSeq :{}', requisitionCode )
         RequisitionAccounting.fetchByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber ).list
     }
 
@@ -71,11 +68,10 @@ class RequisitionAccountingService extends ServiceBase {
      * @return RequisitionAccounting.
      */
     def findByRequestCodeItemAndSeq( requisitionCode, Integer item, Integer sequenceNumber ) {
-        LoggerUtility.debug( LOGGER, 'Input parameter for findByRequestCodeItemAndSeq :' + requisitionCode )
+        log.debug('Input parameter for findByRequestCodeItemAndSeq :{}',requisitionCode )
         def requisitionAccounting = RequisitionAccounting.fetchByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber ).list
         if (!requisitionAccounting) {
-            LoggerUtility.error( LOGGER, 'Requisition Accounting Information are empty for requestCode='
-                    + requisitionCode + ', Item: ' + item + ' and Sequence: ' + sequenceNumber )
+            log.error('Requisition Accounting Information are empty for requestCode={}, Item:{} and Sequence:',requisitionCode,item,sequenceNumber)
             throw new ApplicationException(
                     RequisitionAccountingService,
                     new BusinessLogicValidationException(
@@ -96,7 +92,7 @@ class RequisitionAccountingService extends ServiceBase {
         if (loggedInUser.oracleUserName) {
             def requisitionAccountingList = RequisitionAccounting.fetchByUserId( providedUser ? providedUser : loggedInUser.oracleUserName, paginationParam ).list
             if (!requisitionAccountingList) {
-                LoggerUtility.error( LOGGER, 'Requisition Accounting Information are empty for User : ' + providedUser ? providedUser : loggedInUser.oracleUserName )
+                log.error('Requisition Accounting Information are empty for User : {}', providedUser ? providedUser : loggedInUser.oracleUserName )
                 throw new ApplicationException(
                         RequisitionAccountingService,
                         new BusinessLogicValidationException(
@@ -104,7 +100,7 @@ class RequisitionAccountingService extends ServiceBase {
             }
             return requisitionAccountingList
         } else {
-            LoggerUtility.error( LOGGER, 'User' + loggedInUser + ' is not valid' )
+            log.error('User {} is not valid',loggedInUser )
             throw new ApplicationException( RequisitionAccountingService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )

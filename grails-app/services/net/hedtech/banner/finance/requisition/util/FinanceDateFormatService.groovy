@@ -1,22 +1,18 @@
 /*******************************************************************************
- Copyright 2016 Ellucian Company L.P. and its affiliates.
+ Copyright 2016-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.util
 
 import com.ibm.icu.text.DateFormat
 import com.ibm.icu.util.Calendar
 import com.ibm.icu.util.ULocale
-import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.i18n.DateConverterService
-import org.apache.log4j.Logger
-
 import java.text.ParseException
 
 /**
  * Finance Date Format Service. It derives all methods of DataConverter Service with override methods
  */
 class FinanceDateFormatService extends DateConverterService {
-    private static final def LOGGER = Logger.getLogger( this.getClass() )
 
 
     @Override
@@ -55,9 +51,8 @@ class FinanceDateFormatService extends DateConverterService {
             }
             return arabicToDecimal( toDateFormat.format( toCalendar ) )
         } catch (ParseException exception) {
-            LoggerUtility.warn( LOGGER, 'Unable to perform conversion --  date: ' + fromDateValue + ', fromULocaleString: ' +
-                    fromULocaleString + ', toULocaleString: ' + toULocaleString + ', fromDateFormatString: ' +
-                    fromDateFormatString + ', toDateFormatString: ' + toDateFormatString )
+            log.warn('Unable to perform conversion --  date: {} , fromULocaleString: {} , toULocaleString: {} , fromDateFormatString: {} , toDateFormatString: {}'
+                    ,fromDateValue,fromULocaleString,toULocaleString,fromDateFormatString,toDateFormatString)
             return "error"
         }
     }

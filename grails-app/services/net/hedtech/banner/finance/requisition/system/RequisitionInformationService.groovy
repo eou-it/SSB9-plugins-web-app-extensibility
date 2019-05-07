@@ -7,16 +7,13 @@ import groovy.sql.Sql
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
-import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.service.ServiceBase
-import org.apache.log4j.Logger
 import grails.gorm.transactions.Transactional
 import java.sql.SQLException
 
 @Transactional
 class RequisitionInformationService extends ServiceBase {
-   
-    private static final def LOGGER = Logger.getLogger( this.getClass() )
+
     def springSecurityService
 
     /**
@@ -64,7 +61,7 @@ class RequisitionInformationService extends ServiceBase {
             countMap
         }
         catch (SQLException sqe) {
-            LoggerUtility.error( LOGGER, 'Error while getting requisition count ' + sqe )
+            log.error('Error while getting requisition count {}', sqe )
             throw new ApplicationException( RequisitionInformationService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_REQ_RECORD_COUNT, [] ) )
         }
         finally {
@@ -99,7 +96,7 @@ class RequisitionInformationService extends ServiceBase {
     private getOracleUserNameForLoggedInUser() {
         def user = springSecurityService.getAuthentication().user
         if (!user.oracleUserName) {
-            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            log.error('User {} is not valid',user )
             throw new ApplicationException( RequisitionInformationService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
         }
         user.oracleUserName

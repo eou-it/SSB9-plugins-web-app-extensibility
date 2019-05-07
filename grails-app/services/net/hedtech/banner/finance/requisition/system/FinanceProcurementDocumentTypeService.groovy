@@ -6,9 +6,7 @@ package net.hedtech.banner.finance.requisition.system
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.util.FinanceCommonUtility
-import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.service.ServiceBase
-import org.apache.log4j.Logger
 import org.hibernate.HibernateException
 import org.hibernate.Session
 import grails.gorm.transactions.Transactional
@@ -17,7 +15,6 @@ import grails.gorm.transactions.Transactional
  */
 class FinanceProcurementDocumentTypeService extends ServiceBase {
 
-    def LOGGER = Logger.getLogger( FinanceProcurementDocumentTypeService.name )
 
     /**
      * Gets doc types
@@ -30,7 +27,7 @@ class FinanceProcurementDocumentTypeService extends ServiceBase {
     @Transactional(readOnly = true)
     def getCommonMatchingDocs( filterText, max, offset, defaultSQL = null ) {
         def inputMap = [filterText: filterText?.toUpperCase()]
-        LoggerUtility.debug( LOGGER, 'inputMap ' + inputMap )
+        log.debug('inputMap {}', inputMap )
         FinanceCommonUtility.applyWildCard( inputMap, true, true )
         def documents = []
         Session session
