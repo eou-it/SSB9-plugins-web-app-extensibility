@@ -4,20 +4,19 @@
 
 package net.hedtech.extensibility
 
-import grails.transaction.Transactional
 import net.hedtech.extensibility.metadata.ExtensionService
 import net.hedtech.extensibility.metadata.ResourceService
-
+import grails.util.Holders as CH
 import org.springframework.web.context.request.RequestContextHolder
 
-@Transactional
+
 class InfoService {
-    static transactional = false
+    //static transactional = false
 
     // This service provides all information needed by the browser for extensibility as a String representation
     // of a JavaScript Object (JSON)
     static def getJSON( page, pluginUrl) {
-        def application = grails.util.Metadata.current.getApplicationName()
+        def application = CH.config.app.name
         def request = RequestContextHolder.currentRequestAttributes().request
         return """|{
                   |  "application": "${application}",

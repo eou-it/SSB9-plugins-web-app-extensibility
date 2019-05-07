@@ -30,3 +30,6 @@ stacktrace.log
 ddl-linux
 grails-app/i18n/messages_en_PS.properties
 **-rtl.css
+build/**/*
+gradle-wrapper.properties
+.gradle/
