@@ -149,7 +149,8 @@ class CopyPurchaseRequisitionCompositeService implements DataBinder{
         def requisitionTaxList = RequisitionTaxForCopy.findAllByRequestCode(requestCode)
         requisitionTaxList.each { RequisitionTaxForCopy requisitionTax ->
             RequisitionTaxForCopy taxForCopy = new RequisitionTaxForCopy()
-            bindData(taxForCopy,requisitionTax,[exclude: ['dirtyPropertyNames','dirty','attached']])
+            bindData(taxForCopy,requisitionTax,[exclude: ['id','dirtyPropertyNames','dirty','attached']])
+            taxForCopy.id=null
             taxForCopy.requestCode = nextRequisitionNumber
             taxForCopy = requisitionTaxForCopyService.create(taxForCopy)
             taxForCopy.discard()
@@ -166,7 +167,8 @@ class CopyPurchaseRequisitionCompositeService implements DataBinder{
         textList.each {FinanceText financeText ->
             def textForCopy  = new FinanceText()
             def FinanceTextMap = [financeText: financeText]
-            bindData(textForCopy,FinanceTextMap.financeText,[exclude: ['dirtyPropertyNames','dirty','attached']])
+            bindData(textForCopy,FinanceTextMap.financeText,[exclude: ['id','dirtyPropertyNames','dirty','attached']])
+            textForCopy.id=null
             textForCopy.textCode = nextRequisitionNumber
             textForCopy = financeTextService.create( textForCopy)
             textForCopy.discard()
