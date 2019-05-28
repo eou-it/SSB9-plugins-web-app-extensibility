@@ -44,6 +44,7 @@ class DocumentManagementCompositeService {
         }
         try {
             def map = bdmAttachmentService.createBDMLocation( file )
+            log.debug('BDM temp file details are :{}', map)
             def requisition = requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionCode )
             uploadDocToBdmServer( requisition, docType, ownerPidm, map.fileName, map.absoluteFileName, vpdiCode )
             map.userDir.deleteDir()
