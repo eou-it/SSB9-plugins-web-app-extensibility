@@ -142,3 +142,7 @@ grailsPublish {
 assets {
     packagePlugin = true
 }
+cobertura {
+    coverageFormats = ['xml']
+    coverageIgnores = ['org.slf4j.Logger.*']	//only an example to skip instrumentation    
+}
