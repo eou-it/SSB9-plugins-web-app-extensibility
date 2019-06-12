@@ -243,17 +243,15 @@ class RequisitionHeaderCompositeService implements DataBinder{
             def detailList = requisitionDetailService.findDetailsRequestCode( requisitionHeader.requestCode )
             if(detailList.size() > 0 ) {
                 detailList.each { item ->
-                    def requisitionDetailModel = item.class.declaredFields.findAll {
-                        it.modifiers == java.lang.reflect.Modifier.PRIVATE
-                    }.collectEntries { [it.name, item[it.name]] }
-                    if (isDiscountChanged) {
-                        requisitionDetailModel.discountAmount = null
+                    detailList.each { requisitionDetailModel ->
+                        if (isDiscountChanged) {
+                            requisitionDetailModel.discountAmount = null
+                        }
+                        if (isCcyChanged) {
+                            requisitionDetailModel.convertedDiscountAmount = null
+                        }
+                        requisitionDetailService.update(requisitionDetailModel, false)
                     }
-                    if (isCcyChanged) {
-                        requisitionDetailModel.convertedDiscountAmount = null
-                    }
-                    def detailDomainModel = [requisitionDetail: requisitionDetailModel]
-                    requisitionDetailsCompositeService.updateRequisitionDetail(detailDomainModel)
                 }
             }
         } catch (ApplicationException e) {

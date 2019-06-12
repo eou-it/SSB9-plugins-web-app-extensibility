@@ -10,7 +10,7 @@ import grails.gorm.transactions.Transactional
 /**
  * Composite service class for FinanceText.
  */
- @Transactional
+
 class FinanceTextCompositeService {
 
 def financeTextService    /**
