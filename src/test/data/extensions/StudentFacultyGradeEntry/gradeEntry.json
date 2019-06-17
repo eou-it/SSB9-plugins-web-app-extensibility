@@ -1,0 +1,508 @@
+{
+    "sections": [
+
+        // Section Removal
+        /*
+        { "name": "infotext", "exclude": true },
+        { "name": "numberTest", "exclude": true },
+        { "name": "comboTest", "exclude": true },
+        { "name": "select2Test", "exclude": true },
+        {"name": "courseDetailHeadingSection", "exclude": true}
+        */
+
+
+        // Tab Removal
+        /*
+        {"name": "finalCourseDetailGrid", "exclude": true},
+        {"name": "midtermCourseDetailGrid", "exclude": true},
+        {"name": "gradebookCourseDetailGrid", "exclude": true},
+        {"name": "finalGradeCourseRoster", "exclude": true},
+        {"name": "finalGradeCourseRosterIncomplete", "exclude": true},
+        {"name": "sectionDetail", "exclude": true},
+        */
+
+
+        // Section remove
+        /*
+        { "name": "s1", "exclude": true },
+        { "name": "s2", "exclude": true },
+        { "name": "s3", "exclude": true },
+        { "name": "s4", "exclude": true },
+        { "name": "s5", "exclude": true }
+        */
+
+        // section reorder
+        /*
+        { "name": "s1", "nextSibling": "s5" },
+        { "name": "s5", "nextSibling": "s4" },
+        { "name": "s2", "nextSibling": null },
+        { "name": "sa", "nextSibling": "se" },
+        { "name": "se", "nextSibling": "sd" },
+        { "name": "sb", "nextSibling": null },
+        { "name": "sv", "nextSibling": "sz" },
+        { "name": "sz", "nextSibling": "sy" },
+        { "name": "sw", "nextSibling": null }
+        */
+
+        // Tab Reordering
+        /*
+        { "name": "gradebookCourseDetailGrid", "nextSibling": "finalCourseDetailGrid" },
+        { "name": "midtermCourseDetailGrid", "nextSibling": null },
+        { "name": "finalGradeCourseRosterIncomplete", "nextSibling": "finalGradeCourseRoster" },
+        { "name": "infotext", "nextSibling": "sectionDetail" },
+        */
+
+        // Change Placeholder text - Backbone.grid
+
+        /*
+        {
+          "name": "finalGradeCourseRoster",
+          "fields": [
+            {
+              "name": "attendanceHour",
+              "attributes": {
+                "placeholder": "Enter Hours"
+              }
+            },
+            {
+              "name": "grade",
+              "attributes": {
+                "placeholder": "Select Grade"
+              }
+            },
+            {
+              "name": "lastAttendance",
+              "attributes": {
+                "placeholder": "Enter Date"
+              }
+            },
+            {
+              "name": "gradeMidTerm",
+              "attributes": {
+                "placeholder": "Select Grade Midterm"
+              }
+            }
+          ]
+        },
+        {
+          "name": "finalGradeCourseRosterIncomplete",
+          "fields": [
+            {
+              "name": "incompleteExtDate",
+              "attributes": {
+                "placeholder": "Enter Date"
+              }
+            },
+            {
+              "name": "gradeIncompleteFinal",
+              "attributes": {
+                "placeholder": "Select Final Grade"
+              }
+            }
+          ]
+        },
+        {
+          "name": "midtermGradeCourseRosterGrid",
+          "fields": [
+            {
+              "name": "gradeMidTerm",
+              "attributes": {
+                "placeholder": "Select Grade Midterm"
+              }
+            },
+            {
+              "name": "attendanceHour",
+              "attributes": {
+                "placeholder": "Enter Hours"
+              }
+            },
+            {
+              "name": "lastAttendance",
+              "attributes": {
+                "placeholder": "Enter Date"
+              }
+            }
+          ]
+        },
+
+        */
+
+
+        // Grid Item Removal
+        /*
+        { "name": "finalCourseDetailGrid",
+          "fields": [
+              { "name": "courseReferenceNumber", "exclude": true },
+              { "name": "term", "exclude": true },
+              { "name": "subject", "exclude": true },
+              { "name": "courseTitle", "exclude": true }
+          ]
+        },
+        { "name": "midtermCourseDetailGrid",
+          "fields": [
+              { "name": "gradedStatus", "exclude": true }
+          ]
+        }
+        */
+
+        // Grid Item Reordering
+        /*
+        { "name": "finalCourseDetailGrid",
+            "fields": [
+                { "name": "courseTitle", "exclude": false, "nextSibling": "courseReferenceNumber" },
+                { "name": "courseReferenceNumber", "exclude": false, "nextSibling": "term" },
+                { "name": "term", "exclude": false, "nextSibling": "subject" },
+                { "name": "subject", "exclude": false, "nextSibling": "gradedStatus" },
+                { "name": "gradedStatus", "exclude": false, "nextSibling": null }
+            ]
+        }
+        */
+
+        // Text Removal
+        /*
+        { "name": "courseDetails",
+          "fields": [
+              { "name": "courseTitle", "exclude": true }
+          ]
+        }
+        */
+
+
+        // Number Removal and placeholder/title replacement
+        /*
+        { "name": "numberTest",
+          "fields": [
+              { "name": "html5NumberInput", "exclude": true,
+                "attributes": {
+                    "placeholder": {"key":"numberTest.html5NumberInput.placeholder"},
+                    "title": {"key":"numberTest.html5NumberInput.title"}
+                }
+              },
+              { "name": "jEditableNumberInput", "exclude": true,
+                "attributes": {
+                    "placeholder": "Editable number",
+                    "title": "Click to enter a number"
+                }
+              }
+          ]
+        }
+        */
+
+
+        // Pillbox Removal
+        /*
+        { "name": "pillbox",
+          "fields": [
+              { "name": "pillbox", "exclude": true }
+          ]
+        }
+        */
+
+
+        // Date Removal
+        /*
+        { "name": "datepickerTest",
+          "fields": [
+              { "name": "jEditableDatepickerInput", "exclude": true ,
+                "attributes": {
+                   "label":{"key":"datepickerTest.jEditableDatepickerInput.label"},
+                   "title":{"key":"datepickerTest.jEditableDatepickerInput.title"}
+                }
+              },
+              { "name": "datepickerInput", "exclude": true,
+                "attributes": {
+                    "label":{"key":"datepickerTest.datepickerInput.label"},
+                    "title":{"key":"datepickerTest.datepickerInput.title"}
+                }
+              }
+          ]
+        }
+        */
+
+
+        // Combobox Removal
+        /*
+         { "name": "comboTest",
+         "fields": [
+         { "name": "jEditableCombobox", "exclude": true },
+         { "name": "jQueryUiCombobox", "exclude": true }
+         ]
+         }
+         */
+
+
+        // Select2 Removal
+        /*
+        { "name": "select2Test",
+          "fields": [
+            {
+              "name": "select2Home", "exclude": false,
+              "attributes": {
+                "label": {"key":"select2Test.select2Home"}
+              }
+            },
+            { "name": "select2Favourites", "exclude": false }
+          ]
+        }
+        */
+
+
+        // Button Removal
+        /*
+        { "name": "mainButtonBar",
+          "fields": [
+              { "name": "saveButton", "exclude": true },
+              { "name": "resetButton", "exclude": true }
+          ]
+        },
+        { "name": "testFieldAttributes",
+            "fields": [
+                { "name": "testButton", "exclude": true },
+                { "name": "testSubmitButton", "exclude": true }
+            ]
+        }
+        */
+
+
+        // Section Item Reordering
+        /*
+        { "name": "fieldReorder",
+          "fields": [
+              { "name": "field4", "nextSibling": "field1" },
+              { "name": "field2", "nextSibling": "field4" },
+              { "name": "field1", "nextSibling": null },
+              { "name": "field5", "nextSibling": null }
+          ]
+        }
+        */
+
+        // Attribute Replacement
+        /*
+        { "name": "finalGradeCourseRoster",
+          "fields": [
+              { "name": "searchTextBox",
+                "attributes": {
+                    "placeholder": {"key":"finalGradeCourseRoster.searchTextBox.placeholder"},
+                    "title": {"key":"finalGradeCourseRoster.searchTextBox.title"}
+                }
+              }
+          ]
+        },
+         { "name": "finalGradeCourseRosterGrid",
+           "fields": [
+               { "name": "personFullName",
+                 "attributes": {
+                     "label": {"key":"finalGradeCourseRosterGrid.personFullName.label"}
+                 }
+               },
+               { "name": "bannerId",
+                 "attributes": {
+                     "label": "Banner Id"
+                 }
+               }
+           ]
+         },
+         { "name": "testFieldAttributes",
+          "fields": [
+              { "name": "textFieldAdd",
+                "attributes": {
+                    "placeholder": {"key":"testFieldAttributes.textFieldAdd.placeholder"},
+                    "title": {"key":"testFieldAttributes.textFieldAdd.title"}
+                }
+              },
+              { "name": "textFieldReplace",
+                "attributes": {
+                    "placeholder": {"key":"testFieldAttributes.textFieldReplace.placeholder"},
+                    "title": {"key":"testFieldAttributes.textFieldReplace.title"}
+                  }
+              },
+			  { "name": "testButton", "exclude": true },
+			  { "name": "testSubmitButton", "exclude": true },
+			  { "name": "nasaLink", "exclude": true },
+			  //{ "name": "noLink", "exclude": true },
+			  { "name": "googleLink", "exclude": true },
+			  { "name": "microsoftLink", "exclude": true },
+			  { "name": "amazonLink", "exclude": true },
+			  { "name": "facebookLink", "exclude": true }
+          ]
+        },
+        { "name": "courseDetails",
+          "fields": [
+              { "name": "courseReferenceNumber",
+                "attributes": {
+                    "label": "Course Ref ..."
+                }
+              },
+              { "name": "eligible",
+                "attributes": {
+                    "label": {"key":"courseDetails.eligible.label"}
+                }
+              }
+          ]
+        },
+        { "name": "fieldReorder",
+          "fields": [
+              { "name": "field4",
+                "attributes": {
+                    "html": "<h1>Last Field</h1>"
+                }
+              }
+          ]
+        },
+        {"name": "select2Test",
+         "fields": [
+             { "name": "select2Home",
+               "attributes": {
+                   "title": {"key":"select2Test.select2Home.title"}
+               }
+             } ,
+             { "name": "select2Favourites",
+               "attributes": {
+                  "title": {"key":"select2Test.select2Favourites.title"}
+               }
+             }
+         ]
+        }
+        */
+
+        // button label/value replacement
+        /*
+        { "name": "extz584section",
+          "fields": [
+              { "name": "extz584button1",
+                "attributes": {
+                    "buttonText": "extended"
+                }
+              },
+              { "name": "extz584button2",
+                  "attributes": {
+                      "buttonText": {"key":"extz584section.extz584button2.value"}
+                  }
+              },
+              { "name": "extz584button3",
+                  "attributes": {
+                      "buttonText": "extended"
+                  }
+              },
+              { "name": "extz584button4",
+                  "attributes": {
+                      "buttonText": {"key":"extz584section.extz584button2.value"}
+                  }
+              }
+          ]
+        },
+        { "name": "mainButtonBar",
+          "fields": [
+              { "name": "saveButton",
+                "attributes": {
+                    "buttonText": "extended"
+                }
+              }
+          ]
+        }
+        */
+
+
+        // combobox label replacement
+        /*
+        { "name": "comboTest",
+          "fields": [
+              { "name": "jEditableCombobox",
+                "attributes": {
+                    "label": {"key": "comboTest.jEditableCombobox.label"}
+                }
+              },
+              { "name": "jQueryUiCombobox",
+                "attributes": {
+                    "label": {"key": "comboTest.jQueryUiCombobox.label"}
+                }
+              }
+          ]
+        }
+        */
+
+        // Pillbox label replacement
+        /*
+        { "name": "pillbox",
+          "fields": [
+              { "name": "pillbox",
+                "attributes": {
+                    "label": {"key": "pillbox.pillbox.label"}
+                }
+              }
+          ]
+        }
+        */
+
+
+        // Tab label replacement
+
+       // { "name": "finalCourseDetailGrid", "tabLabel": {"key":"finalCourseDetailGrid.label"}, "exclude": false}
+
+
+        //Test field reorder within a section
+       /* {
+            "name": "testSectionFieldReorder",
+            "fields": [
+                { "name": "testReorderjCombo", "nextSibling": "testReorderHtml5NumberInput" },
+                { "name": "testReorderjDatepickerInput", "nextSibling": "testReorderSelect2-home" },
+                { "name": "testReorderButton", "nextSibling": "testReorderPillbox" }
+            ]
+        }*/
+        /* // Test different label arrangement updates
+         { "name": "testFieldLabels", "exclude": false,
+             "fields": [
+               { "name": "testLabelFor",
+                 "attributes": {
+                  "label": "Replace Label For:"
+                 }
+               } ,
+               { "name": "testParentLabel",
+                  "attributes": {
+                     "label": "Replace Parent Label:"
+                  }
+               } ,
+               { "name": "testAriaLabel",
+                  "attributes": {
+                     "label": "Replace Aria Label:"
+                  }
+               } ,
+               { "name": "testChildLabel",
+                  "attributes": {
+                     "label": "Replace Child Label:"
+                  }
+               }
+            ]
+         }
+         */
+    ]
+    /*
+    , "layouts": [
+        {
+            "#content":
+            {
+                east: {
+                    initClosed: false,
+                    paneSelector: ".ui-layout-west",
+                    size: 400,
+                    resizable: false,
+                    initHidden: true,
+                },
+                west: {
+                    initHidden: false,
+                    paneSelector: ".ui-layout-east",
+                    slidable: false,
+                    resizable: true,
+                    size: 375
+                }
+            }
+        }
+       ,{
+            "#inner-content":
+            {
+                south__initHidden: false
+            }
+        }
+    ]
+    */
+}
