@@ -1,3 +1,7 @@
+/*******************************************************************************
+ Copyright 2019 Ellucian Company L.P. and its affiliates.
+ ******************************************************************************/
+
 package net.hedtech.banner
 
 import grails.testing.web.controllers.ControllerUnitTest

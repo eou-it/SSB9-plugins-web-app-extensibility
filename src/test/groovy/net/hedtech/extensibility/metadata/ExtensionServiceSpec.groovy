@@ -7,6 +7,7 @@ package net.hedtech.extensibility.metadata
 import grails.converters.JSON
 import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration
+import grails.testing.services.ServiceUnitTest
 import org.grails.web.json.JSONObject
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.web.context.request.RequestAttributes
@@ -17,7 +18,7 @@ import org.springframework.web.context.request.RequestContextHolder
 
 @Integration
 @Rollback
-class ExtensionServiceSpec extends Specification{
+class ExtensionServiceSpec extends Specification implements ServiceUnitTest<ExtensionService> {
 
     def jsonData = '''{
                "sections":[
