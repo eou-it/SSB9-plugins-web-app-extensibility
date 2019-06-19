@@ -1,12 +1,13 @@
 /*******************************************************************************
- Copyright 2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2018-2019 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
 package net.hedtech.extensibility.metadata
 
 import net.hedtech.extensibility.ExtensionUtility
+import org.grails.testing.GrailsUnitTest
 import spock.lang.Specification
 
-class ExtensionUtilitySpec extends Specification{
+class ExtensionUtilitySpec extends Specification implements GrailsUnitTest{
     void "test extensionUtility"(){
         when:
         def res = ExtensionUtility.derivePageName("/EXTZ/Test.json")
