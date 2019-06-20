@@ -28,7 +28,7 @@ class RequisitionHeaderCompositeService implements DataBinder{
     def requisitionDetailService
     def documentManagementCompositeService
     def requisitionDetailsCompositeService
-    def requisitionAccountingCompositeService
+
 
     /**
      * Create purchase requisition Header
@@ -250,7 +250,8 @@ class RequisitionHeaderCompositeService implements DataBinder{
                         if (isCcyChanged) {
                             requisitionDetailModel.convertedDiscountAmount = null
                         }
-                        requisitionDetailService.update(requisitionDetailModel, false)
+                        RequisitionDetail requisitionDetail = requisitionDetailService.update(requisitionDetailModel, false)
+                        requisitionDetailsCompositeService.reBalanceRequisitionAccounting( requisitionDetail.requestCode, requisitionDetail.item )
                     }
                 }
             }

@@ -158,7 +158,7 @@ class RequisitionDetailsCompositeService  implements DataBinder {
      * @param isDocumentLevelAccounting
      * @return
      */
-    private reBalanceRequisitionAccounting( requestCode, item, isDocumentLevelAccounting = null ) {
+    def reBalanceRequisitionAccounting( requestCode, item, isDocumentLevelAccounting = null ) {
         if (!isDocumentLevelAccounting) {
             isDocumentLevelAccounting = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ).isDocumentLevelAccounting
         }
