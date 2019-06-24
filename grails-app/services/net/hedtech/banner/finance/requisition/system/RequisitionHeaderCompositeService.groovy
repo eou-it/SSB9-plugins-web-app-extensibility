@@ -115,17 +115,20 @@ class RequisitionHeaderCompositeService implements DataBinder{
                     account = requisitionAccounting
                     account.fiscalYear = null
                     account.period = null
-                    requisitionAccountingService.update(account)
+                    account = requisitionAccountingService.update(account)
+                    account.discard()
                 }
             }
 
-            log.debug("Requisition Header updated {}", requisitionHeader)
-            financeTextCompositeService.saveTextForHeader( requisitionHeader,
-                                                           [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
-                                                           user.oracleUserName )
             if (isDiscountChanged || isCcyChanged) {
                 reCalculateCommodities( requisitionHeader, isDiscountChanged, isCcyChanged )
             }
+
+            financeTextCompositeService.saveTextForHeader( requisitionHeader,
+                    [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
+                    user.oracleUserName )
+
+            log.debug("Requisition Header updated {}", requisitionHeader)
 
             return requisitionHeader
         } else {
@@ -250,8 +253,9 @@ class RequisitionHeaderCompositeService implements DataBinder{
                         if (isCcyChanged) {
                             requisitionDetailModel.convertedDiscountAmount = null
                         }
-                        RequisitionDetail requisitionDetail = requisitionDetailService.update(requisitionDetailModel, false)
-                        requisitionDetailsCompositeService.reBalanceRequisitionAccounting( requisitionDetail.requestCode, requisitionDetail.item )
+
+                        requisitionDetailService.update(requisitionDetailModel)
+                        requisitionDetailsCompositeService.reBalanceRequisitionAccounting(requisitionDetailModel.requestCode, requisitionDetailModel.item)
                     }
                 }
             }
