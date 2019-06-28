@@ -1,11 +1,12 @@
 /*******************************************************************************
- Copyright 2019 Ellucian Company L.P. and its affiliates.
+ Copyright 2018-2019 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
 package net.hedtech.extensibility.metadata
 
 import grails.converters.JSON
 import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration
+import grails.testing.services.ServiceUnitTest
 import org.grails.web.json.JSONObject
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.web.context.request.RequestAttributes
@@ -15,7 +16,7 @@ import spock.lang.Specification
 
 @Integration
 @Rollback
-class ResourceServiceSpec extends Specification{
+class ResourceServiceSpec extends Specification implements ServiceUnitTest<ResourceService>{
     def resourceService
 
     //def resourceService = new net.hedtech.extensibility.metadata.ResourceService()

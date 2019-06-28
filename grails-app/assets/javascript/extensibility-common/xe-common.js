@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2018-2019 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
 
 /* global _  */
@@ -820,11 +820,11 @@ var xe = (function (xe) {
             } else {
                 xe.log('No Extensibility definitions found!');
             }
-            xe.addExtensibilityMenu();
+            $(xe.addExtensibilityMenu);
         }
     };
 
-    $(xe.startup);
+    xe.startup();
 
     return xe;
 })(xe || {});
