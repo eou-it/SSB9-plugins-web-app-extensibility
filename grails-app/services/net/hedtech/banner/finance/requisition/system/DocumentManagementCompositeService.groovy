@@ -9,6 +9,7 @@ import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.general.person.PersonIdentificationName
 import grails.util.Holders
 import net.hedtech.banner.imaging.BdmUtility
+import net.hedtech.bdm.exception.BdmsException
 
 import javax.xml.ws.WebServiceException
 import java.text.DateFormat
@@ -52,6 +53,12 @@ class DocumentManagementCompositeService {
         } catch (FileNotFoundException e) {
             log.error('File Not found' )
             throw new ApplicationException( DocumentManagementCompositeService, new BusinessLogicValidationException( e.getMessage(), [] ) )
+        } catch (BdmsException bdmsException){
+            log.error('BdmsException: {}',bdmsException.getMessage() )
+            throw new ApplicationException( DocumentManagementCompositeService, bdmsException )
+        } catch (Exception exp){
+            log.error('ERROR : {}',exp.getMessage())
+            throw new ApplicationException( DocumentManagementCompositeService, new BusinessLogicValidationException( exp.getMessage(), [] ) )
         }
     }
 
