@@ -49,9 +49,13 @@ class RequisitionHeaderCompositeService implements DataBinder{
             def requisitionHeader = requisitionHeaderService.create(requisitionHeaderRequest)
             log.debug("Requisition Header created {}", requisitionHeader)
             def header = RequisitionHeader.read( requisitionHeader.id )
-            financeTextCompositeService.saveTextForHeader( requisitionHeader,
+            def savedTexts = financeTextCompositeService.saveTextForHeader( requisitionHeader,
                                                            [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
                                                            user.oracleUserName )
+            savedTexts.each{text ->
+                text.discard()
+            }
+
             return header.requestCode
         } else {
             log.error('User {} is not valid',user )
@@ -124,9 +128,12 @@ class RequisitionHeaderCompositeService implements DataBinder{
                 reCalculateCommodities( requisitionHeader, isDiscountChanged, isCcyChanged )
             }
 
-            financeTextCompositeService.saveTextForHeader( requisitionHeader,
+            def savedTexts = financeTextCompositeService.saveTextForHeader( requisitionHeader,
                     [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
                     user.oracleUserName )
+            savedTexts.each{text ->
+                text.discard()
+            }
 
             log.debug("Requisition Header updated {}", requisitionHeader)
 
