@@ -42,7 +42,7 @@ def financeTextService    /**
         listToSave.eachWithIndex {FinanceText entry, int i ->
             entry.sequenceNumber = (i + 1) * FinanceProcurementConstants.FINANCE_TEXT_SEQUENCE_NUMBER_INCREMENT
         }
-        financeTextService.create( listToSave,false )
+        financeTextService.create(listToSave)
 
     }
 
