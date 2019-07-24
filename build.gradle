@@ -146,3 +146,15 @@ cobertura {
     coverageFormats = ['xml']
     coverageIgnores = ['org.slf4j.Logger.*']	//only an example to skip instrumentation    
 }
+
+integrationTest {
+    ignoreFailures = true
+}
+
+tasks.withType(Test) {
+    testLogging {
+        exceptionFormat "full"
+        events "started", "skipped", "passed", "failed"
+        showStandardStreams true
+    }
+}
