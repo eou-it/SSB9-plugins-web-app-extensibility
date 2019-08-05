@@ -35,7 +35,6 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     def springSecurityService
     def financeTextService
     def documentManagementCompositeService
-    def bdmEnabled = Holders?.config.bdm.enabled
     def financeUtilityService
     def financeVendorService
     /**
@@ -87,7 +86,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
     @Test
     void deletePurchaseRequisitionWithUploadedDocuments() {
         super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
-        if (bdmEnabled) {
+        if (Holders?.config.bdm.enabled) {
             try {
                 Integer pidm = 2510
                 MockMultipartFile multipartFile = formFileObject()
@@ -732,7 +731,7 @@ class RequisitionHeaderCompositeServiceIntegrationTests extends BaseIntegrationT
         File testFile
         try {
             String data = " Test data for integration testing"
-            String tempPath = Holders?.config.bdm.file.location
+            String tempPath = Holders?.config.bdmserver.file.location
             testFile = new File( tempPath, "BDMTestFile.txt" )
             if (!testFile.exists()) {
                 testFile.createNewFile()

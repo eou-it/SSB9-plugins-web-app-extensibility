@@ -48,6 +48,21 @@ class UserProfileCompositeServiceIntegrationTests extends BaseIntegrationTestCas
         assertTrue profile.baseUserProfile.userId == FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME
     }
 
+    @Test
+    void getUserProfileForParam() {
+        super.login FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_NAME, FinanceProcurementConstants.DEFAULT_TEST_ORACLE_LOGIN_USER_PASSWORD
+        def profile = userProfileCompositeService.getUserProfileDetail( springSecurityService.getAuthentication()?.user, new Date() )
+        assertNotNull profile.baseUserProfile.requesterShipCode
+        assertNotNull profile.baseUserProfile.requesterOrgCode
+        assertNotNull profile.baseUserProfile.requesterEmailAddress
+        assertNotNull profile.shipTo.zipCode
+        assertNotNull profile.shipTo.addressLine2
+        assertNotNull profile.organization
+        assertNotNull profile.cao
+        assertNotNull profile.cao.title
+        assertNotNull profile.cao.chartOfAccountsCode
+    }
+
     /**
      * Test  get User Profile With Invalid Data (COA, Ship code and Org code)
      */
