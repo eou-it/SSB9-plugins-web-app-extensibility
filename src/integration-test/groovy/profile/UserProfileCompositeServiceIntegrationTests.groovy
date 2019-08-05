@@ -55,12 +55,11 @@ class UserProfileCompositeServiceIntegrationTests extends BaseIntegrationTestCas
         assertNotNull profile.baseUserProfile.requesterShipCode
         assertNotNull profile.baseUserProfile.requesterOrgCode
         assertNotNull profile.baseUserProfile.requesterEmailAddress
-        assertNotNull profile.shipTo.zipCode
-        assertNotNull profile.shipTo.addressLine2
-        assertNotNull profile.organization
         assertNotNull profile.coa
         assertNotNull profile.coa.title
         assertNotNull profile.coa.chartOfAccountsCode
+        assertNotNull profile.organization
+
     }
 
     /**
