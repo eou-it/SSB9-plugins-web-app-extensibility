@@ -39,12 +39,10 @@ def financeTextService    /**
                 prepareTextList( textPart, FinanceValidationConstants.REQUISITION_INDICATOR_YES, null, header, user, listToSave )
             }
         }
-        List results = []
         listToSave.eachWithIndex {FinanceText entry, int i ->
             entry.sequenceNumber = (i + 1) * FinanceProcurementConstants.FINANCE_TEXT_SEQUENCE_NUMBER_INCREMENT
-            results << financeTextService.create(entry).discard()
+            financeTextService.create(entry).discard()
         }
-        results
     }
 
     /**
