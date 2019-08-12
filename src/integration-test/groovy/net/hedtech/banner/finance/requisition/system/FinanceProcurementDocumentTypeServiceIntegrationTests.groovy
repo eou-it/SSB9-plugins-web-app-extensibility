@@ -19,8 +19,6 @@ class FinanceProcurementDocumentTypeServiceIntegrationTests extends BaseIntegrat
 
     def financeProcurementDocumentTypeService
 
-    def bdmEnabled = Holders?.config.bdm.enabled
-
     /**
      * Setup
      */
@@ -43,7 +41,7 @@ class FinanceProcurementDocumentTypeServiceIntegrationTests extends BaseIntegrat
      */
     @Test
     void testFetchDocumentTypesByCode() {
-        if(bdmEnabled) {
+        if(Holders?.config.bdm.enabled) {
             def documents = financeProcurementDocumentTypeService.getCommonMatchingDocs("I", 10, 0)
             assertNotNull(documents)
         }
@@ -54,7 +52,7 @@ class FinanceProcurementDocumentTypeServiceIntegrationTests extends BaseIntegrat
      */
     @Test
     void testFetchDocumentTypesByDesc() {
-        if(bdmEnabled) {
+        if(Holders?.config.bdm.enabled) {
             def documents = financeProcurementDocumentTypeService.getCommonMatchingDocs("I", 10, 0)
             assertNotNull(documents)
         }
@@ -65,7 +63,7 @@ class FinanceProcurementDocumentTypeServiceIntegrationTests extends BaseIntegrat
      */
     @Test
     void testFetchDocumentTypesByDescSQLException() {
-        if(bdmEnabled) {
+        if(Holders?.config.bdm.enabled) {
             try {
                 financeProcurementDocumentTypeService.getCommonMatchingDocs("I", 10, 0, 'INVALID :docTypeCode AND :docTypeDesc')
             }

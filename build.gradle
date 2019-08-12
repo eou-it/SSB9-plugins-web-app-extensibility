@@ -143,8 +143,10 @@ assets {
     packagePlugin = true
 }
 cobertura {
-    coverageFormats = ['xml']
-    coverageIgnores = ['org.slf4j.Logger.*']	//only an example to skip instrumentation    
+    coverageFormats = ['html', 'xml']
+    coverageIgnoreTrivial = true
+    coverageIgnores = ['org.slf4j.Logger.*']
+    coverageExcludes = ['.*Constants']
 }
 
 integrationTest {

@@ -24,7 +24,6 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
 
     def documentManagementCompositeService
 
-    def bdmEnabled = Holders?.config.bdm.enabled
     /**
      * Super class setup
      */
@@ -50,7 +49,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testUploadDocumentWithOutBDM() {
-        if(bdmEnabled) {
+        if(Holders?.config.bdm.enabled) {
             Integer pidm = 2510
             MockMultipartFile multipartFile = formFileObject()
             try {
@@ -66,7 +65,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testUploadDocument() {
-        if(bdmEnabled) {
+        if(Holders?.config.bdm.enabled) {
             try {
                 Integer pidm = 2510
                 MockMultipartFile multipartFile = formFileObject()
@@ -83,7 +82,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testUploadDocumentEmptyContent() {
-        if(bdmEnabled) {
+        if(Holders?.config.bdm.enabled) {
             try {
                 Integer pidm = 2510
                 MockMultipartFile multipartFile = formEmptyFileObject()
@@ -101,7 +100,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
     void testDeleteDocumentsByRequisitionCodeSecondCase() {
         Integer pidm = 2510
         def dataMap
-        if(bdmEnabled) {
+        if(Holders?.config.bdm.enabled) {
             try {
                 dataMap = documentManagementCompositeService.listDocumentsByRequisitionCode('RSED0005', null, true)
                 assertTrue(dataMap.size() > 0)
@@ -134,7 +133,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testDeleteDocumentsByRequisitionCodeWithWrongDocID() {
-        if(bdmEnabled) {
+        if(Holders?.config.bdm.enabled) {
             try {
                 documentManagementCompositeService.deleteDocumentsByRequisitionCode('test', null, true, 'RSED0004')
             } catch (ApplicationException ae) {
@@ -152,7 +151,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
     void testDeleteDocumentsByRequisitionCode() {
         Integer pidm = 2510
         def dataMap
-        if(bdmEnabled) {
+        if(Holders?.config.bdm.enabled) {
             try {
                 dataMap = documentManagementCompositeService.listDocumentsByRequisitionCode('RSED0005', null, true)
                 assertTrue(dataMap.size() > 0)
@@ -171,7 +170,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testListDocumentsByRequisitionCodeWithOutBDM() {
-        if(bdmEnabled) {
+        if(Holders?.config.bdm.enabled) {
             try {
                 documentManagementCompositeService.listDocumentsByRequisitionCode('RSED0006', null, false)
             } catch (ApplicationException ae) {
@@ -185,7 +184,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testListDocumentsByRequisitionCodeWithInvalidReqId() {
-        if(bdmEnabled) {
+        if(Holders?.config.bdm.enabled) {
             try {
                 documentManagementCompositeService.listDocumentsByRequisitionCode('test', 'test', true)
             } catch (ApplicationException ae) {
@@ -199,7 +198,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
      */
     @Test
     void testListDocumentsByRequisitionCode() {
-        if (bdmEnabled) {
+        if (Holders?.config.bdm.enabled) {
             Integer pidm = 2510
             MockMultipartFile multipartFile = formFileObject()
             def dataMap
@@ -225,7 +224,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
         File testFile
         try {
             String data = " Test data for integration testing"
-            String tempPath = Holders?.config.bdm.file.location
+            String tempPath = Holders?.config.bdmserver.file.location
             testFile = new File( tempPath, "BDMTestFile.txt" )
             if (!testFile.exists()) {
                 testFile.createNewFile()
@@ -250,7 +249,7 @@ class DocumentManagementCompositeServiceIntegrationTests extends BaseIntegration
     private MockMultipartFile formEmptyFileObject() {
         File testFile
         try {
-            String tempPath = Holders?.config.bdm.file.location
+            String tempPath = Holders?.config.bdmserver.file.location
             testFile = new File( tempPath, "BDMTestFileEmpty.txt" )
             if (!testFile.exists()) {
                 testFile.createNewFile()
