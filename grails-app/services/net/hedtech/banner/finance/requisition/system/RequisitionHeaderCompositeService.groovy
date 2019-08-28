@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
@@ -8,15 +8,16 @@ import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
-import net.hedtech.banner.finance.util.LoggerUtility
-import org.apache.log4j.Logger
+import grails.gorm.transactions.Transactional
+import grails.web.databinding.DataBinder
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class for Purchase Requisition Header Composite Service
  */
-class RequisitionHeaderCompositeService {
-    private static final Logger LOGGER = Logger.getLogger( this.class )
-    boolean transactional = true
+@Transactional 
+class RequisitionHeaderCompositeService implements DataBinder{
 
     def requisitionHeaderService
     def requisitionAccountingService
@@ -27,7 +28,7 @@ class RequisitionHeaderCompositeService {
     def requisitionDetailService
     def documentManagementCompositeService
     def requisitionDetailsCompositeService
-    def requisitionAccountingCompositeService
+
 
     /**
      * Create purchase requisition Header
@@ -35,7 +36,8 @@ class RequisitionHeaderCompositeService {
      * @return Requisition code.
      */
     def createPurchaseRequisitionHeader( map ) {
-        RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
+        def requisitionHeaderRequest = new RequisitionHeader()
+        bindData(requisitionHeaderRequest, map.requisitionHeader,[exclude: ['privateComment','publicComment']])
         def user = springSecurityService.getAuthentication().user
         if (user.oracleUserName) {
             def oracleUserName = user.oracleUserName
@@ -44,15 +46,15 @@ class RequisitionHeaderCompositeService {
             if (financeSystemControlService.findActiveFinanceSystemControl().taxProcessingIndicator == FinanceValidationConstants.REQUISITION_INDICATOR_NO) {
                 requisitionHeaderRequest.taxGroup = null
             }
-            def requisitionHeader = requisitionHeaderService.create( [domainModel: requisitionHeaderRequest] )
-            LoggerUtility.debug LOGGER, "Requisition Header created " + requisitionHeader
+            def requisitionHeader = requisitionHeaderService.create(requisitionHeaderRequest)
+            log.debug("Requisition Header created {}", requisitionHeader)
             def header = RequisitionHeader.read( requisitionHeader.id )
             financeTextCompositeService.saveTextForHeader( requisitionHeader,
                                                            [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
                                                            user.oracleUserName )
             return header.requestCode
         } else {
-            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            log.error('User {} is not valid',user )
             throw new ApplicationException(
                     RequisitionHeaderCompositeService,
                     new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -66,7 +68,7 @@ class RequisitionHeaderCompositeService {
     def deletePurchaseRequisitionHeader( requestCode ) {
         def requisitionHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         FinanceProcurementHelper.checkCompleteRequisition( requisitionHeader )
-        requisitionHeaderService.delete( [domainModel: requisitionHeader] )
+        requisitionHeaderService.delete( requisitionHeader )
         financeTextService.delete( financeTextService.listAllFinanceTextByCode( 1, requestCode ) )
     }
 
@@ -83,11 +85,12 @@ class RequisitionHeaderCompositeService {
             def existingHeader = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
             map.requisitionHeader.requestCode = existingHeader.requestCode
             if (!checkHeaderUpdateEligibility( map, existingHeader, baseCcy )) {
-                LoggerUtility.debug( LOGGER, 'Modification not required' )
+                log.debug('Modification not required' )
                 return existingHeader
             }
             FinanceProcurementHelper.checkCompleteRequisition( existingHeader )
-            RequisitionHeader requisitionHeaderRequest = map.requisitionHeader
+            RequisitionHeader requisitionHeaderRequest = new RequisitionHeader()
+            bindData(requisitionHeaderRequest, map.requisitionHeader,[exclude: ['privateComment','publicComment']])
             boolean isDiscountChanged = requisitionHeaderRequest.discount && requisitionHeaderRequest.discount != existingHeader.discount
             boolean isCcyChanged = requisitionHeaderRequest.currency != existingHeader.currency
             requisitionHeaderRequest.id = existingHeader.id
@@ -97,13 +100,13 @@ class RequisitionHeaderCompositeService {
             def accountSize = requisitionAccountingService.findAccountingSizeByRequestCode( existingHeader.requestCode )
             boolean checkUpdateAccountRequire = checkAccountUpdateEligibility( map, existingHeader )
             if (requisitionHeaderRequest.isDocumentLevelAccounting != existingHeader.isDocumentLevelAccounting && accountSize > 0) {
-                LoggerUtility.error( LOGGER, 'Document type cannot be modified once accounting associated with this' )
+                log.error('Document type cannot be modified once accounting associated with this' )
                 throw new ApplicationException( RequisitionHeaderCompositeService,
                                                 new BusinessLogicValidationException(
                                                         FinanceProcurementConstants.ERROR_MESSAGE_DOCUMENT_CHANGE, [] ) )
             }
             requisitionHeaderRequest.userId = user.oracleUserName
-            def requisitionHeader = requisitionHeaderService.update( [domainModel: requisitionHeaderRequest] )
+            def requisitionHeader = requisitionHeaderService.update( requisitionHeaderRequest )
 
             // updating the account sequences with valid fiscal year and period
             if( accountSize > 0 && checkUpdateAccountRequire){
@@ -112,21 +115,24 @@ class RequisitionHeaderCompositeService {
                     account = requisitionAccounting
                     account.fiscalYear = null
                     account.period = null
-                    requisitionAccountingService.update([domainModel: account])
+                    account = requisitionAccountingService.update(account)
+                    account.discard()
                 }
             }
 
-            LoggerUtility.debug LOGGER, "Requisition Header updated " + requisitionHeader
-            financeTextCompositeService.saveTextForHeader( requisitionHeader,
-                                                           [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
-                                                           user.oracleUserName )
             if (isDiscountChanged || isCcyChanged) {
                 reCalculateCommodities( requisitionHeader, isDiscountChanged, isCcyChanged )
             }
 
+            financeTextCompositeService.saveTextForHeader( requisitionHeader,
+                    [privateComment: map.requisitionHeader.privateComment, publicComment: map.requisitionHeader.publicComment],
+                    user.oracleUserName )
+
+            log.debug("Requisition Header updated {}", requisitionHeader)
+
             return requisitionHeader
         } else {
-            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            log.error('User {} is not valid',user )
             throw new ApplicationException( RequisitionHeaderCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -154,7 +160,7 @@ class RequisitionHeaderCompositeService {
     def deletePurchaseRequisition( requestCode, boolean forceDelete, mep, boolean isBDMInstalled ) {
         if (!forceDelete && isBDMInstalled) {
             if (documentManagementCompositeService.listDocumentsByRequisitionCode( requestCode, mep, isBDMInstalled )?.documentList?.size() > 0) {
-                LoggerUtility.info( LOGGER, "Documents are present for this requisition. You may need to remove them before deleting this requisition" + requestCode )
+                log.info("Documents are present for this requisition. You may need to remove them before deleting this requisition{}", requestCode )
                 throw new ApplicationException(
                         RequisitionHeaderCompositeService,
                         new BusinessLogicValidationException( 'WARNING', [] ) )
@@ -172,7 +178,7 @@ class RequisitionHeaderCompositeService {
             requisitionHeaderService.delete( requestHeader )
             return requestCode
         } else {
-            LoggerUtility.error( LOGGER, "Only Draft/Disapproved requisition can be deleted = $requestCode" )
+            log.error("Only Draft/Disapproved requisition can be deleted = $requestCode" )
             throw new ApplicationException(
                     RequisitionHeaderCompositeService,
                     new BusinessLogicValidationException(
@@ -206,7 +212,8 @@ class RequisitionHeaderCompositeService {
      * @return
      */
     private boolean checkHeaderUpdateEligibility( def map, RequisitionHeader existingHeader, baseCcy ) {
-        RequisitionHeader newHeader = map.requisitionHeader
+        RequisitionHeader newHeader = new RequisitionHeader();
+        bindData(newHeader, map.requisitionHeader,[exclude: ['privateComment','publicComment']])
         return !(new java.sql.Date( newHeader.transactionDate.getTime() ) == existingHeader.transactionDate &&
                 new java.sql.Date( newHeader.deliveryDate.getTime() ) == existingHeader.deliveryDate &&
                 newHeader.requesterName == existingHeader.requesterName &&
@@ -239,21 +246,21 @@ class RequisitionHeaderCompositeService {
             def detailList = requisitionDetailService.findDetailsRequestCode( requisitionHeader.requestCode )
             if(detailList.size() > 0 ) {
                 detailList.each { item ->
-                    def requisitionDetailModel = item.class.declaredFields.findAll {
-                        it.modifiers == java.lang.reflect.Modifier.PRIVATE
-                    }.collectEntries { [it.name, item[it.name]] }
-                    if (isDiscountChanged) {
-                        requisitionDetailModel.discountAmount = null
+                    detailList.each { requisitionDetailModel ->
+                        if (isDiscountChanged) {
+                            requisitionDetailModel.discountAmount = null
+                        }
+                        if (isCcyChanged) {
+                            requisitionDetailModel.convertedDiscountAmount = null
+                        }
+
+                        requisitionDetailService.update(requisitionDetailModel)
+                        requisitionDetailsCompositeService.reBalanceRequisitionAccounting(requisitionDetailModel.requestCode, requisitionDetailModel.item)
                     }
-                    if (isCcyChanged) {
-                        requisitionDetailModel.convertedDiscountAmount = null
-                    }
-                    def detailDomainModel = [requisitionDetail: requisitionDetailModel]
-                    requisitionDetailsCompositeService.updateRequisitionDetail(detailDomainModel)
                 }
             }
         } catch (ApplicationException e) {
-            LoggerUtility.warn( LOGGER, 'Requisition Commodity Details are empty for requestCode=' + requisitionHeader.requestCode + ' and commodity recalculation is not performed' )
+            log.warn('Requisition Commodity Details are empty for requestCode= {}  and commodity recalculation is not performed' ,requisitionHeader.requestCode)
         }
     }
 
@@ -264,7 +271,8 @@ class RequisitionHeaderCompositeService {
      * @return
      */
     private boolean checkAccountUpdateEligibility( map, RequisitionHeader existingHeader ) {
-        RequisitionHeader newHeader = map.requisitionHeader
+        RequisitionHeader newHeader = new RequisitionHeader()
+        bindData(newHeader, map.requisitionHeader,[exclude: ['privateComment','publicComment']])
         return (new java.sql.Date(newHeader.transactionDate.getTime()) != existingHeader.transactionDate)
     }
 }

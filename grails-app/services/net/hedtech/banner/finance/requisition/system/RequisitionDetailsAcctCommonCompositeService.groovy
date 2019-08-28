@@ -1,19 +1,17 @@
 /*******************************************************************************
- Copyright 2015-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
-import net.hedtech.banner.finance.util.LoggerUtility
-import org.apache.log4j.Logger
-
+import grails.gorm.transactions.Transactional
 /**
  * Class for Purchase Requisition Details and Accounting Composite Service
  */
+@Transactional 
 class RequisitionDetailsAcctCommonCompositeService {
-    private static final Logger LOGGER = Logger.getLogger( this.class )
+
     def requisitionDetailService
-    boolean transactional = true
 
     /**
      * Adjusts Account Percentage And Amount
@@ -74,10 +72,10 @@ class RequisitionDetailsAcctCommonCompositeService {
                     .setScale( FinanceProcurementConstants.DECIMAL_PRECISION, BigDecimal.ROUND_HALF_UP )) / totalAdditionalCharge)
                     .setScale( FinanceProcurementConstants.DECIMAL_PRECISION_PERCENTAGE, BigDecimal.ROUND_HALF_UP )
         }
-        LoggerUtility.debug( LOGGER, 'adjustedPercentage before scaling  : ' + adjustedPercentage )
+        log.debug('adjustedPercentage before scaling  : {}', adjustedPercentage )
 
         adjustedPercentage = adjustedPercentage.setScale( FinanceProcurementConstants.DECIMAL_PRECISION_PERCENTAGE, BigDecimal.ROUND_HALF_UP )
-        LoggerUtility.debug( LOGGER, 'adjustedPercentage after scaling : ' + adjustedPercentage )
+        log.debug('adjustedPercentage after scaling : {}', adjustedPercentage )
 
         requisitionAccountingRequest.percentage = adjustedPercentage
         requisitionAccountingRequest.discountAmountPercent = adjustedPercentage

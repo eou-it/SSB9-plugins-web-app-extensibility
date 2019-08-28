@@ -1,21 +1,18 @@
 /*******************************************************************************
- Copyright 2015-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.system.FinanceText
-
 /**
  * Composite service class for FinanceText.
  */
+
 class FinanceTextCompositeService {
-    boolean transactional = true
 
-    def financeTextService
-
-    /**
+def financeTextService    /**
      * Method is used to save text for header.
      * @param header requisition header.
      * @param map map which having comments.
@@ -43,8 +40,8 @@ class FinanceTextCompositeService {
         }
         listToSave.eachWithIndex {FinanceText entry, int i ->
             entry.sequenceNumber = (i + 1) * FinanceProcurementConstants.FINANCE_TEXT_SEQUENCE_NUMBER_INCREMENT
+            financeTextService.create(entry).discard()
         }
-        financeTextService.create( listToSave )
     }
 
     /**
@@ -72,10 +69,12 @@ class FinanceTextCompositeService {
                 prepareTextList( textPart, FinanceValidationConstants.REQUISITION_INDICATOR_YES, item, detail, user, listToSave )
             }
         }
+        List results = []
         listToSave.eachWithIndex {FinanceText entry, int i ->
             entry.sequenceNumber = (i + 1) * FinanceProcurementConstants.FINANCE_TEXT_SEQUENCE_NUMBER_INCREMENT
+
         }
-        financeTextService.create( listToSave )
+        financeTextService.create( listToSave ,false)
     }
 
     /**

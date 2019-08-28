@@ -1,26 +1,23 @@
 /*******************************************************************************
- Copyright 2015-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
-import grails.transaction.Transactional
+import grails.web.databinding.DataBinder
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
 import net.hedtech.banner.finance.util.FinanceCommonUtility
-import net.hedtech.banner.finance.util.LoggerUtility
-import org.apache.log4j.Logger
 import org.springframework.transaction.annotation.Propagation
-
+import grails.gorm.transactions.Transactional
 /**
  * Class for Purchase Requisition Accounting Composite
  */
-class RequisitionAccountingCompositeService {
-    private static final Logger LOGGER = Logger.getLogger( this.class )
-    boolean transactional = true
-
+@Transactional
+class RequisitionAccountingCompositeService implements DataBinder {
+    
     def requisitionHeaderService
     def springSecurityService
     def requisitionAccountingService
@@ -44,7 +41,8 @@ class RequisitionAccountingCompositeService {
      * @return map Map having requestCode, item and sequenceNumber of created requisition accounting.
      */
     def createPurchaseRequisitionAccounting( map ) {
-        RequisitionAccounting requisitionAccountingRequest = map.requisitionAccounting
+        RequisitionAccounting requisitionAccountingRequest = new RequisitionAccounting()
+        bindData(requisitionAccountingRequest, map.requisitionAccounting,[exclude: ['dirtyPropertyNames','dirty','attached']])
         def user = springSecurityService.getAuthentication().user
         if (user.oracleUserName) {
             requisitionAccountingRequest.userId = user.oracleUserName
@@ -57,12 +55,12 @@ class RequisitionAccountingCompositeService {
             requisitionAccountingRequest.sequenceNumber = requisitionAccountingService.getLastSequenceNumberByRequestCode( requisitionAccountingRequest.requestCode, requisitionAccountingRequest.item ).next()
             setNSFOverride( requisitionAccountingRequest )
             requisitionDetailsAcctCommonCompositeService.adjustAccountPercentageAndAmount( requisitionAccountingRequest )
-            RequisitionAccounting requisitionAccounting = requisitionAccountingService.create( [domainModel: requisitionAccountingRequest] )
-            LoggerUtility.debug( LOGGER, 'Requisition Accounting created ' + requisitionAccounting )
+            RequisitionAccounting requisitionAccounting = requisitionAccountingService.create( requisitionAccountingRequest )
+            log.debug('Requisition Accounting created {}', requisitionAccounting )
             return [requestCode: requisitionAccounting.requestCode,
                     item       : requisitionAccounting.item, sequenceNumber: requisitionAccounting.sequenceNumber]
         } else {
-            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            log.error('User{} is not valid',user )
             throw new ApplicationException(
                     RequisitionAccountingCompositeService,
                     new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -78,7 +76,7 @@ class RequisitionAccountingCompositeService {
     def deletePurchaseRequisitionAccountingInformation( requestCode, Integer item, Integer sequenceNumber ) {
         FinanceProcurementHelper.checkCompleteRequisition( requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ) )
         def requisitionAccounting = requisitionAccountingService.findByRequestCodeItemAndSeq( requestCode, item, sequenceNumber )
-        requisitionAccountingService.delete( [domainModel: requisitionAccounting] )
+        requisitionAccountingService.delete( requisitionAccounting )
     }
 
     /**
@@ -90,7 +88,7 @@ class RequisitionAccountingCompositeService {
         // Null or empty check for item number and sequence number.
         def user = springSecurityService.getAuthentication().user
         if (!user.oracleUserName) {
-            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            log.error('User {} is not valid' ,user)
             throw new ApplicationException( RequisitionAccountingCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -99,7 +97,7 @@ class RequisitionAccountingCompositeService {
         FinanceProcurementHelper.checkCompleteRequisition( header )
 
         if (accountingDomainModel.requisitionAccounting.item == null || accountingDomainModel.requisitionAccounting.sequenceNumber == null) {
-            LoggerUtility.error( LOGGER, 'Item and Sequence number are required to update the Requisition Accounting information.' )
+            log.error('Item and Sequence number are required to update the Requisition Accounting information.' )
             throw new ApplicationException( RequisitionAccountingCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_ITEM_SEQUENCE_REQUIRED, [] ) )
@@ -107,7 +105,8 @@ class RequisitionAccountingCompositeService {
         reValidateAccountingFOAP( accountingDomainModel.requisitionAccounting, header.transactionDate )
         def existingAccountingInfo = requisitionAccountingService.findByRequestCodeItemAndSeq( accountingDomainModel.requisitionAccounting.requestCode,
                                                                                                accountingDomainModel.requisitionAccounting.item, accountingDomainModel.requisitionAccounting.sequenceNumber )
-        RequisitionAccounting requisitionAccountingRequest = accountingDomainModel.requisitionAccounting
+        RequisitionAccounting requisitionAccountingRequest = new RequisitionAccounting()
+        bindData(requisitionAccountingRequest, accountingDomainModel.requisitionAccounting)
         requisitionAccountingRequest.id = existingAccountingInfo.id
         requisitionAccountingRequest.version = existingAccountingInfo.version
         requisitionAccountingRequest.requestCode = existingAccountingInfo.requestCode
@@ -119,8 +118,8 @@ class RequisitionAccountingCompositeService {
 
         setNSFOverride( requisitionAccountingRequest )
         requisitionDetailsAcctCommonCompositeService.adjustAccountPercentageAndAmount( requisitionAccountingRequest )
-        def requisitionAccounting = requisitionAccountingService.update( [domainModel: requisitionAccountingRequest] )
-        LoggerUtility.debug( LOGGER, "Requisition Accounting information updated " + requisitionAccounting )
+        def requisitionAccounting = requisitionAccountingService.update( requisitionAccountingRequest)
+        log.debug("Requisition Accounting information updated {}" , requisitionAccounting )
         return requisitionAccounting
     }
 
@@ -133,7 +132,7 @@ class RequisitionAccountingCompositeService {
      */
     @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     def findByRequestCodeItemAndSeq( requisitionCode, Integer item, Integer sequenceNumber ) {
-        LoggerUtility.debug( LOGGER, String.format( 'Input parameter for findByRequestCodeItemAndSeq :%1s , %2d ,%3d', requisitionCode, item, sequenceNumber ) )
+        log.debug( String.format( 'Input parameter for findByRequestCodeItemAndSeq :%1s , %2d ,%3d', requisitionCode, item, sequenceNumber ) )
         def dummyPaginationParam = [max: 1, offset: 0]
         def headerTnxDate = requisitionHeaderService.findRequisitionHeaderByRequestCode( requisitionCode ).transactionDate
         def requisitionAccounting = findCompleteAccountingByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber )
@@ -141,14 +140,14 @@ class RequisitionAccountingCompositeService {
         try {
             financeAccountIndex = requisitionAccounting.accountIndex ? financeAccountIndexService.findIndexByIndexCodeAndEffectiveDate( [coaCode: requisitionAccounting.chartOfAccount, effectiveDate: headerTnxDate, indexCodeTitle: requisitionAccounting.accountIndex], dummyPaginationParam )?.get( 0 ) : null
         } catch (ApplicationException e) {
-            LoggerUtility.warn( LOGGER, e.getMessage() )
+            log.warn('{}',e.getMessage())
         }
 
         def financeFund
         try {
             financeFund = financeFundCompositeService.findFundByCoaFundCodeAndEffectiveDate( [effectiveDate: headerTnxDate, codeTitle: requisitionAccounting.fund, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )
         } catch (ApplicationException e) {
-            LoggerUtility.warn( LOGGER, e.getMessage() )
+            log.warn('{}',e.getMessage() )
         }
 
         def financeOrganization
@@ -158,7 +157,7 @@ class RequisitionAccountingCompositeService {
                                                                                                                           coaCode      : requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )
 
         } catch (ApplicationException e) {
-            LoggerUtility.warn( LOGGER, e.getMessage() )
+            log.warn('{}', e.getMessage() )
         }
 
         def accountingTitle
@@ -166,38 +165,38 @@ class RequisitionAccountingCompositeService {
             accountingTitle = requisitionAccounting.account ? financeAccountCompositeService.getAccountByAccountOrChartOfAccAndEffectiveDate(
                     [searchParam: requisitionAccounting.account, effectiveDate: headerTnxDate, coaCode: requisitionAccounting.chartOfAccount], dummyPaginationParam )?.get( 0 )?.title : null
         } catch (ApplicationException e) {
-            LoggerUtility.warn( LOGGER, e.getMessage() )
+            log.warn('{}',e.getMessage())
         }
 
         def programTitle
         try {
             programTitle = requisitionAccounting.program ? programService.fetchProgramByCoaProgramAndEffectiveDate( [coa: requisitionAccounting.chartOfAccount, effectiveDate: headerTnxDate, programCodeDesc: requisitionAccounting.program], dummyPaginationParam )?.get( 0 )?.title : null
         } catch (ApplicationException e) {
-            LoggerUtility.warn( LOGGER, e.getMessage() )
+            log.warn('{}',e.getMessage() )
         }
         def activityTitle
         try {
             activityTitle = requisitionAccounting.activity ? activityService.getListByActivityCodeTitleAndEffectiveDate( [activityCodeTitle: requisitionAccounting.activity, coaCode: requisitionAccounting.chartOfAccount], headerTnxDate, dummyPaginationParam )?.get( 0 )?.title : null
         } catch (ApplicationException e) {
-            LoggerUtility.warn( LOGGER, e.getMessage() )
+            log.warn('{}', e.getMessage() )
         }
         def locationTitle
         try {
             locationTitle = requisitionAccounting.location ? locationService.getLocationByCodeTitleAndEffectiveDate( [codeTitle: requisitionAccounting.location, coaCode: requisitionAccounting.chartOfAccount], headerTnxDate, dummyPaginationParam )?.get( 0 )?.title : null
         } catch (ApplicationException e) {
-            LoggerUtility.warn( LOGGER, e.getMessage() )
+            log.warn('{}',e.getMessage() )
         }
         def projectTitle
         try {
             projectTitle = requisitionAccounting.project ? financeProjectCompositeService.getListByProjectAndEffectiveDate( [projectCodeDesc: requisitionAccounting.project, coaCode: requisitionAccounting.chartOfAccount, effectiveDate: headerTnxDate], dummyPaginationParam )?.get( 0 )?.longDescription : null
         } catch (ApplicationException e) {
-            LoggerUtility.warn( LOGGER, e.getMessage() )
+            log.warn('{}',e.getMessage() )
         }
         def chartOfAccountTitle
         try {
             chartOfAccountTitle = requisitionAccounting.chartOfAccount ? chartOfAccountsService.getChartOfAccountByCode( requisitionAccounting.chartOfAccount, headerTnxDate )?.title : null
         } catch (ApplicationException e) {
-            LoggerUtility.warn( LOGGER, e.getMessage() )
+            log.warn('{}', e.getMessage() )
         }
 
         [status    : requisitionInformationService.fetchRequisitionsByReqNumber( requisitionCode )?.status,
@@ -270,11 +269,10 @@ class RequisitionAccountingCompositeService {
      * @return
      */
     private findCompleteAccountingByRequestCodeItemAndSeq( requisitionCode, Integer item, Integer sequenceNumber ) {
-        LoggerUtility.debug( LOGGER, 'Input parameter for findCompleteAccountingByRequestCodeItemAndSeq :' + requisitionCode )
+        log.debug('Input parameter for findCompleteAccountingByRequestCodeItemAndSeq :{}', requisitionCode )
         def requisitionAccounting = requisitionAccountingService.findBasicAccountingByRequestCodeItemAndSeq( requisitionCode, item, sequenceNumber )
         if (!requisitionAccounting) {
-            LoggerUtility.error( LOGGER, 'Requisition Accounting Information are empty for requestCode='
-                    + requisitionCode + ', Item: ' + item + ' and Sequence: ' + sequenceNumber )
+            log.error('Requisition Accounting Information are empty for requestCode= {} , Item: {}  and Sequence: {}' ,requisitionCode,item,sequenceNumber )
             throw new ApplicationException(
                     RequisitionAccountingService,
                     new BusinessLogicValidationException(

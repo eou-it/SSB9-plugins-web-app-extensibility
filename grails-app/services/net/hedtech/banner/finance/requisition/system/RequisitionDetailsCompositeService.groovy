@@ -1,8 +1,10 @@
 /*******************************************************************************
- Copyright 2015-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
+
+import grails.web.databinding.DataBinder
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
@@ -10,18 +12,15 @@ import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
 import net.hedtech.banner.finance.system.FinanceSystemControl
 import net.hedtech.banner.finance.util.FinanceCommonUtility
-import net.hedtech.banner.finance.util.LoggerUtility
 import org.apache.commons.lang3.StringUtils
-import org.apache.log4j.Logger
 import org.springframework.transaction.annotation.Propagation
-import org.springframework.transaction.annotation.Transactional
-
+import grails.gorm.transactions.Transactional
 /**
  * Class for Purchase Requisition Details Composite Service
  */
-class RequisitionDetailsCompositeService {
-    private static final Logger LOGGER = Logger.getLogger( this.class )
-    boolean transactional = true
+@Transactional 
+class RequisitionDetailsCompositeService  implements DataBinder {
+  
 
     def requisitionHeaderService
     def springSecurityService
@@ -45,7 +44,9 @@ class RequisitionDetailsCompositeService {
      * @return requestCode and item number.
      */
     def createPurchaseRequisitionDetail( map ) {
-        RequisitionDetail requisitionDetailRequest = map.requisitionDetail
+        RequisitionDetail requisitionDetailRequest = new RequisitionDetail()
+        bindData(requisitionDetailRequest, map.requisitionDetail,[exclude: ['privateComment','publicComment']])
+
         def user = springSecurityService.getAuthentication().user
         if (user.oracleUserName) {
             def requestCode = requisitionDetailRequest.requestCode
@@ -54,8 +55,8 @@ class RequisitionDetailsCompositeService {
             requisitionDetailRequest.item = requisitionDetailService.getLastItem( requestCode ).next()
             // Set all data with business logic.
             requisitionDetailRequest = setDataForCreateOrUpdateRequisitionDetail( requestCode, requisitionDetailRequest )
-            RequisitionDetail requisitionDetail = requisitionDetailService.create( [domainModel: requisitionDetailRequest] )
-            LoggerUtility.debug LOGGER, "Requisition Detail created " + requisitionDetail
+            RequisitionDetail requisitionDetail = requisitionDetailService.create(  requisitionDetailRequest )
+            log.debug("Requisition Detail created {}" ,requisitionDetail)
             /** Re-balance associated accounting information*/
             reBalanceRequisitionAccounting requestCode, requisitionDetail.item, null
             financeTextCompositeService.saveTextForCommodity( requisitionDetail,
@@ -63,7 +64,7 @@ class RequisitionDetailsCompositeService {
                                                               user.oracleUserName, requisitionDetail.item )
             return [requestCode: requisitionDetail.requestCode, item: requisitionDetail.item]
         } else {
-            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            log.error('User {} is not valid',user )
             throw new ApplicationException(
                     RequisitionDetailsCompositeService,
                     new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -94,7 +95,7 @@ class RequisitionDetailsCompositeService {
         def requestCode = detailDomainModel.requisitionDetail.requestCode
         def user = springSecurityService.getAuthentication().user
         if (!user.oracleUserName) {
-            LoggerUtility.error( LOGGER, 'User' + user + ' is not valid' )
+            log.error('User {} is not valid',user )
             throw new ApplicationException( RequisitionDetailsCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_USER_NOT_VALID, [] ) )
@@ -103,13 +104,14 @@ class RequisitionDetailsCompositeService {
         Integer item = detailDomainModel.requisitionDetail.item
         // Null or empty check for item.
         if (!item) {
-            LoggerUtility.error( LOGGER, 'Item is required to update the detail.' )
+            log.error('Item is required to update the detail.' )
             throw new ApplicationException( RequisitionDetailsCompositeService,
                                             new BusinessLogicValidationException(
                                                     FinanceProcurementConstants.ERROR_MESSAGE_ITEM_IS_REQUIRED, [] ) )
         }
         def existingDetail = requisitionDetailService.findByRequestCodeAndItem( requestCode, item )
-        RequisitionDetail requisitionDetailRequest = detailDomainModel.requisitionDetail
+        RequisitionDetail requisitionDetailRequest = new RequisitionDetail()
+        bindData(requisitionDetailRequest, detailDomainModel.requisitionDetail,[exclude: ['privateComment','publicComment']])
         requisitionDetailRequest.id = existingDetail.id
         requisitionDetailRequest.version = existingDetail.version
         requisitionDetailRequest.requestCode = existingDetail.requestCode
@@ -118,8 +120,8 @@ class RequisitionDetailsCompositeService {
         requisitionDetailRequest.lastModified = new Date()
         requisitionDetailRequest.item = existingDetail.item
         requisitionDetailRequest.userId = user.oracleUserName
-        RequisitionDetail requisitionDetail = requisitionDetailService.update( [domainModel: requisitionDetailRequest] )
-        LoggerUtility.debug LOGGER, "Requisition Detail updated " + requisitionDetail
+        RequisitionDetail requisitionDetail = requisitionDetailService.update( requisitionDetailRequest )
+        log.debug("Requisition Detail updated {}" , requisitionDetail)
         /** Re-balance associated accounting information*/
         reBalanceRequisitionAccounting( requestCode, requisitionDetail.item )
         financeTextCompositeService.saveTextForCommodity( requisitionDetail,
@@ -137,13 +139,13 @@ class RequisitionDetailsCompositeService {
         def header = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode )
         if (header.isDocumentLevelAccounting && requisitionDetailService.findByRequestCode( requestCode )?.size() == 1) {
             requisitionAccountingService.findAccountingByRequestCode( requestCode )?.each() {
-                requisitionAccountingService.delete( [domainModel: it] )
+                requisitionAccountingService.delete(  it )
             }
         } else if (!header.isDocumentLevelAccounting) {
             requisitionAccountingService.findAccountingByRequestCode( requestCode ).findAll() {
                 it.item == item
             }?.each() {
-                requisitionAccountingService.delete( [domainModel: it] )
+                requisitionAccountingService.delete( it )
             }
         }
     }
@@ -156,7 +158,7 @@ class RequisitionDetailsCompositeService {
      * @param isDocumentLevelAccounting
      * @return
      */
-    private reBalanceRequisitionAccounting( requestCode, item, isDocumentLevelAccounting = null ) {
+    def reBalanceRequisitionAccounting( requestCode, item, isDocumentLevelAccounting = null ) {
         if (!isDocumentLevelAccounting) {
             isDocumentLevelAccounting = requisitionHeaderService.findRequisitionHeaderByRequestCode( requestCode ).isDocumentLevelAccounting
         }
@@ -368,7 +370,7 @@ class RequisitionDetailsCompositeService {
         try {
             requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
         } catch (ApplicationException ae) {
-            LoggerUtility.warn( LOGGER, 'No requisition detail available for ' + requisitionCode + ': ' + ae.message )
+            log.warn('No requisition detail available for {}:{}',requisitionCode, ae.message )
         }
         def commodityCodes = requisitionDetails.findAll() {it.commodityDescription == null}.collect() {
             it.commodity
@@ -412,7 +414,7 @@ class RequisitionDetailsCompositeService {
         try {
             requisitionDetails = requisitionDetailService.findByRequestCode( requisitionCode )
         } catch (ApplicationException ae) {
-            LoggerUtility.info( LOGGER, 'No requisition detail available for ' + requisitionCode + ': ' + ae.message )
+            log.info('No requisition detail available for {}:{}', requisitionCode , ae.message )
         }
         def commodityCodes = requisitionDetails.findAll() {it.commodityDescription == null}.collect() {
             it.commodity

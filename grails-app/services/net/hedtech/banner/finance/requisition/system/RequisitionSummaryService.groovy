@@ -1,18 +1,16 @@
 /*******************************************************************************
- Copyright 2015-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  *******************************************************************************/
 package net.hedtech.banner.finance.requisition.system
 
-import grails.transaction.Transactional
+import grails.gorm.transactions.Transactional
 import net.hedtech.banner.exceptions.ApplicationException
 import net.hedtech.banner.exceptions.BusinessLogicValidationException
 import net.hedtech.banner.finance.procurement.common.FinanceValidationConstants
 import net.hedtech.banner.finance.requisition.common.FinanceProcurementConstants
 import net.hedtech.banner.finance.requisition.util.FinanceProcurementHelper
-import net.hedtech.banner.finance.util.LoggerUtility
 import net.hedtech.banner.i18n.MessageHelper
 import net.hedtech.banner.service.ServiceBase
-import org.apache.log4j.Logger
 import org.springframework.web.context.request.RequestContextHolder
 
 /**
@@ -20,7 +18,7 @@ import org.springframework.web.context.request.RequestContextHolder
  *
  */
 class RequisitionSummaryService extends ServiceBase {
-    private static final def LOGGER = Logger.getLogger( this.getClass() )
+
     def springSecurityService
     def shipToCodeService
     def requisitionHeaderService
@@ -35,10 +33,10 @@ class RequisitionSummaryService extends ServiceBase {
      */
     @Transactional(readOnly = true)
     def fetchRequisitionSummaryForRequestCode( requestCode, baseCcy, doesNotNeedPdf = true ) {
-        LoggerUtility.debug( LOGGER, 'Input parameters for fetchRequisitionSummaryForRequestCode :' + requestCode )
+        log.debug('Input parameters for fetchRequisitionSummaryForRequestCode :{}' , requestCode )
         def requisitionSummary = RequisitionSummary.fetchRequisitionSummaryForRequestCode( requestCode, springSecurityService.getAuthentication().user.oracleUserName )
         if (!requisitionSummary) {
-            LoggerUtility.error( LOGGER, 'Missing requisition header ' + requestCode )
+            log.error('Missing requisition header {}', requestCode )
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }
         processSummaryInformation( requisitionSummary, baseCcy, requestCode, doesNotNeedPdf, false )
@@ -50,10 +48,10 @@ class RequisitionSummaryService extends ServiceBase {
      */
     @Transactional(readOnly = true)
     def fetchRequisitionSummaryForRequestCode( requestCode ) {
-        LoggerUtility.debug( LOGGER, 'Input parameters for fetchRequisitionSummaryForRequestCode :' + requestCode )
+        log.debug('Input parameters for fetchRequisitionSummaryForRequestCode :{}', requestCode )
         def requisitionSummary = RequisitionSummary.fetchRequisitionSummaryForRequestCode( requestCode, null )
         if (!requisitionSummary) {
-            LoggerUtility.error( LOGGER, 'Missing requisition header ' + requestCode )
+            log.error('Missing requisition header {}', requestCode )
             throw new ApplicationException( RequisitionHeaderService, new BusinessLogicValidationException( FinanceProcurementConstants.ERROR_MESSAGE_MISSING_REQUISITION_HEADER, [] ) )
         }
         processSummaryInformation( requisitionSummary, RequestContextHolder?.currentRequestAttributes().getServletContext()[FinanceProcurementConstants.INSTITUTION_BASE_CCY], requestCode, false )

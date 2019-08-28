@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <!-- *******************************************************************************
- Copyright 2015-2018 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
  ***********************************************************************************
  -->
 
@@ -17,6 +17,7 @@
 <hibernate-configuration>
     <session-factory>
         <property name="dialect">org.hibernate.dialect.Oracle10gDialect</property>
+
         <mapping class="net.hedtech.banner.finance.requisition.system.RequisitionHeader"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.RequisitionHeaderForCopy"/>
         <mapping class="net.hedtech.banner.finance.requisition.system.RequisitionDetailForCopy"/>
