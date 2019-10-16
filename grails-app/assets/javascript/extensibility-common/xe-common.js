@@ -367,7 +367,10 @@ var xe = (function (xe) {
             if (labelElement.length) {
                 // replace the text in the first text node of the label
                 var labelTextNode = labelElement.contents().filter(function() { return this.nodeType === 3;})[0];
-                if ( labelTextNode ) {
+                var labelAttrNode = labelElement.contents().filter(function() { return this.nodeType === 1;})[0];
+                if(labelAttrNode && labelAttrNode.textContent.trim()){
+                    labelAttrNode.textContent = xe.i18n(fieldExtension.attributes.label);
+                } else if ( labelTextNode ) {
                     labelTextNode.nodeValue = xe.i18n(fieldExtension.attributes.label);
                 }else if( $(labelElement)[0].hasAttribute( "ng-bind" )){
                     $(labelElement).removeAttr("ng-bind");
