@@ -365,18 +365,20 @@ var xe = (function (xe) {
                 }
             }
             if (labelElement.length) {
-                var labelTextNode = labelElement.contents().filter(function() { return this.nodeType === 3;})[0];
-                if( labelTextNode && labelTextNode.nodeValue ===" " && labelTextNode.previousSibling
-                    && labelTextNode.previousSibling.className === 'xe-label ng-binding'
-                    && labelTextNode.previousSibling.tagName === 'SPAN'
-                    && labelTextNode.previousSibling.hasAttribute( "ng-bind" )){
-                    labelTextNode.previousSibling.textContent = xe.i18n(fieldExtension.attributes.label);
-                    labelTextNode.previousSibling.setAttribute('aria-label', xe.i18n(fieldExtension.attributes.label));
-                } else if ( labelTextNode) {
-                    labelTextNode.nodeValue = xe.i18n(fieldExtension.attributes.label);
-                }else if( $(labelElement)[0].hasAttribute( "ng-bind" )){
-                    $(labelElement).removeAttr("ng-bind");
-                    $(labelElement).html(xe.i18n(fieldExtension.attributes.label));
+                // replace the text in the first text node of the label
+                    if( fieldElement.getElementsByTagName('span').length > 0 && fieldElement.getElementsByTagName('span')[0].className.slice(0,8)==="xe-label" ){
+                        var labelAttrNode = labelElement.contents().filter(function() { return this.nodeType === 1;})[0];
+                    }else{
+                        var  labelTextNode = labelElement.contents().filter(function() { return this.nodeType === 3;})[0];
+                    }
+
+                    if( labelAttrNode ){
+                        labelAttrNode.textContent = xe.i18n(fieldExtension.attributes.label);
+                     } else if ( labelTextNode ) {
+                         labelTextNode.nodeValue = xe.i18n(fieldExtension.attributes.label);
+                    }else if( $(labelElement)[0].hasAttribute( "ng-bind" )){
+                        $(labelElement).removeAttr("ng-bind");
+                        $(labelElement).html(xe.i18n(fieldExtension.attributes.label));
                 }
             } else {
                 xe.errors.push('Unable to find and replace label for '+ fieldExtension.name);
