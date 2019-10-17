@@ -366,15 +366,19 @@ var xe = (function (xe) {
             }
             if (labelElement.length) {
                 // replace the text in the first text node of the label
-                var labelTextNode = labelElement.contents().filter(function() { return this.nodeType === 3;})[0];
-                var labelAttrNode = labelElement.contents().filter(function() { return this.nodeType === 1;})[0];
-                if(labelAttrNode && labelAttrNode.textContent.trim()){
-                    labelAttrNode.textContent = xe.i18n(fieldExtension.attributes.label);
-                } else if ( labelTextNode ) {
-                    labelTextNode.nodeValue = xe.i18n(fieldExtension.attributes.label);
-                }else if( $(labelElement)[0].hasAttribute( "ng-bind" )){
-                    $(labelElement).removeAttr("ng-bind");
-                    $(labelElement).html(xe.i18n(fieldExtension.attributes.label));
+                    if(fieldElement.getElementsByTagName("span").length){
+                        var labelAttrNode = labelElement.contents().filter(function() { return this.nodeType === 1;})[0];
+                    }else{
+                        var  labelTextNode = labelElement.contents().filter(function() { return this.nodeType === 3;})[0];
+                    }
+
+                    if(labelAttrNode){
+                        labelAttrNode.textContent = xe.i18n(fieldExtension.attributes.label);
+                     } else if ( labelTextNode ) {
+                         labelTextNode.nodeValue = xe.i18n(fieldExtension.attributes.label);
+                    }else if( $(labelElement)[0].hasAttribute( "ng-bind" )){
+                        $(labelElement).removeAttr("ng-bind");
+                        $(labelElement).html(xe.i18n(fieldExtension.attributes.label));
                 }
             } else {
                 xe.errors.push('Unable to find and replace label for '+ fieldExtension.name);
