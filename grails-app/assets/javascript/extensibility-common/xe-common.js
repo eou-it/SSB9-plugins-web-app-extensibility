@@ -367,7 +367,7 @@ var xe = (function (xe) {
             if (labelElement.length) {
                 // replace the text in the first text node of the label
                 
-                    if( fieldElement.hasChildNodes() && $('label', fieldElement)[0].className.slice(0,8) ==="xe-label"){
+                    if( labelElement[0].classList.contains("xe-label")){
                         var labelAttrNode = labelElement.contents().filter(function() { return this.nodeType === 1;})[0];
                     }else{
                         var  labelTextNode = labelElement.contents().filter(function() { return this.nodeType === 3;})[0];
