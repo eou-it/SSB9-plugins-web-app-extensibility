@@ -375,6 +375,7 @@ var xe = (function (xe) {
 
                     if( labelAttrNode ){
                         labelAttrNode.textContent = xe.i18n(fieldExtension.attributes.label);
+                        labelAttrNode.setAttribute('aria-label', xe.i18n(fieldExtension.attributes.label))
                      } else if ( labelTextNode ) {
                          labelTextNode.nodeValue = xe.i18n(fieldExtension.attributes.label);
                     }else if( $(labelElement)[0].hasAttribute( "ng-bind" )){
