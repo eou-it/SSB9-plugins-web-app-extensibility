@@ -5,12 +5,11 @@ buildscript {
     }
     dependencies {
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
-        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.14.2"
-        classpath "net.saliman:gradle-cobertura-plugin:2.6.0"
+        classpath "com.bertramlabs.plugins:asset-pipeline-gradle:2.15.1"
     }
 }
 
-version "9.33"
+version "9.33.3"
 group "web.app.extensibility"
 
 apply plugin:"eclipse"
@@ -19,7 +18,6 @@ apply plugin:"org.grails.grails-plugin"
 apply plugin:"org.grails.grails-plugin-publish"
 apply plugin:"asset-pipeline"
 apply plugin:"org.grails.grails-gsp"
-apply plugin:'net.saliman.cobertura'
 
 repositories {
     mavenLocal()
@@ -50,11 +48,16 @@ dependencies {
     profile "org.grails.profiles:web-plugin"
     provided "org.grails:grails-plugin-services"
     provided "org.grails:grails-plugin-domain-class"
-    runtime "com.bertramlabs.plugins:asset-pipeline-grails:2.14.2"
+    runtime "com.bertramlabs.plugins:asset-pipeline-grails:3.0.6"
     testCompile "org.grails:grails-gorm-testing-support"
     testCompile "org.grails:grails-plugin-testing"
     testCompile "org.grails:grails-web-testing-support"
     testCompile "org.grails:grails-test-mixins:3.3.0"
+}
+
+configurations {
+    runtime.exclude group: "org.springframework.boot", module: "spring-boot-starter-actuator"
+    runtime.exclude group: "org.grails", module: "grails-gorm-testing-support"
 }
 
 bootRun {
@@ -87,19 +90,3 @@ grails {
         compile project(":banner-core")
     }
 }
-
-apply plugin: 'codenarc'
-
-codenarc {
-    def codenarcRulePath = project(":banner-codenarc").projectDir.absolutePath + "/config/codenarc/rules.groovy"
-    configFile = file(codenarcRulePath)
-    maxPriority1Violations = Integer.MAX_VALUE
-    maxPriority2Violations = Integer.MAX_VALUE
-    maxPriority3Violations = Integer.MAX_VALUE
-}
-
-integrationTest {
-    ignoreFailures = true
-}
-
-
