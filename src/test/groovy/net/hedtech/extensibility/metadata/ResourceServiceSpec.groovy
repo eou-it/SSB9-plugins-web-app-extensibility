@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2018-2019 Ellucian Company L.P. and its affiliates.
+ Copyright 2018-2020 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
 package net.hedtech.extensibility.metadata
 
@@ -7,6 +7,7 @@ import grails.converters.JSON
 import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration
 import grails.testing.services.ServiceUnitTest
+import grails.testing.web.GrailsWebUnitTest
 import org.grails.web.json.JSONObject
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.web.context.request.RequestAttributes
@@ -14,9 +15,8 @@ import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletWebRequest
 import spock.lang.Specification
 
-@Integration
-@Rollback
-class ResourceServiceSpec extends Specification implements ServiceUnitTest<ResourceService>{
+
+class ResourceServiceSpec extends Specification implements ServiceUnitTest<ResourceService>, GrailsWebUnitTest{
     def resourceService
 
     //def resourceService = new net.hedtech.extensibility.metadata.ResourceService()
@@ -41,14 +41,17 @@ class ResourceServiceSpec extends Specification implements ServiceUnitTest<Resou
             }'''
 
 
-    def params = [unitTest: true, dummy: 1, application:"banner_extensibility", page:"Test",
+    def paramstest = [unitTest: true, dummy: 1, application:"banner_extensibility", page:"Test",
                   "metadata":jsonData]
 
     def  static extensionsPath
 
     def setup() {
         extensionsPath = grails.util.Holders.getConfig().webAppExtensibility.locations.extensions
-        def folder = new File( "${extensionsPath}/${params.application}/${params.page}.json" )
+        if(!extensionsPath){
+            extensionsPath = new File(System.getProperty("java.io.tmpdir"))
+        }
+        def folder = new File( "${extensionsPath}/${paramstest.application}/${paramstest.page}.json" )
         if( !folder.exists() ) {
             folder.getParentFile().mkdirs();
             folder.createNewFile();
@@ -58,7 +61,7 @@ class ResourceServiceSpec extends Specification implements ServiceUnitTest<Resou
     }
 
     def cleanup(){
-        def file = new File( "${extensionsPath}/${params.application}/${params.page}.json" )
+        def file = new File( "${extensionsPath}/${paramstest.application}/${paramstest.page}.json" )
         if(file.exists()){
             file.delete()
         }
@@ -72,12 +75,12 @@ class ResourceServiceSpec extends Specification implements ServiceUnitTest<Resou
         data.put("name","TestPage")
         row.put("sections",data)
         //Map content = ["TestData":"Test Data output"]
-        params << ["metadata":JSON.parse("{'sections':[{'name':'extzToolList','exclude':false," +
+        paramstest << ["metadata":JSON.parse("{'sections':[{'name':'extzToolList','exclude':false," +
                 "'data': [{'ID':1, 'page':'TestPage'},{'ID':2, 'page':'TestPage 2'}]}]" +
                 ",'id':1, 'secondData': {'DataID':1, 'DataName':'TEST'}}")]
         def res
         when:
-        res = resourceService.create(params,jsonData)
+        res = resourceService.create(paramstest,jsonData)
         then:
         noExceptionThrown()
         when:
@@ -85,8 +88,8 @@ class ResourceServiceSpec extends Specification implements ServiceUnitTest<Resou
         then:
         output!=null
         when:
-        params <<["application":null]
-        resourceService.create(params,content)
+        paramstest <<["application":null]
+        resourceService.create(paramstest,content)
         then:
         thrown Exception
 
@@ -96,7 +99,7 @@ class ResourceServiceSpec extends Specification implements ServiceUnitTest<Resou
         RequestAttributes mockRequest = new ServletWebRequest(new MockHttpServletRequest("GET", "/test"))
         RequestContextHolder.setRequestAttributes(mockRequest)
         given:
-        def requestURI = "V${params.application}/${params.page}.json"
+        def requestURI = "V${paramstest.application}/${paramstest.page}.json"
         when:
         ResourceService.loadResourcesJSON(requestURI)
         then:
