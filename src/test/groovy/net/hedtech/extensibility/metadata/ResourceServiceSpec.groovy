@@ -47,10 +47,8 @@ class ResourceServiceSpec extends Specification implements ServiceUnitTest<Resou
     def  static extensionsPath
 
     def setup() {
-        extensionsPath = grails.util.Holders.getConfig().webAppExtensibility.locations.extensions
-        if(!extensionsPath){
-            extensionsPath = new File(System.getProperty("java.io.tmpdir"))
-        }
+        def loc=grails.util.Holders.getConfig().webAppExtensibility?.locations?.extensions
+        extensionsPath = loc?loc:System.getProperty("java.io.tmpdir")
         def folder = new File( "${extensionsPath}/${paramstest.application}/${paramstest.page}.json" )
         if( !folder.exists() ) {
             folder.getParentFile().mkdirs();

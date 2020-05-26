@@ -47,12 +47,10 @@ class ExtensionServiceSpec extends Specification implements ServiceUnitTest<Exte
 
 
     def setup() {
-        extensionsPath = grails.util.Holders.getConfig().webAppExtensibility.locations.extensions
-        if(!extensionsPath){
-            extensionsPath = System.getProperty("java.io.tmpdir")
-        }
+        def loc=grails.util.Holders.getConfig().webAppExtensibility?.locations?.extensions
+        extensionsPath = loc?loc:System.getProperty("java.io.tmpdir")
         extensionService.extensionsPath=extensionsPath
-        def folder = new File( "${extensionsPath}/${paramstest.application}/${paramstest.page}.json" )
+        def folder = new File( "${extensionsPath}/${params.application}/${params.page}.json" )
         if( !folder.exists() ) {
             folder.getParentFile().mkdirs();
             folder.createNewFile();
