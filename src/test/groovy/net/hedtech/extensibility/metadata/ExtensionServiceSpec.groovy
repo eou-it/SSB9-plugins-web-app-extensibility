@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2015-2019 Ellucian Company L.P. and its affiliates.
+ Copyright 2015-2020 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
 
 package net.hedtech.extensibility.metadata
@@ -8,6 +8,7 @@ import grails.converters.JSON
 import grails.gorm.transactions.Rollback
 import grails.testing.mixin.integration.Integration
 import grails.testing.services.ServiceUnitTest
+import grails.testing.web.GrailsWebUnitTest
 import org.grails.web.json.JSONObject
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.web.context.request.RequestAttributes
@@ -16,9 +17,7 @@ import spock.lang.Specification
 import org.springframework.web.context.request.RequestContextHolder
 
 
-@Integration
-@Rollback
-class ExtensionServiceSpec extends Specification implements ServiceUnitTest<ExtensionService> {
+class ExtensionServiceSpec extends Specification implements ServiceUnitTest<ExtensionService>, GrailsWebUnitTest {
 
     def jsonData = '''{
                "sections":[
@@ -41,7 +40,7 @@ class ExtensionServiceSpec extends Specification implements ServiceUnitTest<Exte
 
     def extensionService = new ExtensionService()
 
-    def params = [unitTest: true, dummy: 1, application:"banner_extensibility", page:"Test",
+    def paramstest = [unitTest: true, dummy: 1, application:"banner_extensibility", page:"Test",
                   "metadata":jsonData]
 
     def static extensionsPath
@@ -50,6 +49,7 @@ class ExtensionServiceSpec extends Specification implements ServiceUnitTest<Exte
     def setup() {
         def loc=grails.util.Holders.getConfig().webAppExtensibility?.locations?.extensions
         extensionsPath = loc?loc:System.getProperty("java.io.tmpdir")
+        extensionService.extensionsPath=extensionsPath
         def folder = new File( "${extensionsPath}/${params.application}/${params.page}.json" )
         if( !folder.exists() ) {
             folder.getParentFile().mkdirs();
@@ -60,7 +60,7 @@ class ExtensionServiceSpec extends Specification implements ServiceUnitTest<Exte
     }
 
     def cleanup(){
-        def file = new File( "${extensionsPath}/${params.application}/${params.page}.json" )
+        def file = new File( "${extensionsPath}/${paramstest.application}/${paramstest.page}.json" )
         if(file.exists()){
             file.delete()
         }
@@ -68,7 +68,7 @@ class ExtensionServiceSpec extends Specification implements ServiceUnitTest<Exte
 
     void "test for list"() {
         when:
-        def result = extensionService.list(params)
+        def result = extensionService.list(paramstest)
         then:
         result.size()>0
     }
@@ -76,7 +76,7 @@ class ExtensionServiceSpec extends Specification implements ServiceUnitTest<Exte
 
     void "test for count"() {
         when:
-        def count = extensionService.count(params)
+        def count = extensionService.count(paramstest)
         then:
         count == 1
     }
@@ -88,16 +88,15 @@ class ExtensionServiceSpec extends Specification implements ServiceUnitTest<Exte
         data.put("name","TestPage")
         row.put("sections",data)
         Map content = ["TestData":"Test Data output"]
-        params << ["metadata":JSON.parse("{'sections':[{'name':'extzToolList','exclude':false}]}")]
+        paramstest << ["metadata":JSON.parse("{'sections':[{'name':'extzToolList','exclude':false}]}")]
         //params << ["metadata":jsonSlurper.parseText(jsonData)]
-        extensionService.extensionsPath=extensionsPath
         when:
-        def res = extensionService.create(params,content)
+        def res = extensionService.create(paramstest,content)
         then:
         noExceptionThrown()
         when:
-        params <<["application":null]
-        extensionService.create(params,content)
+        paramstest <<["application":null]
+        extensionService.create(paramstest,content)
         then:
         thrown Exception
 
@@ -107,7 +106,7 @@ class ExtensionServiceSpec extends Specification implements ServiceUnitTest<Exte
         given:
         RequestAttributes mockRequest = new ServletWebRequest(new MockHttpServletRequest("GET", "/test"))
         RequestContextHolder.setRequestAttributes(mockRequest)
-        def requestURI = "V${params.application}/${params.page}.json"
+        def requestURI = "V${paramstest.application}/${paramstest.page}.json"
         when:
         ExtensionService.loadExtensionsJSON(requestURI)
         then:
