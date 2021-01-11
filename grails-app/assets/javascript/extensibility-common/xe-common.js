@@ -799,9 +799,6 @@ var xe = (function (xe) {
                         xe.popups[2] = xe.extensionsEditor(xe.page, xe.popups[2]);
                     });
                 }
-                if($('#toolsMenu').html().indexOf('id="base"')<0) {
-                    ToolsMenu.addSection("base", $.i18n.prop("xe.menu.section.other"));
-                }
             } catch(e) {
                 xe.log('Failed to initiate Extensibility Tools menu. Exception: ' + e);
             }
