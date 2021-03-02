@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright 2018-2019 Ellucian Company L.P. and its affiliates.
+ Copyright 2018-2021 Ellucian Company L.P. and its affiliates.
  ******************************************************************************/
 
 /* global _  */
@@ -798,9 +798,6 @@ var xe = (function (xe) {
                     ToolsMenu.addItem("extensionseditor", $.i18n.prop("xe.menu.extensions.edit"), "extensibility", function () {
                         xe.popups[2] = xe.extensionsEditor(xe.page, xe.popups[2]);
                     });
-                }
-                if($('#toolsMenu').html().indexOf('id="base"')<0) {
-                    ToolsMenu.addSection("base", $.i18n.prop("xe.menu.section.other"));
                 }
             } catch(e) {
                 xe.log('Failed to initiate Extensibility Tools menu. Exception: ' + e);
